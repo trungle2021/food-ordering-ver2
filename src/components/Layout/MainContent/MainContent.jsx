@@ -1,11 +1,12 @@
 import React from "react";
-import { Search } from "../../UI/Icon/Icon";
+// import { Search } from "../../UI/Icon/Icon";
 import CategoryItems from "../../CategoryItems/CategoryItems";
-import Dishes from "../../PopularDishes/Dishes";
+import PopularDishes from "../../PopularDishes/PopularDishes";
+import RecentOrders from "../../RecentOrders/RecentOrders";
 
-export default function MainContent({ className, children }) {
+export default function MainContent({ className }) {
   return (
-    <main className={`${className} flex flex-col px-14 gap-10 pt-10`}>
+    <main className={`${className} flex flex-col px-14 gap-10 pt-10 pb-10`}>
       <div className="flex justify-between items-center">
         <span className="text-4xl text-black font-bold">Hello, Trung Le</span>
         <form className="w-80">
@@ -36,7 +37,13 @@ export default function MainContent({ className, children }) {
             <input
               type="search"
               id="default-search"
-              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-full
+               p-4 pl-10 text-sm
+                text-gray-900 
+                border border-gray-300
+                 rounded-lg bg-gray-50
+                  focus:ring-blue-500
+                   focus:border-blue-500"
               placeholder="What do you want eat today..."
               required
             />
@@ -61,7 +68,7 @@ export default function MainContent({ className, children }) {
             View all&nbsp;&nbsp;&gt;
           </a>
         </div>
-        <Dishes />
+        <PopularDishes />
       </div>
       {/* Recent Orders */}
       <div className="flex flex-col gap-5">
@@ -71,7 +78,7 @@ export default function MainContent({ className, children }) {
             View all&nbsp;&nbsp;&gt;
           </a>
         </div>
-        <Dishes />
+        <RecentOrders />
       </div>
     </main>
   );

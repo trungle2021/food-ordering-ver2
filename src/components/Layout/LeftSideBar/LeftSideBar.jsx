@@ -10,7 +10,7 @@ export default function LeftSideBar({ sideBarItems }) {
           isExpanded ? "px-10" : ""
         } h-full flex flex-col bg-white shadow-sm`}
       >
-        <div className="pb-8 pl-4 pr-4 pt-12 flex justify-between items-center">
+        <div className="pb-8 pl-4 pr-4 pt-12 flex justify-center items-center">
           <img
             srcSet="/left-side-bar/logo.png 2x"
             width={`168px`}

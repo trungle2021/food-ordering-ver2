@@ -19,7 +19,7 @@ const Dish = ({
         <img className="pt-10" srcSet={image} sizes={imageSize} />
         <div className="w-full top-6 absolute flex justify-between pr-4">
           {discount ? <Discount amount={discount} /> : <div></div>}
-          <span>{<Heart isFavorite={isFavorite} />}</span>
+          <button>{<Heart isFavorite={isFavorite} />}</button>
         </div>
 
         <div className="flex justify-between w-full items-center px-4">

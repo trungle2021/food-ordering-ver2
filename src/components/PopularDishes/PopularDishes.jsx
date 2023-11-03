@@ -1,7 +1,7 @@
 import React from "react";
 import Dish from "./Dish/Dish";
 
-const Dishes = () => {
+const PopularDishes = () => {
   return (
     <ul className="flex justify-evenly basis-32 gap-3">
       <Dish
@@ -31,4 +31,4 @@ const Dishes = () => {
   );
 };
 
-export default Dishes;
+export default PopularDishes;
