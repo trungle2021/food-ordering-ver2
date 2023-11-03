@@ -51,3 +51,7 @@ export function Incom({ size }) {
 export function Profit({ size }) {
   return <img srcSet="/icon/Profit.svg 2x" width={size} height={size} />;
 }
+
+export function Location({ size }) {
+  return <img srcSet="/icon/Location.svg 2x" width={size} height={size} />;
+}

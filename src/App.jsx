@@ -1,19 +1,17 @@
 import LeftSideBar from "./components/Layout/LeftSideBar/LeftSideBar";
 import MainContent from "./components/Layout/MainContent/MainContent";
 import RightSideBar from "./components/Layout/RightSideBar/RightSideBar";
-import { LeftSideBarProvider } from "./store/LeftSideBarContext";
-import SideBarItems from "./components/Layout/LeftSideBar/SideBarItems/SideBarItems";
+import { AppContextProvider } from "./store/AppContext";
+import SideBarItems from "../src/components/Layout/SideBarItems/SideBarItems";
 function App() {
   return (
-    <div className="flex">
-      <LeftSideBarProvider>
-        <LeftSideBar className={`w-1/5`}>
-          <SideBarItems />
-        </LeftSideBar>
-      </LeftSideBarProvider>
+    <div className="flex w-full">
+      <AppContextProvider>
+        <LeftSideBar sideBarItems={<SideBarItems/>}/>
+        <MainContent  className="flex-grow"/>
+        <RightSideBar />
+      </AppContextProvider>
 
-      <MainContent className={`w-3/5`} />
-      <RightSideBar className={`w-1/5`} />
     </div>
   );
 }

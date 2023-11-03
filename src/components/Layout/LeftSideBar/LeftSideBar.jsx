@@ -1,14 +1,13 @@
 import { React, useContext } from "react";
 import {
-  LeftSideBarContext,
-  LeftSideBarProvider,
-} from "../../../store/LeftSideBarContext";
+  AppContext,
+} from "../../../store/AppContext";
 
-export default function LeftSideBar({ children }) {
-  const { isExpanded, setIsExpanded } = useContext(LeftSideBarContext);
+export default function LeftSideBar({ sideBarItems}) {
+  const { isExpanded, setIsExpanded } = useContext(AppContext);
   return (
-    <aside className="h-screen">
-      <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+    <aside className={`${isExpanded ? "w-[345px]" : ""} h-screen`}>
+      <nav className={`${isExpanded ? "px-10" : ""} h-full flex flex-col bg-white border-r shadow-sm`}>
         <div className="pb-2 pl-4 pr-4 pt-14 flex justify-between items-center">
           <img
             srcSet="/left-side-bar/logo.png 2x"
@@ -25,24 +24,22 @@ export default function LeftSideBar({ children }) {
             {isExpanded ? "close" : "open"}
           </button>
         </div>
-        <ul className={`flex-1 px-3`}>{children}</ul>
+        <ul className={`mb-10 px-3`}>{sideBarItems}</ul>
         <div
-          className={`relative border-t flex  p-3 overflow-hidden transition-all ${
+          className={`relative  flex overflow-hidden transition-all ${
             !isExpanded && "w-0"
           }`}
         >
           <img
             srcSet="/left-side-bar/banner.png 2x"
-            width={`100%`}
-            // width={`252px`}
-            // height={`200px`}
+            className="w-full"
           />
-          <div className="absolute top-14 right-30 p-4 ">
-            <p className={`mb-4 text-white font-bold text-lg pl-7 pr-10`}>
+          <div className="absolute  flex flex-col items-center justify-center w-full h-[252px] bottom-6">
+            <p className={` text-white font-bold text-lg px-10`}>
               Upgrade your Account to Get Free Voucher
             </p>
             <button
-              className={`rounded-lg text-black bg-white  ml-7 mr-10 px-6 py-4 text-sm `}
+              className={`rounded-lg p-3 items-start self-start ml-10 mt-3 text-black bg-white text-sm `}
             >
               Upgrade
             </button>

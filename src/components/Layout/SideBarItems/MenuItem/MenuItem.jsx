@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { LeftSideBarContext } from "../../../../../store/LeftSideBarContext";
+import { AppContext } from "../../../../store/AppContext";
 
 export default function Item({ active, icon, text, alert }) {
-  const { isExpanded } = useContext(LeftSideBarContext);
+  const { isExpanded } = useContext(AppContext);
 
   return (
     <li

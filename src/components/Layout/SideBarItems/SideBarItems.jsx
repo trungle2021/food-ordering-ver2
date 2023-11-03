@@ -1,5 +1,5 @@
 import React from "react";
-import Item from "./Item/Item";
+import Item from "./MenuItem/MenuItem";
 import {
   Dashboard,
   FoodOrder,
@@ -8,7 +8,7 @@ import {
   OrderHistory,
   Bills,
   Settings,
-} from "../../../UI/Icon/Icon";
+} from "../../UI/Icon/Icon";
 
 export default function SideBarItems() {
   return (
