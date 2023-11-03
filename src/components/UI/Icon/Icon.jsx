@@ -55,3 +55,35 @@ export function Profit({ size }) {
 export function Location({ size }) {
   return <img srcSet="/icon/Location.svg 2x" width={size} height={size} />;
 }
+
+export function CouponCode({ size }) {
+  return <img srcSet="/icon/CouponCode.svg 2x" width={size} height={size} />;
+}
+
+export function Search({ size }) {
+  return <img srcSet="/icon/Search.svg 2x" width={size} height={size} />;
+}
+
+export function SeaFood({ size }) {
+  return <img srcSet="/icon/SeaFood.svg 2x" width={size} height={size} />;
+}
+
+export function Baked({ size }) {
+  return <img srcSet="/icon/Baked.svg 2x" width={size} height={size} />;
+}
+
+export function Burger({ size }) {
+  return <img srcSet="/icon/Burger.svg 2x" width={size} height={size} />;
+}
+
+export function Chicken({ size }) {
+  return <img srcSet="/icon/Chicken.svg 2x" width={size} height={size} />;
+}
+
+export function Beverage({ size }) {
+  return <img srcSet="/icon/Beverage.svg 2x" width={size} height={size} />;
+}
+
+export function Pizza({ size }) {
+  return <img srcSet="/icon/Pizza.svg 2x" width={size} height={size} />;
+}

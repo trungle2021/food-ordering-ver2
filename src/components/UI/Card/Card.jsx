@@ -1,6 +1,6 @@
 import React from "react";
-const Card = (props) => {
-  return <div className={`${props.className}`}>{props.children}</div>;
+const Card = ({ className, children }) => {
+  return <div className={`${className} rounded-2xl h-full`}>{children}</div>;
 };
 
 export default Card;

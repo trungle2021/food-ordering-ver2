@@ -7,11 +7,10 @@ function App() {
   return (
     <div className="flex w-full">
       <AppContextProvider>
-        <LeftSideBar sideBarItems={<SideBarItems/>}/>
-        <MainContent  className="flex-grow"/>
-        <RightSideBar />
+        <LeftSideBar sideBarItems={<SideBarItems />} />
       </AppContextProvider>
-
+      <MainContent className="flex-grow" />
+      <RightSideBar />
     </div>
   );
 }
