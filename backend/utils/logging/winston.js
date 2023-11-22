@@ -15,9 +15,7 @@ module.exports = winston.createLogger({
     winston.format.printf(
       log => {
         // nếu log là error hiển thị stack trace còn không hiển thị message của log 
-        if(log.stack){
-            return `[${log.timestamp}] [${log.level}] ${log.stack}`
-        };
+        if(log.stack) return `[${log.timestamp}] [${log.level}] ${log.stack}`;
         return  `[${log.timestamp}] [${log.level}] ${log.message}`;
       },
     ),
@@ -28,7 +26,7 @@ module.exports = winston.createLogger({
     // Thiết lập ghi các errors vào file 
     new winston.transports.File({
       level: 'error',
-      filename: path.join(__dirname, 'errors.log')
+      filename: path.join(__dirname, './../../','log','errors.log')
     })
   ],
 })

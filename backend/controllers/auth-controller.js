@@ -4,7 +4,14 @@ const AppError = require("./../utils/error_handler/app-error");
 const signUp = async (req, res,next) => {
   try {
     const data = req.body;
-    await UserService.createUser(data);
+    const newUser = {
+      "name": data.name,
+      "password": data.password,
+      "email": data.email,
+      "balance": data.balance,
+      "avatar": data.avatar,
+    }
+    await UserService.createUser(newUser);
     res.status(201).json({
       status: "success",
       message: "User created successfully",
