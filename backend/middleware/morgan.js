@@ -6,9 +6,9 @@ const LOG_SIZE = process.env.LOG_SIZE;
 const LOG_INTERVAL = process.env.LOG_INTERVAL;
 const LOG_FOLDER_NAME = process.env.LOG_FOLDER_NAME;
 const LOG_FORMAT_COMPRESS = process.env.LOG_FORMAT_COMPRESS;
-const LOG_SYSTEM_FILE_NAME = process.env.LOG_SYSTEM_FILE_NAME;
+const LOG_ACCESS_FILE_NAME = process.env.LOG_ACCESS_FILE_NAME;
 
-const rfsStream = rfs.createStream(LOG_SYSTEM_FILE_NAME, {
+const accessLog = rfs.createStream(LOG_ACCESS_FILE_NAME, {
   size: LOG_SIZE,
   interval: LOG_INTERVAL,
   path: path.join(__dirname, "./../", LOG_FOLDER_NAME),
@@ -16,7 +16,7 @@ const rfsStream = rfs.createStream(LOG_SYSTEM_FILE_NAME, {
 });
 
 const morganMiddleware = isProduction
-  ? morgan("combined", { stream: rfsStream })
+  ? morgan("combined", { stream: accessLog })
   : morgan("dev");
 
 module.exports = morganMiddleware;

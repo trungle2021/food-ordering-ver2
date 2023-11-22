@@ -24,7 +24,7 @@ const register = async (userData) => {
 
 const login = async (email, password) => {
   try {
-    const userValid = await UserService.findOne({ email, password });
+    const userValid = await UserService.findOneUser({ email, password });
     if (!userValid) {
       return null;
     }

@@ -12,15 +12,12 @@ const getAllUsers = async () => {
 };
 
 const findOneUser = async (filter) => {
-  try {
-    const user = await User.find(filter);
+    const user = await User.findOne(filter);
+    console.log(user);
     if (!user) {
-      throw new AppError("User not found", 401);
+      return null;
     }
     return user;
-  } catch (error) {
-    throw new AppError("Failed to retrieve users", 500);
-  }
 };
 
 const createUser = async (user) => {
@@ -33,5 +30,6 @@ const createUser = async (user) => {
 
 module.exports = {
   getAllUsers,
+  findOneUser,
   createUser,
 };

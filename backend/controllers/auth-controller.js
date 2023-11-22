@@ -23,11 +23,7 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      next(new AppError("Email and Password is required", 400));
-    }
     const token = await AuthService.login(email, password);
-    console.log(token);
     if (token) {
       res.status(200).json({
         status: "success",
