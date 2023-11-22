@@ -1,26 +1,52 @@
-const UserService = require("./../services/user-service");
 const AppError = require("./../utils/error_handler/app-error");
+const AuthService = require("./../services/auth-service");
 
-const signUp = async (req, res,next) => {
+const register = async (req, res, next) => {
   try {
-    const data = req.body;
-    const newUser = {
-      "name": data.name,
-      "password": data.password,
-      "email": data.email,
-      "balance": data.balance,
-      "avatar": data.avatar,
-    }
-    await UserService.createUser(newUser);
+    const userData = {
+      name: req.body.name,
+      password: req.body.password,
+      email: req.body.email,
+      balance: req.body.balance,
+      avatar: req.body.avatar,
+    };
+    const newUser = await AuthService.register(userData);
     res.status(201).json({
       status: "success",
-      message: "User created successfully",
+      data: newUser,
     });
   } catch (err) {
     next(new AppError(err.message, 409));
   }
 };
 
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      next(new AppError("Email and Password is required", 400));
+    }
+    const token = await AuthService.login(email, password);
+    console.log(token);
+    if (token) {
+      res.status(200).json({
+        status: "success",
+        data: {
+          token,
+        },
+      });
+    } else {
+      res.status(401).json({
+        status: "fail",
+        message: "Invalid email or password",
+      });
+    }
+  } catch (err) {
+    next(new AppError(err.message, 500));
+  }
+};
+
 module.exports = {
-  signUp,
+  register,
+  login,
 };
