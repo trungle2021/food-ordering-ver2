@@ -3,8 +3,9 @@ const AppError = require('./../utils/error_handler/app-error');
 const UserService = require('./../services/user-service');
 
 const getAllUsers = async (req,res,next) => {
+
     try{
-        const users = await UserService.getAllUsers();
+        const users = await UserService.getAll();
         return res.status(200).json({
             status: 'success',
             data: users
@@ -17,7 +18,7 @@ const getAllUsers = async (req,res,next) => {
 const getUser = async (req, res, next) => {
     const {id} = req.params.id;
     try{
-        const user = await UserService.findOneUser(id);
+        const user = await UserService.findOne(id);
         if(!user){
             return res.status(404).json({
                 status: 'fail',

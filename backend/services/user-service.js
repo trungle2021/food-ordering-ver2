@@ -2,7 +2,7 @@ const AppError = require("../utils/error_handler/app-error");
 const User = require("./../models/user-model");
 const logger = require("./../utils/logging/winston");
 
-const getAllUsers = async () => {
+const getAll = async () => {
   try {
     return await User.find({});
   } catch (error) {
@@ -11,16 +11,23 @@ const getAllUsers = async () => {
   }
 };
 
-const findOneUser = async (filter) => {
+const findOne = async (filter) => {
     const user = await User.findOne(filter);
-    console.log(user);
     if (!user) {
       return null;
     }
     return user;
 };
 
-const createUser = async (user) => {
+const findById = async (id) => {
+  const user = await User.findById(id);
+  if (!user) {
+    return null;
+  }
+  return user;
+};
+
+const create = async (user) => {
   try {
     return await User.create(user);
   } catch (error) {
@@ -29,7 +36,8 @@ const createUser = async (user) => {
 };
 
 module.exports = {
-  getAllUsers,
-  findOneUser,
-  createUser,
+  getAll,
+  findById,
+  findOne,
+  create,
 };

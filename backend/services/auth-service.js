@@ -5,7 +5,7 @@ const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION;
 
 const register = async (userData) => {
   try {
-    const newUser = await UserService.createUser(userData);
+    const newUser = await UserService.create(userData);
     const payload = {
       id: newUser._id,
     };
@@ -24,7 +24,7 @@ const register = async (userData) => {
 
 const login = async (email, password) => {
   try {
-    const userValid = await UserService.findOneUser({ email, password });
+    const userValid = await UserService.findOne({ email, password });
     if (!userValid) {
       return null;
     }
