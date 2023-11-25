@@ -12,11 +12,16 @@ const accessLog = rfs.createStream(LOG_ACCESS_FILE_NAME, {
   size: LOG_SIZE,
   interval: LOG_INTERVAL,
   path: path.join(__dirname, "./../", LOG_FOLDER_NAME),
-  compress: LOG_FORMAT_COMPRESS,
+  // compress: LOG_FORMAT_COMPRESS,
 });
 
-const morganMiddleware = isProduction
-  ? morgan("combined", { stream: accessLog })
-  : morgan("dev");
+// const morganMiddleware = isProduction
+//   ? morgan("dev", { stream: accessLog })
+//   : morgan("dev");
+
+morgan.format('myFormat', '[:date[iso]] :method :url :status :response-time ms - :res[content-length]');
+const morganMiddleware = morgan("myFormat", { stream: accessLog })
+
+
 
 module.exports = morganMiddleware;

@@ -16,11 +16,6 @@ app.use(morganMiddleware)
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-    console.log(req.url.replace('/api/v1',''))
-    console.log(req.header("authorization"));
-    next()
-})
 //router
 app.use(SwaggerRouter)
 app.use(jwtFilterHandler)

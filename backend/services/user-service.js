@@ -11,33 +11,25 @@ const getAll = async () => {
   }
 };
 
-const findOne = async (filter) => {
-    const user = await User.findOne(filter);
-    if (!user) {
-      return null;
-    }
-    return user;
-};
+  const findOneById = async (id) => {
+      const user = await User.findById(id);
+      if (!user) {
+        return null;
+      }
+      return user;
+  };
 
-const findById = async (id) => {
-  const user = await User.findById(id);
-  if (!user) {
-    return null;
-  }
-  return user;
-};
 
 const create = async (user) => {
   try {
     return await User.create(user);
   } catch (error) {
-    throw new AppError("Failed to create users");
+    throw new AppError(error);
   }
 };
 
 module.exports = {
   getAll,
-  findById,
-  findOne,
+  findOneById,
   create,
 };

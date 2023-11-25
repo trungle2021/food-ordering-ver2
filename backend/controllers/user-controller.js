@@ -15,10 +15,10 @@ const getAllUsers = async (req,res,next) => {
     }
 }
 
-const getUser = async (req, res, next) => {
+const getUserById = async (req, res, next) => {
     const {id} = req.params.id;
     try{
-        const user = await UserService.findOne(id);
+        const user = await UserService.findOneById(id);
         if(!user){
             return res.status(404).json({
                 status: 'fail',
@@ -35,5 +35,5 @@ const getUser = async (req, res, next) => {
 }
 module.exports = {
     getAllUsers,
-    getUser
+    getUserById
 }

@@ -16,7 +16,7 @@ const register = async (req, res, next) => {
       data: newUser,
     });
   } catch (err) {
-    next(new AppError(err.message, 409));
+    next(new AppError(err.message, err.status));
   }
 };
 

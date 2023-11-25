@@ -24,12 +24,18 @@ const register = async (userData) => {
 
 const login = async (email, password) => {
   try {
-    const userValid = await UserService.findOne({ email, password });
-    if (!userValid) {
+    const user = await UserService.findOne({ email });
+
+    if (!user) {
       return null;
     }
+    const passwordIsValid = await user.comparePassword(password, user.password)
+    if(!passwordIsValid) {
+      return null;
+    }
+
     const payload = {
-      id: userValid._id,
+      id: user._id,
     };
     const options = {
       expiresIn: accessTokenExpired,

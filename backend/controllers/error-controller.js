@@ -28,14 +28,24 @@ const sendErrorProduction =  (err,res) => {
 
 
 const ErrorController = (err,req,res,next) => {
+    let error = {...err}
+    
     err.statusCode = err.statusCode || 500
     err.status = err.status || 'error'
+
+    if(err.name === 'CastError') {
+        err.message = `Invalid ${err.path} : ${err.value}.`
+        err.status = 400;
+    }
+
+
 
     if (process.env.NODE_ENV === 'development'){
         sendErrorDev(err,res)
     }else if (process.env.NODE_ENV === 'production'){
         sendErrorProduction(err,res)
     }
+
    
 }
 
