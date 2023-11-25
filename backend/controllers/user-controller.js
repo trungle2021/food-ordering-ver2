@@ -1,39 +1,31 @@
-const AppError = require('./../utils/error_handler/app-error');
+const catchAsync = require('./../utils/catch_async_handler/catch-async-handler')
 
-const UserService = require('./../services/user-service');
+const UserService = require('./../services/user-service')
 
-const getAllUsers = async (req,res,next) => {
+const getAllUsers = catchAsync(async (req, res) => {
+  const users = await UserService.getAll()
+  return res.status(200).json({
+    status: 'success',
+    data: users
+  })
+})
 
-    try{
-        const users = await UserService.getAll();
-        return res.status(200).json({
-            status: 'success',
-            data: users
-        });
-    }catch(err){
-        next(new AppError(err.message,500))
-    }
-}
+const getUserById = catchAsync(async (req, res, next) => {
+  const { id } = req.params.id
+  const user = await UserService.findOneById(id)
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      data: null
+    })
+  }
+  return res.status(200).json({
+    status: 'success',
+    data: user
+  })
+})
 
-const getUserById = async (req, res, next) => {
-    const {id} = req.params.id;
-    try{
-        const user = await UserService.findOneById(id);
-        if(!user){
-            return res.status(404).json({
-                status: 'fail',
-                data: null
-            });
-        }
-        return res.status(200).json({
-            status: 'success',
-            data: user
-        });
-    }catch(err){
-        next(new AppError(err.message,500))
-    }
-}
 module.exports = {
-    getAllUsers,
-    getUserById
+  getAllUsers,
+  getUserById
 }

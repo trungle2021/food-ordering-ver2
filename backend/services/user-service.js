@@ -1,35 +1,29 @@
-const AppError = require("../utils/error_handler/app-error");
-const User = require("./../models/user-model");
-const logger = require("./../utils/logging/winston");
+const AppError = require('../utils/error_handler/app-error')
+const User = require('./../models/user-model')
+const catchAsync = require('./../utils/catch_async_handler/catch-async-handler')
 
-const getAll = async () => {
-  try {
-    return await User.find({});
-  } catch (error) {
-    logger.error(new AppError(error));
-    throw new AppError("Failed to retrieve users", 500);
+const getAll = catchAsync(async () => {
+  return await User.find({})
+})
+
+const findOneById = async (id) => {
+  const user = await User.findById(id)
+  if (!user) {
+    return null
   }
-};
-
-  const findOneById = async (id) => {
-      const user = await User.findById(id);
-      if (!user) {
-        return null;
-      }
-      return user;
-  };
-
+  return user
+}
 
 const create = async (user) => {
   try {
-    return await User.create(user);
+    return await User.create(user)
   } catch (error) {
-    throw new AppError(error);
+    throw new AppError(error)
   }
-};
+}
 
 module.exports = {
   getAll,
   findOneById,
-  create,
-};
+  create
+}
