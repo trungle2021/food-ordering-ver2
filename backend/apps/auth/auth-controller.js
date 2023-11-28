@@ -1,7 +1,7 @@
-const AuthService = require('./../services/auth-service')
-const catchAsync = require('./../utils/catch_async_handler/catch-async-handler')
+const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
+const AuthService = require('./auth-service')
 
-const register = catchAsync(async (req, res) => {
+const register = catchAsyncHandler(async (req, res, next) => {
   const userData = {
     name: req.body.name,
     password: req.body.password,
@@ -16,7 +16,7 @@ const register = catchAsync(async (req, res) => {
   })
 })
 
-const login = catchAsync(async (req, res) => {
+const login = catchAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body
   const token = await AuthService.login(email, password)
   if (token) {

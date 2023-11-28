@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 const whitelist = require('./../utils/whitelist/whitelist-url')
-const UserService = require('./../services/user-service')
-const AppError = require('../utils/error_handler/app-error')
+const UserService = require('./../apps/user/user-service')
+const AppError = require('./../apps/error/app-error')
 const secretKey = process.env.JWT_SECRET_KEY
-const catchAsync = require('./../utils/catch_async_handler/catch-async-handler')
+const catchAsyncHandler = require('../utils/catch-async/catch-async-handler')
 
-const jwtFilterHandler = catchAsync(async (req, res, next) => {
-  const currentUrl = req.url.replace('/api/v1', '')
+const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
+  const currentUrl = req.url.substring(7, req.url.length)
   const authHeader = req.header('authorization')
 
   for (const url of whitelist) {
@@ -21,7 +21,7 @@ const jwtFilterHandler = catchAsync(async (req, res, next) => {
   const token = extractToken(authHeader)
   const decodePayload = await promisify(jwt.verify)(token, secretKey)
   const { id } = decodePayload
-  const user = await UserService.findOneById(id)
+  const user = await UserService.getUser({ _id: id })
   if (!user) {
     throw new AppError('Invalid credentials', 401)
   }

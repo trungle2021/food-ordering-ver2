@@ -1,9 +1,13 @@
 const express = require('express')
 const apiRoute = express()
-const userRouter = require('./user-router')
-const authRouter = require('./auth-router')
+const UserRouter = require('./../apps/user/user-router')
+const MealRouter = require('./../apps/meal/meal-router')
+const CategoryRouter = require('./../apps/category/category-router')
+const AuthRouter = require('./../apps/auth/auth-router')
 
-apiRoute.use('/users', userRouter)
-apiRoute.use('/auth', authRouter)
+apiRoute.use('/meals', MealRouter)
+apiRoute.use('/categories', CategoryRouter)
+apiRoute.use('/users', UserRouter)
+apiRoute.use('/auth', AuthRouter)
 
 module.exports = apiRoute

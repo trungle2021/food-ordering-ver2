@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const AuthController = require('./../controllers/auth-controller')
-const AppError = require('./../utils/error_handler/app-error')
+const AuthController = require('./../auth/auth-controller')
+const AppError = require('../error/app-error')
 
 const validBodyLoginHandler = (req, res, next) => {
   const { email, password } = req.body

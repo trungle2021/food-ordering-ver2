@@ -1,11 +1,10 @@
-const UserService = require('./../services/user-service')
+const UserService = require('../user/user-service')
 const jwt = require('jsonwebtoken')
 const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION
-const catchAsync = require('./../utils/catch_async_handler/catch-async-handler')
 
-const register = catchAsync(async (userData) => {
-  const newUser = await UserService.create(userData)
+const register = async (userData) => {
+  const newUser = await UserService.createUser(userData)
   const payload = {
     id: newUser._id
   }
@@ -17,15 +16,15 @@ const register = catchAsync(async (userData) => {
     access_token: accessToken,
     user: newUser._doc
   }
-})
+}
 
-const login = catchAsync(async (email, password) => {
-  const user = await UserService.findOne({ email })
-
+const login = async (email, password) => {
+  const user = await UserService.getUser({ email })
   if (!user) {
     return null
   }
   const passwordIsValid = await user.comparePassword(password, user.password)
+
   if (!passwordIsValid) {
     return null
   }
@@ -37,10 +36,9 @@ const login = catchAsync(async (email, password) => {
     expiresIn: accessTokenExpired
   }
   const accessToken = jwt.sign(payload, secretKey, options)
-  return {
-    access_token: accessToken
-  }
-})
+  console.log(accessToken)
+  return accessToken
+}
 
 module.exports = {
   register,

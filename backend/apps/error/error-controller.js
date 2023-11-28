@@ -1,8 +1,9 @@
-const logger = require('./../utils/logging/winston')
+const logger = require('../../utils/logging/winston')
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
+    name: err.name,
     error: err,
     message: err.message,
     stack: err.stack
@@ -27,21 +28,29 @@ const sendErrorProduction = (err, res) => {
 }
 
 const ErrorController = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500
   err.status = err.status || 'error'
 
-  if (err.name === 'ValidationError') {
-    // Handle validation errors
-    res.status(400).json({ error: err.message })
-  } else if (err.name === 'CastError') {
-    // Handle cast errors
-    res.status(400).json({ error: 'Invalid data' })
-  } else if (err.name === 'MongoNetworkError') {
-    // Handle MongoDB network errors
-    res.status(503).json({ error: 'Error connecting to the database' })
-  } else if (err.code === 11000) {
-    // Handle duplicate key errors
-    res.status(409).json({ error: 'Duplicate key error' })
+  switch (err.name) {
+    case 'ValidationError':
+      err.statusCode = 400
+      err.message = 'Error connecting to the database'
+      break
+    case 'CastError':
+      err.statusCode = 400
+      err.message = 'Invalid data'
+      break
+    case 'MongoNetworkError':
+      err.statusCode = 503
+      err.message = 'Error connecting to the database'
+      break
+    default:
+      if (err.code === 11000) {
+        err.statusCode = 409
+        err.name = 'Duplicate Key Error'
+      } else {
+        err.statusCode = err.statusCode || 500
+      }
+      break
   }
 
   if (process.env.NODE_ENV === 'development') {

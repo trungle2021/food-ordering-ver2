@@ -1,6 +1,6 @@
 module.exports = [
-    '/auth/login',
-    '/auth/logout',
-    '/auth/register',
-    // '/users'
+  '/auth/login',
+  '/auth/logout',
+  '/auth/register'
+  // '/users'
 ]

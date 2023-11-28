@@ -1,28 +1,26 @@
-const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
-const app = require("./app");
-const mongoose = require("mongoose");
-
-console.log(process.env.NODE_ENV)
+const dotenv = require('dotenv')
+dotenv.config({ path: './config.env' })
+const app = require('./app')
+const mongoose = require('mongoose')
 
 const DB = process.env.DATABASE.replace(
-  "<DATABASE_PASSWORD>",
+  '<DATABASE_PASSWORD>',
   process.env.DATABASE_PASSWORD
-).replace("<DATABASE_NAME>", process.env.DATABASE_NAME);
+).replace('<DATABASE_NAME>', process.env.DATABASE_NAME)
 
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
   .then(() => {
-    console.log("Database connection successfully");
+    console.log('Database connection successfully')
   })
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(err))
 
-const PORT = process.env.PORT || 1338;
+const PORT = process.env.PORT || 1338
 app.listen(PORT, () => {
-  console.log("Listening on port: " + PORT);
-});
+  console.log('Listening on port: ' + PORT)
+})
