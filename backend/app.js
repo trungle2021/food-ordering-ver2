@@ -5,13 +5,14 @@ const path = require('path')
 const morganMiddleware = require('./middleware/morgan')
 const SwaggerRouter = require('./utils/swagger/swagger')
 const apiRouter = require('./routes/router')
+const cors = require('cors');
 const JWT_ENABLE = process.env.JWT_ENABLE
 const jwtFilterHandler = require('./middleware/jwt-filter')
 const ErrorController = require('./apps/error/error-controller')
 const AppError = require('./apps/error/app-error')
 
 // config middleware
-
+app.use(cors())
 app.use(morganMiddleware)
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
