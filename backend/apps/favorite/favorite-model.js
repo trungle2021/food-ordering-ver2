@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const mealSchema = new mongoose.Schema({
+const favoriteSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Name is required']
@@ -38,6 +38,6 @@ const mealSchema = new mongoose.Schema({
   }
 })
 
-const Meal = mongoose.model('Meal', mealSchema)
+const Favorite = mongoose.model('Favorite', favoriteSchema)
 
-module.exports = Meal
+module.exports = Favorite

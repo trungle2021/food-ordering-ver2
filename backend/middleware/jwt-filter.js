@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 const whitelist = require('./../utils/whitelist/whitelist-url')
-const UserService = require('./../apps/user/user-service')
+const UserService = require('../apps/user/user-address-service')
 const AppError = require('./../apps/error/app-error')
 const secretKey = process.env.JWT_SECRET_KEY
 const catchAsyncHandler = require('../utils/catch-async/catch-async-handler')

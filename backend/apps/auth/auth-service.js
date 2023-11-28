@@ -1,4 +1,4 @@
-const UserService = require('../user/user-service')
+const UserService = require('../user/user-address-service')
 const jwt = require('jsonwebtoken')
 const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION

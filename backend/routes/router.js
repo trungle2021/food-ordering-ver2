@@ -1,6 +1,6 @@
 const express = require('express')
 const apiRoute = express()
-const UserRouter = require('./../apps/user/user-router')
+const UserRouter = require('../apps/user/user-address-router')
 const MealRouter = require('./../apps/meal/meal-router')
 const CategoryRouter = require('./../apps/category/category-router')
 const AuthRouter = require('./../apps/auth/auth-router')
