@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const OrderDetailController = require('../order_detail/order-detail-controller')
+const OrderDetailController = require('./order-detail-controller')
 
 router.route('/:id')
   .get(OrderDetailController.getOrderDetail)
