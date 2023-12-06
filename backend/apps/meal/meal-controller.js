@@ -11,7 +11,7 @@ const getMeals = catchAsyncHandler(async (req, res) => {
 })
 
 const getMeal = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params.id
+  const { id } = req.params
   const meal = await MealService.getMeal(id)
   if (!meal) {
     return res.status(404).json({

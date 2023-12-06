@@ -5,7 +5,7 @@ const getCategories = async () => {
 }
 
 const getCategory = async (id) => {
-  return await Category.findById(id)
+  return await Category.findById(id).populate({ path: 'meals', select: 'name -_id' })
 }
 
 const createCategory = async (category) => {
