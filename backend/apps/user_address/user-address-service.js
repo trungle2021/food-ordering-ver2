@@ -1,7 +1,7 @@
 const UserAddress = require('./user-address-model')
 
-const getUserAddresses = async () => {
-  return await UserAddress.find({}).populate({ path: 'user', select: 'name -_id' })
+const getUserAddresses = async (filter) => {
+  return await UserAddress.find(filter).populate({ path: 'user', select: 'name -_id' })
 }
 
 const getUserAddress = async (filter) => {
@@ -15,8 +15,7 @@ const createUserAddress = async (user) => {
 const updateUserAddress = async (filter, data, option) => {
   const { user } = data
   // Find and update the document(s) with is_default_address: true and matching user
-  const oldUserAddress = await UserAddress.updateOne({ is_default_address: true, user }, { is_default_address: false }, { new: true })
-
+  await UserAddress.updateOne({ is_default_address: true, user }, { is_default_address: false })
   // Update the document(s) that match the filter with the provided data and options
   return await UserAddress.updateOne(filter, data, option)
 }

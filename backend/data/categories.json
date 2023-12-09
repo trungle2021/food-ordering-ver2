@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Baked",
+        "image": "/icons/Baked.svg"
+    },
+    {
+        "name": "Beverage",
+        "image": "/icons/Beverage.svg"
+    },
+    {
+        "name": "Burger",
+        "image": "/icons/Burger.svg"
+    },
+    {
+        "name": "Cake",
+        "image": "/icons/Cake.svg"
+    },
+    {
+        "name": "Chicken",
+        "image": "/icons/Chicken.svg"
+    },
+    {
+        "name": "Egg",
+        "image": "/icons/Egg.svg"
+    },
+    {
+        "name": "Meat",
+        "image": "/icons/Meat.svg"
+    },
+    {
+        "name": "Noodles",
+        "image": "/icons/Noodles.svg"
+    },
+    {
+        "name": "Pasta",
+        "image": "/icons/Pasta.svg"
+    },
+    {
+        "name": "Pizza",
+        "image": "/icons/Pizza.svg"
+    },
+    {
+        "name": "Salad",
+        "image": "/icons/Salad.svg"
+    },
+    {
+        "name": "Sandwich",
+        "image": "/icons/Sandwich.svg"
+    },
+    {
+        "name": "SeaFood",
+        "image": "/icons/SeaFood.svg"
+    },
+    {
+        "name": "Rice",
+        "image": "/icons/Rice.svg"
+    }
+]

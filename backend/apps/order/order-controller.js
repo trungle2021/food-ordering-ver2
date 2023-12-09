@@ -25,22 +25,20 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const createOrders = catchAsyncHandler(async (req, res, next) => {
-  const listOrders = req.body
-  const orders = await OrderService.createOrders(listOrders)
-  return res.status(200).json({
+const createOrder = catchAsyncHandler(async (req, res, next) => {
+  const order = req.body
+  const orderCreated = await OrderService.createOrder(order)
+  res.status(200).json({
     status: 'success',
-    data: orders
+    data: orderCreated
   })
 })
-const createOrder = catchAsyncHandler(async (req, res, next) => {})
 const updateOrder = catchAsyncHandler(async (req, res, next) => {})
 const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
 
 module.exports = {
   getOrders,
   getOrder,
-  createOrders,
   createOrder,
   updateOrder,
   deleteOrder

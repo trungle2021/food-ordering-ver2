@@ -25,6 +25,21 @@ const getCategory = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const createCategories = catchAsyncHandler(async (req, res, next) => {
+  const body = req.body
+  const categories = await CategoryService.createCategories(body)
+  if (!categories) {
+    return res.status(404).json({
+      status: 'fail',
+      data: null
+    })
+  }
+  return res.status(200).json({
+    status: 'success',
+    data: categories
+  })
+})
+
 const createCategory = catchAsyncHandler(async (req, res, next) => {
   const body = req.body
   const category = await CategoryService.createCategory(body)
@@ -50,6 +65,7 @@ const deleteCategory = catchAsyncHandler(async (req, res, next) => {})
 module.exports = {
   getCategories,
   getCategory,
+  createCategories,
   createCategory,
   updateCategory,
   deleteCategory

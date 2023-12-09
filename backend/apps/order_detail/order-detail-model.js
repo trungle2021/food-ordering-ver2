@@ -1,33 +1,30 @@
 const mongoose = require('mongoose')
 
 const orderdetailSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Name is required']
-  },
-  price: {
-    type: Number,
-    required: [true, 'Price is required']
-  },
-  description: {
-    type: String,
-    required: [true, 'Description is required']
-  },
-  image: {
-    type: String,
-    required: [true, 'Image is required']
-  },
-  is_active: {
-    type: Boolean,
-    default: false
-  },
-  discount: {
-    type: Number,
-    default: 0
-  },
-  category: {
+  order: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
+    ref: 'Order',
+    required: [true, 'Order ID is required']
+  },
+  dish: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Dish',
+    required: [true, 'Dish ID is required']
+  },
+  quantity: {
+    type: Number,
+    required: [true, 'Dish Quantity is required'],
+    min: 0
+  },
+  unit_price: {
+    type: Number,
+    required: [true, 'Unit Price is required'],
+    min: 0
+  },
+  total_price: {
+    type: Number,
+    required: [true, 'Total Price is required'],
+    min: 0
   },
   created_at: {
     type: Date,

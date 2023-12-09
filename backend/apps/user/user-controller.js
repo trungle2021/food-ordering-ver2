@@ -11,7 +11,7 @@ const getUsers = catchAsyncHandler(async (req, res) => {
 })
 
 const getUser = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params.id
+  const { id } = req.params
   const user = await UserService.getUser({ _id: id })
   if (!user) {
     return res.status(404).json({

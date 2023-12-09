@@ -13,8 +13,14 @@ const getOrderDetail = async (id) => {
   return orderdetail
 }
 
-const createOrderDetails = async (orderdetails) => {
-  return await OrderDetail.insertMany(orderdetails)
+const createOrderDetails = async (orderId, orderDetails) => {
+  const orderDetailModified = orderDetails.forEach(item => {
+    return {
+      order: orderId,
+      ...item
+    }
+  })
+  return await OrderDetail.insertMany(orderDetailModified)
 }
 
 const createOrderDetail = async (orderdetail) => {

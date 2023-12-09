@@ -7,6 +7,9 @@ router.route('/:id')
   .put(UserAddressController.updateUserAddress)
   .delete(UserAddressController.deleteUserAddress)
 
+router.route('/users/:id')
+  .get(UserAddressController.getUserAddressesByUserID)
+
 router.route('/')
   .get(UserAddressController.getUserAddresses)
   .post(UserAddressController.createUserAddress)

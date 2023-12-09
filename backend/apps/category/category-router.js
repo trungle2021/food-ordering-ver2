@@ -7,6 +7,9 @@ router.route('/:id')
   .get(CategoryController.deleteCategory)
   .put(CategoryController.updateCategory)
 
+router.route('/bulk')
+  .post(CategoryController.createCategories)
+
 router.route('/')
   .get(CategoryController.getCategories)
   .post(CategoryController.createCategory)

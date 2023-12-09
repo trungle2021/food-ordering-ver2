@@ -7,9 +7,6 @@ router.route('/:id')
   .get(OrderController.deleteOrder)
   .put(OrderController.updateOrder)
 
-router.route('/bulk')
-  .post(OrderController.createOrders)
-
 router.route('/')
   .get(OrderController.getOrders)
   .post(OrderController.createOrder)

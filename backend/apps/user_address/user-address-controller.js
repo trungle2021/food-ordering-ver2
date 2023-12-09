@@ -3,7 +3,16 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const UserAddressService = require('./user-address-service')
 
 const getUserAddresses = catchAsyncHandler(async (req, res) => {
-  const userAddresses = await UserAddressService.getUserAddresses()
+  const userAddresses = await UserAddressService.getUserAddresses({})
+  return res.status(200).json({
+    status: 'success',
+    data: userAddresses
+  })
+})
+
+const getUserAddressesByUserID = catchAsyncHandler(async (req, res) => {
+  const { id } = req.params
+  const userAddresses = await UserAddressService.getUserAddresses({ user: id })
   return res.status(200).json({
     status: 'success',
     data: userAddresses
@@ -67,6 +76,7 @@ const deleteUserAddress = catchAsyncHandler(async (req, res, next) => {
 
 module.exports = {
   getUserAddresses,
+  getUserAddressesByUserID,
   getUserAddress,
   createUserAddress,
   updateUserAddress,

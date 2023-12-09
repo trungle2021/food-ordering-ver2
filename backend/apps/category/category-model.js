@@ -12,9 +12,6 @@ const categorySchema = new mongoose.Schema({
   }
 })
 
-// Tạo một chỉ mục riêng biệt cho trường name
-// categorySchema.index({ name: 1 }, { unique: true })
-
 const Category = mongoose.model('Category', categorySchema)
 
 module.exports = Category
