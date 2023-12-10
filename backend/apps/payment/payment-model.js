@@ -1,3 +1,3 @@
-class Payment {
-    constructor()
-}
+// class Payment {
+//     constructor()
+// }

@@ -9,7 +9,7 @@ const getTransaction = async () => {
 }
 
 const createTransaction = async (transaction) => {
-
+  return await Transaction.create(transaction)
 }
 
 const updateTransaction = async (id, newTransaction) => {

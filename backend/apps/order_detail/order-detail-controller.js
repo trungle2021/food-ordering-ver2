@@ -11,7 +11,7 @@ const getOrderDetails = catchAsyncHandler(async (req, res) => {
 })
 
 const getOrderDetail = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params.id
+  const { id } = req.params
   const orderdetail = await OrderDetailService.getOrderDetail(id)
   if (!orderdetail) {
     return res.status(404).json({
