@@ -1,43 +1,27 @@
 const mongoose = require('mongoose')
 
+// Define the coupon schema
 const couponSchema = new mongoose.Schema({
-  name: {
+  code: {
     type: String,
-    required: [true, 'Name is required']
-  },
-  price: {
-    type: Number,
-    required: [true, 'Price is required']
-  },
-  description: {
-    type: String,
-    required: [true, 'Description is required']
-  },
-  image: {
-    type: String,
-    required: [true, 'Image is required']
-  },
-  is_active: {
-    type: Boolean,
-    default: false
+    required: true,
+    unique: true
   },
   discount: {
     type: Number,
-    default: 0
+    required: true
   },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  },
-  created_at: {
+  expirationDate: {
     type: Date,
-    default: Date.now()
+    required: true
   },
-  updated_at: {
-    type: Date
+  isActive: {
+    type: Boolean,
+    default: true
   }
 })
 
+// Create the Coupon model
 const Coupon = mongoose.model('Coupon', couponSchema)
 
 module.exports = Coupon

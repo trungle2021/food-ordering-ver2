@@ -22,7 +22,6 @@ const userAddressSchema = new mongoose.Schema({
     type: Date,
     default: null
   }
-
 })
 
 const UserAddress = mongoose.model('UserAddress', userAddressSchema)
