@@ -18,11 +18,10 @@ const createOrderDetails = async (orderId, orderDetails, options) => {
     return {
       order: orderId,
       dish: item.dish_id,
-      quantity: item.quantity
+      quantity: item.quantity,
+      price: item.price
     }
   })
-
-  console.log(orderDetailModified)
 
   if (options) {
     return await OrderDetail.insertMany(orderDetailModified, options)

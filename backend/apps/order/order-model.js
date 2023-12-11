@@ -14,17 +14,24 @@ const orderSchema = new mongoose.Schema({
     require: [true, 'Order Status is required'],
     default: orderStatus.PENDING
   },
-  payment_method: {
-    type: String,
-    enum: Object.values(paymentMethod),
-    require: [true, 'Payment Method is required'],
-    default: paymentMethod.NULL
-  },
   payment_status: {
     type: String,
     enum: Object.values(paymentStatus),
     require: [true, 'Payment Status is required'],
     default: paymentStatus.PENDING
+  },
+  payment_method: {
+    type: String,
+    validate: {
+      validator: (value) => {
+        if (value === null) {
+          return true
+        }
+        return Object.values(paymentMethod).includes(value)
+      },
+      message: 'Invalid Payment Method'
+    },
+    default: null
   },
   shipping_address: {
     type: String,

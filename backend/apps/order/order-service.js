@@ -41,6 +41,10 @@ const updateOrder = async (order) => {
 
 }
 
+const checkOut = async () => {
+
+}
+
 const deleteOrder = async (order) => {
 
 }
@@ -48,6 +52,7 @@ const deleteOrder = async (order) => {
 module.exports = {
   getOrders,
   getOrder,
+  checkOut,
   createOrder,
   updateOrder,
   deleteOrder

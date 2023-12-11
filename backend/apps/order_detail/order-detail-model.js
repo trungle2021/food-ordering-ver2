@@ -11,9 +11,13 @@ const orderdetailSchema = new mongoose.Schema({
     ref: 'Dish',
     required: [true, 'Dish ID is required']
   },
+  price: {
+    type: Number,
+    require: [true, 'Dish price is required']
+  },
   quantity: {
     type: Number,
-    required: [true, 'Dish Quantity is required'],
+    required: [true, 'Dish quantity is required'],
     min: 0
   },
   created_at: {
