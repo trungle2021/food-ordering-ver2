@@ -16,16 +16,6 @@ const orderdetailSchema = new mongoose.Schema({
     required: [true, 'Dish Quantity is required'],
     min: 0
   },
-  unit_price: {
-    type: Number,
-    required: [true, 'Unit Price is required'],
-    min: 0
-  },
-  total_price: {
-    type: Number,
-    required: [true, 'Total Price is required'],
-    min: 0
-  },
   created_at: {
     type: Date,
     default: Date.now()

@@ -13,17 +13,25 @@ const getOrderDetail = async (id) => {
   return orderdetail
 }
 
-const createOrderDetails = async (orderId, orderDetails) => {
-  const orderDetailModified = orderDetails.forEach(item => {
+const createOrderDetails = async (orderId, orderDetails, options) => {
+  const orderDetailModified = orderDetails.map(item => {
     return {
       order: orderId,
-      ...item
+      dish: item.dish_id,
+      quantity: item.quantity
     }
   })
+
+  console.log(orderDetailModified)
+
+  if (options) {
+    return await OrderDetail.insertMany(orderDetailModified, options)
+  }
+
   return await OrderDetail.insertMany(orderDetailModified)
 }
 
-const createOrderDetail = async (orderdetail) => {
+const createOrderDetail = async (orderdetail, options) => {
   try {
     return await OrderDetail.create(orderdetail)
   } catch (error) {

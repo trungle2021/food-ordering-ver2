@@ -10,25 +10,29 @@ const orderSchema = new mongoose.Schema({
   },
   order_status: {
     type: String,
-    enum: Object.values(orderStatus)
+    enum: Object.values(orderStatus),
+    require: [true, 'Order Status is required'],
+    default: orderStatus.PENDING
   },
   payment_method: {
     type: String,
     enum: Object.values(paymentMethod),
-    require: [true, 'Payment Method is required']
+    require: [true, 'Payment Method is required'],
+    default: paymentMethod.NULL
   },
   payment_status: {
     type: String,
     enum: Object.values(paymentStatus),
-    require: [true, 'Payment Status is required']
+    require: [true, 'Payment Status is required'],
+    default: paymentStatus.PENDING
   },
   shipping_address: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserAddress'
+    type: String,
+    require: [true, 'Shipping Address is required']
   },
   order_subtotal: {
     type: Number,
-    default: 0,
+    require: [true, 'Order SubTotal is required'],
     min: 0
   },
   order_total: {

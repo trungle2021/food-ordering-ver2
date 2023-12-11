@@ -27,7 +27,21 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
 
 const createOrder = catchAsyncHandler(async (req, res, next) => {
   const body = req.body
-  const orderCreated = await OrderService.createOrder(body)
+
+  const userId = body.user_id
+  const orderDate = body.order_date
+  const orderSubtotal = body.order_subtotal
+  const shippingAddress = body.shipping_address
+  const orderItems = body.order_items
+
+  const order = {
+    user: userId,
+    order_date: orderDate,
+    order_subtotal: orderSubtotal,
+    shipping_address: shippingAddress
+  }
+
+  const orderCreated = await OrderService.createOrder(order, orderItems)
   res.status(200).json({
     status: 'success',
     data: orderCreated
