@@ -1,5 +1,5 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-
+const { validateOrderConfirmInput } = require('../order_detail/order-confirm-info-model')
 const OrderService = require('./order-service')
 
 const getOrders = catchAsyncHandler(async (req, res) => {
@@ -47,6 +47,18 @@ const createOrder = catchAsyncHandler(async (req, res, next) => {
     data: orderCreated
   })
 })
+
+const confirmOrder = catchAsyncHandler(async (req, res, next) => {
+  const body = req.body
+  const orderConfirmInfoValid = validateOrderConfirmInput(body)
+  const confirmOrder = await OrderService.confirmOrder(orderConfirmInfoValid)
+  if (confirmOrder) {
+    return res.status(200).json({
+      status: 'success',
+      
+    })
+  }
+})
 const updateOrder = catchAsyncHandler(async (req, res, next) => {})
 const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
 
@@ -54,6 +66,7 @@ module.exports = {
   getOrders,
   getOrder,
   createOrder,
+  confirmOrder,
   updateOrder,
   deleteOrder
 }

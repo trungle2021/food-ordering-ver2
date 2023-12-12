@@ -15,6 +15,19 @@ const updateBalanceForInternalAccount = async (payment) => {
   await UserService.updateUser({ _id: userId }, { balance: newBalance })
 }
 
+const isAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
+  const user = await UserService.getUser({ _id: userId })
+  if (!user) {
+    throw new AppError(`Cannot found User with id: ${userId}`, 404)
+  }
+  const currentBalance = user.balance
+  if (amountNeedToPurchase > currentBalance) {
+    return false
+  }
+  return true
+}
+
 module.exports = {
-  updateBalanceForInternalAccount
+  updateBalanceForInternalAccount,
+  isAccountEnoughBalance
 }

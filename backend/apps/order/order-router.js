@@ -7,6 +7,9 @@ router.route('/:id')
   .get(OrderController.deleteOrder)
   .put(OrderController.updateOrder)
 
+router.route('/confirm')
+  .post(OrderController.confirmOrder)
+
 router.route('/')
   .get(OrderController.getOrders)
   .post(OrderController.createOrder)
