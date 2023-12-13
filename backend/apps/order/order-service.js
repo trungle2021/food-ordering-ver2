@@ -3,9 +3,7 @@ const Order = require('./order-model')
 const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
-const { isAccountEnoughBalance, updateBalanceForInternalAccount } = require('../payment/payment-service')
-const { INTERNAL_ACCOUNT } = require('../../constant/payment-method')
-const { PAID } = require('../../constant/payment-status')
+const { processPayment } = require('../payment/payment-service')
 const { PROCESSING } = require('../../constant/order-status')
 
 const getOrders = async () => {
@@ -53,26 +51,19 @@ const confirmOrder = async (orderConfirmInfo) => {
   const session = await connection.startSession()
   try {
     session.startTransaction()
+
     const {
       order_id: orderId,
-      payment_method: paymentMethod,
       shipping_address: shippingAddress
     } = orderConfirmInfo
-
-    let paymentStatus = null
-    const isInternalAccountPayment = paymentMethod.toLowerCase() === INTERNAL_ACCOUNT.toLowerCase()
-    if (isInternalAccountPayment) {
-      if (!isAccountEnoughBalance()) {
-        throw new AppError('Account Balance is not enough', 402)
-      }
-      updateBalanceForInternalAccount()
-      paymentStatus = PAID
-    }
 
     const order = await Order.findById(orderId)
     if (!order) {
       throw new AppError('Order not found', 404)
     }
+
+    const paymentStatus = null
+    processPayment(orderConfirmInfo)
 
     order.order_status = PROCESSING
     order.shipping_address = shippingAddress
