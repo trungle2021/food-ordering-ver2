@@ -30,14 +30,14 @@ const createOrder = catchAsyncHandler(async (req, res, next) => {
 
   const userId = body.user_id
   const orderDate = body.order_date
-  const orderSubtotal = body.order_subtotal
+  const orderTotal = body.order_total
   const shippingAddress = body.shipping_address
   const orderItems = body.order_items
 
   const order = {
     user: userId,
     order_date: orderDate,
-    order_subtotal: orderSubtotal,
+    order_total: orderTotal,
     shipping_address: shippingAddress
   }
 

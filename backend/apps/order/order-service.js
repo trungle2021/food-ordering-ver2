@@ -3,7 +3,7 @@ const Order = require('./model/order-model')
 const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
-const { processPayment, updateBalanceForInternalAccount } = require('../payment/payment-service')
+const { processPayment, updateBalanceForInternalAccount, checkInternalAccountEnoughBalance } = require('../payment/payment-service')
 const { PROCESSING, CANCELED } = require('../../constant/order-status')
 const { PAID, REFUNDED } = require('../../constant/payment-status')
 const { WITHDRAW } = require('../../constant/payment-action')
@@ -29,11 +29,17 @@ const createOrder = async (order, orderItems) => {
     if (!user) {
       throw new AppError(`Cannot found User with ID: ${userId}`, 404)
     }
+    const isInternalAccountEnoughBalance = await checkInternalAccountEnoughBalance(userId, order.order_total)
+    console.log(isInternalAccountEnoughBalance)
+    if (!isInternalAccountEnoughBalance) {
+      throw new AppError('Account not enough balance', 422)
+    }
     const orderCreated = await Order.create([order], { session })
     await OrderDetailService.createOrderDetails(orderCreated[0]._id, orderItems, { session })
     await session.commitTransaction()
     return orderCreated
   } catch (error) {
+    console.log(error)
     await session.abortTransaction()
     throw new AppError(error)
   } finally {

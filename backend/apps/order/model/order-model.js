@@ -37,14 +37,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     require: [true, 'Shipping Address is required']
   },
-  order_subtotal: {
-    type: Number,
-    require: [true, 'Order SubTotal is required'],
-    min: 0
-  },
   order_total: {
     type: Number,
     default: 0,
+    required: [true, 'Order Total is required'],
     min: 0
   },
   order_date: {

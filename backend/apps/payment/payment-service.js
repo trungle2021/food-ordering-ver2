@@ -5,7 +5,7 @@ const OrderService = require('../order/order-service')
 const { DEPOSIT, WITHDRAW } = require('../../constant/payment-action')
 const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
   const { user_id: userId, amount, action } = paymentInternalAccountInfo
-
+  console.log(paymentInternalAccountInfo)
   const user = await UserService.getUser()
   if (!user) {
     throw new AppError(`Cannot found User with id: ${userId}`, 404)
@@ -23,16 +23,20 @@ const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
     default:
       throw new AppError(`Invalid action ${action}`, 500)
   }
+  console.log(newBalance)
 
   await UserService.updateUser({ _id: userId }, { balance: newBalance })
 }
 
-const isInternalAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
+const checkInternalAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError(`Cannot found User with id: ${userId}`, 404)
   }
   const currentBalance = user.balance
+
+  console.log('currentBalance', currentBalance)
+  console.log('amount', amountNeedToPurchase)
   if (amountNeedToPurchase > currentBalance) {
     return false
   }
@@ -60,7 +64,8 @@ const processPayment = async (orderConfirmInfo) => {
         amount,
         action
       }
-      if (!isInternalAccountEnoughBalance()) {
+      const isInternalAccountEnoughBalance = await checkInternalAccountEnoughBalance()
+      if (!isInternalAccountEnoughBalance) {
         throw new AppError('Account Balance is not enough', 402)
       }
       updateBalanceForInternalAccount(paymentInternalAccountInfo)
@@ -80,6 +85,6 @@ const processPayment = async (orderConfirmInfo) => {
 
 module.exports = {
   updateBalanceForInternalAccount,
-  isInternalAccountEnoughBalance,
+  checkInternalAccountEnoughBalance,
   processPayment
 }
