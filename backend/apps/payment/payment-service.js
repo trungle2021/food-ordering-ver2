@@ -1,22 +1,33 @@
 const UserService = require('../user/user-service')
 const AppError = require('../../apps/error/app-error')
-const { INTERNAL_ACCOUNT, CASH } = require('../../constant/payment-method')
-const { PAID } = require('../../constant/payment-status')
+const { INTERNAL_ACCOUNT, CASH, BANK_TRANSFER, CREDIT_CARD } = require('../../constant/payment-method')
+const OrderService = require('../order/order-service')
+const { DEPOSIT, WITHDRAW } = require('../../constant/payment-action')
 const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
-  const userId = paymentInternalAccountInfo.userId
-  const amount = paymentInternalAccountInfo.amount
+  const { user_id: userId, amount, action } = paymentInternalAccountInfo
 
   const user = await UserService.getUser()
   if (!user) {
     throw new AppError(`Cannot found User with id: ${userId}`, 404)
   }
+  let newBalance = null
 
   const currentBalance = user.balance
-  const newBalance = currentBalance - amount
+  switch (action) {
+    case DEPOSIT:
+      newBalance = currentBalance + amount
+      break
+    case WITHDRAW:
+      newBalance = currentBalance - amount
+      break
+    default:
+      throw new AppError(`Invalid action ${action}`, 500)
+  }
+
   await UserService.updateUser({ _id: userId }, { balance: newBalance })
 }
 
-const isAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
+const isInternalAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError(`Cannot found User with id: ${userId}`, 404)
@@ -29,34 +40,46 @@ const isAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
 }
 
 const processPayment = async (orderConfirmInfo) => {
-  let paymentStatus = null
   const {
     order_id: orderId,
     payment_method: paymentMethod
   } = orderConfirmInfo
 
-  const isInternalAccountPayment = paymentMethod.toLowerCase() === INTERNAL_ACCOUNT.toLowerCase()
+  const order = await OrderService.getOrder({ _id: orderId })
+  if (!order) {
+    throw new AppError(`Order not found with id: ${orderId}`, 404)
+  }
 
   switch (paymentMethod) {
-    case INTERNAL_ACCOUNT:
-      const
+    case INTERNAL_ACCOUNT:{
+      const userId = order.user_id
+      const amount = order.order_total
+      const action = 'WITHDRAW'
+      const paymentInternalAccountInfo = {
+        user_id: userId,
+        amount,
+        action
+      }
+      if (!isInternalAccountEnoughBalance()) {
+        throw new AppError('Account Balance is not enough', 402)
+      }
+      updateBalanceForInternalAccount(paymentInternalAccountInfo)
       break
+    }
+
     case CASH:
+      break
+    case BANK_TRANSFER:
+      break
+    case CREDIT_CARD:
       break
     default:
       throw new AppError('Invalid Payment Method', 500)
-  }
-  if (isInternalAccountPayment) {
-    if (!isAccountEnoughBalance()) {
-      throw new AppError('Account Balance is not enough', 402)
-    }
-    updateBalanceForInternalAccount()
-    paymentStatus = PAID
   }
 }
 
 module.exports = {
   updateBalanceForInternalAccount,
-  isAccountEnoughBalance,
+  isInternalAccountEnoughBalance,
   processPayment
 }

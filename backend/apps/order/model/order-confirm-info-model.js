@@ -1,18 +1,21 @@
 const Joi = require('joi')
-const paymentMethods = require('../../constant/payment-method')
-const validateObjectAgainstSchema = require('../../library/Joi/validation')
+const paymentMethods = require('../../../constant/payment-method')
+const validateObjectAgainstSchema = require('../../../library/Joi/validation')
 
 const orderConfirmInfoSchema = Joi.object({
   user_id: Joi.string().required(),
   order_id: Joi.string().required(),
   payment_info: Joi.object({
     payment_method: Joi.string().valid(
-      ...paymentMethods
+      ...Object.values(paymentMethods)
     ).required()
   })
 })
 
-const validateOrderConfirmInput = (object) => {
+const validate = (object) => {
   return validateObjectAgainstSchema(object, orderConfirmInfoSchema)
 }
-module.exports = validateOrderConfirmInput
+module.exports = {
+  orderConfirmInfoSchema,
+  validate
+}

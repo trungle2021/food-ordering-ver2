@@ -1,10 +1,12 @@
 const AppError = require('../error/app-error')
-const Order = require('./order-model')
+const Order = require('./model/order-model')
 const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
-const { processPayment } = require('../payment/payment-service')
-const { PROCESSING } = require('../../constant/order-status')
+const { processPayment, updateBalanceForInternalAccount } = require('../payment/payment-service')
+const { PROCESSING, CANCELED } = require('../../constant/order-status')
+const { PAID, REFUNDED } = require('../../constant/payment-status')
+const { WITHDRAW } = require('../../constant/payment-action')
 
 const getOrders = async () => {
   return await Order.find({}).populate({ path: 'category', select: 'name' })
@@ -64,14 +66,47 @@ const confirmOrder = async (orderConfirmInfo) => {
 
     const paymentStatus = null
     processPayment(orderConfirmInfo)
-
+    order.payment_status = paymentStatus
+    order.save()
     order.order_status = PROCESSING
     order.shipping_address = shippingAddress
-    order.payment_status = paymentStatus
-
+    order.payment_status = PAID
     await order.save()
     session.commitTransaction()
   } catch (err) {
+    session.abortTransaction()
+  }
+}
+
+const cancelOrder = async (orderCancel) => {
+  const session = await connection.createSession()
+  try {
+    session.startTransaction()
+    const { order_id: orderId, reason } = orderCancel
+    const order = await Order.findById(orderId)
+    const isOrderProcessed = order.order_status === PROCESSING && order.payment_status === PAID
+    if (!order) {
+      throw new AppError('Order not found', 404)
+    } else if (!isOrderProcessed) {
+      throw new AppError('Order cannot cancel because it has been processed', 409)
+    }
+
+    const userId = order.user_id
+    const amount = order.total
+    const action = WITHDRAW
+    const paymentInternalAccountInfo = {
+      user_id: userId,
+      amount,
+      action
+    }
+    updateBalanceForInternalAccount(paymentInternalAccountInfo)
+
+    order.order_status = CANCELED
+    order.payment_status = REFUNDED
+    order.cancel_reason = reason
+    order.save()
+    session.commitTransaction()
+  } catch (error) {
     session.abortTransaction()
   }
 }
@@ -81,6 +116,7 @@ module.exports = {
   getOrder,
   confirmOrder,
   createOrder,
+  cancelOrder,
   updateOrder,
   deleteOrder
 }

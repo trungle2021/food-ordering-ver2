@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-const orderStatus = require('../../constant/order-status')
-const paymentStatus = require('../../constant/payment-status')
-const paymentMethod = require('../../constant/payment-method')
+const orderStatus = require('../../../constant/order-status')
+const paymentStatus = require('../../../constant/payment-status')
+const paymentMethod = require('../../../constant/payment-method')
 
 const orderSchema = new mongoose.Schema({
   user: {
@@ -50,6 +50,9 @@ const orderSchema = new mongoose.Schema({
   order_date: {
     type: Date,
     required: [true, 'Order Date is required']
+  },
+  cancel_reason: {
+    type: String
   },
   created_at: {
     type: Date,
