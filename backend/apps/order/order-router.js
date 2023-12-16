@@ -13,5 +13,6 @@ router.route('/confirm')
 router.route('/')
   .get(OrderController.getOrders)
   .post(OrderController.createOrder)
+  .delete(OrderController.deleteAll)
 
 module.exports = router

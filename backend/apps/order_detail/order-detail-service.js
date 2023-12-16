@@ -46,11 +46,15 @@ const deleteOrderDetail = async (orderdetail) => {
 
 }
 
+const deleteAll = async () => {
+  await OrderDetail.deleteMany({})
+}
 module.exports = {
   getOrderDetails,
   getOrderDetail,
   createOrderDetails,
   createOrderDetail,
   updateOrderDetail,
-  deleteOrderDetail
+  deleteOrderDetail,
+  deleteAll
 }

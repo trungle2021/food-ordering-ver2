@@ -55,6 +55,11 @@ const deleteOrder = async (order) => {
 
 }
 
+const deleteAll = async () => {
+  await Order.deleteMany({})
+  await OrderDetailService.deleteAll()
+}
+
 const confirmOrder = async (orderConfirmInfo) => {
   const session = await connection.startSession()
   try {
@@ -124,5 +129,6 @@ module.exports = {
   createOrder,
   cancelOrder,
   updateOrder,
-  deleteOrder
+  deleteOrder,
+  deleteAll
 }

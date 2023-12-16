@@ -77,6 +77,14 @@ const cancelOrder = catchAsyncHandler(async (req, res, next) => {
 })
 const updateOrder = catchAsyncHandler(async (req, res, next) => {})
 const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
+const deleteAll = catchAsyncHandler(async (req, res, next) =>{
+  console.log('Delete')
+  await OrderService.deleteAll()
+  return res.status(200).json({
+    status:'success',
+    message: 'All orders deleted'
+  })
+})
 
 module.exports = {
   getOrders,
@@ -85,5 +93,6 @@ module.exports = {
   cancelOrder,
   confirmOrder,
   updateOrder,
-  deleteOrder
+  deleteOrder,
+  deleteAll
 }
