@@ -36,7 +36,6 @@ const login = async (email, password) => {
     expiresIn: accessTokenExpired
   }
   const accessToken = jwt.sign(payload, secretKey, options)
-  console.log(accessToken)
   return accessToken
 }
 

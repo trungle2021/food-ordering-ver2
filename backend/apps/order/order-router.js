@@ -7,8 +7,11 @@ router.route('/:id')
   .get(OrderController.deleteOrder)
   .put(OrderController.updateOrder)
 
-router.route('/confirm')
+router.route('/confirm/:id')
   .post(OrderController.confirmOrder)
+
+router.route('/cancel/:id')
+  .post(OrderController.cancelOrder)
 
 router.route('/')
   .get(OrderController.getOrders)

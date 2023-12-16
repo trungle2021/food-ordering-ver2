@@ -49,39 +49,64 @@ const createOrder = catchAsyncHandler(async (req, res, next) => {
 })
 
 const confirmOrder = catchAsyncHandler(async (req, res, next) => {
+  const { id: orderId } = req.params
   const body = req.body
-  const orderConfirm = OrderConfirmInputSchema.validate(body)
-  if (!orderConfirm.result) {
+
+  const orderConfirmValidation = OrderConfirmInputSchema.validate(body)
+  if (!orderConfirmValidation.result) {
     return res.status(400).json({
       status: 'fail',
-      error: orderConfirm
+      error: orderConfirmValidation
     })
   }
-  await OrderService.confirmOrder(orderConfirm.data)
-  return res.status(200).json({
-    status: 'success',
-    message: 'Order Successfully'
-  })
+
+  const orderConfirmInfo = {
+    order_id: orderId,
+    ...body
+  }
+
+  const orderConfirmed = await OrderService.confirmOrder(orderConfirmInfo)
+  if (orderConfirmed) {
+    return res.status(200).json({
+      status: 'success',
+      message: 'Order Successfully'
+    })
+  } else {
+    return res.status(500).json({
+      status: 'fail',
+      message: 'Order Failed'
+    })
+  }
 })
 
 const cancelOrder = catchAsyncHandler(async (req, res, next) => {
+  const { id: orderId } = req.params
   const body = req.body
-  const orderCancel = orderCancelSchema.validate(body)
-  if (!orderCancel.result) {
+  const validateOrderCancelInput = orderCancelSchema.validate(body)
+  if (!validateOrderCancelInput.result) {
     return res.status(400).json({
       status: 'fail',
-      error: orderCancel
+      error: validateOrderCancelInput
     })
   }
-  await OrderService.confirmOrder(orderCancel.data)
+  const orderCancel = {
+    order_id: orderId,
+    ...body
+  }
+  await OrderService.cancelOrder(orderCancel)
+  return res.status(200).json({
+    status: 'success',
+    message: 'Order Cancelled Successfully'
+  })
 })
+
 const updateOrder = catchAsyncHandler(async (req, res, next) => {})
 const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
-const deleteAll = catchAsyncHandler(async (req, res, next) =>{
+const deleteAll = catchAsyncHandler(async (req, res, next) => {
   console.log('Delete')
   await OrderService.deleteAll()
   return res.status(200).json({
-    status:'success',
+    status: 'success',
     message: 'All orders deleted'
   })
 })

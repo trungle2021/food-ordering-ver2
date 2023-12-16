@@ -3,8 +3,7 @@ const paymentMethods = require('../../../constant/payment-method')
 const validateObjectAgainstSchema = require('../../../library/Joi/validation')
 
 const orderConfirmInfoSchema = Joi.object({
-  user_id: Joi.string().required(),
-  order_id: Joi.string().required(),
+  shipping_address: Joi.string().required(),
   payment_info: Joi.object({
     payment_method: Joi.string().valid(
       ...Object.values(paymentMethods)

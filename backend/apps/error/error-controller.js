@@ -48,8 +48,6 @@ const ErrorController = (err, req, res, next) => {
         err.statusCode = 409
         err.name = 'Duplicate Key Error'
       } else {
-        console.log(err)
-
         err.statusCode = err.statusCode || 500
       }
       break

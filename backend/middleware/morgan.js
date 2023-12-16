@@ -1,6 +1,7 @@
 const rfs = require('rotating-file-stream')
 const path = require('path')
 const morgan = require('morgan')
+
 // const isProduction = process.env.NODE_ENV === 'production'
 const LOG_SIZE = process.env.LOG_SIZE
 const LOG_INTERVAL = process.env.LOG_INTERVAL
