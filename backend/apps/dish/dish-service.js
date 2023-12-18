@@ -15,7 +15,13 @@ const getDish = async (id) => {
 }
 
 const getPoplularDishes = async (filter) => {
-  OrderDetailService.getOrderDetails()
+  // const { order_id: orderId, order_status: orderStatus } = filter
+  const { order_id: orderId } = filter
+  console.log(orderId)
+  // OrderDetailService.getOrderDetails({ 'order._id': orderId, 'order.order_status': orderStatus })
+  const data = await OrderDetailService.getOrderDetails({ order: orderId })
+  console.log(data)
+  return data
   // count which dish is ordered most
 }
 
@@ -43,6 +49,7 @@ module.exports = {
   getDishes,
   getDish,
   createDishes,
+  getPoplularDishes,
   createDish,
   updateDish,
   deleteDish
