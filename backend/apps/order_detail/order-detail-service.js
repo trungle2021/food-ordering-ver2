@@ -1,8 +1,10 @@
 const AppError = require('../error/app-error')
 const OrderDetail = require('./order-detail-model')
 
-const getOrderDetails = async () => {
-  return await OrderDetail.find({}).populate({ path: 'category', select: 'name' })
+const getOrderDetails = async (filter) => {
+  return await OrderDetail.find(filter)
+    .populate({ path: 'order' })
+    .populate({ path: 'dish', select: 'name' })
 }
 
 const getOrderDetail = async (id) => {

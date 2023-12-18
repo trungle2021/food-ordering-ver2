@@ -3,7 +3,7 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const OrderDetailService = require('./order-detail-service')
 
 const getOrderDetails = catchAsyncHandler(async (req, res) => {
-  const orderdetails = await OrderDetailService.getOrderDetails()
+  const orderdetails = await OrderDetailService.getOrderDetails({})
   return res.status(200).json({
     status: 'success',
     data: orderdetails

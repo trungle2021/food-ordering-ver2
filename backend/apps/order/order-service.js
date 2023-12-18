@@ -31,6 +31,7 @@ const createOrder = async (order, orderItems) => {
     }
     const orderCreated = await Order.create([order], { session })
     await OrderDetailService.createOrderDetails(orderCreated[0]._id, orderItems, { session })
+    orderCreated.order_detail = u
     await session.commitTransaction()
     return orderCreated
   } catch (error) {

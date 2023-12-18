@@ -50,6 +50,12 @@ const orderSchema = new mongoose.Schema({
   cancel_reason: {
     type: String
   },
+  order_detail: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'OrderDetail'
+    }
+  ],
   created_at: {
     type: Date,
     default: Date.now()

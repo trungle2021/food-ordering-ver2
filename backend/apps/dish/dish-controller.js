@@ -25,6 +25,9 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
+  const { limit } = req.params
+})
 const createDishes = catchAsyncHandler(async (req, res, next) => {
   const listDishes = req.body
   const dishes = await DishService.createDishes(listDishes)
@@ -40,6 +43,7 @@ const deleteDish = catchAsyncHandler(async (req, res, next) => {})
 module.exports = {
   getDishes,
   getDish,
+  getPoplularDishes,
   createDishes,
   createDish,
   updateDish,

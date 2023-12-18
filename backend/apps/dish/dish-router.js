@@ -10,6 +10,9 @@ router.route('/:id')
 router.route('/bulk')
   .post(DishController.createDishes)
 
+router.route('/popular-dishes')
+  .get(DishController.getPoplularDishes)
+
 router.route('/')
   .get(DishController.getDishes)
   .post(DishController.createDish)
