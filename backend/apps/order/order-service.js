@@ -9,7 +9,6 @@ const { PAID, REFUNDED } = require('../../constant/payment-status')
 const { DEPOSIT } = require('../../constant/payment-action')
 
 const getOrders = async (filter) => {
-  const {limit}
   return await Order.find(filter).populate({ path: 'category', select: 'name' })
 }
 

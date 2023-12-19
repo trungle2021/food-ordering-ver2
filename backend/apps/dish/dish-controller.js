@@ -27,6 +27,7 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
 
 const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
   const { limit } = req.params
+  console.log(limit)
   const filter = {
     limit,
     order_status: 'completed'
