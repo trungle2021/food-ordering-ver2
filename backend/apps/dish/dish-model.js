@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const dishSchema = new mongoose.Schema({
   name: {
@@ -22,7 +23,7 @@ const dishSchema = new mongoose.Schema({
     default: false
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'Category'
   },
   created_at: {

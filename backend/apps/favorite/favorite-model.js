@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const favoriteSchema = new mongoose.Schema({
   name: {
@@ -26,7 +27,7 @@ const favoriteSchema = new mongoose.Schema({
     default: 0
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'Category'
   },
   created_at: {

@@ -36,10 +36,10 @@ const getUserAddress = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createUserAddress = catchAsyncHandler(async (req, res, next) => {
-  const body = req.body
-  body.is_default_address = false
+  const payload = req.body
+  payload.is_default_address = false
 
-  const address = await UserAddressService.createUserAddress(body)
+  const address = await UserAddressService.createUserAddress(payload)
   return res.status(200).json({
     status: 'success',
     data: address
@@ -48,11 +48,11 @@ const createUserAddress = catchAsyncHandler(async (req, res, next) => {
 
 const updateUserAddress = catchAsyncHandler(async (req, res, next) => {
   const { id } = req.params
-  const body = req.body
+  const payload = req.body
 
   const filter = { _id: id }
   const data = {
-    ...body,
+    ...payload,
     updated_at: Date.now()
   }
   const option = { new: true }

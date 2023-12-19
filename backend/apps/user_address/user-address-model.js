@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
-// name, password, balance, phone, email, created_at, updated_at
 const userAddressSchema = new mongoose.Schema({
   address: {
     type: String,
@@ -11,7 +11,7 @@ const userAddressSchema = new mongoose.Schema({
     default: false
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'User'
   },
   created_at: {

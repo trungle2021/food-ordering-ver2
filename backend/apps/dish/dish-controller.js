@@ -26,12 +26,11 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
-  // const { limit } = req.params
-  // const filter = {
-  //   // order_id: '657d68d02e509f100c715b6e',
-  //   order_id: '657d68d02e509f100c715b6e',
-  //   order_status: 'completed'
-  // }
+  const { limit } = req.params
+  const filter = {
+    limit,
+    order_status: 'completed'
+  }
   const result = await DishService.getPoplularDishes(filter)
   return res.status(200).json({
     status: 'success',

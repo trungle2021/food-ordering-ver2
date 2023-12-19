@@ -4,12 +4,13 @@ const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
 const { processPayment, updateBalanceForInternalAccount } = require('../payment/payment-service')
-const { PROCESSING, CANCELED } = require('../../constant/order-status')
+const { PROCESSING, CANCELED, COMPLETED, SHIPPING } = require('../../constant/order-status')
 const { PAID, REFUNDED } = require('../../constant/payment-status')
 const { DEPOSIT } = require('../../constant/payment-action')
 
-const getOrders = async () => {
-  return await Order.find({}).populate({ path: 'category', select: 'name' })
+const getOrders = async (filter) => {
+  const {limit}
+  return await Order.find(filter).populate({ path: 'category', select: 'name' })
 }
 
 const getOrder = async (filter) => {
@@ -25,6 +26,7 @@ const createOrder = async (order, orderItems) => {
   try {
     session.startTransaction()
     const userId = order.user
+    console.log(order)
     const user = await UserService.getUser({ _id: userId })
     if (!user) {
       throw new AppError(`Cannot found User with ID: ${userId}`, 404)
@@ -42,12 +44,8 @@ const createOrder = async (order, orderItems) => {
   }
 }
 
-const updateOrder = async (order) => {
-
-}
-
-const deleteOrder = async (order) => {
-
+const deleteOrder = async (filter) => {
+  await Order.deleteOne(filter)
 }
 
 const deleteAll = async () => {
@@ -87,8 +85,23 @@ const confirmOrder = async (orderConfirmInfo) => {
   return orderAfterPaid
 }
 
-const completeOrder = async () => {
+const completeOrder = async (orderId) => {
+  console.log(orderId)
+  const order = await Order.findOne({ _id: orderId })
+  if (!order) {
+    throw new AppError('Order not found', 404)
+  }
 
+  switch (order.order_status) {
+    case SHIPPING:
+      order.order_status = COMPLETED
+      order.time_completed = Date.now()
+      return await order.save()
+    case COMPLETED:
+      throw new AppError('Order already completed', 409)
+    default:
+      throw new AppError('Order cannot be completed', 409)
+  }
 }
 
 const cancelOrder = async (orderCancel) => {
@@ -135,7 +148,6 @@ module.exports = {
   confirmOrder,
   completeOrder,
   cancelOrder,
-  updateOrder,
   deleteOrder,
   deleteAll
 }

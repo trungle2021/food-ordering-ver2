@@ -1,10 +1,11 @@
 const mongoose = require('mongoose')
 const paymentMethod = require('../../constant/payment-method')
 const paymentStatus = require('../../constant/payment-status')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const transactionSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'User'
   },
   amount: {

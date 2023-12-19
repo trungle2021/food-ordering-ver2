@@ -26,8 +26,8 @@ const getCategory = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategories = catchAsyncHandler(async (req, res, next) => {
-  const body = req.body
-  const categories = await CategoryService.createCategories(body)
+  const payload = req.body
+  const categories = await CategoryService.createCategories(payload)
   if (!categories) {
     return res.status(404).json({
       status: 'fail',
@@ -41,8 +41,8 @@ const createCategories = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategory = catchAsyncHandler(async (req, res, next) => {
-  const body = req.body
-  const category = await CategoryService.createCategory(body)
+  const payload = req.body
+  const category = await CategoryService.createCategory(payload)
   return res.status(200).json({
     status: 'success',
     data: category
@@ -52,8 +52,8 @@ const updateCategory = catchAsyncHandler(async (req, res, next) => {
   const filter = {
     _id: req.params.id
   }
-  const body = req.body
-  const category = await CategoryService.updateCategory(filter, body)
+  const payload = req.body
+  const category = await CategoryService.updateCategory(filter, payload)
   return res.status(200).json({
     status: 'success',
     data: category

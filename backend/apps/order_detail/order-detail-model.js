@@ -1,13 +1,14 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const orderdetailSchema = new mongoose.Schema({
   order: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'Order',
     required: [true, 'Order ID is required']
   },
   dish: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'Dish',
     required: [true, 'Dish ID is required']
   },

@@ -2,10 +2,11 @@ const mongoose = require('mongoose')
 const orderStatus = require('../../../constant/order-status')
 const paymentStatus = require('../../../constant/payment-status')
 const paymentMethod = require('../../../constant/payment-method')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const orderSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: ObjectId,
     ref: 'User'
   },
   order_status: {
@@ -50,12 +51,10 @@ const orderSchema = new mongoose.Schema({
   cancel_reason: {
     type: String
   },
-  order_detail: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'OrderDetail'
-    }
-  ],
+  time_completed: {
+    type: Date,
+    default: null
+  },
   created_at: {
     type: Date,
     default: Date.now()
