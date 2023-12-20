@@ -1,9 +1,18 @@
 const AppError = require('../error/app-error')
 const Dish = require('./dish-model')
 const OrderService = require('../order/order-service')
+const ApiFeatures = require('../../utils/api-features/api-features')
 
-const getDishes = async () => {
-  return await Dish.find({}).populate({ path: 'category', select: 'name' })
+const getDishes = async (queryString) => {
+  console.log(queryString)
+  const features = new ApiFeatures(Dish.find(), queryString)
+  .filter()
+  .sort()
+  .limitFields()
+  .paginate()
+
+  return await features.query.populate({ path: 'category', select: 'name' })
+  // return await Dish.find({}).populate({ path: 'category', select: 'name' })
 }
 
 const getDish = async (id) => {

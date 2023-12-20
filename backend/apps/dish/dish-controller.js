@@ -1,9 +1,11 @@
+const ApiFeatures = require('../../utils/api-features/api-features')
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 
 const DishService = require('./dish-service')
 
 const getDishes = catchAsyncHandler(async (req, res) => {
-  const dishes = await DishService.getDishes()
+  const queryString = req.query
+  const dishes = await DishService.getDishes(queryString)
   return res.status(200).json({
     status: 'success',
     data: dishes
