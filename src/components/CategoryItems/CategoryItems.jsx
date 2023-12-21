@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CategoryItem from "./CategoryItem/CategoryItem";
-import getCategoriesApi from './../../utils/api'
+import {getCategoriesApi} from './../../utils/api'
 
 
 
@@ -10,7 +10,7 @@ const CategoryItems = () => {
   useEffect(() => {
     const getCategories = async () => {
       try{
-        const response = await axios.get(getCategoriesApi)
+        const response = await axios.get(`${getCategoriesApi}?limit=10`)
         setCategories(response.data.data)
       }catch(err){
         console.log(err)

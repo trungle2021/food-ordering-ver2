@@ -27,10 +27,7 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
-  const queryString = {
-    ...req.query
-  }
-
+  const queryString = { ...req.query }
   const result = await DishService.getPoplularDishes(queryString)
   return res.status(200).json({
     status: 'success',

@@ -3,7 +3,8 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const CategoryService = require('./category-service')
 
 const getCategories = catchAsyncHandler(async (req, res) => {
-  const categories = await CategoryService.getCategories()
+  const queryString = { ...req.query }
+  const categories = await CategoryService.getCategories(queryString)
   return res.status(200).json({
     status: 'success',
     data: categories

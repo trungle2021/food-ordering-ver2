@@ -1,28 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState, useContext } from "react";
 import RecentOrder from './RecentOrder'
+import { AppContext } from '../../store/AppContext';
+import { getRecentOrdersApi } from '../../utils/api';
+import axios from "axios";
 
 const RecentOrders = () => {
+   const { userId } = useContext(AppContext);
+   const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userId)
+
+  const [recentOrders, setRecentOrders] = useState([])
+  const getRecentOrders = async () => {
+    try {
+     const response = await axios.get(`${getRecentOrdersApiAddedUserId}?limit=3`)
+     console.log(response.data.data)  
+     setRecentOrders(response.data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    getRecentOrders()
+    console.log("123")
+    return () => {}
+  },[])
+
+
+  const recentOrdersItem = recentOrders.map(order => {
+    return  <RecentOrder
+        key={order._id}
+         image={order.image}
+        name={order.name}
+        price={order.price}
+        isFavorite={true} 
+      />
+  })
   return (
     <ul className="flex justify-evenly basis-32 gap-3">
-        <RecentOrder   
-        image={"/food/Food1.png 2x"}
-        imageSize={30}
-        name={"Fish Burger"}
-        price={5.59}
-        isFavorite={true} />
-         <RecentOrder   
-        image={"/food/Ramen.png 2x"}
-        imageSize={30}
-        name={"Ramen"}
-        price={5.59}
-        isFavorite={true} />
-         <RecentOrder   
-        image={"/food/PadThai.png 2x"}
-        imageSize={30}
-        name={"PadThai"}
-        price={5.59}
-        isFavorite={true} />
-   
+        {recentOrdersItem}
     </ul>
   )
 }

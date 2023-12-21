@@ -1,32 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Dish from "./Dish/Dish";
+import axios from "axios";
+import { getPopularDishesApi } from "../../utils/api";
+
+
 
 const PopularDishes = () => {
-  return (
-    <ul className="flex justify-evenly basis-32 gap-3">
-      <Dish
-        image={"/food/Food1.png 2x"}
-        imageSize={30}
-        discount={15}
-        name={"Fish Burger"}
-        price={5.59}
+  const [popularDishes, setPopularDishes] = useState([])
+ 
+  const getPopularDishes = async () => {
+      try{
+        const response = await axios.get(`${getPopularDishesApi}?limit=3`)
+        setPopularDishes(response.data.data)
+      }catch(err){
+        console.log(err)
+      }
+  }
+
+  useEffect(()=>{
+    getPopularDishes()
+  },[])
+
+  const popularDishesItem = popularDishes.map(item => {
+    const dish = item.dish
+    return  <Dish
+        key={dish._id}
+        image={dish.image}
+        discount={dish.discount}
+        name={dish.name}
+        price={dish.price}
         isFavorite={true}
       />
-      <Dish
-        image={"/food/Food2.png 2x"}
-        imageSize={30}
-        discount={25}
-        name={"Beef Burger"}
-        price={5.59}
-        isFavorite={false}
-      />
-      <Dish
-        image={"/food/Food3.png 2x"}
-        imageSize={30}
-        name={"Cheese Burger"}
-        price={5.59}
-        isFavorite={false}
-      />
+  })
+
+  return (
+    <ul className="flex justify-evenly basis-32 gap-3">
+     {popularDishesItem}
     </ul>
   );
 };

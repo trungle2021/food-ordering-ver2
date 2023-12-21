@@ -1,7 +1,13 @@
+const ApiFeatures = require('../../utils/api-features/api-features')
 const Category = require('./category-model')
 
-const getCategories = async () => {
-  return await Category.find({}).populate({ path: 'dish', select: 'name -_id' })
+const getCategories = async (queryString) => {
+  const features = new ApiFeatures(Category.find(), queryString)
+    .filter()
+    .limitFields()
+    .sort()
+    .paginate()
+  return await features.query
 }
 
 const getCategory = async (id) => {

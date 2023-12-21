@@ -107,21 +107,13 @@ const completeOrder = async (orderId) => {
   }
 }
 
-const getMostOrderedDish = async (limit) => {
-  return await Order.aggregate([
-    {
-      $match: { order_status: COMPLETED }
-    },
-    {
-      $group: { _id: 'name', totalQuantity: { $sum: 1 } }
-    },
-    {
-      sort: { count: -1 }
-    },
-    {
-      limit
-    }
-  ])
+const getRecentOrders = async (userId, queryString) => {
+  const features = new ApiFeatures(Order.find({ user_id: userId }), queryString)
+    .filter()
+    .limitFields()
+    .sort()
+    .paginate()
+  return await features.query
 }
 
 const cancelOrder = async (orderCancel) => {
@@ -164,7 +156,7 @@ const cancelOrder = async (orderCancel) => {
 module.exports = {
   getOrders,
   getOrder,
-  getMostOrderedDish,
+  getRecentOrders,
   createOrder,
   confirmOrder,
   completeOrder,

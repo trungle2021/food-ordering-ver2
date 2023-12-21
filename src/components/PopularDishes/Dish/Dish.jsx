@@ -4,6 +4,7 @@ import Star from "../../UI/Star/Star";
 import Heart from "../../UI/Heart/Heart";
 import Discount from "../../UI/Discount/Discount";
 
+
 const Dish = ({
   image,
   imageSize,
@@ -16,7 +17,7 @@ const Dish = ({
   return (
     <li className="w-full">
       <Card className="shadow-md relative flex flex-col bg-white justify-center items-center gap-5 p-3">
-        <img className="pt-10" srcSet={image} sizes={imageSize} />
+        <img className="pt-10" srcSet={image} width='70%' height='100%' />
         <div className="w-full top-6 absolute flex justify-between pr-4">
           {discount ? <Discount amount={discount} /> : <div></div>}
           <button>{<Heart isFavorite={isFavorite} />}</button>

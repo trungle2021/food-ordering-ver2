@@ -1,6 +1,7 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 
 const UserService = require('./user-service')
+const OrderService = require('../order/order-service')
 
 const getUsers = catchAsyncHandler(async (req, res) => {
   const users = await UserService.getUsers()
@@ -25,6 +26,16 @@ const getUser = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const getRecentOrders = catchAsyncHandler(async (req, res, next) => {
+  const { user_id: userId } = req.params
+  const queryString = { ...req.query }
+  const recentOrders = await OrderService.getRecentOrders(userId, queryString)
+  return res.status(200).json({
+    status: 'success',
+    data: recentOrders
+  })
+})
+
 const updateUser = catchAsyncHandler(async (req, res, next) => {
 
 })
@@ -35,6 +46,7 @@ const deleteUser = catchAsyncHandler(async (req, res, next) => {
 
 module.exports = {
   getUsers,
+  getRecentOrders,
   getUser,
   updateUser,
   deleteUser
