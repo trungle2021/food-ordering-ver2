@@ -1,4 +1,3 @@
-const ApiFeatures = require('../../utils/api-features/api-features')
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 
 const DishService = require('./dish-service')
@@ -28,13 +27,11 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
-  const { limit } = req.params
-  console.log(limit)
-  const filter = {
-    limit,
-    order_status: 'completed'
+  const queryString = {
+    ...req.query
   }
-  const result = await DishService.getPoplularDishes(filter)
+
+  const result = await DishService.getPoplularDishes(queryString)
   return res.status(200).json({
     status: 'success',
     data: result

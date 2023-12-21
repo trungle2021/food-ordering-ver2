@@ -37,7 +37,6 @@ const checkInternalAccountEnoughBalance = async (userId, amountNeedToPurchase) =
 }
 
 const processPayment = async (order, orderConfirmInfo) => {
-  console.log(order)
   const {
     payment_info: paymentInfo
   } = orderConfirmInfo

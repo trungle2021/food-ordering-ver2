@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+mongoose.set('debug', true)
 const DB = process.env.DATABASE.replace(
   '<DATABASE_PASSWORD>',
   process.env.DATABASE_PASSWORD

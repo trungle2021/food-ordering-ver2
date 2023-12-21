@@ -7,9 +7,16 @@ const { processPayment, updateBalanceForInternalAccount } = require('../payment/
 const { PROCESSING, CANCELED, COMPLETED, SHIPPING } = require('../../constant/order-status')
 const { PAID, REFUNDED } = require('../../constant/payment-status')
 const { DEPOSIT } = require('../../constant/payment-action')
+const ApiFeatures = require('../../utils/api-features/api-features')
 
-const getOrders = async (filter) => {
-  return await Order.find(filter).populate({ path: 'category', select: 'name' })
+const getOrders = async (queryString) => {
+  const features = new ApiFeatures(Order.find(), queryString)
+    .filter()
+    .limitFields()
+    .sort()
+    .paginate()
+
+  return await features.query
 }
 
 const getOrder = async (filter) => {
@@ -25,7 +32,6 @@ const createOrder = async (order, orderItems) => {
   try {
     session.startTransaction()
     const userId = order.user
-    console.log(order)
     const user = await UserService.getUser({ _id: userId })
     if (!user) {
       throw new AppError(`Cannot found User with ID: ${userId}`, 404)
@@ -35,7 +41,6 @@ const createOrder = async (order, orderItems) => {
     await session.commitTransaction()
     return orderCreated
   } catch (error) {
-    console.log(error)
     await session.abortTransaction()
     throw new AppError(error.message, error.statusCode)
   } finally {
@@ -85,7 +90,6 @@ const confirmOrder = async (orderConfirmInfo) => {
 }
 
 const completeOrder = async (orderId) => {
-  console.log(orderId)
   const order = await Order.findOne({ _id: orderId })
   if (!order) {
     throw new AppError('Order not found', 404)
@@ -101,6 +105,23 @@ const completeOrder = async (orderId) => {
     default:
       throw new AppError('Order cannot be completed', 409)
   }
+}
+
+const getMostOrderedDish = async (limit) => {
+  return await Order.aggregate([
+    {
+      $match: { order_status: COMPLETED }
+    },
+    {
+      $group: { _id: 'name', totalQuantity: { $sum: 1 } }
+    },
+    {
+      sort: { count: -1 }
+    },
+    {
+      limit
+    }
+  ])
 }
 
 const cancelOrder = async (orderCancel) => {
@@ -143,6 +164,7 @@ const cancelOrder = async (orderCancel) => {
 module.exports = {
   getOrders,
   getOrder,
+  getMostOrderedDish,
   createOrder,
   confirmOrder,
   completeOrder,

@@ -4,27 +4,23 @@ const OrderService = require('../order/order-service')
 const ApiFeatures = require('../../utils/api-features/api-features')
 
 const getDishes = async (queryString) => {
-  console.log(queryString)
   const features = new ApiFeatures(Dish.find(), queryString)
-  .filter()
-  .sort()
-  .limitFields()
-  .paginate()
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
 
   return await features.query.populate({ path: 'category', select: 'name' })
   // return await Dish.find({}).populate({ path: 'category', select: 'name' })
 }
 
 const getDish = async (id) => {
-  const dish = await Dish.findById(id)
-  if (!dish) {
-    return null
-  }
-  return dish
+  return await Dish.findById(id)
 }
 
-const getPoplularDishes = async (filter) => {
-  const data = await OrderService.getOrders(filter)
+const getPoplularDishes = async (queryString) => {
+  const data = await OrderService.getMostOrderedDish(limit)
+
   return data
 }
 

@@ -17,7 +17,6 @@ const createCategories = async (categories) => {
 }
 
 const updateCategory = async (filter, update) => {
-  console.log(update)
   return await Category.findOneAndUpdate(filter, update, { new: true })
 }
 

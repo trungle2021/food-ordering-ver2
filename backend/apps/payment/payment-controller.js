@@ -3,7 +3,6 @@ const PaymentService = require('./payment-service')
 const PaymentInternalAccountInfo = require('./payment-internal-account-info')
 const topUp = catchAsyncHandler(async (req, res, next) => {
   const { id: userId } = req.params
-  console.log(userId)
   const body = {
     user_id: userId,
     ...req.body
