@@ -8,6 +8,7 @@ const { PROCESSING, CANCELED, COMPLETED, SHIPPING } = require('../../constant/or
 const { PAID, REFUNDED } = require('../../constant/payment-status')
 const { DEPOSIT } = require('../../constant/payment-action')
 const ApiFeatures = require('../../utils/api-features/api-features')
+const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 
 const getOrders = async (queryString) => {
   const features = new ApiFeatures(Order.find(), queryString)
@@ -108,12 +109,66 @@ const completeOrder = async (orderId) => {
 }
 
 const getRecentOrders = async (userId, queryString) => {
-  const features = new ApiFeatures(Order.find({ user_id: userId }), queryString)
-    .filter()
-    .limitFields()
-    .sort()
-    .paginate()
-  return await features.query
+  const userIdConverted = await convertToObjectId(userId)
+  const recentOrders = await Order.aggregate([
+    {
+      $match: {
+        order_status: COMPLETED,
+        user: userIdConverted
+      }
+    },
+    {
+      $lookup: {
+        from: 'orderdetails',
+        localField: '_id',
+        foreignField: 'order',
+        as: 'order_detail'
+      }
+    },
+    {
+      $unwind: '$order_detail'
+    },
+    {
+      $sort: { 'order_detail.price': -1 }
+    },
+    {
+      $group: {
+        _id: '$_id',
+        order_status: { $first: '$order_status' },
+        payment_status: { $first: '$payment_status' },
+        payment_method: { $first: '$payment_method' },
+        order_total: { $first: '$order_total' },
+        time_completed: { $first: '$time_completed' },
+        created_at: { $first: '$created_at' },
+        user: { $first: '$user' },
+        order_date: { $first: '$order_date' },
+        shipping_address: { $first: '$shipping_address' },
+        __v: { $first: '$__v' },
+        order_detail: { $push: '$order_detail' }
+      }
+    },
+    {
+      $addFields: {
+        order_detail: { $slice: ['$order_detail', 1] }
+      }
+    },
+    {
+      $unwind: '$order_detail'
+    },
+    {
+      $lookup: {
+        from: 'dishes',
+        localField: 'order_detail.dish',
+        foreignField: '_id',
+        as: 'order_detail.dish'
+      }
+    },
+    {
+      $unwind: '$order_detail.dish'
+    }
+  ])
+
+  return recentOrders
 }
 
 const cancelOrder = async (orderCancel) => {

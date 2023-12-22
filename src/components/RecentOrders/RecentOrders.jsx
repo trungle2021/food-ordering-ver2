@@ -6,6 +6,7 @@ import axios from "axios";
 
 const RecentOrders = () => {
    const { userId } = useContext(AppContext);
+   console.log(userId)
    const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userId)
 
   const [recentOrders, setRecentOrders] = useState([])
@@ -19,9 +20,7 @@ const RecentOrders = () => {
     }
   }
   useEffect(() => {
-    getRecentOrders()
-    console.log("123")
-    return () => {}
+    // getRecentOrders()
   },[])
 
 

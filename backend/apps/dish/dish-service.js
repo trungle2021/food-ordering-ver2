@@ -34,16 +34,16 @@ const getPoplularDishes = async (queryString) => {
           from: 'orderdetails',
           localField: '_id',
           foreignField: 'order',
-          as: 'orderDetails'
+          as: 'order_detail'
         }
       },
       {
-        $unwind: '$orderDetails'
+        $unwind: '$order_detail'
       },
       {
         $group: {
-          _id: '$orderDetails.dish',
-          count: { $sum: '$orderDetails.quantity' }
+          _id: '$order_detail.dish',
+          count: { $sum: '$order_detail.quantity' }
         }
       },
       {

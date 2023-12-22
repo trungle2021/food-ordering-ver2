@@ -27,7 +27,7 @@ const getUser = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getRecentOrders = catchAsyncHandler(async (req, res, next) => {
-  const { user_id: userId } = req.params
+  const { id: userId } = req.params
   const queryString = { ...req.query }
   const recentOrders = await OrderService.getRecentOrders(userId, queryString)
   return res.status(200).json({
