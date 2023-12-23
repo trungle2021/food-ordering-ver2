@@ -23,7 +23,8 @@ const login = catchAsyncHandler(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       data: {
-        token
+        access_token: token,
+        refresh_token: null
       }
     })
   } else {

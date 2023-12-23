@@ -22,6 +22,7 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
   const decodePayload = await promisify(jwt.verify)(token, secretKey)
   const { id } = decodePayload
   const user = await UserService.getUser({ _id: id })
+  console.log(user)
   if (!user) {
     throw new AppError('Invalid credentials', 401)
   }
