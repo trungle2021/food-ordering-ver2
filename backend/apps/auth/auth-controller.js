@@ -1,34 +1,36 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
+const User = require('../user/user-model')
 const AuthService = require('./auth-service')
 
 const register = catchAsyncHandler(async (req, res, next) => {
-  const userData = {
-    name: req.body.name,
-    password: req.body.password,
-    email: req.body.email,
-    balance: req.body.balance,
-    avatar: req.body.avatar
+  const userInput = req.body
+  const isValidUserInput = await new User(userInput).validate()
+
+  if (!isValidUserInput) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid input'
+    })
   }
-  const newUser = await AuthService.register(userData)
-  res.status(201).json({
-    status: 'success',
-    data: newUser
-  })
+  const tokens = await AuthService.register(userInput)
+  if (tokens) {
+    return res.status(201).json({
+      status: 'success',
+      data: tokens
+    })
+  }
 })
 
 const login = catchAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body
-  const token = await AuthService.login(email, password)
-  if (token) {
+  const tokens = await AuthService.login(email, password)
+  if (tokens) {
     res.status(200).json({
       status: 'success',
-      data: {
-        access_token: token,
-        refresh_token: null
-      }
+      data: tokens
     })
   } else {
-    res.status(401).json({
+    res.status(400).json({
       status: 'fail',
       message: 'Invalid email or password'
     })

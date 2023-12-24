@@ -1,43 +1,41 @@
 const UserService = require('../user/user-service')
-const jwt = require('jsonwebtoken')
+const JWTService = require('../../utils/jwt/jwt-service')
 const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION
+const refreshTokenExpired = process.env.JWT_REFRESH_TOKEN_EXPIRATION
+const AppError = require('../error/app-error')
+
+const tokenOptions = {
+  accessToken: { expiresIn: accessTokenExpired },
+  refreshToken: { expiresIn: refreshTokenExpired }
+}
 
 const register = async (userData) => {
   const newUser = await UserService.createUser(userData)
-  const payload = {
-    id: newUser._id
-  }
-  const options = {
-    expiresIn: accessTokenExpired
-  }
-  const accessToken = jwt.sign(payload, secretKey, options)
-  return {
-    access_token: accessToken,
-    user: newUser._doc
-  }
+  const payload = { user_id: newUser._id }
+  return await generateTokens(payload, secretKey, tokenOptions)
 }
 
-const login = async (email, password) => {
-  const user = await UserService.getUser({ email })
-  if (!user) {
-    return null
-  }
-  const passwordIsValid = await user.comparePassword(password, user.password)
-  console.log(passwordIsValid)
+const login = async (emailInput, passwordInput) => {
+  const user = await UserService.getUser({ emailInput })
 
-  if (!passwordIsValid) {
-    return null
-  }
+  if (!user) throw new AppError(`Cannot found user with email ${emailInput}`, 404)
 
-  const payload = {
-    id: user._id
+  const passwordIsValid = await user.comparePassword(passwordInput, user.password)
+  if (!passwordIsValid) throw new AppError('Password invalid', 400)
+
+  const payload = { user_id: user._id }
+
+  return await generateTokens(payload, secretKey, tokenOptions)
+}
+
+const generateTokens = async (payload, secretKey, tokenOptions) => {
+  const accessToken = await JWTService.generateToken(payload, secretKey, tokenOptions.accessToken)
+  const refreshToken = await JWTService.generateToken(payload, secretKey, tokenOptions.refreshToken)
+  return {
+    accessToken,
+    refreshToken
   }
-  const options = {
-    expiresIn: accessTokenExpired
-  }
-  const accessToken = jwt.sign(payload, secretKey, options)
-  return accessToken
 }
 
 module.exports = {
