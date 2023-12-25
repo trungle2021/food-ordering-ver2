@@ -17,7 +17,7 @@ const register = async (userData) => {
 }
 
 const login = async (emailInput, passwordInput) => {
-  const user = await UserService.getUser({ emailInput })
+  const user = await UserService.getUser({ email: emailInput })
 
   if (!user) throw new AppError(`Cannot found user with email ${emailInput}`, 404)
 
