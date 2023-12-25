@@ -15,35 +15,8 @@ const Dish = ({
   isFavorite,
 }) => {
   return (
-    <li className="w-full">
-      <Card className="shadow-md relative flex flex-col bg-white justify-center items-center gap-5 p-3">
-        <img className="pt-10" srcSet={image} width='70%' height='100%' />
-        <div className="w-full top-6 absolute flex justify-between pr-4">
-          {discount ? <Discount amount={discount} /> : <div></div>}
-          <button>{<Heart isFavorite={isFavorite} />}</button>
-        </div>
-
-        <div className="flex justify-between w-full items-center px-4">
-          <div className="flex flex-col gap-3">
-            <span className="flex">
-              <Star size={25} isRated={true} />
-              <Star size={25} isRated={true} />
-              <Star size={25} isRated={true} />
-              <Star size={25} isRated={true} />
-              <Star size={25} isRated={false} />
-            </span>
-            <span className="font-medium text-lg text-black">{name}</span>
-            <span className="text-2xl font-bold text-black">
-              <span className="text-primary-color">$</span>
-              {price}
-            </span>
-          </div>
-          <button className="basis-8 text-2xl text-center leading-4 p-3 rounded-lg bg-primary-color border-2 border-primary-color text-white">
-            +
-          </button>
-        </div>
-      </Card>
-    </li>
+    <>
+    </>
   );
 };
 
