@@ -1,11 +1,16 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
+  
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #f5f5f5;
@@ -20,8 +25,11 @@ body {
 }
 
 .sidebar{
-  width: 20%;
+  position: relative;
+  top: 0;
+  height: 100%;
   background-color: #ffffff;
+  color: black;
 }
 
 .main-content{
@@ -29,11 +37,18 @@ body {
   background-color: #f5f5f5;
 }
 
-.sidebar,
-.main-content {
-  text-align: center;
+.sidebar .sidebar-left{
+  left: 0;
+  /* width: 260px; */
 }
 
-.sidebar-left .logo{
-  width: 40%;
+.sidebar .sidebar-right{
+  right: 0;
+  /* width: 260px; */
 }
+
+/* .sidebar,
+.main-content {
+  text-align: center;
+} */
+
