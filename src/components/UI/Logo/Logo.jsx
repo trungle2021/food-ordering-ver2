@@ -1,11 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
 
-export const Logo = ({width}) => {
-    const StyledLogo = styled.img`
-    
-    `
+export const Logo = ({className, width}) => {
     return (
-        <img src='/logo.png' width={width} />
+        <img className={className} src='/Logo.png' width={width} />
     )
 }

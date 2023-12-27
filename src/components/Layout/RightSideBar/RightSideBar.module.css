@@ -1,0 +1,10 @@
+.sidebar__right{
+    right:0;
+    padding: 30px 30px 10px;
+    position: fixed;
+    background-color: rgb(202, 202, 165);
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}

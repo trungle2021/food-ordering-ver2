@@ -1,18 +1,16 @@
 import React from "react";
-import {
-  Avatar,
-  CouponCode,
-  Location,
-  Notification,
-  OrderDiscussion,
-  Settings02,
-} from "../../UI/Icon/Icon";
-import OrderItems from "../../OrderItems/OrderItems";
+import styles from './RightSideBar.module.css'
+import {UserSection} from './UserSection/UserSection'
+import {BalanceSection} from './BalanceSection/BalanceSection'
+import {AddressSection} from './AddressSection/AddressSection'
 
 export default function RightHeader({ className }) {
   return (
-    <aside className={className} >
-      <h1>3</h1>
+    <aside className={`${className} ${styles['sidebar__right']}`} >
+      <UserSection />
+      <BalanceSection />
+      <AddressSection/>
+      {/* <CartSection/> */}
     </aside >
   );
 }

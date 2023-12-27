@@ -1,0 +1,28 @@
+
+  .navbar__link {
+    position: relative;
+    font-size: 14px;
+    display: flex;
+    width: 300px;
+    padding: 10px;
+    color: black;
+    align-items: center;
+  }
+  
+  .navbar__link img {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    top: 14px;
+    text-align: center;
+    margin: 0 20px;
+  }
+  
+  .navbar__link span {
+    position: relative;
+    top: 12px;
+    margin-left: 10px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle
+  }

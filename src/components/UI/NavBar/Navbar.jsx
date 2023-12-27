@@ -1,17 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
-
+import styles from '../NavBar/NavBar.module.css'
 
 export const Navbar = ({ items }) => {
-   const StyledNav = styled.nav`
-    
-   `
     return (
-        <nav>
-            <ul>
+        <nav className={styles['navbar__container']}>
+            <ul className={styles['navbar__list']}>
                 {items.map(item => (
-                    <li>
-                        <a href={item.url}>
+                    <li className={styles['navbar__item']} key={item.url}>
+                        <a href={item.url} className={styles['navbar__link']}>
                                 <img src={item.src}/>
                                 <span>{item.label}</span>
                         </a>

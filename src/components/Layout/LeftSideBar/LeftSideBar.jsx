@@ -1,7 +1,7 @@
 import { React, useContext } from "react";
 import { Logo } from "../../UI/Logo/Logo";
 import { Navbar } from "../../UI/NavBar/Navbar";
-import styled from 'styled-components'
+import styles from './LeftSideBar.module.css'
 
 
 export default function LeftSideBar({ className }) {
@@ -14,14 +14,15 @@ export default function LeftSideBar({ className }) {
     { url: '#OrderHistory', label: 'Order History', src: '/icon/OrderHistory.svg' },
     { url: '#Bills', label: 'Bills', src: '/icon/Bills.svg' },
     { url: '#Setting', label: 'Setting', src: '/icon/Setting.svg' },
+    { url: '#Logout', label: 'Logout', src: '/icon/Logout.svg' },
   ];
 
 
 
   return (
-    <div className={className}>
-      <Logo width='40%' />
+    <aside className={`${className} ${styles["sidebar__left"]}`}>
+      <Logo className={styles.logo} width='100%' />
       <Navbar items={navItems}/>
-    </div>
+    </aside>
   )
 }
