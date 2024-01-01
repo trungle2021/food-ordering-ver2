@@ -1,0 +1,10 @@
+.order-item-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dish-container{
+    display: flex;
+    flex-direction: column;
+}

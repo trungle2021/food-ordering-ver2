@@ -8,14 +8,17 @@ export const AddressSection = () => {
     <div className={styles['address__container']}>
       <h3 className={styles['address-title']}>Your Address</h3>
       <div className={styles['address__info']}>
-        <div>
-          <Location className={`${styles['address__info-icon']}`} size={30} />
-          <span className={` ${styles['address__info-text']}`}>Elm Street, 23</span>
+        <div className={styles['address__info-location']}>
+          <Location className={`${styles['address__info-location-icon']}`} size={30} />
+          <span className={` ${styles['address__info-location-text']}`}>Elm Street, 23</span>
         </div>
-        <Button className={` ${styles['address__info-button']}`}>Change</Button>
+        <Button className={` ${styles['address-button']}`}>Change</Button>
       </div>
       <input className={styles['address__info-note']} type="text" name="" id="" placeholder='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. ' />
-      <Button>Add Note</Button>
+      <div className={styles['address__action']}>
+        <Button className={`${styles['address-button']}`}>Add Details</Button>
+        <Button className={`${styles['address-button']}`}>Add Note</Button>
+      </div>
     </div>
   )
 }

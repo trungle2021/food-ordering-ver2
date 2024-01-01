@@ -1,6 +1,8 @@
 .address__container{
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
+    gap: 30px;
 }
 
 .address__info{
@@ -8,8 +10,25 @@
     justify-content: space-between;
 }
 
+.address__action{
+    display: flex;
+    gap: 15px;
+}
 
-.address__info-text{
+.address-button{
+    padding: 10px 20px;
+    font-size: 14px;
+    width: fit-content;
+}
+
+.address__info-location{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address__info-location-text{
     font-size: 16px;
 }
 
