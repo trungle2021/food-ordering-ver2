@@ -5,9 +5,13 @@
 
 .address__info{
     display: flex;
-    justify-content: ;
+    justify-content: space-between;
 }
+
 
 .address__info-text{
     font-size: 16px;
 }
+
+
+

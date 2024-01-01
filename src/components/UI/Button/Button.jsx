@@ -1,7 +1,10 @@
 import React from 'react'
-
-export const Button = ({children}) => {
+import styled from 'styled-components'
+export const Button = ({ children, className }) => {
+  const ButtonStyled = styled.button`
+    border-radius : 30px;
+  `
   return (
-    <button>{children}</button>
+    <ButtonStyled className={className}>{children}</ButtonStyled>
   )
 }
