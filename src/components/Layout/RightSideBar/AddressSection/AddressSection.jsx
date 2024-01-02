@@ -3,10 +3,10 @@ import styles from './AddressSection.module.css'
 import { Button } from '../../../UI/Button/Button'
 import { Location } from '../../../UI/Icon/Icon'
 
-export const AddressSection = () => {
+export const AddressSection = ({ className }) => {
   return (
-    <div className={styles['address__container']}>
-      <h3 className={styles['address-title']}>Your Address</h3>
+    <div className={`${styles['address__container']}`}>
+      <h3 className={`${styles['address-title']}`}>Your Address</h3>
       <div className={styles['address__info']}>
         <div className={styles['address__info-location']}>
           <Location className={`${styles['address__info-location-icon']}`} size={30} />

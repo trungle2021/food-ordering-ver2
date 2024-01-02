@@ -1,0 +1,13 @@
+.service__container{
+    display: flex;
+    justify-content:space-between;
+}
+.total__container{
+    display: flex;
+    justify-content:space-between;
+}
+
+.total-title{
+    font-size: 20px;
+    font-weight: 500;
+}
