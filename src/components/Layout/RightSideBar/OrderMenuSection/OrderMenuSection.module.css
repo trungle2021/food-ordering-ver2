@@ -5,9 +5,45 @@
 .total__container{
     display: flex;
     justify-content:space-between;
+    margin-bottom: 20px;
+
 }
 
 .total-title{
     font-size: 20px;
     font-weight: 500;
+}
+
+.orderMenu__container-action{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+.coupon-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:20px;
+}
+.orderMenu__container-action > button{
+    padding: 10px;
+}
+
+.coupon-button{
+    border: 1px solid #F8B601;
+
+}
+
+.coupon-button-text{
+    font-size: 14px;
+}
+.coupon-button-icon{
+    background-color: #F8B601;
+    padding: 5px;
+    border-radius: 12px;
+}
+.checkout-button{
+    background-color: #F8B601;
+    font-size: 14px;
+    color: #ffffff;
 }

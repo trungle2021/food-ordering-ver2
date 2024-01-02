@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    gap: 20px;
+    gap: 15px;
 }
 
 .address__info{
@@ -19,6 +19,13 @@
     padding: 10px 20px;
     font-size: 14px;
     width: fit-content;
+    background-color: transparent;
+    border: 1px solid #9f9f9f;
+}
+
+.button-change{
+    border: 1px solid #F8B601;
+    color: #F8B601;
 }
 
 .address__info-location{

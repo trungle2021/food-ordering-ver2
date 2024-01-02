@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './OrderMenuSection.module.css'
 import { OrderItem } from '../../../UI/OrderItem/OrderItem'
-
+import { CouponButtonIcon, ArrowRight } from '../../../UI/Icon/Icon'
+import { Button } from '../../../UI/Button/Button'
 export const OrderMenuSection = ({ className }) => {
     const orderItems = [
         { id: '1', name: 'A', url: '3.vn' },
@@ -19,7 +20,7 @@ export const OrderMenuSection = ({ className }) => {
 
     return (
         <div className={`${styles['orderMenu__container']}`}>
-            <h3 className={`${styles['orderMenu__container-title']} title-section`}>Order Menu</h3>
+            <h4 className={`${styles['orderMenu__container-title']} title-section`}>Order Menu</h4>
             <ul className={`${styles['orderMenu__container-list']}`}>
                 {orderItemList}
             </ul>
@@ -35,9 +36,13 @@ export const OrderMenuSection = ({ className }) => {
                 </div>
             </div>
 
-            <div>
-                <Button>Have a coupon code ?</Button>
-                <Button>Checkout</Button>
+            <div className={`${styles['orderMenu__container-action']}`}>
+                <Button className={styles['coupon-button']}>
+                    <CouponButtonIcon size={30} className={styles['coupon-button-icon']} />
+                    <span className={styles['coupon-button-text']}>Have a coupon code?</span>
+                    <ArrowRight size={10} />
+                </Button>
+                <Button className={styles['checkout-button']}>Checkout</Button>
             </div>
         </div>
     )

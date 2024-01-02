@@ -7,7 +7,7 @@ import RecentOrders from "../../RecentOrders/RecentOrders";
 export default function MainContent({ className }) {
   return (
     <main className={className} >
-      <h1>2</h1>
+
     </main >
   );
 }

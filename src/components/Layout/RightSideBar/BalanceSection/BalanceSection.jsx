@@ -4,7 +4,7 @@ import { TopUp, Transfer } from '../../../UI/Icon/Icon'
 export const BalanceSection = ({ className }) => {
     return (
         <div className={`${styles['balance__container']} `}>
-            <h3 className='title-section'>Your Balance</h3>
+            <h4 className='title-section'>Your Balance</h4>
             <img className={styles['balance__background-image']} src='/CardBalanceBackground.png' />
             <div className={styles['balance__content']}>
                 <div className={styles['balance__info']}>

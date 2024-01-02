@@ -87,3 +87,11 @@ export function Beverage({ className, size }) {
 export function Pizza({ className, size }) {
   return <img className={className} srcSet="/icon/Pizza.svg 2x" width={size} height={size} />;
 }
+
+export function ArrowRight({ className, size }) {
+  return <img className={className} srcSet="/icon/ArrowRight.svg 2x" width={size} height={size} />;
+}
+
+export function CouponButtonIcon({ className, size }) {
+  return <img className={className} srcSet="/icon/CouponButtonIcon.svg 2x" width={size} height={size} />;
+}
