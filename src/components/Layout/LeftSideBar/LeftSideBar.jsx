@@ -1,4 +1,4 @@
-import { React, useContext } from "react";
+import { React } from "react";
 import { Logo } from "../../UI/Logo/Logo";
 import { Navbar } from "../../UI/NavBar/Navbar";
 import styles from './LeftSideBar.module.css'

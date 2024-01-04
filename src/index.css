@@ -22,9 +22,6 @@ body {
 .wrapper__container{
   display: flex;
   flex-direction: row;
-  /* height: 100%; */
-  /* overflow-y: scroll; */
-
 }
 
 .sidebar{
@@ -46,4 +43,7 @@ body {
   margin-bottom: 30px;
 }
 
+button:hover{
+  cursor: pointer;
+}
 
