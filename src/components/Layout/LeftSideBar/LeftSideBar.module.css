@@ -1,8 +1,8 @@
 .sidebar__left{
-  position: fixed;
+  position: relative;
   left: 0;
   background-color: #ffffff;
-  width: 90px;
+  width: 135px;
   overflow: hidden;
   transition: width 0.2s linear;
   box-shadow: rgba(0, 0, 0, 0.1);
@@ -17,6 +17,6 @@
 }
 
 .sidebar__left:hover{
-    width: 260px;
+    width: 350px;
     transition: all 0.5s ease;
 }

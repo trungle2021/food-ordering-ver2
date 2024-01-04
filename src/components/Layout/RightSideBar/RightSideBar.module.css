@@ -1,7 +1,7 @@
 .sidebar__right{
     right:0;
     padding: 30px 30px 10px;
-    position: fixed;
+    position: relative;
     overflow-y: scroll;
     background-color: #FFFFFF;
     width: 400px;

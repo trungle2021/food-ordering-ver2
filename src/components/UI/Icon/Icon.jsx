@@ -95,3 +95,7 @@ export function ArrowRight({ className, size }) {
 export function CouponButtonIcon({ className, size }) {
   return <img className={className} srcSet="/icon/CouponButtonIcon.svg 2x" width={size} height={size} />;
 }
+
+export function SearchIcon({ className, size }) {
+  return <img className={className} srcSet="/icon/SearchIcon.svg 2x" width={size} height={size} />;
+}

@@ -1,7 +1,9 @@
 .search-bar{
-
+    position: relative;
 }
 
-.search-bar-icon{
-    
+.search-icon{
+    position: absolute;
+    z-index: 1;
+    /* transform: translateY(-50%); */
 }
