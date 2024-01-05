@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="wrapper__container">
       <LeftSideBar className='sidebar' />
-      <MainContent className='main__content' />
+      <MainContent />
       <RightSideBar className='sidebar' />
     </div>
   );

@@ -35,11 +35,7 @@ body {
   color: black;
 }
 
-.main__content{
-  flex-grow: 1;
-  width: 100%;
-  background-color: #f5f5f5;
-}
+
 
 .rounded-8 {
   border-radius: 8px;

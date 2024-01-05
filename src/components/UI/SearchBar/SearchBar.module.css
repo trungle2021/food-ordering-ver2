@@ -1,9 +1,22 @@
-.search-bar{
+.form-search{
     position: relative;
+    width: 400px;
+    padding-right: 50px;
 }
+
+.search-bar{
+    border-radius: 30px;
+    height: 100%;
+    width: 100%;
+    padding-left: 40px;
+
+}
+
 
 .search-icon{
     position: absolute;
     z-index: 1;
-    /* transform: translateY(-50%); */
+    top: 50%;
+    left: 6%;
+    transform: translateY(-50%);
 }
