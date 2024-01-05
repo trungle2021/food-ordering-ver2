@@ -17,7 +17,7 @@
 
 .address-button{
     padding: 10px 20px;
-    font-size: 14px;
+    font-size: 1rem;
     width: fit-content;
     background-color: transparent;
     border: 1px solid #9f9f9f;
@@ -36,7 +36,7 @@
 }
 
 .address__info-location-text{
-    font-size: 16px;
+    font-size: 1.2rem;
 }
 
 

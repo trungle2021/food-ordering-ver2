@@ -11,17 +11,28 @@ export const BalanceSection = ({ className }) => {
                     <p className={styles['balance__info-title']}>Balance</p>
                     <span className={styles['balance__info-amount']}>$12.000</span>
                 </div>
-                <div className={styles['balance__function']}>
-                    <div className={styles['balance__function__item']}>
-                        <TopUp className={styles['balance__function-button']} size={50} />
-                        <span>Top Up</span>
-                    </div>
-                    <div className={styles['balance__function__item']}>
-                        <Transfer className={styles['balance__function-button']} size={50} />
-                        <span>Transfer</span>
-                    </div>
-                </div>
+                <div className={styles['balance__function__item']}>
+    <TopUp className={styles['balance__function-button']} size={50} />
+    <span>Top Up</span>
+</div>
+<div className={styles['balance__function__item']}>
+    <Transfer className={styles['balance__function-button']} size={50} />
+    <span>Transfer</span>
+</div>
+               
             </div>
         </div>
     )
 }
+
+
+{/* <div className={styles['balance__function']}>
+<div className={styles['balance__function__item']}>
+    <TopUp className={styles['balance__function-button']} size={50} />
+    <span>Top Up</span>
+</div>
+<div className={styles['balance__function__item']}>
+    <Transfer className={styles['balance__function-button']} size={50} />
+    <span>Transfer</span>
+</div>
+</div> */}

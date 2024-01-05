@@ -28,7 +28,7 @@
 }
 
 .balance__info-amount{
-    font-size: 25px;
+    font-size: 1.8rem;
     font-weight: bolder;
 }
 
@@ -36,14 +36,14 @@
     display: flex;
     position: relative;
     justify-content: space-around;
-    gap: 20px;
+    flex: 20px;
     z-index: 1;
 }
 
 .balance__function__item{
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .balance__function__item span{
-    font-size: 12px;
+    font-size: 1rem;
     color: #ffffff;
 }
 

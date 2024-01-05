@@ -10,7 +10,7 @@
 }
 
 .total-title{
-    font-size: 20px;
+    font-size: 2rem;
     font-weight: 500;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .coupon-button-text{
-    font-size: 14px;
+    font-size: 1.3rem;
 }
 .coupon-button-icon{
     background-color: #F8B601;
