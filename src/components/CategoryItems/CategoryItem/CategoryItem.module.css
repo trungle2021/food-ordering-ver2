@@ -1,0 +1,9 @@
+.category-item img{
+    width: 30px;
+    height: auto;
+}
+
+.category-item{
+    display: flex;
+    flex-flow: column wrap;
+}

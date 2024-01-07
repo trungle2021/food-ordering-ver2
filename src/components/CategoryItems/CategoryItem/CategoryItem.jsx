@@ -1,10 +1,12 @@
 import React from "react";
-import Card from "../../UI/Card/Card";
+import styles from './CategoryItem.module.css';
 
 const CategoryItem = ({ iconLink, name }) => {
   return (
-    <>
-    </>
+    <li className={`${styles['category-item']}`}>
+      <img src={iconLink} />
+      <span>{name}</span>
+    </li>
   );
 };
 

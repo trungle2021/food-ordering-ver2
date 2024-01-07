@@ -4,9 +4,9 @@ import { AppContext } from '../../store/AppContext';
 import { getRecentOrdersApi } from '../../utils/api';
 import axios from "axios";
 
-const RecentOrders = () => {
+
+export const RecentOrders = () => {
   const { userId } = useContext(AppContext);
-  console.log(userId)
   const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userId)
 
   const [recentOrders, setRecentOrders] = useState([])
@@ -34,9 +34,8 @@ const RecentOrders = () => {
     />
   })
   return (
-    <>
-    </>
+    <div>RecentOrders</div>
   )
 }
 
-export default RecentOrders
+

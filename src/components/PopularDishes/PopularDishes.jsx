@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Dish from "./Dish/Dish";
+import Dish from "./PopularDish/PopularDish";
 import axios from "axios";
 import { getPopularDishesApi } from "../../utils/api";
 
 
-
-const PopularDishes = () => {
+export const PopularDishes = () => {
   const [popularDishes, setPopularDishes] = useState([])
 
   const getPopularDishes = async () => {
@@ -25,18 +24,19 @@ const PopularDishes = () => {
     const dish = item.dish
     return <Dish
       key={dish._id}
-      image={dish.image}
+      imageLink={dish.image}
       discount={dish.discount}
       name={dish.name}
       price={dish.price}
       isFavorite={true}
     />
   })
-
   return (
-    <>
-    </>
-  );
-};
+    <ul>
+      {popularDishesItem}
+    </ul>
+  )
+}
 
-export default PopularDishes;
+
+
