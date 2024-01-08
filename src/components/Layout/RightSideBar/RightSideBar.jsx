@@ -7,7 +7,7 @@ import { OrderMenuSection } from './OrderMenuSection/OrderMenuSection'
 
 export default function RightHeader({ className }) {
   return (
-    <aside className={`${className} ${styles['sidebar__right']}`} >
+    <aside className={`${className} ${styles['sidebar--right']}`} >
       <UserSection />
       <BalanceSection />
       <AddressSection />

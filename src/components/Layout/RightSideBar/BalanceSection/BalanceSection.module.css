@@ -1,9 +1,9 @@
-.balance__container{
+.balance-container{
     position: relative;
     width: 100%;
 }
 
-.balance__content{
+.balance-container__content{
     position: absolute;
     display: flex;
     justify-content: space-evenly;
@@ -12,14 +12,14 @@
     transform: translateY(-24%);
 }
 
-.balance__background-image{
+.balance-container__background-image{
     position: relative;
     width: 100%;
     height: auto;
     z-index: 0;
 }
 
-.balance__info{
+.balance-container__content-info{
     background: #ffffff;
     position: relative;
     padding:15px;
@@ -27,38 +27,27 @@
     z-index: 1;
 }
 
-.balance__info-amount{
+.balance-container__info-amount{
     font-size: 1.8rem;
     font-weight: bolder;
 }
 
-.balance__function{
-    display: flex;
-    position: relative;
-    justify-content: space-around;
-    flex: 20px;
-    z-index: 1;
-}
-
-.balance__function__item{
+.balance-container__function-item{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
 }
 
-.balance__function-button{
+.balance-container__function-button{
     background: #ffffff;
     border-radius: 10px;
     padding: 10px;
 
 }
 
-.balance__function__item span{
+.balance-container__function-item span{
     font-size: 1rem;
     color: #ffffff;
 }
 
-.balance__function-button{
-
-}

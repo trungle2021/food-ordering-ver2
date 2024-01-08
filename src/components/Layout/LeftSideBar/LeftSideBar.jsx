@@ -20,8 +20,8 @@ export default function LeftSideBar({ className }) {
 
 
   return (
-    <aside className={`${className} ${styles["sidebar__left"]}`}>
-      <Logo className={styles.logo} width='100%' />
+    <aside className={`${className} ${styles["sidebar--left"]}`}>
+      <Logo className={`${styles["sidebar__logo"]}`} width='100%' />
       <Navbar items={navItems}/>
     </aside>
   )

@@ -19,30 +19,30 @@ export const OrderMenuSection = ({ className }) => {
     })
 
     return (
-        <div className={`${styles['orderMenu__container']}`}>
-            <h4 className={`${styles['orderMenu__container-title']} title-section`}>Order Menu</h4>
-            <ul className={`${styles['orderMenu__container-list']}`}>
+        <div className={`${styles['orderMenu-container']}`}>
+            <h4 className={`${styles['orderMenu-container__title']} title-section`}>Order Menu</h4>
+            <ul className={`${styles['orderMenu-container__list']}`}>
                 {orderItemList}
             </ul>
             <hr style={{ border: 'none', height: '1px', backgroundColor: '#c8c8c8', marginTop: '50px' }} />
             <div>
-                <div className={`${styles['service__container']}`}>
+                <div className={`${styles['orderMenu-container__service-container']}`}>
                     <span>Service</span>
                     <span>+$1.00</span>
                 </div>
-                <div className={`${styles['total__container']}`}>
-                    <span className={`${styles['total-title']}`}>Total</span>
-                    <span className={`${styles['total-amount']}`}>$202.00</span>
+                <div className={`${styles['orderMenu-container__total-container']}`}>
+                    <span className={`${styles['orderMenu-container__total-container__title']}`}>Total</span>
+                    <span className={`${styles['orderMenu-container__total-container__amount']}`}>$202.00</span>
                 </div>
             </div>
 
-            <div className={`${styles['orderMenu__container-action']}`}>
-                <Button className={styles['coupon-button']}>
-                    <CouponButtonIcon size={30} className={styles['coupon-button-icon']} />
-                    <span className={styles['coupon-button-text']}>Have a coupon code?</span>
+            <div className={`${styles['orderMenu-container__action']}`}>
+                <Button className={styles['orderMenu-container__action__button-coupon']}>
+                    <CouponButtonIcon size={30} className={styles['orderMenu-container__button-coupon-icon']} />
+                    <span className={styles['orderMenu-container__button-coupon-text']}>Have a coupon code?</span>
                     <ArrowRight size={10} />
                 </Button>
-                <Button className={styles['checkout-button']}>Checkout</Button>
+                <Button className={styles['orderMenu-container-action__button-checkout']}>Checkout</Button>
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-.sidebar__left{
+.sidebar--left{
   position: relative;
   left: 0;
   background-color: #ffffff;
@@ -8,7 +8,7 @@
   box-shadow: rgba(0, 0, 0, 0.1);
 }
 
-.logo{
+.sidebar__logo{
     text-align: center;
     display: flex;
     justify-content: center;
@@ -16,7 +16,7 @@
     transition: all 0.5s ease;
 }
 
-.sidebar__left:hover{
+.sidebar--left:hover{
     width: 350px;
     transition: all 0.5s ease;
 }

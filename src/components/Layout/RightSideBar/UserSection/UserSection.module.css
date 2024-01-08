@@ -1,11 +1,11 @@
-.user__container{
+.user-container{
     display:flex;
     justify-content: space-between;
     padding: 0 10px;
     align-items: center;
 }
 
-.user__function{
+.user-container__function{
     display: flex;
     gap: 5px;
 }

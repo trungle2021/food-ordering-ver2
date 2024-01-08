@@ -1,16 +1,16 @@
-.address__container{
+.address-container{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     gap: 15px;
 }
 
-.address__info{
+.address-container__info{
     display: flex;
     justify-content: space-between;
 }
 
-.address__action{
+.address-container-action{
     display: flex;
     gap: 15px;
 }
@@ -28,14 +28,14 @@
     color: #F8B601;
 }
 
-.address__info-location{
+.address-info__location{
     display: flex;
     gap: 10px;
     justify-content: space-between;
     align-items: center;
 }
 
-.address__info-location-text{
+.address-info__location-text{
     font-size: 1.2rem;
 }
 

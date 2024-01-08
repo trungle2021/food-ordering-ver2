@@ -1,48 +1,49 @@
-.service__container{
+.orderMenu-container__action{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.orderMenu-container__action > button{
+    padding: 10px;
+}
+
+.orderMenu-container__service-container{
     display: flex;
     justify-content:space-between;
 }
-.total__container{
+.orderMenu-container__total-container{
     display: flex;
     justify-content:space-between;
     margin-bottom: 20px;
 
 }
 
-.total-title{
+.orderMenu-container__total-container__title{
     font-size: 2rem;
     font-weight: 500;
 }
 
-.orderMenu__container-action{
-    display: flex;
-    flex-direction: column;
-    gap:10px;
-}
-.coupon-button{
+
+.orderMenu-container__action__button-coupon{
     display: flex;
     justify-content: center;
     align-items: center;
     gap:20px;
-}
-.orderMenu__container-action > button{
-    padding: 10px;
-}
-
-.coupon-button{
     border: 1px solid #F8B601;
-
 }
 
-.coupon-button-text{
+.orderMenu-container__button-coupon-text{
     font-size: 1.3rem;
 }
-.coupon-button-icon{
+
+.orderMenu-container__button-coupon-icon{
     background-color: #F8B601;
     padding: 5px;
     border-radius: 12px;
 }
-.checkout-button{
+
+.orderMenu-container__action__button-coupon{
     background-color: #F8B601;
     font-size: 14px;
     color: #ffffff;

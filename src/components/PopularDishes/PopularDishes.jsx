@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Dish from "./PopularDish/PopularDish";
+import {PopularDish} from "./PopularDish/PopularDish";
 import axios from "axios";
 import { getPopularDishesApi } from "../../utils/api";
 
@@ -22,7 +22,7 @@ export const PopularDishes = () => {
 
   const popularDishesItem = popularDishes.map(item => {
     const dish = item.dish
-    return <Dish
+    return <PopularDish
       key={dish._id}
       imageLink={dish.image}
       discount={dish.discount}
