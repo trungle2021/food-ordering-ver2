@@ -8,8 +8,8 @@ import styles from './PopularDish.module.css'
 export const PopularDish = ({imageLink, discount, isFavorite}) => {
   return (
     <li>
-        <Card className>
-            <div className={`${styles['discount-favorite__container']}`}>
+        <Card className={`${styles['populardish-container']}`}>
+            <div className={`${styles['populardish-container__header']}`}>
               <Discount amount={discount}/>
               <Heart isFavorite={isFavorite}/>
             </div>
