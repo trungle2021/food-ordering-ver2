@@ -3,22 +3,34 @@ import Card from "../../UI/Card/Card";
 import Star from "../../UI/Star/Star";
 import Heart from "../../UI/Heart/Heart";
 import Discount from "../../UI/Discount/Discount";
-import styles from './PopularDish.module.css'
+import styles from "./PopularDish.module.css";
+import { Rating } from "../../Rating/Rating";
 
-export const PopularDish = ({ imageLink, discount, isFavorite }) => {
+export const PopularDish = ({
+  imageLink,
+  discount,
+  isFavorite,
+  ratingPoint,
+}) => {
   return (
-    <li>
-      <Card className={`${styles['populardish-container']}`}>
-        <div className={`${styles['populardish-container__header']}`}>
+    <Card>
+      <div className={`${styles["popular-dish-container"]}`}>
+        <div className={`${styles["popular-dish-container__header"]}`}>
           <Discount amount={discount} />
           <Heart isFavorite={isFavorite} />
         </div>
-        <img className={`${styles['populardish-container__image']}`} src={imageLink} alt="" />
+        <img
+          className={`${styles["popular-dish-container__image"]}`}
+          src={imageLink}
+          alt=""
+        />
         {/* star rating */}
-        <Rating />
+        <Rating ratingPoint={ratingPoint} size={30} />
         {/* dish info section */}
-
-      </Card>
-    </li>
-  )
-}
+        <div>
+          <span></span>
+        </div>
+      </div>
+    </Card>
+  );
+};

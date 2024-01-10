@@ -1,26 +1,23 @@
-import React from 'react'
-import Star from '../UI/Star/Star'
+import React from "react";
+import Star from "../UI/Star/Star";
 
-export const Rating = ({ ratingPoint }) => {
-    const starArray = []
-    if (ratingPoint < 0 || ratingPoint > 5) {
-        console.log("Invalid rating point");
-        ratingPoint = 0
-    } else {
-        for (let point = 0; point < ratingPoint; point++) {
-            starArray.push(<Star isRated={true} />)
-        }
+export const Rating = ({ ratingPoint = 0, size }) => {
+  const starArray = [];
+  let key = 0;
+  if (ratingPoint < 0 || ratingPoint > 5) {
+    console.log("Invalid rating point");
+    ratingPoint = 0;
+  } else {
+    for (let point = 0; point < ratingPoint; point++) {
+      key++;
+      starArray.push(<Star key={key} isRated={true} size={size} />);
     }
+  }
 
-    for (let totalStar = 0; totalStar < 5 - ratingPoint; totalStar++) {
-        starArray.push(<Star isRated={false} />)
-    }
+  for (let totalStar = 0; totalStar < 5 - ratingPoint; totalStar++) {
+    key++;
+    starArray.push(<Star key={key} isRated={false} size={size} />);
+  }
 
-
-    return (
-        <ul>
-            {starArray}
-        </ul>
-    )
-
-}
+  return <ul>{starArray}</ul>;
+};
