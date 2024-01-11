@@ -16,7 +16,7 @@ export const PopularDish = ({
     <Card>
       <div className={`${styles["popular-dish-container"]}`}>
         <div className={`${styles["popular-dish-container__header"]}`}>
-          <Discount amount={discount} />
+          <Discount className={`${styles['popular-dish-container--discount']}`} amount={discount} />
           <Heart isFavorite={isFavorite} />
         </div>
         <img
@@ -24,11 +24,13 @@ export const PopularDish = ({
           src={imageLink}
           alt=""
         />
-        {/* star rating */}
         <Rating ratingPoint={ratingPoint} size={30} />
-        {/* dish info section */}
-        <div>
-          <span></span>
+        <div className={`${styles["popular-dish-container__body"]}`}>
+          <div className={`${styles["popular-dish-container__info"]}`}>
+            <span>Food Name</span>
+            <span>Food Price</span>
+          </div>
+          <button className={`${styles["popular-dish-container--add-to-cart-btn"]}`}>+</button>
         </div>
       </div>
     </Card>

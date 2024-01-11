@@ -1,6 +1,5 @@
-.popular-dish-container > img {
-  width: 100%;
-  height: 15rem;
+.popular-dish-container {
+  position: relative;
 }
 
 .discount-favorite__container {
@@ -8,10 +7,9 @@
   justify-content: space-between;
 }
 
-.popular-dish-container {
-  position: relative;
+.popular-dish-container--discount{
+  padding:10px;
 }
-
 .popular-dish-container__header {
   position: absolute;
   display: flex;
@@ -19,3 +17,29 @@
   width: 100%;
   top: 0;
 }
+
+
+.popular-dish-container > img {
+  width: 100%;
+  height: 25rem;
+}
+
+.popular-dish-container__body{
+  display: flex;
+  justify-content: space-between;
+}
+
+.popular-dish-container__info{
+  display: flex;
+  flex-direction: column;
+}
+
+.popular-dish-container--add-to-cart-btn{
+  color: white;
+  padding: 5px 10px;
+  background-color: #F8B602;
+  border-radius: 5px;
+}
+
+
+
