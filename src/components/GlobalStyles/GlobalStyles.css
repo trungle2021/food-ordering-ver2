@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,10 +7,17 @@
   text-decoration: none;
   list-style-type: none;
   font-family: "Poppins", sans-serif;
-  
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
-html{
+:root {
+  --primary: #f8b602;
+  --white: #ffffff;
+  --black: #2e2e2e;
+}
+
+html {
   font-size: 62.5%;
 }
 
@@ -23,29 +29,36 @@ body {
   height: 100%;
 }
 
-.wrapper__container{
+.wrapper__container {
   display: flex;
 }
 
-
-
-.sidebar{
+.sidebar {
   top: 0;
   height: 100vh;
   color: black;
 }
 
-
-
 .rounded-8 {
   border-radius: 8px;
 }
 
-.title-section{
+.title-section {
   margin-bottom: 30px;
 }
 
-button:hover{
+button:hover {
   cursor: pointer;
 }
 
+.dollar {
+  color: var(--primary);
+}
+
+.section__header {
+  display: flex;
+  justify-content: space-between;
+}
+.section__title {
+  color: var(--black);
+}

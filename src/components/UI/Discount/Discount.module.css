@@ -1,11 +1,7 @@
-.discount{
-    padding: 10px 25px;
-    border-radius: 0 10px 10px 0px;
-    background-color: #EB5757;
-    color: white;
-    height: fit-content;
-}
-
-.small{
-
+.discount {
+  padding: 3px 20px;
+  border-radius: 0 7px 7px 0px;
+  background-color: #eb5757;
+  color: white;
+  height: fit-content;
 }
