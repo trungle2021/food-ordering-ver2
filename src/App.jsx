@@ -4,13 +4,14 @@ import MainContent from "./components/Layout/MainContent/MainContent";
 import RightSideBar from "./components/Layout/RightSideBar/RightSideBar";
 function App() {
   return (
-    <GlobalStyles>
-      <div className="wrapper__container">
-        <LeftSideBar className="sidebar" />
-        <MainContent />
-        <RightSideBar className="sidebar" />
-      </div>
-    </GlobalStyles>
+      <GlobalStyles>
+        <div className="wrapper__container">
+          <LeftSideBar className="sidebar" />
+          <MainContent />
+          <RightSideBar className="sidebar" />
+        </div>
+      </GlobalStyles> 
+    
   );
 }
 

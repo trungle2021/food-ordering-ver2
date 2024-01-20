@@ -9,7 +9,7 @@ export const PopularDishes = () => {
 
   const getPopularDishes = async () => {
     try {
-      const response = await axios.get(`${getPopularDishesApi}?limit=3`);
+      const response = await axios.get(`${getPopularDishesApi}?limit=4`);
       setPopularDishes(response.data.data);
     } catch (err) {
       console.log(err);
@@ -22,11 +22,13 @@ export const PopularDishes = () => {
 
   const popularDishesItem = popularDishes.map((item) => {
     const dish = item.dish;
+    const itemSold = item.count
     return (
       <li>
         <PopularDish
           key={dish._id}
           imageLink={dish.image}
+          itemSold={itemSold}
           discount={dish.discount}
           name={dish.name}
           price={dish.price}

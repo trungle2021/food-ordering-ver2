@@ -1,26 +1,26 @@
 import React, { useEffect, useState, useContext } from "react";
 import RecentOrder from './RecentOrder'
-import { AppContext } from '../../store/AppContext';
+import { AuthContext } from '../../store/AuthContext';
 import { getRecentOrdersApi } from '../../utils/api';
 import axios from "axios";
 
 
 export const RecentOrders = () => {
-  const { userId } = useContext(AppContext);
-  const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userId)
+  const userid = useContext(AuthContext);
+  const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userid)
 
   const [recentOrders, setRecentOrders] = useState([])
   const getRecentOrders = async () => {
     try {
-      const response = await axios.get(`${getRecentOrdersApiAddedUserId}?limit=3`)
-      console.log(response.data.data)
+      const response = await axios.get(`${getRecentOrdersApiAddedUserId}?limit=2`)
       setRecentOrders(response.data.data)
     } catch (error) {
       console.log(error)
     }
   }
+  
   useEffect(() => {
-    // getRecentOrders()
+    getRecentOrders()
   }, [])
 
 
@@ -34,7 +34,7 @@ export const RecentOrders = () => {
     />
   })
   return (
-    <div>RecentOrders</div>
+    <div>{recentOrdersItem}</div>
   )
 }
 

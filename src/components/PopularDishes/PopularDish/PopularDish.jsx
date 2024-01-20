@@ -1,6 +1,5 @@
 import React from "react";
 import Card from "../../UI/Card/Card";
-import Star from "../../UI/Star/Star";
 import Heart from "../../UI/Heart/Heart";
 import Discount from "../../UI/Discount/Discount";
 import styles from "./PopularDish.module.css";
@@ -8,6 +7,7 @@ import { Rating } from "../../Rating/Rating";
 
 export const PopularDish = ({
   imageLink,
+  itemSold,
   discount,
   isFavorite,
   ratingPoint,
@@ -27,7 +27,10 @@ export const PopularDish = ({
           src={imageLink}
           alt=""
         />
-        <Rating ratingPoint={ratingPoint} size={30} />
+        <div className="d-flex justify-between align-center">
+          <Rating ratingPoint={ratingPoint} size={30} />
+          <span>{itemSold} Sold</span>
+        </div>
         <div className={`${styles["popular-dish-container__body"]}`}>
           <div className={`${styles["popular-dish-container__info"]}`}>
             <span

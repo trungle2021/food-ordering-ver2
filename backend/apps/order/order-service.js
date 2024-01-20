@@ -126,10 +126,21 @@ const getRecentOrders = async (userId, queryString) => {
       }
     },
     {
-      $unwind: '$order_detail'
-    },
-    {
-      $sort: { 'order_detail.price': -1 }
+      $addFields: {
+        order_detail: {
+          $reduce: {
+            input: '$order_detail',
+            initialValue: { price: 0 },
+            in: {
+              $cond: {
+                if: { $gt: ['$$this.price', '$$value.price'] },
+                then: '$$this',
+                else: '$$value'
+              }
+            }
+          }
+        }
+      }
     },
     {
       $group: {
@@ -146,14 +157,6 @@ const getRecentOrders = async (userId, queryString) => {
         __v: { $first: '$__v' },
         order_detail: { $push: '$order_detail' }
       }
-    },
-    {
-      $addFields: {
-        order_detail: { $slice: ['$order_detail', 1] }
-      }
-    },
-    {
-      $unwind: '$order_detail'
     },
     {
       $lookup: {
