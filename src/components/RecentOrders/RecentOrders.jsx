@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import RecentOrder from './RecentOrder'
+import RecentOrder from './RecentOrder/RecentOrder'
 import { AuthContext } from '../../store/AuthContext';
 import { getRecentOrdersApi } from '../../utils/api';
 import axios from "axios";
@@ -20,21 +20,24 @@ export const RecentOrders = () => {
   }
   
   useEffect(() => {
-    getRecentOrders()
+     getRecentOrders()
   }, [])
 
 
   const recentOrdersItem = recentOrders.map(order => {
-    return <RecentOrder
+    const dish = order.order_detail.dish 
+    return <li>
+      <RecentOrder
       key={order._id}
-      image={order.image}
-      name={order.name}
-      price={order.price}
+      image={dish.image}
+      name={dish.name}
+      price={dish.price}
       isFavorite={true}
     />
+      </li>
   })
   return (
-    <div>{recentOrdersItem}</div>
+    <ul>{recentOrdersItem}</ul>
   )
 }
 
