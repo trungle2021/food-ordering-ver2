@@ -58,10 +58,20 @@ button:hover {
 .section__header {
   display: flex;
   justify-content: space-between;
+  margin: 20px 0;
 }
+
+.section__header > a{
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+
+
 .section__title {
   color: var(--black);
 }
+
+
 
 .d-flex{
   display:flex;

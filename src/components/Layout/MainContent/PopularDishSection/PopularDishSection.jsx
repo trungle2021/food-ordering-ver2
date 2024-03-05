@@ -4,7 +4,7 @@ export const PopularDishSection = () => {
   return (
     <div className="section">
       <div className="section__header">
-        <h2 className="section__title">Popular Dishes</h2>
+        <h1 className="section__title">Popular Dishes</h1>
         <a href="">View All</a>
       </div>
       <PopularDishes />

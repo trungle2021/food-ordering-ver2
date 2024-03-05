@@ -4,10 +4,9 @@ export const RecentOrderSection = () => {
   return (
     <div className="section">
       <div className="section__header">
-        <h2 className="section__title">Recent Orders</h2>
+        <h1 className="section__title">Recent Orders</h1>
         <a
-          href="#
-        "
+          href="#"
         >
           View all
         </a>

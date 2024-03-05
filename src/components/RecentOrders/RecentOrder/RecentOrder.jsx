@@ -15,10 +15,12 @@ const RecentOrder = ({
           <div className={`${styles['recent-order-container__header']}`}>
             <Heart isFavorite={isFavorite}/>
           </div>
+          <img src={image}/>
           <div className={`${styles['recent-order-container__body']}`}>
-            <img src={image}/>
-            <span className={`${styles['recent-order__name']}`}>{name}</span>
-            <span className={`${styles['recent-order__price']}`}>{price}</span>
+            <div className={`${styles['recent-order-container__info']}`}>
+                <span className={`${styles['recent-order-container__info--name']}`}>{name}</span>
+                <span className={`${styles['recent-order-container__info--price']}`}><span className="dollar">$</span>{price}</span>
+            </div>
           </div>
      
       </div>

@@ -1,7 +1,6 @@
 .form-search{
     position: relative;
     width: 400px;
-    padding-right: 50px;
 }
 
 .search-bar{
@@ -11,7 +10,6 @@
     padding-left: 40px;
 
 }
-
 
 .search-icon{
     position: absolute;

@@ -24,9 +24,8 @@ export const PopularDishes = () => {
     const dish = item.dish;
     const itemSold = item.count
     return (
-      <li>
+      <li key={dish._id}>
         <PopularDish
-          key={dish._id}
           imageLink={dish.image}
           itemSold={itemSold}
           discount={dish.discount}

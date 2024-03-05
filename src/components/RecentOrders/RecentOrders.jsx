@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import RecentOrder from './RecentOrder/RecentOrder'
 import { AuthContext } from '../../store/AuthContext';
 import { getRecentOrdersApi } from '../../utils/api';
+import styles from './RecentOrders.module.css'
 import axios from "axios";
 
 
@@ -26,9 +27,8 @@ export const RecentOrders = () => {
 
   const recentOrdersItem = recentOrders.map(order => {
     const dish = order.order_detail.dish 
-    return <li>
+    return <li key={order._id}>
       <RecentOrder
-      key={order._id}
       image={dish.image}
       name={dish.name}
       price={dish.price}
@@ -37,7 +37,7 @@ export const RecentOrders = () => {
       </li>
   })
   return (
-    <ul>{recentOrdersItem}</ul>
+    <ul className={`${styles["recent-orders-container"]}`}>{recentOrdersItem}</ul>
   )
 }
 
