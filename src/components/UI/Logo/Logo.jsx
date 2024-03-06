@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
-export const Logo = ({className, width}) => {
-    return (
-        <img className={className} src='/Logo.png' width={width} />
-    )
-}
+export const Logo = ({ className, width }) => {
+  return <img className={className} src="/logo.png" width={width} />;
+};

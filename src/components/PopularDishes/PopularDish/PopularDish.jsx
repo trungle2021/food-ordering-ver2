@@ -3,7 +3,7 @@ import Card from "../../UI/Card/Card";
 import Heart from "../../UI/Heart/Heart";
 import Discount from "../../UI/Discount/Discount";
 import styles from "./PopularDish.module.css";
-import { Rating } from "../../Rating/Rating";
+import { Rating } from "../../UI/Rating/Rating";
 
 export const PopularDish = ({
   imageLink,

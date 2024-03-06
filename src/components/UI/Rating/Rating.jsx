@@ -1,5 +1,5 @@
 import React from "react";
-import Star from "../UI/Star/Star";
+import Star from "../Star/Star";
 
 export const Rating = ({ ratingPoint = 0, size }) => {
   const starArray = [];
