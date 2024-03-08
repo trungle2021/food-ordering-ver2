@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./MainContent.module.css";
 import { Route, Switch } from "react-router-dom";
-import { Favorites } from "../../Page/Favorites";
+import { Favorites } from "../../Page/Favorites/Favorites";
 import { FoodOrder } from "../../Page/FoodOrder";
 import { OrderHistory } from "../../Page/OrderHistory";
 import { Dashboard } from "../../Page/Dashboard";

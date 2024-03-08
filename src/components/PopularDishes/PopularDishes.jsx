@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { PopularDish } from "./PopularDish/PopularDish";
+
 import axios from "axios";
 import { getPopularDishesApi } from "../../utils/api";
 import styles from "./PopularDishes.module.css";
+import { Dish } from "../Dish/Dish";
 
 export const PopularDishes = () => {
   const [popularDishes, setPopularDishes] = useState([]);
@@ -25,7 +26,7 @@ export const PopularDishes = () => {
     const itemSold = item.count
     return (
       <li key={dish._id}>
-        <PopularDish
+        <Dish
           imageLink={dish.image}
           itemSold={itemSold}
           discount={dish.discount}

@@ -17,9 +17,29 @@ const createFavorites = async (favorites) => {
   return await Favorite.insertMany(favorites)
 }
 
-const createFavorite = async (favorite) => {
+const createFavorite = async (favoriteReqBody) => {
   try {
-    return await Favorite.create(favorite)
+    const favorite = new Favorite({
+      user: favoriteReqBody.userId,
+      dish: favoriteReqBody.dishId
+    })
+
+    favorite.populate('user dish').execPopulate((err, populatedFavorite) => {
+      if (err) {
+        // handle error
+      } else if (!populatedFavorite.user || !populatedFavorite.dish) {
+        // userId or dishId not exists
+        // handle validation error
+      } else {
+        // Both userId and dishId exist, proceed with saving the favorite record
+        populatedFavorite.save((saveError, savedFavorite) => {
+          if (saveError) {
+            // handle save error
+          }
+          return savedFavorite
+        })
+      }
+    })
   } catch (error) {
     throw new AppError(error)
   }

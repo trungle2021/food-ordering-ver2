@@ -33,7 +33,14 @@ const createFavorites = catchAsyncHandler(async (req, res, next) => {
     data: favorites
   })
 })
-const createFavorite = catchAsyncHandler(async (req, res, next) => {})
+const createFavorite = catchAsyncHandler(async (req, res, next) => {
+  const favoriteReqBody = req.body
+  const favorite = await FavoriteService.createFavorite(favoriteReqBody)
+  return res.status(200).json({
+    status: 'success',
+    data: favorite
+  })
+})
 const updateFavorite = catchAsyncHandler(async (req, res, next) => {})
 const deleteFavorite = catchAsyncHandler(async (req, res, next) => {})
 
