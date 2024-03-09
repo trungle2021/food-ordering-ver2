@@ -29,7 +29,6 @@ const sendErrorProduction = (err, res) => {
 
 const ErrorController = (err, req, res, next) => {
   err.status = err.status || 'error'
-
   switch (err.name) {
     case 'ValidationError':
       err.statusCode = 400
@@ -53,9 +52,9 @@ const ErrorController = (err, req, res, next) => {
       break
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV.trim() === 'development') {
     sendErrorDev(err, res)
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (process.env.NODE_ENV.trim() === 'production') {
     sendErrorProduction(err, res)
   }
 }

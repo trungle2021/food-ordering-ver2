@@ -1,12 +1,15 @@
+const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 const AppError = require('../error/app-error')
 const Favorite = require('./favorite-model')
 
 const getFavorites = async () => {
-  return await Favorite.find({}).populate({ path: 'category', select: 'name' })
+  // return await Favorite.find({}).populate({ path: 'category', select: 'name' })
 }
 
-const getFavorite = async (id) => {
-  const favorite = await Favorite.findById(id)
+const getFavoriteByUserId = async (id) => {
+  const userId = convertToObjectId(id)
+  console.log(userId)
+  const favorite = await Favorite.find({ user: userId }).populate('user dish')
   if (!favorite) {
     return null
   }
@@ -20,28 +23,21 @@ const createFavorites = async (favorites) => {
 const createFavorite = async (favoriteReqBody) => {
   try {
     const favorite = new Favorite({
-      user: favoriteReqBody.userId,
-      dish: favoriteReqBody.dishId
+      user: favoriteReqBody.user_id,
+      dish: favoriteReqBody.dish_id
     })
 
-    favorite.populate('user dish').execPopulate((err, populatedFavorite) => {
-      if (err) {
-        // handle error
-      } else if (!populatedFavorite.user || !populatedFavorite.dish) {
-        // userId or dishId not exists
-        // handle validation error
-      } else {
-        // Both userId and dishId exist, proceed with saving the favorite record
-        populatedFavorite.save((saveError, savedFavorite) => {
-          if (saveError) {
-            // handle save error
-          }
-          return savedFavorite
-        })
-      }
-    })
+    const populatedFavorite = await favorite.populate('user dish').execPopulate()
+    if (!populatedFavorite.user || !populatedFavorite.dish) {
+      // userId or dishId not exists
+      throw new AppError('User Or Dish not exists', 404)
+      // handle validation error
+    } else {
+      // Both userId and dishId exist, proceed with saving the favorite record
+      return await populatedFavorite.save()
+    }
   } catch (error) {
-    throw new AppError(error)
+    throw new AppError(error, 500)
   }
 }
 
@@ -55,7 +51,7 @@ const deleteFavorite = async (favorite) => {
 
 module.exports = {
   getFavorites,
-  getFavorite,
+  getFavoriteByUserId,
   createFavorites,
   createFavorite,
   updateFavorite,

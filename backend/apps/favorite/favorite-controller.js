@@ -10,9 +10,9 @@ const getFavorites = catchAsyncHandler(async (req, res) => {
   })
 })
 
-const getFavorite = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params.id
-  const favorite = await FavoriteService.getFavorite(id)
+const getFavoriteByUserId = catchAsyncHandler(async (req, res, next) => {
+  const { user_id: userId } = req.params
+  const favorite = await FavoriteService.getFavoriteByUserId(userId)
   if (!favorite) {
     return res.status(404).json({
       status: 'fail',
@@ -34,7 +34,10 @@ const createFavorites = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const createFavorite = catchAsyncHandler(async (req, res, next) => {
-  const favoriteReqBody = req.body
+  const favoriteReqBody = {
+    user_id: req.body.user_id,
+    dish_id: req.body.dish_id
+  }
   const favorite = await FavoriteService.createFavorite(favoriteReqBody)
   return res.status(200).json({
     status: 'success',
@@ -46,7 +49,7 @@ const deleteFavorite = catchAsyncHandler(async (req, res, next) => {})
 
 module.exports = {
   getFavorites,
-  getFavorite,
+  getFavoriteByUserId,
   createFavorites,
   createFavorite,
   updateFavorite,

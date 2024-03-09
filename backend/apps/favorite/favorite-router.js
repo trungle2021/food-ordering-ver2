@@ -3,9 +3,12 @@ const router = express.Router()
 const FavoriteController = require('../favorite/favorite-controller')
 
 router.route('/:id')
-  .get(FavoriteController.getFavorite)
+
   .get(FavoriteController.deleteFavorite)
   .put(FavoriteController.updateFavorite)
+
+router.route('/user/:user_id')
+  .get(FavoriteController.getFavoriteByUserId)
 
 router.route('/bulk')
   .post(FavoriteController.createFavorites)
