@@ -12,6 +12,7 @@ const getFavorites = catchAsyncHandler(async (req, res) => {
 
 const getFavoriteByUserId = catchAsyncHandler(async (req, res, next) => {
   const { user_id: userId } = req.params
+  console.log(userId)
   const favorite = await FavoriteService.getFavoriteByUserId(userId)
   if (!favorite) {
     return res.status(404).json({

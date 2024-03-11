@@ -7,13 +7,9 @@ const getFavorites = async () => {
 }
 
 const getFavoriteByUserId = async (id) => {
-  const userId = convertToObjectId(id)
+  const userId = await convertToObjectId(id)
   console.log(userId)
-  const favorite = await Favorite.find({ user: userId }).populate('user dish')
-  if (!favorite) {
-    return null
-  }
-  return favorite
+  return await Favorite.find({ user: userId }).populate('dish')
 }
 
 const createFavorites = async (favorites) => {
