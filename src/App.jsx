@@ -5,6 +5,7 @@ import MainContent from "./components/Layout/MainContent/MainContent";
 import RightSideBar from "./components/Layout/RightSideBar/RightSideBar";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Login } from "./components/Page/Login/Login";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
