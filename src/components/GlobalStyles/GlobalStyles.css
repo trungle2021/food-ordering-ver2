@@ -61,26 +61,31 @@ button:hover {
   margin: 20px 0;
 }
 
-.section__header > a{
+.section__header > a {
   color: var(--primary);
   font-size: 1.3rem;
 }
-
 
 .section__title {
   color: var(--black);
 }
 
-
-
-.d-flex{
-  display:flex;
+.d-flex {
+  display: flex;
 }
 
-.justify-between{
+.justify-between {
   justify-content: space-between;
 }
 
-.align-center{
+.align-center {
   align-items: center;
+}
+/* LINE */
+
+.line-thin {
+  height: 1px;
+  width: 100%;
+  background-color: #dbdbdb;
+  flex: 1;
 }
