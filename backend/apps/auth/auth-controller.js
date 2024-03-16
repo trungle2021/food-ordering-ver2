@@ -22,8 +22,8 @@ const register = catchAsyncHandler(async (req, res, next) => {
 })
 
 const login = catchAsyncHandler(async (req, res, next) => {
-  const { email, password } = req.body
-  const tokens = await AuthService.login(email, password)
+  const { phone, password } = req.body
+  const tokens = await AuthService.login(phone, password)
   if (tokens) {
     res.status(200).json({
       status: 'success',
@@ -32,7 +32,7 @@ const login = catchAsyncHandler(async (req, res, next) => {
   } else {
     res.status(400).json({
       status: 'fail',
-      message: 'Invalid email or password'
+      message: 'Invalid phone or password'
     })
   }
 })

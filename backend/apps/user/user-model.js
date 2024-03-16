@@ -14,6 +14,13 @@ const userSchema = new mongoose.Schema({
     minlength: [5, 'Password must be at least 5 characters'],
     maxlength: [15, 'Password must be at most 15 characters']
   },
+  phone: {
+    type: String,
+    length: '15',
+    require: [true, 'Phone number is required'],
+    unique: true,
+    validate: [validator.isMobilePhone, 'Please provide a valid phone number']
+  },
   email: {
     type: String,
     require: [true, 'Email is required'],

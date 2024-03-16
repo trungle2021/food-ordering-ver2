@@ -16,10 +16,10 @@ const register = async (userData) => {
   return await generateTokens(payload, secretKey, tokenOptions)
 }
 
-const login = async (emailInput, passwordInput) => {
-  const user = await UserService.getUser({ email: emailInput })
+const login = async (phoneInput, passwordInput) => {
+  const user = await UserService.getUser({ phone: phoneInput })
 
-  if (!user) throw new AppError(`Cannot found user with email ${emailInput}`, 404)
+  if (!user) throw new AppError(`Cannot found user with phone ${phoneInput}`, 404)
 
   const passwordIsValid = await user.comparePassword(passwordInput, user.password)
   if (!passwordIsValid) throw new AppError('Password invalid', 400)
