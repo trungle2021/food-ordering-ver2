@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import CategoryItem from "./CategoryItem/CategoryItem";
-import { getCategoriesApi } from "./../../utils/api";
+import CategoryService from "../../services/CategoryService";
+
 import styles from "./CategoryItems.module.css";
 
 export const CategoryItems = () => {
   const [categories, setCategories] = useState([]);
+
+  const getCategories = async () => {
+    try {
+      const response = await CategoryService.fetchCategoryList(8);
+      setCategories(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await axios.get(`${getCategoriesApi}?limit=8`);
-        setCategories(response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
     getCategories();
   }, []);
 

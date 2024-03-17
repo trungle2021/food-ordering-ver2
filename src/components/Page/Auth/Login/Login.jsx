@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../AuthForms.module.css";
 import { LoginForm } from "./LoginForm";
 import { OR } from "../../../UI/OR/OR";
@@ -9,6 +9,7 @@ export const Login = () => {
     <div className={`${styles["wrapper-container"]}`}>
       <div className={styles["form"]}>
         <h1 className={styles["form-title"]}>Sign in</h1>
+
         <LoginForm />
         <OR text="OR" />
         <Socials />
