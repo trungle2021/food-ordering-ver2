@@ -1,8 +1,8 @@
 import axios from "../../lib/axios";
 import { getCategoriesApi } from "../../utils/api";
 
-const fetchCategoryList = (limit) => {
-  return axios.get(`${getCategoriesApi}/limit=${limit}`);
+const fetchCategoryList = (limit: number): Promise<any> => {
+  return axios.get(`${getCategoriesApi}?limit=${limit}`);
 };
 
 export const CategoryService = {

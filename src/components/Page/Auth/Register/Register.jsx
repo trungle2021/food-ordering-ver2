@@ -8,7 +8,7 @@ export const Register = () => {
   return (
     <div className={`${styles["wrapper-container"]}`}>
       <div className={styles["form"]}>
-        <h1 className={styles["form-title"]}>Register</h1>
+        <h1 className={styles["form-title"]}>Sign up</h1>
         <RegisterForm />
         <OR text="OR" />
         <Socials />

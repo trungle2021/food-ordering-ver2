@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem/CategoryItem";
-import CategoryService from "../../services/CategoryService";
-
+import CategoryService from "../../services/category/category-service";
+import Category from "../../interface/category";
 import styles from "./CategoryItems.module.css";
 
 export const CategoryItems = () => {
@@ -10,6 +10,7 @@ export const CategoryItems = () => {
   const getCategories = async () => {
     try {
       const response = await CategoryService.fetchCategoryList(8);
+      console.log(response);
       setCategories(response.data);
     } catch (err) {
       console.log(err);
@@ -20,11 +21,12 @@ export const CategoryItems = () => {
     getCategories();
   }, []);
 
-  const categoryItems = categories.map((item) => {
-    return (
-      <CategoryItem key={item._id} iconLink={item.image} name={item.name} />
-    );
-  });
+  const categoryItems: React.ReactElement[] = categories.map(
+    (item: Category) => {
+      const { _id, image, name } = item;
+      return <CategoryItem key={_id} iconLink={image} name={name} />;
+    }
+  );
 
   return (
     <ul className={`${styles["categories__container"]}`}>{categoryItems}</ul>

@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import axios from "axios";
-import { getPopularDishesApi } from "../../utils/api";
 import styles from "./PopularDishes.module.css";
 import { Dish } from "../Dish/Dish";
+import PopularDishService from "../../services/popular-dish/popular-dish";
 
 export const PopularDishes = () => {
   const [popularDishes, setPopularDishes] = useState([]);
 
   const getPopularDishes = async () => {
     try {
-      const response = await axios.get(`${getPopularDishesApi}?limit=4`);
+      const response = await PopularDishService.fetchPopularDishList(4);
       setPopularDishes(response.data.data);
     } catch (err) {
       console.log(err);
@@ -21,9 +20,9 @@ export const PopularDishes = () => {
     getPopularDishes();
   }, []);
 
-  const popularDishesItem = popularDishes.map((item) => {
+  const popularDishItems = popularDishes.map((item) => {
     const dish = item.dish;
-    const itemSold = item.count
+    const itemSold = item.count;
     return (
       <li key={dish._id}>
         <Dish
@@ -39,7 +38,7 @@ export const PopularDishes = () => {
   });
   return (
     <ul className={`${styles["popular-dishes-container"]}`}>
-      {popularDishesItem}
+      {popularDishItems}
     </ul>
   );
 };
