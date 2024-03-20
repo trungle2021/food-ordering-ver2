@@ -3,3 +3,4 @@ declare module "*.scss";
 declare module "*.module.css";
 declare module "*.ts";
 declare module "*.jsx";
+declare module 'react-router-dom';

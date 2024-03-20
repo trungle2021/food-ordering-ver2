@@ -1,6 +1,6 @@
 import { React } from "react";
 import { Logo } from "../../UI/Logo/Logo";
-import { Navbar } from "../../UI/NavBar/Navbar";
+import { Navbar } from "../../UI/NavBar/Navbar.js";
 import styles from "./LeftSideBar.module.css";
 
 export default function LeftSideBar({ className }) {
