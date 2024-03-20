@@ -1,4 +1,3 @@
-import React from "react";
 import { PopularDishes } from "../PopularDishes/PopularDishes";
 import { Link } from "react-router-dom";
 

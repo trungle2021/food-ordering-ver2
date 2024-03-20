@@ -1,17 +1,19 @@
-import React from "react";
 import Card from "../UI/Card/Card";
 import Heart from "../UI/Heart/Heart";
 import Discount from "../UI/Discount/Discount";
 import styles from "./Dish.module.css";
 import { Rating } from "../UI/Rating/Rating";
+import Dish from "../../interface/dish/dish";
 
 export const Dish = ({
   imageLink,
   itemSold,
   discount,
+  name,
+  price,
   isFavorite,
   ratingPoint,
-}) => {
+}: Dish) => {
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>
@@ -33,21 +35,15 @@ export const Dish = ({
         </div>
         <div className={`${styles["dish-container__body"]}`}>
           <div className={`${styles["dish-container__info"]}`}>
-            <span
-              className={`${styles["dish-container__info--food-name"]}`}
-            >
-              Food Name
+            <span className={`${styles["dish-container__info--food-name"]}`}>
+              {name}
             </span>
-            <span
-              className={`${styles["dish-container__info--price"]}`}
-            >
+            <span className={`${styles["dish-container__info--price"]}`}>
               <span className="dollar">$</span>
-              4.45
+              {price}
             </span>
           </div>
-          <button
-            className={`${styles["dish-container--add-to-cart-btn"]}`}
-          >
+          <button className={`${styles["dish-container--add-to-cart-btn"]}`}>
             +
           </button>
         </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import { CategoryItems } from "../CategoryItems/CategoryItems";
 import { Link } from "react-router-dom";
 export const CategorySection = () => {

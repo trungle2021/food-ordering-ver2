@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
 import styles from "./PopularDishes.module.css";
 import { Dish } from "../Dish/Dish";
 import PopularDishService from "../../services/popular-dish/popular-dish";
@@ -20,18 +19,19 @@ export const PopularDishes = () => {
     getPopularDishes();
   }, []);
 
-  const popularDishItems = popularDishes.map((item) => {
-    const dish = item.dish;
+  const popularDishItems = popularDishes.map((item: any) => {
+    const { _id, image, discount, name, price, isFavorite } = item.dish;
     const itemSold = item.count;
+
     return (
-      <li key={dish._id}>
+      <li key={_id}>
         <Dish
-          imageLink={dish.image}
+          imageLink={image}
           itemSold={itemSold}
-          discount={dish.discount}
-          name={dish.name}
-          price={dish.price}
-          isFavorite={true}
+          discount={discount}
+          name={name}
+          price={price}
+          isFavorite={isFavorite}
         />
       </li>
     );

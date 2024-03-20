@@ -1,7 +1,11 @@
-import React from "react";
 import styles from "./Discount.module.css";
 
-const Discount = ({ amount }) => {
+interface DiscountProps {
+  className?: string;
+  amount: number | undefined;
+}
+
+const Discount = ({ className, amount }: DiscountProps) => {
   return <span className={`${styles["discount"]}`}>{amount}% Off</span>;
 };
 

@@ -1,5 +1,10 @@
 import "./GlobalStyles.css";
+import React, { ReactNode } from "react";
 
-export const GlobalStyles = ({ children }) => {
-  return children;
+interface GlobalStylesProps {
+  children: ReactNode;
+}
+
+export const GlobalStyles: React.FC<GlobalStylesProps> = ({ children }) => {
+  return <>{children}</>;
 };

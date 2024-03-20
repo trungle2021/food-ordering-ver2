@@ -1,10 +1,13 @@
-import { React } from "react";
 import { Logo } from "../../UI/Logo/Logo";
-import { Navbar } from "../../UI/NavBar/Navbar.js";
+import { Navbar } from "../../UI/NavBar/Navbar";
 import styles from "./LeftSideBar.module.css";
 
-export default function LeftSideBar({ className }) {
-  const navItems = [
+interface LeftSideBarProps {
+  className?: string;
+}
+
+export default function LeftSideBar({ className }: LeftSideBarProps) {
+  const navItems: Array<object> = [
     { url: "/", label: "Dashboard", src: "/icon/Dashboard.svg" },
     { url: "/food-order", label: "Food Order", src: "/icon/FoodOrder.svg" },
     { url: "/favorites", label: "Favorite", src: "/icon/Favorite.svg" },
@@ -20,7 +23,7 @@ export default function LeftSideBar({ className }) {
 
   return (
     <aside className={`${className} ${styles["sidebar--left"]}`}>
-      <Logo className={`${styles["sidebar__logo"]}`} width="100%" />
+      <Logo className={`${styles["sidebar__logo"]}`} width={100} />
       <Navbar items={navItems} />
     </aside>
   );

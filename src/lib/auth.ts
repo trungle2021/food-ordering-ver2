@@ -1,13 +1,19 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../utils/static";
+import { TOKEN_TYPE } from "../utils/static";
 import { getDataFromLocalStorage } from "./useLocalStorage";
 
 const getAccessTokenFromLocalStorage = () => {
-  const accessToken: string = getDataFromLocalStorage(ACCESS_TOKEN, "");
+  const accessToken: string = getDataFromLocalStorage(
+    TOKEN_TYPE.ACCESS_TOKEN.toString(),
+    ""
+  );
   return accessToken;
 };
 
 const getRefreshTokenFromLocalStorage = () => {
-  const refreshToken: string = getDataFromLocalStorage(REFRESH_TOKEN, "");
+  const refreshToken: string = getDataFromLocalStorage(
+    TOKEN_TYPE.REFRESH_TOKEN.toString(),
+    ""
+  );
   return refreshToken;
 };
 

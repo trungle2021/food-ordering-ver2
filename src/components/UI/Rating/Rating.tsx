@@ -1,7 +1,12 @@
 import React from "react";
 import Star from "../Star/Star";
 
-export const Rating = ({ ratingPoint = 0, size }) => {
+interface RatingPointProps {
+  ratingPoint: number | undefined;
+  size: number;
+}
+
+export const Rating = ({ ratingPoint = 0, size }: RatingPointProps) => {
   const starArray = [];
   let key = 0;
   if (ratingPoint < 0 || ratingPoint > 5) {

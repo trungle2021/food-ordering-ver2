@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react",
+    "jsx": "react-jsx",
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     // "plugins": [{ "name": "typescript-plugin-css-modules" }]
     /* Visit https://aka.ms/tsconfig to read more about this file */

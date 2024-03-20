@@ -1,4 +1,3 @@
-import React from "react";
 import { HeaderSection } from "../HeaderSection/HeaderSection";
 import { CategorySection } from "../CategorySection/CategorySection";
 import { PopularDishSection } from "../PopularDishSection/PopularDishSection";

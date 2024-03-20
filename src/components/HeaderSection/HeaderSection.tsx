@@ -1,6 +1,7 @@
 import React from "react";
 import { SearchBar } from "../UI/SearchBar/SearchBar";
 import styles from "./HeaderSection.module.css";
+
 export const HeaderSection = () => {
   return (
     <div className={`${styles["header-section"]}`}>
