@@ -3,17 +3,17 @@ import Heart from "../UI/Heart/Heart";
 import Discount from "../UI/Discount/Discount";
 import styles from "./Dish.module.css";
 import { Rating } from "../UI/Rating/Rating";
-import IDish from "../../interface/dish/dish";
+import DishResponse from "../../interface/dish/dish";
 
 export const Dish = ({
-  imageLink,
+  image,
   itemSold,
   discount,
   name,
   price,
   isFavorite,
   ratingPoint,
-}: IDish) => {
+}: DishResponse) => {
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>
@@ -26,7 +26,7 @@ export const Dish = ({
         </div>
         <img
           className={`${styles["dish-container__image"]}`}
-          src={imageLink}
+          src={image}
           alt=""
         />
         <div className="d-flex justify-between align-center">

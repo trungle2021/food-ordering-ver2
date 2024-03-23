@@ -1,44 +1,48 @@
-import React, { useEffect, useState, useContext } from "react";
-import RecentOrder from './RecentOrder/RecentOrder'
-import { AuthContext } from '../../store/AuthContext';
-import { getRecentOrdersApi } from '../../utils/api';
-import styles from './RecentOrders.module.css'
-import axios from "axios";
-
+import { useEffect, useState } from "react";
+import { AuthContext } from "../../store/AuthContext";
+import RecentOrder from "./RecentOrder/RecentOrder";
+import styles from "./RecentOrders.module.css";
+import { OrderResponse } from "../../interface/order/order-response";
+import DishResponse from "../../interface/dish/dish";
+import RecentOrderService from "../../services/recent-order/recent-order";
+import { useContext } from "react";
 
 export const RecentOrders = () => {
-  const userid = useContext(AuthContext);
-  const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace('USERID', userid)
+  const [recentOrders, setRecentOrders] = useState([]);
+  const user_id: string = useContext(AuthContext);
 
-  const [recentOrders, setRecentOrders] = useState([])
   const getRecentOrders = async () => {
     try {
-      const response = await axios.get(`${getRecentOrdersApiAddedUserId}?limit=2`)
-      setRecentOrders(response.data.data)
+      const response = await RecentOrderService.fetchRecentOrderList(
+        4,
+        user_id
+      );
+      setRecentOrders(response.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  
+  };
+
   useEffect(() => {
-     getRecentOrders()
-  }, [])
+    getRecentOrders();
+  }, []);
 
-
-  const recentOrdersItem = recentOrders.map(order => {
-    const dish = order.order_detail.dish 
-    return <li key={order._id}>
-      <RecentOrder
-      image={dish.image}
-      name={dish.name}
-      price={dish.price}
-      isFavorite={true}
-    />
+  const recentOrdersItem = recentOrders.map((order: OrderResponse) => {
+    const dish: DishResponse = order.order_detail.dish;
+    return (
+      <li key={order._id}>
+        <RecentOrder
+          image={dish.image}
+          name={dish.name}
+          price={dish.price}
+          isFavorite={true}
+        />
       </li>
-  })
+    );
+  });
   return (
-    <ul className={`${styles["recent-orders-container"]}`}>{recentOrdersItem}</ul>
-  )
-}
-
-
+    <ul className={`${styles["recent-orders-container"]}`}>
+      {recentOrdersItem}
+    </ul>
+  );
+};

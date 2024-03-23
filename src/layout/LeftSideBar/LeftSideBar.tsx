@@ -7,9 +7,13 @@ interface LeftSideBarProps {
 }
 
 export default function LeftSideBar({ className }: LeftSideBarProps) {
-  const navItems: Array<object> = [
+  const navItems: NavItems[] = [
     { url: `${PATH.INDEX}`, label: "Dashboard", src: "/icon/Dashboard.svg" },
-    { url: `${PATH.FOOD_ORDER}`, label: "Food Order", src: "/icon/FoodOrder.svg" },
+    {
+      url: `${PATH.FOOD_ORDER}`,
+      label: "Food Order",
+      src: "/icon/FoodOrder.svg",
+    },
     { url: `${PATH.FAVORITE}`, label: "Favorite", src: "/icon/Favorite.svg" },
     {
       url: `${PATH.ORDER_HISTORY}`,
