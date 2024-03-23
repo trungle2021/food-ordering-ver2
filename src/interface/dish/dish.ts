@@ -1,4 +1,4 @@
-export default interface Dish {
+export default interface IDish {
   imageLink: string;
   itemSold?: number | undefined;
   discount?: number | undefined;

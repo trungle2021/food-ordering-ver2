@@ -1,1 +1,1 @@
-export default interface PopularDish extends Dish {}
+export default interface PopularDish {}
