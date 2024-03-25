@@ -2,13 +2,20 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import styles from "../AuthForms.module.css";
 import { Link } from "react-router-dom";
+import { MouseEventHandler, useEffect } from "react";
+import AuthService from "../../../services/auth/auth-service";
+
 export const LoginForm = () => {
+  const handleSubmitLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // AuthService.checkLogin();
+    useEffect(() => {}, []);
+  };
+
   return (
     <Form>
       <Form.Group className="mb-3" controlId="loginForm-phoneNumber">
-        <Form.Label className={`${styles["form-label"]}`}>
-          Phone number
-        </Form.Label>
         <Form.Control
           className={`${styles["form-input"]}`}
           type="text"
@@ -17,22 +24,12 @@ export const LoginForm = () => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="loginForm-password">
-        <Form.Label className={`${styles["form-label"]}`}>Password</Form.Label>
         <Form.Control
           className={`${styles["form-input"]}`}
           type="password"
           placeholder="Password"
         />
       </Form.Group>
-
-      <Form.Group
-        style={{ float: "left", fontSize: "1.3rem" }}
-        className="mb-3"
-        controlId="formBasicCheckbox"
-      >
-        <Form.Check type="checkbox" label="Remember me" />
-      </Form.Group>
-
       <Form.Group
         style={{ float: "right", fontSize: "1.3rem" }}
         className="mb-3"
@@ -44,6 +41,7 @@ export const LoginForm = () => {
         className={`${styles["form__submitBtn"]}`}
         variant="primary"
         type="submit"
+        onClick={() => handleSubmitLogin}
       >
         Sign in
       </Button>

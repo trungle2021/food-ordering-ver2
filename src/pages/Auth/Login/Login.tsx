@@ -8,7 +8,6 @@ export const Login = () => {
     <div className={`${styles["wrapper-container"]}`}>
       <div className={styles["form"]}>
         <h1 className={styles["form-title"]}>Sign in</h1>
-
         <LoginForm />
         <OR text="OR" />
         <Socials />
