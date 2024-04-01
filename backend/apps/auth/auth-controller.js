@@ -1,6 +1,7 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const User = require('../user/user-model')
 const AuthService = require('./auth-service')
+const validateLoginRequest = require('./loginValidator')
 
 const register = catchAsyncHandler(async (req, res, next) => {
   const userInput = req.body
@@ -23,6 +24,13 @@ const register = catchAsyncHandler(async (req, res, next) => {
 
 const login = catchAsyncHandler(async (req, res, next) => {
   const { phone, password } = req.body
+  const validateLoginInputResult = validateLoginRequest({ phone, password })
+  if (validateLoginInputResult.isValid === false) {
+    return res.status(400).json({
+      status: 'fail',
+      message: validateLoginInputResult
+    })
+  }
   const tokens = await AuthService.login(phone, password)
   if (tokens) {
     res.status(200).json({

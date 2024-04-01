@@ -1,4 +1,4 @@
 export interface LoginCredential {
-    phoneNumber: string,
+    phone: string,
     password: string
 }

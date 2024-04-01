@@ -89,3 +89,9 @@ button:hover {
   background-color: #dbdbdb;
   flex: 1;
 }
+
+.error-message {
+  color: red; /* Set the color of the error message */
+  font-size: 14px; /* Set the font size of the error message */
+  margin-top: 5px; /* Add some space between the input and the error message */
+}

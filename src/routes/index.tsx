@@ -1,4 +1,4 @@
-import { Login } from '../pages/Auth/Login/Login';
+import { Login } from '../pages/Auth/Login';
 import { ForgotPassword } from '../pages/Auth/ForgotPassword/ForgotPassword';
 import { Register } from '../pages/Auth/Register/Register';
 import { ResetPassword } from '../pages/Auth/ResetPassword/ResetPassword';
