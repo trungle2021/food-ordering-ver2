@@ -1,17 +1,17 @@
-import { Login } from '../pages/Auth/Login';
-import { ForgotPassword } from '../pages/Auth/ForgotPassword/ForgotPassword';
-import { Register } from '../pages/Auth/Register/Register';
-import { ResetPassword } from '../pages/Auth/ResetPassword/ResetPassword';
+import { Login } from '../pages/Login';
+import { ForgotPassword } from '../pages/ForgotPassword/ForgotPassword';
+import { Register } from '../pages/Register/Register';
+import { ResetPassword } from '../pages/ResetPassword/ResetPassword';
 import { PATH } from './routes.constant';
 import { Route, Switch } from "react-router-dom";
 import { Favorites } from "../pages/Favorites/Favorites";
-import { FoodOrder } from "../pages/FoodOrder";
-import { OrderHistory } from "../pages/OrderHistory";
-import { Dashboard } from "../pages/Dashboard";
-import { Bills } from "../pages/Bills";
-import { Settings } from "../pages/Settings";
-import { Notfound } from "../pages/Notfound";
-import { Logout } from "../pages/Logout";
+import { FoodOrder } from "../pages/FoodOrder/FoodOrder";
+import { OrderHistory } from "../pages/OrderHistory/OrderHistory";
+import { Dashboard } from "../pages/Dashboard/Dashboard";
+import { Bills } from "../pages/Bill/Bills";
+import { Settings } from "../pages/Setting/Settings";
+import { Notfound } from "../pages/NotFound/Notfound";
+import { Logout } from "../pages/Logout/Logout";
 
 
 function Routes  ()  {

@@ -3,8 +3,8 @@ import { LoginForm } from "./LoginForm";
 import { OR } from "../../../components/UI/OR/OR";
 import { Socials } from "../../../components/UI/Socials/Socials";
 import { useEffect, useState } from "react";
-import AuthService from "../../../services/auth/auth-service";
-import { LoginCredential } from '../../../interface/credential';
+import AuthService from "../../services/auth/auth-service";
+
 
 
 export const Login = () => {
@@ -14,8 +14,9 @@ export const Login = () => {
     'password': ''
   })
   const handleSubmitLoginForm = (values: any) => {
+    console.log(values)
     setFormValues(values)
-    setFormSubmitted(true)
+    // setFormSubmitted(true)
   }
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import CategoryItem from "./CategoryItem/CategoryItem";
-import CategoryService from "../../services/category/category-service";
-import Category from "../../interface/category";
+import CategoryItem from "../CategoryItem";
+import CategoryService from "../../../services/category/category-service";
+import Category from "../../../interface/category";
 import styles from "./CategoryItems.module.css";
 
 export const CategoryItems = () => {
