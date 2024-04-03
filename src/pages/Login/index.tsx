@@ -1,33 +1,31 @@
 import styles from "../AuthForms.module.css";
 import { LoginForm } from "./LoginForm";
-import { OR } from "../../../components/UI/OR/OR";
-import { Socials } from "../../../components/UI/Socials/Socials";
+import { OR } from "../../components/UI/OR/OR";
+import { Socials } from "../../components/UI/Socials/Socials";
 import { useEffect, useState } from "react";
 import AuthService from "../../services/auth/auth-service";
 
-
-
 export const Login = () => {
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValues, setFormValues] = useState({
-    'phone': '',
-    'password': ''
-  })
+    phone: "",
+    password: "",
+  });
   const handleSubmitLoginForm = (values: any) => {
-    console.log(values)
-    setFormValues(values)
+    console.log(values);
+    setFormValues(values);
     // setFormSubmitted(true)
-  }
+  };
 
   useEffect(() => {
-    async function fetchLoginApi () {
-      const response = await AuthService.checkLogin(formValues)
-      console.log(response.data)
+    async function fetchLoginApi() {
+      const response = await AuthService.checkLogin(formValues);
+      console.log(response.data);
     }
-    if(formSubmitted) {
-      fetchLoginApi()
+    if (formSubmitted) {
+      fetchLoginApi();
     }
-  }, [formSubmitted])
+  }, [formSubmitted]);
   return (
     <div className={`${styles["wrapper-container"]}`}>
       <div className={styles["form"]}>
