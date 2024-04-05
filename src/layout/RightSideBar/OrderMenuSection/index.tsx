@@ -1,7 +1,7 @@
-import styles from "./style.module.css";
-import { OrderItem } from "../../../components/UI/OrderItem/OrderItem";
-import { CouponButtonIcon, ArrowRight } from "../../../components/UI/Icon/Icon";
-import { Button } from "../../../components/UI/Button/Button";
+import styles from "./styles.module.css";
+import { OrderItem } from "../../../components/UI/OrderItem";
+import { CouponButtonIcon, ArrowRight } from "../../../components/UI/Icon";
+import { Button } from "../../../components/UI/Button";
 export const OrderMenuSection = () => {
   const orderItems = [
     { id: "1", name: "A", url: "3.vn" },

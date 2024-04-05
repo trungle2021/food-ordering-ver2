@@ -1,4 +1,4 @@
-import styles from "./CategoryItem.module.css";
+import styles from "./styles.module.css";
 
 type CategoryProps = {
   iconLink: string;

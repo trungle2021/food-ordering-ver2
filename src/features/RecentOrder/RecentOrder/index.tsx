@@ -1,6 +1,6 @@
-import Card from "../../../components/UI/Card/Card";
-import styles from "./RecentOrder.module.css";
-import Heart from "../../../components/UI/Heart/Heart";
+import Card from "../../../components/UI/Card";
+import styles from "./styles.module.css";
+import Heart from "../../../components/UI/Heart";
 
 interface RecentOrderProps {
   image: string;

@@ -1,6 +1,5 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import styles from "../AuthForms.module.css";
 import { Link } from "react-router-dom";
 import {
   Controller,
@@ -52,13 +51,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
         <Link to="/forgot-password">Forgot password?</Link>
       </Form.Group>
       <Button
-        className={`${styles["form__submitBtn"]}`}
+        className="form__submitBtn"
         variant="primary"
         type="submit"
       >
         Sign in
       </Button>
-      <div className={styles["form__redirectLink-container"]}>
+      <div className="form__redirectLink-container">
         <Link to="/register">Don't have an account ? Sign up </Link>
       </div>
     </Form>

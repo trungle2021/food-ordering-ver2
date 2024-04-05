@@ -1,14 +1,13 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import styles from "../AuthForms.module.css";
 
 export const ResetPasswordForm = () => {
   return (
     <Form>
       <Form.Group className="mb-3" controlId="resetPasswordForm-newPassword">
-        <Form.Label className={`${styles["form-label"]}`}>Password</Form.Label>
+        <Form.Label className="form-label">Password</Form.Label>
         <Form.Control
-          className={`${styles["form-input"]}`}
+          className="form-input"
           type="password"
           placeholder="Enter new password"
         />
@@ -18,18 +17,18 @@ export const ResetPasswordForm = () => {
         className="mb-3"
         controlId="resetPasswordForm-newPasswordConfirm"
       >
-        <Form.Label className={`${styles["form-label"]}`}>
+        <Form.Label className="form-label">
           Confirm Password
         </Form.Label>
         <Form.Control
-          className={`${styles["form-input"]}`}
+          className="form-input"
           type="password"
           placeholder="Enter password confirm"
         />
       </Form.Group>
 
       <Button
-        className={`${styles["form__submitBtn"]}`}
+        className="form__submitBtn"
         variant="primary"
         type="submit"
       >

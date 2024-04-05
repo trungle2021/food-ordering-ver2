@@ -1,7 +1,6 @@
-import styles from "../AuthForms.module.css";
 import { LoginForm } from "./LoginForm";
-import { OR } from "../../components/UI/OR/OR";
-import { Socials } from "../../components/UI/Socials/Socials";
+import { OR } from "../../components/UI/OR";
+import { Socials } from "../../components/UI/Socials";
 import { useEffect, useState } from "react";
 import AuthService from "../../services/auth/auth-service";
 
@@ -27,9 +26,9 @@ export const Login = () => {
     }
   }, [formSubmitted]);
   return (
-    <div className={`${styles["wrapper-container"]}`}>
-      <div className={styles["form"]}>
-        <h1 className={styles["form-title"]}>Sign in</h1>
+    <div className="wrapper-container">
+      <div className="form">
+        <h1 className="form-title">Sign in</h1>
         <LoginForm onSubmitLoginForm={handleSubmitLoginForm} />
         <OR text="OR" />
         <Socials />

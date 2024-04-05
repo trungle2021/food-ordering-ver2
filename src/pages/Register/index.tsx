@@ -1,13 +1,12 @@
-import styles from "../Auth/AuthForms.module.css";
 import { RegisterForm } from "./RegisterForm";
-import { OR } from "../../components/UI/OR/OR";
-import { Socials } from "../../components/UI/Socials/Socials";
+import { OR } from "../../components/UI/OR";
+import { Socials } from "../../components/UI/Socials";
 
 export const Register = () => {
   return (
     <div className="wrapper-container">
-      <div className={styles["form"]}>
-        <h1 className={styles["form-title"]}>Sign up</h1>
+      <div className="form">
+        <h1 className="form-title">Sign up</h1>
         <RegisterForm />
         <OR text="OR" />
         <Socials />

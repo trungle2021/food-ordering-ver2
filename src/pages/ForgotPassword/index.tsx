@@ -1,12 +1,10 @@
-import React from "react";
-import styles from "../AuthForms.module.css";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
 export const ForgotPassword = () => {
   return (
-    <div className={`${styles["wrapper-container"]}`}>
-      <div className={styles["form"]}>
-        <h1 className={styles["form-title"]}>Forgot Password</h1>
+    <div className="wrapper-container">
+      <div className="form">
+        <h1 className="form-title">Forgot Password</h1>
         <ForgotPasswordForm />
       </div>
     </div>

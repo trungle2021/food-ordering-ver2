@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { Section } from "../index";
 import { CategoryList } from "../../../features/Category/CategoryList";
+import { Section } from "../index";
+// import { CategoryList } from "../../../features/Category/CategoryList";
 
 export const CategorySection = () => {
   return (

@@ -1,5 +1,5 @@
 import { SearchBar } from "../../UI/SearchBar";
-import styles from "./HeaderSection.module.css";
+import styles from "./styles.module.css";
 
 export const HeaderSection = () => {
   return (

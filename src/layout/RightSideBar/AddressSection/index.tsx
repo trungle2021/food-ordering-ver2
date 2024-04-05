@@ -1,6 +1,6 @@
-import styles from "./style.module.css";
-import { Button } from "../../../components/UI/Button/Button";
-import { Location } from "../../../components/UI/Icon/Icon";
+import styles from "./styles.module.css";
+import { Button } from "../../../components/UI/Button";
+import { Location } from "../../../components/UI/Icon";
 
 export const AddressSection = () => {
   return (

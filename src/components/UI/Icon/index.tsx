@@ -1,6 +1,6 @@
 interface IconProps {
   className?: string;
-  size: number;
+  size?: number;
 }
 
 export function Dashboard({ className, size }: IconProps) {

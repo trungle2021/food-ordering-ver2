@@ -1,5 +1,4 @@
-import React from "react";
-import Star from "../Star/Star";
+import Star from "../Star";
 
 interface RatingPointProps {
   ratingPoint: number | undefined;

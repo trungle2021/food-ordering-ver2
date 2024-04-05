@@ -1,7 +1,6 @@
-import React from 'react'
-import styles from './OrderItem.module.css'
+import styles from './styles.module.css'
 
-export const OrderItem = ({ item }) => {
+export const OrderItem = ({ item }:{ item : any}) => {
     return (
         <div className={`${styles['order-item-container']}`}>
             <img src={item.url} />

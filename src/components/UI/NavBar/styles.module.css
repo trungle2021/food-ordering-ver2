@@ -1,4 +1,6 @@
-
+.navbar__list{
+  padding: 0;
+}
   .navbar__link {
     position: relative;
     font-size: 14px;
@@ -7,6 +9,8 @@
     padding: 10px;
     color: black;
     align-items: center;
+    list-style-type: none;
+    text-decoration: none;
   }
   
   .navbar__link img {

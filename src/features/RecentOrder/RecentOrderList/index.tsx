@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../store/AuthContext";
 import RecentOrder from "../RecentOrder";
-import styles from "./RecentOrders.module.css";
+import styles from "./styles.module.css";
 import { OrderResponse } from "../../../interface/order/order-response";
 import DishResponse from "../../../interface/dish/dish";
 import RecentOrderService from "../../../services/recent-order/recent-order";
-import { useContext } from "react";
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);

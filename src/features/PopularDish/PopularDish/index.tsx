@@ -1,8 +1,8 @@
-import Card from "../../../components/UI/Card/Card";
-import Heart from "../../../components/UI/Heart/Heart";
-import Discount from "../../../components/UI/Discount/Discount";
-import styles from "./Dish.module.css";
-import { Rating } from "../../../components/UI/Rating/Rating";
+import Card from "../../../components/UI/Card";
+import Heart from "../../../components/UI/Heart";
+import Discount from "../../../components/UI/Discount";
+import styles from "./styles.module.css";
+import { Rating } from "../../../components/UI/Rating";
 import DishResponse from "../../../interface/dish/dish";
 
 export const Dish = ({

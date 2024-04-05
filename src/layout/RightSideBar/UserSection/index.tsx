@@ -3,8 +3,8 @@ import {
   Notification,
   OrderDiscussion,
   SettingBlack,
-} from "../../../components/UI/Icon/Icon";
-import styles from "./style.module.css";
+} from "../../../components/UI/Icon";
+import styles from "./styles.module.css";
 
 export const UserSection = () => {
   return (

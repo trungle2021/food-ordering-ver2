@@ -1,5 +1,5 @@
-import styles from "./style.module.css";
-import { TopUp, Transfer } from "../../../components/UI/Icon/Icon";
+import styles from "./styles.module.css";
+import { TopUp, Transfer } from "../../../components/UI/Icon";
 export const BalanceSection = () => {
   return (
     <div className={`${styles["balance-container"]} `}>

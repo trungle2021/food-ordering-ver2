@@ -1,4 +1,4 @@
-import styles from "./Socials.module.css";
+import styles from "./styles.module.css";
 import Button from "react-bootstrap/Button";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";

@@ -1,6 +1,6 @@
-import { Logo } from "../../components/UI/Logo/Logo";
-import { Navbar } from "../../components/UI/NavBar/Navbar";
-import styles from "./style.module.css";
+import { Logo } from "../../components/UI/Logo";
+import { Navbar } from "../../components/UI/NavBar";
+import styles from "./styles.module.css";
 import { PATH } from "../../routes/routes.constant";
 interface LeftSideBarProps {
   className?: string;

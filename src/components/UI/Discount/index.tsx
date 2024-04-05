@@ -1,4 +1,4 @@
-import styles from "./Discount.module.css";
+import styles from "./styles.module.css";
 
 interface DiscountProps {
   className?: string;

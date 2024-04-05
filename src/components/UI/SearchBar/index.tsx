@@ -1,5 +1,5 @@
-import styles from "./SearchBar.module.css";
-import { SearchIcon } from "../Icon/Icon";
+import styles from "./styles.module.css";
+import { SearchIcon } from "../Icon";
 
 type SearchProps = {};
 export const SearchBar = ({ placeholder }: { placeholder: string }) => {

@@ -1,5 +1,5 @@
 import { SearchBar } from "../../components/UI/SearchBar";
-import styles from "./style.module.css";
+import styles from "./styles.module.css";
 
 export const Favorites = () => {
   return (

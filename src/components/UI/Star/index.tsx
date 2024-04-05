@@ -1,6 +1,9 @@
-import React from "react";
+interface StarProps{
+  size: number;
+  isRated: boolean;
+} 
 
-const Star = ({ size, isRated }) => {
+const Star = ({ size, isRated }: StarProps) => {
   const colorStar = isRated ? "#F8B602" : "#EEEEEE";
   return (
     <svg

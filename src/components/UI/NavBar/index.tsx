@@ -1,4 +1,4 @@
-import styles from "../NavBar/NavBar.module.css";
+import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
 
 export const Navbar = ({ items }: { items: NavItems[] }) => {
