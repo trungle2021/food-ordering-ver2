@@ -1,17 +1,41 @@
+import { Icon } from "@iconify/react";
+import { Stack, IconButton } from "@mui/material";
 import styles from "./styles.module.css";
-import Button from "react-bootstrap/Button";
-import { FaFacebook } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 
 export const Socials = () => {
   return (
-    <div className={`${styles["login-social"]}`}>
-      <Button variant="outline-secondary" className={`${styles["socialBtn"]}`}>
-        <FaFacebook color="#4267B2" /> Facebook
-      </Button>{" "}
-      <Button variant="outline-secondary" className={`${styles["socialBtn"]}`}>
-        <FcGoogle /> Google
-      </Button>{" "}
-    </div>
+    <>
+      <Stack
+        direction="row"
+        spacing={2}
+        className={`${styles["login-social"]}`}
+      >
+        <IconButton
+          sx={{
+            border: "2px solid #ccc",
+            borderRadius: "5px",
+            padding: "0.5675rem",
+            flex: 1,
+          }}
+        >
+          <Icon
+            icon="eva:facebook-fill"
+            color="#1877F2"
+            width={22}
+            height={22}
+          />
+        </IconButton>
+        <IconButton
+          sx={{
+            border: "2px solid #ccc",
+            borderRadius: "5px",
+            padding: "0.5675rem",
+            flex: 1,
+          }}
+        >
+          <Icon icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
+        </IconButton>
+      </Stack>
+    </>
   );
 };

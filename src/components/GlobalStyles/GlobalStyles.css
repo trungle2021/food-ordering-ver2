@@ -25,7 +25,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #f5f5f5;
-  color: #a098ae;
+  color: var(--black);
   height: 100%;
 }
 
@@ -113,8 +113,7 @@ button:hover {
 }
 
 .form {
-  position: absolute;
-  width: 520px;
+  position: relative;
   height: auto;
   top: 20%;
   left: 50%;

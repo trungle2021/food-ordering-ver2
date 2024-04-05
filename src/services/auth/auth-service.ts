@@ -7,6 +7,8 @@ const checkLogin = (credential: LoginCredential): Promise<any> => {
   return axios.post(loginApi, credential);
 };
 
+
+
 const AuthService = {
   checkLogin,
 };
