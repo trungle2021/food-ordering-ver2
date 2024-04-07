@@ -1,0 +1,7 @@
+.login-form__function {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 10px !important;
+}

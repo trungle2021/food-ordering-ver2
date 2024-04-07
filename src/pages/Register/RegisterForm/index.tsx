@@ -1,11 +1,49 @@
 import { Link } from "react-router-dom";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, Stack } from "@mui/material";
+import { InputField } from "../../../components/Form-Controls/InputField";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import React from "react";
 
-export const RegisterForm = () => {
+type RegisterFormValues = {
+  phone: string;
+};
+
+interface RegisterFormProps {
+  onSubmitRegisterForm: (formData: RegisterFormValues) => void;
+}
+
+export const RegisterForm: React.FC<RegisterFormProps> = ({
+  onSubmitRegisterForm,
+}) => {
+  const { control, handleSubmit } = useForm<RegisterFormValues>({
+    defaultValues: {
+      phone: "",
+    },
+    resolver: yupResolver(
+      yup.object().shape({
+        phone: yup
+          .string()
+          .min(10, "Phone number must be at least 10 characters")
+          .max(15, "Phone number must not exceed 15 characters")
+          .required("Phone number is required"),
+      })
+    ),
+  });
+
+  const onSubmit = (formData: RegisterFormValues) => {
+    onSubmitRegisterForm(formData);
+  };
   return (
-    <form>
+    <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2} width={400}>
-        <TextField type="text" name="phone" label="Phone number" />
+        <InputField
+          label="Phone Number"
+          name="phone"
+          type="text"
+          control={control}
+        />
         <Button type="submit" variant="contained" color="primary">
           Continue
         </Button>
@@ -14,29 +52,5 @@ export const RegisterForm = () => {
         </div>
       </Stack>
     </form>
-    // <Form>
-    //   <Form.Group className="mb-3" controlId="registerForm-phoneNumber">
-    //     <Form.Label className="form-label">
-    //       Phone number
-    //     </Form.Label>
-    //     <Form.Control
-    //       className="form-input"
-    //       type="text"
-    //       placeholder="Enter phone number"
-    //     />
-    //   </Form.Group>
-
-    //   <Button
-    //     className="form__submitBtn"
-    //     variant="primary"
-    //     type="submit"
-    //   >
-    //     Continue
-    //   </Button>
-
-    //   <div className="form__redirectLink-container">
-    //     <Link to="/login"> Already have an account ? Sign in </Link>
-    //   </div>
-    // </Form>
   );
 };
