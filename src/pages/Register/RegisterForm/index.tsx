@@ -5,9 +5,10 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
+import RegisterFormValidator from './register-form-validator'
 
 type RegisterFormValues = {
-  phone: string;
+  email: string;
 };
 
 interface RegisterFormProps {
@@ -19,16 +20,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const { control, handleSubmit } = useForm<RegisterFormValues>({
     defaultValues: {
-      phone: "",
+      email: "",
     },
     resolver: yupResolver(
-      yup.object().shape({
-        phone: yup
-          .string()
-          .min(10, "Phone number must be at least 10 characters")
-          .max(15, "Phone number must not exceed 15 characters")
-          .required("Phone number is required"),
-      })
+      RegisterFormValidator
     ),
   });
 
@@ -39,8 +34,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2} width={400}>
         <InputField
-          label="Phone Number"
-          name="phone"
+          label="Email"
+          name="email"
           type="text"
           control={control}
         />

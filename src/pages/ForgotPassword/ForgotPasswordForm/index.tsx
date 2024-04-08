@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { Button, Stack } from "@mui/material";
 import { InputField } from "../../../components/Form-Controls/InputField";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import  ForgotPasswordFormValidator  from "./forgot-password-validator";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 
 type ForgotPasswordFormValues = {
-  phone: string;
+  email: string;
 };
 
 interface ForgotPasswordFormProps {
@@ -19,17 +19,9 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
 }) => {
   const { control, handleSubmit } = useForm<ForgotPasswordFormValues>({
     defaultValues: {
-      phone: "",
+      email: "",
     },
-    resolver: yupResolver(
-      yup.object().shape({
-        phone: yup
-          .string()
-          .min(10, "Phone number must be at least 10 characters")
-          .max(15, "Phone number must not exceed 15 characters")
-          .required("Phone number is required"),
-      })
-    ),
+    resolver: yupResolver(ForgotPasswordFormValidator),
   });
 
   const onSubmit = (formData: ForgotPasswordFormValues) => {
@@ -39,8 +31,8 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2} width={400}>
         <InputField
-          label="Phone Number"
-          name="phone"
+          label="Email"
+          name="email"
           type="text"
           control={control}
         />

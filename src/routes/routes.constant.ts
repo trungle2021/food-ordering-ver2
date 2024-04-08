@@ -1,5 +1,6 @@
 export enum PATH {
   INDEX = "/",
+  DASHBOARD = "/dashboard",
   LOGIN = "/login",
   LOGOUT = "/logout",
   FORGOT_PASSWORD = "/forgot-password",

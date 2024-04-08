@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import loginSchemaValidator from "./schema-validator";
+import loginSchemaValidator from "./login-validator";
 import { TextField, Button, Stack } from "@mui/material";
 import { InputField } from "../../../components/Form-Controls/InputField";
 import { CheckBoxField } from "../../../components/Form-Controls/CheckBoxField";
@@ -13,19 +13,20 @@ interface LoginFormProps {
 }
 
 type LoginFormValues = {
-  phone: string;
+  email: string;
   password: string;
+  rememberMe?: boolean;
 };
 
 const initialFormValues: LoginFormValues = {
-  phone: "",
+  email: "",
   password: "",
+  rememberMe: false
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
   const {
     handleSubmit,
-    formState: { errors },
     reset,
     control,
   } = useForm<LoginFormValues>({
@@ -35,7 +36,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
   });
 
   const onSubmit = (formData: LoginFormValues) => {
-    console.log(formData);
     onSubmitLoginForm(formData);
     reset();
   };
@@ -49,8 +49,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
       <form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
         <Stack spacing={2} width={400}>
           <InputField
-            label="Phone Number"
-            name="phone"
+            label="Email"
+            name="email"
             type="text"
             control={control}
           />

@@ -16,15 +16,16 @@ const register = async (userData) => {
   return await generateTokens(payload, secretKey, tokenOptions)
 }
 
-const login = async (phoneInput, passwordInput) => {
-  const user = await UserService.getUser({ phone: phoneInput })
+const login = async (emailInput, passwordInput) => {
+  const user = await UserService.getUser({ email: emailInput })
 
-  if (!user) throw new AppError(`Cannot found user with phone ${phoneInput}`, 404)
+  if (!user) throw new AppError(`Cannot found user with email ${emailInput}`, 404)
 
   const passwordIsValid = await user.comparePassword(passwordInput, user.password)
   if (!passwordIsValid) throw new AppError('Password invalid', 400)
 
-  const payload = { user_id: user._id }
+  const { password, ...rest } = user._doc
+  const payload = { ...rest }
 
   return await generateTokens(payload, secretKey, tokenOptions)
 }

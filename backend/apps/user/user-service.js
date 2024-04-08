@@ -1,7 +1,7 @@
 const User = require('./user-model')
 
 const getUsers = async () => {
-  return await User.find({})
+  return await User.find({}).select('-password')
 }
 
 const getUser = async (filter) => {

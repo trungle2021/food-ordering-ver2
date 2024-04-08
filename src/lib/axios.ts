@@ -36,11 +36,14 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
+  if(!response.data){
+    throw new Error("Something went wrong")
+  }
   return response.data;
 };
 
-const onResponseError = (error: AxiosError): Promise<AxiosError> => {
-  return Promise.reject(error);
+const onResponseError = (error: any): Promise<AxiosError> => {
+  return Promise.reject(error?.response?.data);
 };
 
 instance.interceptors.request.use(onRequest, onRequestError);
