@@ -1,16 +1,15 @@
 import { LoginForm } from "./LoginForm";
-import { OR } from "../../../components/UI/OR";
-import { Socials } from "../../../components/UI/Socials";
+import { OR } from "~/components/UI/OR";
+import { Socials } from "~/components/UI/Socials";
 import { useEffect, useState } from "react";
-import AuthService from "../../../services/auth/auth-service";
+import AuthService from "~/services/auth/auth-service";
 import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../app/store";
+import { useDispatch } from "react-redux";
 import { login } from "../authSlice";
 
 export const Login = () => {
   const history = useHistory();
-  const auth = useSelector((state: RootState) => state.auth);
+  // const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

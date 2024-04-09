@@ -9,7 +9,7 @@ import {
   getAccessTokenFromLocalStorage,
   getRefreshTokenFromLocalStorage,
 } from "./auth";
-import { origin } from "../utils/api";
+import { origin } from "~/utils/api";
 
 const instance: AxiosInstance = axios.create({
   baseURL: origin,

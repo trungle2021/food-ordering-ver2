@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { emailValidator, passwordValidator } from '../../../utils/schema-validator';
+import { emailValidator, passwordValidator } from '~/utils/schema-validator';
 
 const schema = yup.object().shape({
   email: emailValidator,

@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
-import Routes from "../../routes/index";
+import Routes from "~/routes/index";
 export default function MainContent() {
   return (
     <main className={styles["main__content"]}>

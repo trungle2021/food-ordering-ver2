@@ -1,12 +1,12 @@
 import { PATH } from "./routes.constant";
 import { Route } from "react-router-dom";
-import { Favorites } from "../pages/Favorites";
-import { FoodOrder } from "../pages/FoodOrder";
-import { OrderHistory } from "../pages/OrderHistory";
-import { Dashboard } from "../pages/Dashboard";
-import { Bills } from "../pages/Bill";
-import { Settings } from "../pages/Setting";
-import { Logout } from "../pages/Logout";
+import { Favorites } from "~/pages/Favorites";
+import { FoodOrder } from "~/pages/FoodOrder";
+import { OrderHistory } from "~/pages/OrderHistory";
+import { Dashboard } from "~/pages/Dashboard";
+import { Bills } from "~/pages/Bill";
+import { Settings } from "~/pages/Setting";
+import { Logout } from "~/features/Auth/Logout";
 
 function Routes() {
   return (

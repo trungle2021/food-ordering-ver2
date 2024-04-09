@@ -1,6 +1,6 @@
-import LeftSideBar from "../../layout/LeftSideBar";
-import MainContent from "../../layout/MainContent";
-import RightSideBar from "../../layout/RightSideBar";
+import LeftSideBar from "~/layout/LeftSideBar";
+import MainContent from "~/layout/MainContent";
+import RightSideBar from "~/layout/RightSideBar";
 
 export const Home = () => {
   return (

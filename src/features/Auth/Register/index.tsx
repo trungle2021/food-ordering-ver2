@@ -1,6 +1,6 @@
 import { RegisterForm } from "./RegisterForm";
-import { OR } from "../../components/UI/OR";
-import { Socials } from "../../components/UI/Socials";
+import { OR } from "~/components/UI/OR";
+import { Socials } from "~/components/UI/Socials";
 
 export const Register = () => {
   const handleSubmitRegisterForm = (formData: any) => {};

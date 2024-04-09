@@ -1,4 +1,4 @@
-import { TOKEN_TYPE } from "../utils/static";
+import { TOKEN_TYPE } from "~/utils/static";
 import { getDataFromLocalStorage } from "./useLocalStorage";
 
 const getAccessTokenFromLocalStorage = () => {

@@ -1,4 +1,4 @@
-import DishResponse from "../dish/dish";
+import DishResponse from "src/dish/dish";
 
 export interface OrderResponse {
   _id: string;

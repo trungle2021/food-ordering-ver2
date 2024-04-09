@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import React, { useState } from "react";
+import React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchemaValidator from "./login-validator";
-import { TextField, Button, Stack } from "@mui/material";
-import { InputField } from "../../../components/Form-Controls/InputField";
-import { CheckBoxField } from "../../../components/Form-Controls/CheckBoxField";
+import {  Button, Stack } from "@mui/material";
+import { InputField } from "~/components/Form-Controls/InputField";
+import { CheckBoxField } from "~/components/Form-Controls/CheckBoxField";
 import styles from "./styles.module.css";
 
 interface LoginFormProps {

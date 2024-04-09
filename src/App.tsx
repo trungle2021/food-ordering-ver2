@@ -1,12 +1,11 @@
-import { GlobalStyles } from "./components/GlobalStyles";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { PATH } from "./routes/routes.constant";
-import { Route } from "react-router-dom";
-import { Login } from "./pages/Login";
-import { Home } from "./pages/Home";
-import { Register } from "./pages/Register";
-import { ForgotPassword } from "./pages/ForgotPassword";
+import { GlobalStyles } from "./components/GlobalStyles";
+import { Login } from "./features/Auth/Login";
 import { Notfound } from "./pages/NotFound";
+import { Home } from "./pages/Home";
+import { ForgotPassword } from "./features/Auth/ForgotPassword";
+import { Register } from "./features/Auth/Register";
 
 function App() {
   return (

@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button, Stack } from "@mui/material";
-import { InputField } from "../../../components/Form-Controls/InputField";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import RegisterFormValidator from './register-form-validator'
+import { InputField } from "~/components/Form-Controls/InputField";
 
 type RegisterFormValues = {
   email: string;

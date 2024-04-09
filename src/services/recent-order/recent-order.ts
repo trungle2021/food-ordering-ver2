@@ -1,5 +1,5 @@
-import axios from "../../lib/axios";
-import { getRecentOrdersApi } from "../../utils/api";
+import axios from "~/lib/axios";
+import { getRecentOrdersApi } from "~/utils/api";
 
 const fetchRecentOrderList = (limit: number, user_id: string): Promise<any> => {
   const getRecentOrdersApiAddedUserId = getRecentOrdersApi.replace(

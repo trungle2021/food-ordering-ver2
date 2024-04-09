@@ -1,6 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { access } from "fs";
-import { ref } from "yup";
 
 interface AuthState {
   user: object | undefined;

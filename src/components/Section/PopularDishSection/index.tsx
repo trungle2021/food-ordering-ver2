@@ -1,4 +1,4 @@
-import { PopularDishList } from "../../../features/PopularDish/PopularDishList";
+import { PopularDishList } from "~/features/PopularDish/PopularDishList";
 import { Section } from "../index";
 
 export const PopularDishSection = () => {

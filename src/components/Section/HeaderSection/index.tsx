@@ -1,4 +1,4 @@
-import { SearchBar } from "../../UI/SearchBar";
+import { SearchBar } from "~/components/UI/SearchBar";
 import styles from "./styles.module.css";
 
 export const HeaderSection = () => {
