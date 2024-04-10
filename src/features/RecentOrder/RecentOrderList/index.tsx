@@ -1,15 +1,15 @@
 import { useEffect, useState, useContext } from "react";
-import { AuthContext } from "~/store/AuthContext";
 import RecentOrder from "../RecentOrder";
 import styles from "./styles.module.css";
 import { OrderResponse } from "~/interface/order/order-response";
 import DishResponse from "~/interface/dish/dish";
 import RecentOrderService from "~/services/recent-order/recent-order";
+import LocalStorage from "~/lib/local-storage";
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);
-  const user_id: string = useContext(AuthContext);
-
+  const user = LocalStorage.getDataFromLocalStorage("user");
+  const user_id = (user as { _id: string })._id;
   const getRecentOrders = async () => {
     try {
       const response = await RecentOrderService.fetchRecentOrderList(

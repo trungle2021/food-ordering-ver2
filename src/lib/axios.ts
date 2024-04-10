@@ -1,14 +1,9 @@
 import axios, {
   AxiosError,
   AxiosInstance,
-  AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import {
-  getAccessTokenFromLocalStorage,
-  getRefreshTokenFromLocalStorage,
-} from "./auth";
 import { origin } from "~/utils/api";
 
 const instance: AxiosInstance = axios.create({
@@ -36,8 +31,8 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
-  if(!response.data){
-    throw new Error("Something went wrong")
+  if (!response.data) {
+    throw new Error("Something went wrong");
   }
   return response.data;
 };

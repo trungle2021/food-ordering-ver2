@@ -8,7 +8,11 @@ interface LeftSideBarProps {
 
 export default function LeftSideBar({ className }: LeftSideBarProps) {
   const navItems: NavItems[] = [
-    { url: `${PATH.INDEX}`, label: "Dashboard", src: "/icon/Dashboard.svg" },
+    {
+      url: `${PATH.DASHBOARD}`,
+      label: "Dashboard",
+      src: "/icon/Dashboard.svg",
+    },
     {
       url: `${PATH.FOOD_ORDER}`,
       label: "Food Order",

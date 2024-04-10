@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AuthState {
-  user: object | undefined;
+  user: any;
   accessToken: string;
   refreshToken: string;
 }
 const initialState: AuthState = {
-  user: undefined,
+  user: {},
   accessToken: "",
   refreshToken: "",
 };
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
       state.refreshToken = refreshToken;
     },
     logout: (state) => {
-      state.user = undefined;
+      state.user = {};
       state.accessToken = "";
       state.refreshToken = "";
     },

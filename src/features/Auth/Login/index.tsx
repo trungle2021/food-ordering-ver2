@@ -6,10 +6,11 @@ import AuthService from "~/services/auth/auth-service";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../authSlice";
+import LocalStorage from "~/lib/local-storage";
+import { TOKEN_TYPE } from "~/utils/static";
 
 export const Login = () => {
   const history = useHistory();
-  // const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,14 +18,26 @@ export const Login = () => {
     email: "",
     password: "",
   });
+
   const handleSubmitLoginForm = (values: any) => {
     setFormValues(values);
     setFormSubmitted(true);
   };
 
   const handleLoginResponse = (response: any) => {
-    if (response?.accessToken && response?.refreshToken) {
+    const { user, accessToken, refreshToken } = response;
+
+    if (user && accessToken && refreshToken) {
       console.log("Login success");
+      LocalStorage.setDataToLocalStorage("user", user);
+      LocalStorage.setDataToLocalStorage(
+        TOKEN_TYPE.ACCESS_TOKEN.toString(),
+        accessToken
+      );
+      LocalStorage.setDataToLocalStorage(
+        TOKEN_TYPE.REFRESH_TOKEN.toString(),
+        refreshToken
+      );
       dispatch(login(response));
       history.push("/dashboard");
     } else {
@@ -46,7 +59,7 @@ export const Login = () => {
     if (formSubmitted) {
       fetchLoginApi();
     }
-  }, [formSubmitted]);
+  }, [formSubmitted, dispatch]);
   return (
     <div className="wrapper-container">
       <div className="form">

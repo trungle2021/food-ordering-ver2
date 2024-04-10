@@ -1,7 +1,7 @@
-import * as yup from 'yup';
-import { emailValidator } from '~/utils/schema-validator';
+import * as yup from "yup";
+import { emailValidator } from "~/utils/schema.validator";
 
 const schema = yup.object().shape({
-  email: emailValidator
-})
+  email: emailValidator,
+});
 export default schema;
