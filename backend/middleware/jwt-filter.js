@@ -1,6 +1,6 @@
-const whitelist = require('./../utils/whitelist/whitelist-url')
+const whitelist = require('../utils/whitelist/whitelist-url')
 const UserService = require('../apps/user/user-service')
-const AppError = require('./../apps/error/app-error')
+const AppError = require('../apps/error/app-error')
 const secretKey = process.env.JWT_SECRET_KEY
 const catchAsyncHandler = require('../utils/catch-async/catch-async-handler')
 const JWTService = require('../utils/jwt/jwt-service')
@@ -21,6 +21,10 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
   const decodePayload = await JWTService.verifyToken(token, secretKey)
   const { id } = decodePayload
   const user = await UserService.getUser({ _id: id })
+  console.log('Token:' + token)
+  console.log('Decode Payload:' + decodePayload)
+  console.log('id: ' + id)
+  console.log(user)
   if (!user) {
     throw new AppError('Invalid credentials', 401)
   }

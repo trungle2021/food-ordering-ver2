@@ -1,10 +1,15 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import localStorage from "./local-storage";
 import { origin } from "~/utils/api";
+import { TOKEN_TYPE } from '../utils/static';
+
+
 
 const instance: AxiosInstance = axios.create({
   baseURL: origin,
@@ -14,15 +19,20 @@ const instance: AxiosInstance = axios.create({
   },
 });
 
+type TokenType = string | null | object;
+
+
 const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  //   const token: string | null = getAccessTokenFromLocalStorage();
-  //   if (token && token.trim() !== "") {
-  //     config.headers = {
-  //       Authorization: "Bearer " + token,
-  //     } as AxiosRequestHeaders;
-  //   }
+    const token: TokenType = localStorage.getDataFromLocalStorage(TOKEN_TYPE.ACCESS_TOKEN);
+    if (token && typeof token === "string" && token.trim() !== "") {
+      console.log(token)
+      config.headers = {
+        ...config.headers,
+        Authorization: "Bearer " + token,
+      } as AxiosRequestHeaders;
+    }
   return config;
 };
 

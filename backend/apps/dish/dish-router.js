@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const DishController = require('../dish/dish-controller')
+const jwtFilterHandler = require('../../middleware/jwt-filter')
 
 router.route('/popular-dishes')
-  .get(DishController.getPoplularDishes)
+  .get(jwtFilterHandler, DishController.getPoplularDishes)
 
 router.route('/:id')
   .get(DishController.getDish)

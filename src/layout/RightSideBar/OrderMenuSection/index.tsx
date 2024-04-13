@@ -4,9 +4,9 @@ import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
 import { Button } from "~/components/UI/Button";
 export const OrderMenuSection = () => {
   const orderItems = [
-    { id: "1", name: "A", url: "3.vn" },
-    { id: "2", name: "B", url: "3.vn" },
-    { id: "3", name: "C", url: "3.vn" },
+    { id: "1", name: "A", url: "" },
+    { id: "2", name: "B", url: "" },
+    { id: "3", name: "C", url: "" },
   ];
 
   const orderItemList = orderItems.map((item) => {

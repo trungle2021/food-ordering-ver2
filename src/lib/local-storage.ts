@@ -1,13 +1,14 @@
 function getDataFromLocalStorage(
   keyName: string,
-  defaultValue: string | object = ""
-): string | object {
+): string | object | null {
   if (typeof window !== "undefined") {
     const data: string | null = localStorage.getItem(keyName);
-    const parsedValue = JSON.parse(data || "");
-    return parsedValue || defaultValue;
+    if(!data){
+      return null;
+    }
+    return JSON.parse(data);
   }
-  return defaultValue;
+  return null;
 }
 
 function setDataToLocalStorage(keyName: string, value: string | object): void {
