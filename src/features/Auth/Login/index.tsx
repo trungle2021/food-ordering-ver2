@@ -1,13 +1,11 @@
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
-import { useEffect, useState } from "react";
 import AuthService from "~/services/auth/auth-service";
-import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { login } from "../authSlice";
-import LocalStorage from "~/lib/local-storage";
-import { TOKEN_TYPE } from "~/utils/static";
 
 export const Login = () => {
   const history = useHistory();
@@ -29,15 +27,6 @@ export const Login = () => {
 
     if (user && accessToken && refreshToken) {
       console.log("Login success");
-      LocalStorage.setDataToLocalStorage("user", user);
-      LocalStorage.setDataToLocalStorage(
-        TOKEN_TYPE.ACCESS_TOKEN.toString(),
-        accessToken
-      );
-      LocalStorage.setDataToLocalStorage(
-        TOKEN_TYPE.REFRESH_TOKEN.toString(),
-        refreshToken
-      );
       dispatch(login(response));
       history.push("/dashboard");
     } else {

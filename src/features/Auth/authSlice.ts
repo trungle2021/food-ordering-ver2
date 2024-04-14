@@ -20,7 +20,7 @@ export const authSlice = createSlice({
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
     },
-    logout: (state) => {
+    logout: (state, action) => {
       state.user = {};
       state.accessToken = "";
       state.refreshToken = "";
