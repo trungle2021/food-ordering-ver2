@@ -4,12 +4,12 @@ import styles from "./styles.module.css";
 import { OrderResponse } from "~/interface/order/order-response";
 import DishResponse from "~/interface/dish/dish";
 import RecentOrderService from "~/services/recent-order/recent-order";
-import LocalStorage from "~/lib/local-storage";
+import { useSelector } from "react-redux";
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);
-  const user = LocalStorage.getDataFromLocalStorage("user");
-  const user_id = (user as { _id: string })._id;
+  const auth = useSelector((state: any) => state.auth);
+  const user_id = auth.user._id;
   const getRecentOrders = async () => {
     try {
       const response = await RecentOrderService.fetchRecentOrderList(

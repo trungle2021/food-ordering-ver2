@@ -5,11 +5,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import localStorage from "./local-storage";
 import { origin } from "~/utils/api";
-import { TOKEN_TYPE } from '../utils/static';
-
-
+import { useSelector } from "react-redux";
 
 const instance: AxiosInstance = axios.create({
   baseURL: origin,
@@ -21,18 +18,18 @@ const instance: AxiosInstance = axios.create({
 
 type TokenType = string | null | object;
 
-
 const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-    const token: TokenType = localStorage.getDataFromLocalStorage(TOKEN_TYPE.ACCESS_TOKEN);
-    if (token && typeof token === "string" && token.trim() !== "") {
-      console.log(token)
-      config.headers = {
-        ...config.headers,
-        Authorization: "Bearer " + token,
-      } as AxiosRequestHeaders;
-    }
+  const token: TokenType = useSelector((state: any) => state.auth.accessToken);
+  console.log("token", token);
+  if (token && typeof token === "string" && token.trim() !== "") {
+    console.log(token);
+    config.headers = {
+      ...config.headers,
+      Authorization: "Bearer " + token,
+    } as AxiosRequestHeaders;
+  }
   return config;
 };
 

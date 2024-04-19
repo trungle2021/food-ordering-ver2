@@ -5,7 +5,7 @@ import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
 import { loginUser } from "../authSlice";
-import { LoginPayload } from '../../../interface/LoginPayload';
+import { LoginPayload } from "../../../interface/LoginPayload";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const Login = () => {
@@ -13,20 +13,17 @@ export const Login = () => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
-
   const handleSubmitLoginForm = (values: LoginPayload) => {
     try {
-       dispatch<any>(loginUser(values))
-      .then((response: any) => {
-        history.push("/dashboard");
-      })
-      .catch((error: { message: SetStateAction<string>; }) => {
-        setErrorMessage(error.message);
-      });
-
-    } catch (error: any) {
-      
-    }
+      dispatch<any>(loginUser(values))
+        .then((result: any) => {
+          console.log(result);
+          if (result.payload) history.push("/dashboard");
+        })
+        .catch((error: { message: SetStateAction<string> }) => {
+          setErrorMessage(error.message);
+        });
+    } catch (error: any) {}
   };
 
   return (
