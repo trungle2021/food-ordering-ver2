@@ -1,54 +1,34 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
-import AuthService from "~/services/auth/auth-service";
-import { login } from "../authSlice";
+import { loginUser } from "../authSlice";
+import { LoginPayload } from '../../../interface/LoginPayload';
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const Login = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [formSubmitted, setFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-  });
 
-  const handleSubmitLoginForm = (values: any) => {
-    setFormValues(values);
-    setFormSubmitted(true);
-  };
 
-  const handleLoginResponse = (response: any) => {
-    const { user, accessToken, refreshToken } = response;
-
-    if (user && accessToken && refreshToken) {
-      console.log("Login success");
-      dispatch(login(response));
-      history.push("/dashboard");
-    } else {
-      console.log("Login failed");
-    }
-  };
-
-  async function fetchLoginApi() {
+  const handleSubmitLoginForm = (values: LoginPayload) => {
     try {
-      const response = await AuthService.checkLogin(formValues);
-      handleLoginResponse(response.data);
-    } catch (error: any) {
-      console.log(error);
-      setErrorMessage(error?.message);
-    }
-  }
+       dispatch<any>(loginUser(values))
+      .then((response: any) => {
+        history.push("/dashboard");
+      })
+      .catch((error: { message: SetStateAction<string>; }) => {
+        setErrorMessage(error.message);
+      });
 
-  useEffect(() => {
-    if (formSubmitted) {
-      fetchLoginApi();
+    } catch (error: any) {
+      
     }
-  }, [formSubmitted, dispatch]);
+  };
+
   return (
     <div className="wrapper-container">
       <div className="form">

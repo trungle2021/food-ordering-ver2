@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { LoginPayload } from "~/interface/LoginPayload";
+import AuthService from "~/services/auth/auth-service";
 
 interface AuthState {
   user: any;
@@ -6,41 +8,41 @@ interface AuthState {
   refreshToken: string;
   loading: false;
   error: null;
-  message: string
+  message: string;
 }
 const initialState: AuthState = {
-  user: {},
+  user: null,
   accessToken: "",
   refreshToken: "",
   loading: false,
   error: null,
-  message: ""
+  message: "null"
 };
 
-const loginUser = createAsyncThunk('loginUser',)
+
+export const loginUser = createAsyncThunk('auth/loginUser', async (payload: LoginPayload, thunkAPI) => {
+  try {
+    const response = await AuthService.checkLogin(payload);
+    const { user, accessToken, refreshToken } = response;
+    if (user && accessToken && refreshToken) {
+      return response
+    } else {
+      console.log("Login failed");
+    }
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ error: error.message });
+  }
+})
 
 export const authSlice = createSlice({
   initialState,
   reducers: {
-    loginSuccess: (state, action) => {
-      const { user, accessToken, refreshToken } = action.payload;
-      state.user = user;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
-    },
-
-    logout: (state, action) => {
-      state.user = {};
-      state.accessToken = "";
-      state.refreshToken = "";
-    },
   },
-  extraReducers(builder) {
+  extraReducers: builder => {
     // Add extra reducers here
   },
   name: "auth",
 });
 
-const { actions, reducer } = authSlice;
-export const { login, logout } = actions;
+const { reducer } = authSlice;
 export default reducer;
