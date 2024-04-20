@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LoginPayload } from "~/interface/LoginPayload";
 import AuthService from "~/services/auth/auth-service";
 
@@ -7,7 +7,7 @@ interface AuthState {
   accessToken: string;
   refreshToken: string;
   loading: boolean;
-  error: null | string;
+  error: null | object;
   message: string;
 }
 const initialState: AuthState = {
@@ -15,7 +15,7 @@ const initialState: AuthState = {
   accessToken: "",
   refreshToken: "",
   loading: false,
-  error: "",
+  error: null,
   message: "",
 };
 
@@ -30,8 +30,9 @@ export const loginUser = createAsyncThunk(
       } else {
         console.log("Login failed");
       }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ error: error.message });
+    } catch (err: any) {
+      let error = err.response ? err.response.data : err.message;
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -47,25 +48,28 @@ export const authSlice = createSlice({
         state.user = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log("action", action.payload);
-        state.loading = false;
-        state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken;
-        state.refreshToken = action.payload.refreshToken;
-        state.message = "Login success";
-        state.error = null;
+        console.log(action.payload)
+        if(action.payload.status === 'success'){
+          state.loading = false;
+          state.user = action.payload.user;
+          state.accessToken = action.payload.data.accessToken;
+          state.refreshToken = action.payload.data.refreshToken;
+          state.message = "Login success";
+          state.error = null;
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = null;
-        state.user = null;
+        console.log("state", state)
+        console.log("action", action);
+        // state.loading = false;
+        // state.error = null;
+        // state.user = null;
 
-        console.log(action);
-        if (action.error.message === "Request failed with status code 401") {
-          state.error = "Access denied. Please check your email and password";
-        } else {
-          state.error = action.error.message || null;
-        }
+        // if (action.payload === "fail") {
+        //   state.error = action.payload;
+        // } else {
+        //   state.error = action.error.message || null;
+        // }
       });
   },
   name: "auth",
