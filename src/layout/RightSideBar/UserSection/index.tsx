@@ -10,7 +10,7 @@ import { RootState } from "~/app/store";
 
 export const UserSection = () => {
   const auth = useSelector((state: RootState) => state.auth);
-  const name = auth.user.name;
+  const name = auth.user?.name;
   return (
     <div className={styles["user-container"]}>
       <div className={styles["user-container__function"]}>

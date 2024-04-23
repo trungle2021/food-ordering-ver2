@@ -5,8 +5,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import { store } from "~/app/store";
 import { origin } from "~/utils/api";
-import { useSelector } from "react-redux";
 
 const instance: AxiosInstance = axios.create({
   baseURL: origin,
@@ -16,19 +16,16 @@ const instance: AxiosInstance = axios.create({
   },
 });
 
-type TokenType = string | null | object;
 
 const onRequest = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  const token: TokenType = useSelector((state: any) => state.auth.accessToken);
-  console.log("token", token);
-  if (token && typeof token === "string" && token.trim() !== "") {
-    console.log(token);
-    config.headers = {
-      ...config.headers,
-      Authorization: "Bearer " + token,
-    } as AxiosRequestHeaders;
+  const state = store.getState()
+  const accessToken = state.auth.accessToken;
+  console.log("Access token: " + accessToken);
+  if (accessToken) {
+    console.log("In if condition Access token: " + accessToken);
+    config.headers.Authorization =  "Bearer " + accessToken;
   }
   return config;
 };
@@ -38,6 +35,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
+ 
   if (!response.data) {
     throw new Error("Something went wrong");
   }

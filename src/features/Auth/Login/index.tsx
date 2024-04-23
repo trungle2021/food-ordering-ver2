@@ -17,7 +17,6 @@ export const Login = () => {
     try {
       dispatch<any>(loginUser(values))
         .then((result: any) => {
-          console.log(result);
           if (result.payload) history.push("/dashboard");
         })
         .catch((error: { message: SetStateAction<string> }) => {

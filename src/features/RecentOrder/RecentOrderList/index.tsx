@@ -9,17 +9,20 @@ import { useSelector } from "react-redux";
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const auth = useSelector((state: any) => state.auth);
-  const user_id = auth.user._id;
+  const user_id = auth.user?._id;
   const getRecentOrders = async () => {
     try {
-      const response = await RecentOrderService.fetchRecentOrderList(
-        4,
-        user_id
-      );
-      setRecentOrders(response.data);
+      if (user_id) {
+        const response = await RecentOrderService.fetchRecentOrderList(
+          4,
+          user_id
+        );
+        setRecentOrders(response.data);
+      }
     } catch (error) {
       console.log(error);
     }
+
   };
 
   useEffect(() => {
