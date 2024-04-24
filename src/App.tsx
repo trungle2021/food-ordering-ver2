@@ -14,6 +14,7 @@ function App() {
         <Route path={PATH.LOGIN} component={Login} />
         <Route path={PATH.REGISTER} component={Register} />
         <Route path={PATH.FORGOT_PASSWORD} component={ForgotPassword} />
+        
         <Route path={PATH.INDEX} component={Home} />
         <Route component={Notfound} />
       </Switch>

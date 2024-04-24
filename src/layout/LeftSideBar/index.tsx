@@ -6,6 +6,7 @@ interface LeftSideBarProps {
   className?: string;
 }
 
+
 export default function LeftSideBar({ className }: LeftSideBarProps) {
   const navItems: NavItems[] = [
     {
@@ -28,6 +29,8 @@ export default function LeftSideBar({ className }: LeftSideBarProps) {
     { url: `${PATH.SETTINGS}`, label: "Setting", src: "/icon/Setting.svg" },
     { url: `${PATH.LOGOUT}`, label: "Logout", src: "/icon/Logout.svg" },
   ];
+
+  console.log(navItems)
 
   return (
     <aside className={`${className} ${styles["sidebar--left"]}`}>

@@ -6,7 +6,7 @@ import { OrderHistory } from "~/pages/OrderHistory";
 import { Dashboard } from "~/pages/Dashboard";
 import { Bills } from "~/pages/Bill";
 import { Settings } from "~/pages/Setting";
-import { Logout } from "~/features/Auth/Logout";
+import { Logout } from "~/features/Auth/Logout/index";
 import { Switch } from "react-router-dom";
 
 function Routes() {
