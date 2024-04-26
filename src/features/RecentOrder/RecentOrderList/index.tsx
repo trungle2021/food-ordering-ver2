@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import RecentOrder from "../RecentOrder";
 import styles from "./styles.module.css";
-import { OrderResponse } from "~/interface/order/order-response";
+import { OrderResponse } from "~/interface/order/order.response";
 import DishResponse from "~/interface/dish/dish";
-import RecentOrderService from "~/services/recent-order/recent-order";
+import RecentOrderService from "~/services/recent-order/recent.order";
 import { useSelector } from "react-redux";
 
 export const RecentOrderList: React.FC = () => {

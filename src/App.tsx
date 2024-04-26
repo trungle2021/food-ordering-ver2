@@ -6,16 +6,22 @@ import { Notfound } from "./pages/NotFound";
 import { Home } from "./pages/Home";
 import { ForgotPassword } from "./features/Auth/ForgotPassword";
 import { Register } from "./features/Auth/Register";
+import { PrivateRoute } from "./routes/PrivateRoute";
+import { useSelector } from "react-redux";
+import { Dashboard } from "./pages/Dashboard";
+import { PublicRoute } from "./routes/PublicRoute";
 
 function App() {
+  const auth = useSelector((state: any) => state.auth);
+  const isAuthenticated = auth.isLoggedIn;
+  console.log("isAuthenticated", isAuthenticated)
   return (
     <GlobalStyles>
       <Switch>
-        <Route path={PATH.LOGIN} component={Login} />
-        <Route path={PATH.REGISTER} component={Register} />
-        <Route path={PATH.FORGOT_PASSWORD} component={ForgotPassword} />
-        
-        <Route path={PATH.INDEX} component={Home} />
+        <PublicRoute path={PATH.LOGIN} component={Login} />
+        <PublicRoute path={PATH.REGISTER} component={Register}/>
+        <PublicRoute path={PATH.FORGOT_PASSWORD} component={ForgotPassword} />
+        <PrivateRoute path={PATH.INDEX} component={Home}/>
         <Route component={Notfound} />
       </Switch>
     </GlobalStyles>

@@ -7,6 +7,7 @@ import {  Button, Stack } from "@mui/material";
 import { InputField } from "~/components/Form-Controls/InputField";
 import { CheckBoxField } from "~/components/Form-Controls/CheckBoxField";
 import styles from "./styles.module.css";
+import { useSelector } from "react-redux";
 
 interface LoginFormProps {
   onSubmitLoginForm: (formData: LoginFormValues) => void;
@@ -25,6 +26,8 @@ const initialFormValues: LoginFormValues = {
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
+  const {status} = useSelector((state:any )=> state.auth)
+
   const {
     handleSubmit,
     reset,
@@ -37,7 +40,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
 
   const onSubmit = (formData: LoginFormValues) => {
     onSubmitLoginForm(formData);
-    reset();
+    //if credentials not valid, still hold current data in input
+    if(status === 'success') reset()
   };
 
   const onError = (error: any) => {

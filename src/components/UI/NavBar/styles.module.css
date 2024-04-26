@@ -12,6 +12,10 @@
     list-style-type: none;
     text-decoration: none;
   }
+
+  .navbar__item{
+    cursor: pointer;
+  }
   
   .navbar__link img {
     position: relative;

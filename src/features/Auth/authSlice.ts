@@ -1,42 +1,54 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoginPayload } from "~/interface/LoginPayload";
-import AuthService from "~/services/auth/auth-service";
+import { LoginPayload } from "~/interface/login.payload";
+import { RegisterPayload } from "~/interface/register.payload";
+import AuthService from "~/services/auth/auth.service";
 
 interface AuthState {
   user: any;
   accessToken: string;
   refreshToken: string;
   loading: boolean;
-  error: null | object;
+  status: null | object;
   message: string;
+  isLoggedIn: boolean;
 }
 const initialState: AuthState = {
   user: {},
   accessToken: "",
   refreshToken: "",
   loading: false,
-  error: null,
+  status: null,
   message: "",
+  isLoggedIn: false
 };
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (payload: LoginPayload, thunkAPI) => {
     try {
-      const response = await AuthService.checkLogin(payload);
+      const response = await AuthService.login(payload);
       const { user, accessToken, refreshToken } = response.data;
+
       if (user && accessToken && refreshToken) {
         return response;
-      } else {
-        console.log("Login failed");
-      }
+      } 
     } catch (err: any) {
-      console.log("Login failed", err);
-      let error = err.response ? err.response.data : err.message;
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
+
+export const registerUser = createAsyncThunk('auth/registerUser', async (payload: RegisterPayload, thunkAPI) => {
+  try {
+    const response = await AuthService.register(payload);
+    const { user, accessToken, refreshToken } = response.data;
+    if (user && accessToken && refreshToken) {
+      return response;
+    } 
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err);
+  }
+})
 
 export const authSlice = createSlice({
   initialState,
@@ -46,33 +58,54 @@ export const authSlice = createSlice({
       state.accessToken = "";
       state.refreshToken = "";
       state.loading = false;
-      state.error = null;
+      state.status = null;
       state.message = "";
+      state.isLoggedIn = false;
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.status = null;
         state.user = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         if(action.payload.status === 'success'){
-          console.log("status is success")
           state.loading = false;
           state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
           state.message = "Login success";
-          state.error = null;
+          state.isLoggedIn = true;
+          state.status = action.payload.status;
         }
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        console.log("Rejected");
+      .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = null;
+        state.status = action.payload.status;
+        state.message = action.payload.message
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.status = null;
         state.user = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        if(action.payload.status === 'success'){
+          state.loading = false;
+          state.user = action.payload.data.user;
+          state.accessToken = action.payload.data.accessToken;
+          state.refreshToken = action.payload.data.refreshToken;
+          state.message = "Register success";
+          state.isLoggedIn = true;
+          state.status = action.payload.status;
+        }
+      })
+      .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.status = action.payload.status;
+        state.message = action.payload.message
       });
   },
   name: "auth",

@@ -9,6 +9,10 @@ const getUser = async (filter) => {
 }
 
 const createUser = async (user) => {
+  const isEmailAlreadyExists = await User.findOne({ email: user.email })
+  if (isEmailAlreadyExists) throw new Error('Email already exists')
+  const isPhoneAlreadyExists = await User.findOne({ phone: user.phone })
+  if (isPhoneAlreadyExists) throw new Error('Phone already exists')
   return await User.create(user)
 }
 

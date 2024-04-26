@@ -1,5 +1,5 @@
 import { TOKEN_TYPE } from "~/utils/static";
-import LocalStorage from "./local-storage";
+import LocalStorage from "./localStorage";
 
 const getAccessTokenFromLocalStorage = () => {
   const accessToken: string | object = LocalStorage.getDataFromLocalStorage(

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { Dish } from "../PopularDish/index";
-import PopularDishService from "../../../services/popular-dish/popular-dish";
+import PopularDishService from "../../../services/popular-dish/popular.dish";
 import DishResponse from "../../../interface/dish/dish";
 
 export const PopularDishList = () => {

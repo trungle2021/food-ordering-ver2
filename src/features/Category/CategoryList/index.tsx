@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "../CategoryItem";
-import CategoryService from "../../../services/category/category-service";
+import CategoryService from "../../../services/category/category.service";
 import Category from "../../../interface/category";
 import styles from "./styles.module.css";
 

@@ -8,6 +8,10 @@ import { InputField } from "~/components/Form-Controls/InputField";
 
 type RegisterFormValues = {
   email: string;
+  password: string;
+  cpassword: string;
+  phone: string;
+  name: string;
 };
 
 interface RegisterFormProps {
@@ -20,6 +24,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const { control, handleSubmit } = useForm<RegisterFormValues>({
     defaultValues: {
       email: "",
+      password: "",
+      cpassword: "",
+      name: "",
+      phone: "",
     },
     resolver: yupResolver(
       RegisterFormValidator
@@ -28,6 +36,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const onSubmit = (formData: RegisterFormValues) => {
     onSubmitRegisterForm(formData);
+    
   };
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -38,6 +47,36 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           type="text"
           control={control}
         />
+
+        <InputField
+          label="Password"
+          name="password"
+          type="password"
+          control={control}
+        />
+
+        <InputField
+          label="Confirm Password"
+          name="cpassword"
+          type="password"
+          control={control}
+        />
+
+        <InputField
+          label="Full Name"
+          name="name"
+          type="text"
+          control={control}
+        />
+
+        <InputField
+          label="Phone Number"
+          name="phone"
+          type="text"
+          control={control}
+        />
+
+
         <Button type="submit" variant="contained" color="primary">
           Continue
         </Button>

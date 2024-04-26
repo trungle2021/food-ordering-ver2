@@ -1,9 +1,18 @@
 
 import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "~/features/Auth/authSlice";
+import { useHistory } from "react-router-dom";
 
 export const Navbar = ({ items }: { items: NavItems[] }) => {
-  console.log(items)
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const handleLogout = () => {
+    dispatch(logoutUser())
+    history.push('/login');
+  }
+
   return (
     <nav className={styles["navbar__container"]}>
       <ul className={styles["navbar__list"]}>
@@ -18,6 +27,15 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
             </Link>
           </li>
         ))}
+         <li className={styles["navbar__item"]}>
+            <a
+              onClick={handleLogout}
+              className={styles["navbar__link"]}
+            >
+              <img src="/icon/Logout.svg" />
+              <span>Logout</span>
+            </a>
+          </li>
       </ul>
     </nav>
   );

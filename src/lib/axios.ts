@@ -22,9 +22,7 @@ const onRequest = (
 ): InternalAxiosRequestConfig => {
   const state = store.getState()
   const accessToken = state.auth.accessToken;
-  console.log("Access token: " + accessToken);
   if (accessToken) {
-    console.log("In if condition Access token: " + accessToken);
     config.headers.Authorization =  "Bearer " + accessToken;
   }
   return config;
