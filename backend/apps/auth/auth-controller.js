@@ -6,14 +6,8 @@ const validateLoginRequest = require('./loginValidator')
 const register = catchAsyncHandler(async (req, res, next) => {
   const userInput = req.body
   console.log('User input' + req.body)
-  const isValidUserInput = await new User(userInput).validate()
-  console.log('Register Validation Result' + isValidUserInput)
-  if (!isValidUserInput) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid input'
-    })
-  }
+  const newUser = new User(userInput)
+  await newUser.validate()
   const tokens = await AuthService.register(userInput)
   if (tokens) {
     return res.status(201).json({

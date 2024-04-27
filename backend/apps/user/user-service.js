@@ -1,3 +1,4 @@
+const AppError = require('../error/app-error')
 const User = require('./user-model')
 
 const getUsers = async () => {
@@ -10,9 +11,9 @@ const getUser = async (filter) => {
 
 const createUser = async (user) => {
   const isEmailAlreadyExists = await User.findOne({ email: user.email })
-  if (isEmailAlreadyExists) throw new Error('Email already exists')
+  if (isEmailAlreadyExists) throw new AppError('Email already exists', 409)
   const isPhoneAlreadyExists = await User.findOne({ phone: user.phone })
-  if (isPhoneAlreadyExists) throw new Error('Phone already exists')
+  if (isPhoneAlreadyExists) throw new AppError('Phone already exists', 409)
   return await User.create(user)
 }
 
