@@ -1,11 +1,14 @@
+const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 const RefreshToken = require('./refresh-token-model')
 
-const createRefreshToken = async (refreshToken) => {
-  return await RefreshToken.create(refreshToken)
+const saveRefreshToken = async (refreshTokenObject) => {
+  return await RefreshToken.create(refreshTokenObject)
 }
 
-const getRefreshToken = async (id) => {
-  return await RefreshToken.findById(id)
+const getRefreshToken = async (userId) => {
+  // const objectId = await convertToObjectId(userId)
+  // console.log(objectId)
+  return await RefreshToken.find({ user: userId })
 }
 
 const deleteRefreshToken = async (id) => {
@@ -13,7 +16,7 @@ const deleteRefreshToken = async (id) => {
 }
 
 module.exports = {
-  createRefreshToken,
+  saveRefreshToken,
   getRefreshToken,
   deleteRefreshToken
 }

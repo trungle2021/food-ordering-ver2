@@ -2,6 +2,7 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const User = require('../user/user-model')
 const AuthService = require('./auth-service')
 const validateLoginRequest = require('./loginValidator')
+const RefreshTokenService = require('../refresh_token/refresh-token-service')
 
 const register = catchAsyncHandler(async (req, res, next) => {
   const userInput = req.body
@@ -40,7 +41,17 @@ const login = catchAsyncHandler(async (req, res, next) => {
   }
 })
 
+const getRefreshToken = catchAsyncHandler(async (req, res, next) => {
+  const { userId } = req.params
+  const refreshToken = await RefreshTokenService.getRefreshToken(userId)
+  return res.status(200).json({
+    status: 'success',
+    data: refreshToken
+  })
+})
+
 module.exports = {
   register,
-  login
+  login,
+  getRefreshToken
 }

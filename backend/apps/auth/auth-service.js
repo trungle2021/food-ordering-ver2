@@ -3,7 +3,9 @@ const JWTService = require('../../utils/jwt/jwt-service')
 const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION
 const refreshTokenExpired = process.env.JWT_REFRESH_TOKEN_EXPIRATION
+const RefreshTokenService = require('../refresh_token/refresh-token-service')
 const AppError = require('../error/app-error')
+const RefreshToken = require('../refresh_token/refresh-token-model')
 
 const tokenOptions = {
   accessToken: { expiresIn: accessTokenExpired },
@@ -21,6 +23,11 @@ const register = async (userData) => {
     secretKey,
     tokenOptions
   )
+
+  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id })
+
+  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+
   return {
     accessToken,
     refreshToken,
@@ -47,6 +54,11 @@ const login = async (emailInput, passwordInput) => {
     secretKey,
     tokenOptions
   )
+
+  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id })
+
+  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+
   return {
     accessToken,
     refreshToken,
