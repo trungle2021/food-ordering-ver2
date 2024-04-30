@@ -5,7 +5,7 @@ const saveRefreshToken = async (refreshTokenObject) => {
 }
 
 const getRefreshToken = async (userId) => {
-  return await RefreshToken.find({ user: userId })
+  return await RefreshToken.findOne({ user: userId })
 }
 
 const deleteRefreshToken = async (id) => {

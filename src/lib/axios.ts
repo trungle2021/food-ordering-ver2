@@ -1,7 +1,6 @@
 import axios, {
   AxiosError,
   AxiosInstance,
-  AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
@@ -47,6 +46,13 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
  
   console.log("On Response", response);
+  if(response.status === 401){
+    store.dispatch({type: "auth/getRefreshToken"})
+    .then(result => {
+      console.log("Refresh token response", result);
+      return instance(response.config);
+    })
+  }
   if (!response.data) {
     throw new Error("Something went wrong");
   }
