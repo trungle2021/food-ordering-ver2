@@ -5,6 +5,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
+import axiosRetry from "axios-retry";
 import { store } from "~/app/store";
 import { origin } from "~/utils/api";
 
@@ -15,6 +16,17 @@ const instance: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+// Exponential back-off retry delay between requests
+
+axiosRetry(instance, {
+  
+  retries: 3,
+  
+  retryDelay: axiosRetry.exponentialDelay,
+  
+  retryCondition(error) {
+    return axiosRetry.isNetworkOrIdempotentRequestError(error) || error?.response?.status === 429 || error?.response?.status === 405;
+}, });
 
 
 const onRequest = (
@@ -34,6 +46,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
  
+  console.log("On Response", response);
   if (!response.data) {
     throw new Error("Something went wrong");
   }
