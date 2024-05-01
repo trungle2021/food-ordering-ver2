@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const validateObjectAgainstSchema = require('../../library/Joi/validation')
+const validateObjectAgainstSchema = require('../../utils/joi/validation')
 
 const registerRequestSchema = Joi.object({
   email: Joi.string().email().required(),

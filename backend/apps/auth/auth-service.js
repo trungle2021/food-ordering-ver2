@@ -24,9 +24,7 @@ const register = async (userData) => {
     tokenOptions
   )
 
-  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id })
-
-  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+  await saveRefreshTokenToDB(refreshToken, _id)
 
   return {
     accessToken,
@@ -54,10 +52,7 @@ const login = async (emailInput, passwordInput) => {
     secretKey,
     tokenOptions
   )
-
-  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id, expired_at: new Date() + refreshTokenExpired })
-
-  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+  await saveRefreshTokenToDB(refreshToken, _id)
 
   return {
     accessToken,
@@ -85,6 +80,11 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
     accessToken,
     refreshToken
   }
+}
+
+const saveRefreshTokenToDB = async (token, userId) => {
+  const refreshTokenObject = new RefreshToken({ token, user: userId })
+  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
 }
 
 

@@ -6,10 +6,10 @@ const saveRefreshToken = async (refreshTokenObject) => {
 
 const findRefreshToken = async (userId, refreshToken) => {
   const token = await RefreshToken.findOne({ user: userId, token: refreshToken })
-  if(token.expired_at < new Date()) {
-    return null
+  if(token && token.expired_at >= new Date()) {
+    return token
   }
-  return token
+  return null
 }
 
 const deleteRefreshToken = async (userId) => {

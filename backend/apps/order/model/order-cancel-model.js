@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const validateObjectAgainstSchema = require('../../../library/Joi/validation')
+const validateObjectAgainstSchema = require('../../../utils/joi/validation')
 
 const orderCancelSchema = Joi.object({
   reason: Joi.string().optional('')

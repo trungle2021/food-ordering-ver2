@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const validObjectAgainstSchema = require('../../library/Joi/validation')
 const paymentActions = require('../../constant/payment-action')
+const validateObjectAgainstSchema = require('../../utils/joi/validation')
 
 const paymentInternalAccountInfoSchema = Joi.object({
   user_id: Joi.string().required(),
@@ -9,7 +9,7 @@ const paymentInternalAccountInfoSchema = Joi.object({
 })
 
 const validate = (object) => {
-  return validObjectAgainstSchema(object, paymentInternalAccountInfoSchema)
+  return validateObjectAgainstSchema(object, paymentInternalAccountInfoSchema)
 }
 module.exports = {
   paymentInternalAccountInfoSchema,

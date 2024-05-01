@@ -46,7 +46,7 @@ const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
 
   const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {
-    return res.status(405).json({
+    return res.status(404).json({
       status: 'fail',
       message: 'Token expired or not found'
     })
