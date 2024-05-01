@@ -1,15 +1,17 @@
 
 import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "~/features/Auth/authSlice";
 import { useHistory } from "react-router-dom";
 
 export const Navbar = ({ items }: { items: NavItems[] }) => {
   const dispatch = useDispatch();
+  const auth = useSelector((state: any) => state.auth);
+  const id = auth.user._id;
   const history = useHistory();
   const handleLogout = () => {
-    dispatch(logoutUser())
+    dispatch<any>(logoutUser(id))
     history.push('/login');
   }
 

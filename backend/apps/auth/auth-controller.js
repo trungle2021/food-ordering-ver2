@@ -3,7 +3,6 @@ const User = require('../user/user-model')
 const AuthService = require('./auth-service')
 const validateLoginRequest = require('./loginValidator')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
-const mongoose = require('mongoose');
 
 const register = catchAsyncHandler(async (req, res, next) => {
   const userInput = req.body
@@ -42,17 +41,10 @@ const login = catchAsyncHandler(async (req, res, next) => {
   }
 })
 
-const getRefreshToken = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid userid'
-    })
-  }
+const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
+  const { userId, token } = req.body
 
-  const refreshToken = await RefreshTokenService.getRefreshToken(userId)
-  console.log("Refresh token: " + refreshToken)
+  const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {
     return res.status(405).json({
       status: 'fail',
@@ -68,5 +60,5 @@ const getRefreshToken = catchAsyncHandler(async (req, res, next) => {
 module.exports = {
   register,
   login,
-  getRefreshToken
+  getNewAccessToken
 }

@@ -55,7 +55,7 @@ const login = async (emailInput, passwordInput) => {
     tokenOptions
   )
 
-  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id })
+  const refreshTokenObject = new RefreshToken({ token: refreshToken, user: _id, expired_at: new Date() + refreshTokenExpired })
 
   await RefreshTokenService.saveRefreshToken(refreshTokenObject)
 
@@ -64,6 +64,10 @@ const login = async (emailInput, passwordInput) => {
     refreshToken,
     user: { ...rest }
   }
+}
+
+const logout = async (userId) => {
+  await RefreshTokenService.deleteRefreshToken(userId)
 }
 
 const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptions) => {
@@ -83,7 +87,10 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
   }
 }
 
+
+
 module.exports = {
   register,
-  login
+  login,
+  logout
 }

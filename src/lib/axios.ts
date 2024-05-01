@@ -47,11 +47,8 @@ const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
  
   console.log("On Response", response);
   if(response.status === 401){
-    store.dispatch({type: "auth/getRefreshToken"})
-    .then(result => {
-      console.log("Refresh token response", result);
-      return instance(response.config);
-    })
+    store.dispatch(getNewAccessToken())
+    
   }
   if (!response.data) {
     throw new Error("Something went wrong");

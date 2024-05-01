@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LoginPayload } from "~/interface/login.payload";
+import { LogoutPayload } from "~/interface/logout.payload";
 import { RegisterPayload } from "~/interface/register.payload";
 import AuthService from "~/services/auth/auth.service";
 
@@ -48,20 +49,36 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (payload
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err);
   }
+});
+
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload: LogoutPayload, thunkAPI) => {
+  try {
+    const response = await AuthService.logout(payload);
+    const { user, accessToken, refreshToken } = response.data;
+    if (user && accessToken && refreshToken) {
+      return response;
+    } 
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err);
+  }
+
+})
+
+export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', async (payload: any, thunkAPI) => {
+  try {
+    const response = await AuthService.getNewAccessToken();
+    const { user, accessToken, refreshToken } = response.data;
+    if (user && accessToken && refreshToken) {
+      return response;
+    } 
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err);
+  }
 })
 
 export const authSlice = createSlice({
   initialState,
   reducers: {
-    logoutUser: (state) => {
-      state.user = {};
-      state.accessToken = "";
-      state.refreshToken = "";
-      state.loading = false;
-      state.status = null;
-      state.message = "";
-      state.isLoggedIn = false;
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -106,11 +123,31 @@ export const authSlice = createSlice({
         state.loading = false;
         state.status = action.payload.status;
         state.message = action.payload.message
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.status = null;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
+        if(action.payload.status === 'success'){
+          state.user = {};
+          state.accessToken = "";
+          state.refreshToken = "";
+          state.loading = false;
+          state.status = null;
+          state.message = "";
+          state.isLoggedIn = false;
+        }
+      })
+      .addCase(logoutUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.status = action.payload.status;
+        state.message = action.payload.message
       });
   },
   name: "auth",
 });
 
-export const { logoutUser } = authSlice.actions;
+
 const { reducer } = authSlice;
 export default reducer;

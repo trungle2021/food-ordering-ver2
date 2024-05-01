@@ -14,6 +14,6 @@ const validBodyLoginHandler = (req, res, next) => {
 router
   .post('/login', validBodyLoginHandler, AuthController.login)
   .post('/register', AuthController.register)
-  .get('/refresh-token/:userId', AuthController.getRefreshToken)
+  .post('/refresh-token', AuthController.getNewAccessToken)
 
 module.exports = router
