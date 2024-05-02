@@ -47,8 +47,7 @@ const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
  
   console.log("On Response", response);
   if(response.status === 401){
-    store.dispatch(getNewAccessToken())
-    
+    store.dispatch(getNewAccessToken())  
   }
   if (!response.data) {
     throw new Error("Something went wrong");

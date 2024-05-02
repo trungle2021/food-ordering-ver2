@@ -65,6 +65,15 @@ const logout = async (userId) => {
   await RefreshTokenService.deleteRefreshToken(userId)
 }
 
+const getNewAccessToken = async (userId) => {
+  const payload = { _id: userId }
+  return await JWTService.generateToken(
+    payload,
+    secretKey,
+    tokenOptions.accessToken
+  )
+}
+
 const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptions) => {
   const accessToken = await JWTService.generateToken(
     payload,
@@ -87,10 +96,9 @@ const saveRefreshTokenToDB = async (token, userId) => {
   await RefreshTokenService.saveRefreshToken(refreshTokenObject)
 }
 
-
-
 module.exports = {
   register,
   login,
-  logout
+  logout,
+  getNewAccessToken
 }

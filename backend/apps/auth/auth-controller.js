@@ -51,10 +51,20 @@ const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
       message: 'Token expired or not found'
     })
   }
-  return res.status(200).json({
-    status: 'success',
-    data: refreshToken
-  })
+  const newAccessToken = await AuthService.getNewAccessToken(userId)
+  if (newAccessToken) {
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        accessToken: newAccessToken
+      }
+    })
+  } else {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Cannot get new access token'
+    })
+  }
 })
 
 module.exports = {
