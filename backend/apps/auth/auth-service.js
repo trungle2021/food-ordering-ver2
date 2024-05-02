@@ -1,8 +1,8 @@
-const UserService = require('../user/user-service')
-const JWTService = require('../../utils/jwt/jwt-service')
 const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION
 const refreshTokenExpired = process.env.JWT_REFRESH_TOKEN_EXPIRATION
+const UserService = require('../user/user-service')
+const JWTService = require('../../utils/jwt/jwt-service')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 const AppError = require('../error/app-error')
 const RefreshToken = require('../refresh_token/refresh-token-model')
@@ -66,6 +66,10 @@ const logout = async (userId) => {
 }
 
 const getNewAccessToken = async (userId) => {
+  const user = await UserService.getUser({_id:userId})
+  if(!user){
+    throw new AppError("User not found", 400)
+  }
   const payload = { _id: userId }
   return await JWTService.generateToken(
     payload,

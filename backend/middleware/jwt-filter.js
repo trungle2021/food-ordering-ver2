@@ -16,19 +16,15 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     }
   }
   if (!authHeader) {
-    console.log('No authorization header')
-    throw new AppError('Invalid credentials', 401)
+    throw new AppError('No authorization header', 401)
   }
   const token = extractToken(authHeader)
   const decodePayload = await JWTService.verifyToken(token, secretKey)
   const { _id } = decodePayload
   const user = await UserService.getUser({ _id })
-  console.log('Token:' + token)
-  console.log('Decode Payload:' + decodePayload)
-  console.log('id: ' + _id)
   console.log(user)
   if (!user) {
-    throw new AppError('Invalid credentials', 401)
+    throw new AppError('Invalid token', 401)
   }
   next()
 })

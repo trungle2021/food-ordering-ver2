@@ -23,9 +23,10 @@ axiosRetry(instance, {
   
   retryDelay: axiosRetry.exponentialDelay,
   
-  retryCondition(error) {
-    return axiosRetry.isNetworkOrIdempotentRequestError(error) || error?.response?.status === 429 || error?.response?.status === 405;
-}, });
+//   retryCondition(error) {
+//     return axiosRetry.isNetworkOrIdempotentRequestError(error) || error?.response?.status === 429 || error?.response?.status === 401;
+// }
+ });
 
 
 const onRequest = (
@@ -45,10 +46,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 
 const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
  
-  console.log("On Response", response);
-  if(response.status === 401){
-    store.dispatch(getNewAccessToken())  
-  }
+ 
   if (!response.data) {
     throw new Error("Something went wrong");
   }
@@ -56,6 +54,7 @@ const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
 };
 
 const onResponseError = (error: any): Promise<AxiosError> => {
+  console.log('On Response Error: ', error)
   return Promise.reject(error?.response?.data);
 };
 
