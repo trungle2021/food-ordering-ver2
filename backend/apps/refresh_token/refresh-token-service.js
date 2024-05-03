@@ -4,19 +4,23 @@ const saveRefreshToken = async (refreshTokenObject) => {
   return await RefreshToken.create(refreshTokenObject)
 }
 
-const findRefreshToken = async (user, refreshToken) => {
-  const token = await RefreshToken.findOne({ user, token: refreshToken })
-  const isValidityToken = await checkValidityToken(token)
-  return isValidityToken ? token : null
+const findRefreshToken = async (user) => {
+  const token = await RefreshToken.findOne({ user })
+  if (token) {
+    const isValidityToken = await checkValidityToken(token)
+    return isValidityToken ? token : null
+  }
+  return null
 }
 
-const deleteRefreshToken = async (userId) => {
-  await RefreshToken.findOneAndDelete({ user: userId })
+const deleteRefreshTokenByUserId = async (userId) => {
+  const deletedToken = await RefreshToken.findOneAndDelete({ user: userId })
+  return deletedToken !== null
 }
 
 const checkValidityToken = async (token) => {
-  if (token && token.expired_at >= new Date()) {
-    console.log(`Refresh token still valid`)
+  if (token.expired_at >= new Date()) {
+    console.log('Refresh token still valid')
     return true
   }
   if (token) {
@@ -28,5 +32,5 @@ const checkValidityToken = async (token) => {
 module.exports = {
   saveRefreshToken,
   findRefreshToken,
-  deleteRefreshToken
+  deleteRefreshTokenByUserId
 }

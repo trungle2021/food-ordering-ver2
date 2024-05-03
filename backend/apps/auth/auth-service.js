@@ -62,13 +62,13 @@ const login = async (emailInput, passwordInput) => {
 }
 
 const logout = async (userId) => {
-  await RefreshTokenService.deleteRefreshToken(userId)
+  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
 }
 
 const getNewAccessToken = async (userId) => {
-  const user = await UserService.getUser({_id:userId})
-  if(!user){
-    throw new AppError("User not found", 400)
+  const user = await UserService.getUser({ _id: userId })
+  if (!user) {
+    throw new AppError('User not found', 400)
   }
   const payload = { _id: userId }
   return await JWTService.generateToken(
@@ -96,8 +96,21 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
 }
 
 const saveRefreshTokenToDB = async (token, userId) => {
-  const refreshTokenObject = new RefreshToken({ token, user: userId })
-  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+  try {
+    // check if user exists
+    const user = await UserService.getUser({ _id: userId })
+    if (!user) throw new AppError('User not found', 404)
+
+    // delete existing refresh token, if any
+    await RefreshTokenService.deleteRefreshTokenByUserId(userId)
+
+    // save new refresh token
+    const refreshTokenObject = new RefreshToken({ token, user: userId })
+    await RefreshTokenService.saveRefreshToken(refreshTokenObject)
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 module.exports = {

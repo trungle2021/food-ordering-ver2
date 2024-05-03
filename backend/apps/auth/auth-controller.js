@@ -41,6 +41,21 @@ const login = catchAsyncHandler(async (req, res, next) => {
   }
 })
 
+const logout = catchAsyncHandler(async (req, res, next) => {
+  const { user: userId } = req.body
+  if (!userId) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'User ID is required'
+    })
+  }
+  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
+  res.status(200).json({
+    status: 'success',
+    message: 'Logout successfully'
+  })
+})
+
 const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
   const { user: userId, token } = req.body
 
@@ -48,7 +63,7 @@ const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
   if (!refreshToken) {
     return res.status(401).json({
       status: 'fail',
-      error: "Refresh Token Expired",
+      error: 'Refresh Token Expired',
       message: 'Token expired or not found'
     })
   }
@@ -71,5 +86,6 @@ const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
 module.exports = {
   register,
   login,
+  logout,
   getNewAccessToken
 }
