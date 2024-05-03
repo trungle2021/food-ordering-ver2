@@ -12,9 +12,6 @@ import { Dashboard } from "./pages/Dashboard";
 import { PublicRoute } from "./routes/PublicRoute";
 
 function App() {
-  const auth = useSelector((state: any) => state.auth);
-  const isAuthenticated = auth.isLoggedIn;
-  console.log("isAuthenticated", isAuthenticated)
   return (
     <GlobalStyles>
       <Switch>

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token.payload";
 import { LoginPayload } from "~/interface/login.payload";
 import { LogoutPayload } from "~/interface/logout.payload";
 import { RegisterPayload } from "~/interface/register.payload";
@@ -12,6 +13,7 @@ interface AuthState {
   status: null | object;
   message: string;
   isLoggedIn: boolean;
+  isRefreshingToken: null | object;
 }
 const initialState: AuthState = {
   user: {},
@@ -20,7 +22,8 @@ const initialState: AuthState = {
   loading: false,
   status: null,
   message: "",
-  isLoggedIn: false
+  isLoggedIn: false,
+  isRefreshingToken: null
 };
 
 export const loginUser = createAsyncThunk(
@@ -64,11 +67,11 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload: Lo
 
 })
 
-export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', async (payload: any, thunkAPI) => {
+export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', async (payload: GetNewAccessTokenPayload, thunkAPI) => {
   try {
-    const response = await AuthService.getNewAccessToken();
-    const { user, accessToken, refreshToken } = response.data;
-    if (user && accessToken && refreshToken) {
+    const response = await AuthService.getNewAccessToken(payload);
+    const { accessToken } = response.data;
+    if (accessToken) {
       return response;
     } 
   } catch (err: any) {
@@ -143,7 +146,17 @@ export const authSlice = createSlice({
         state.loading = false;
         state.status = action.payload.status;
         state.message = action.payload.message
-      });
+      })
+      .addCase(getNewAccessToken.pending, (state) => {
+        // state.isRefreshingToken = true;
+      }).addCase(getNewAccessToken.fulfilled, (state, action) => {
+        console.log("Status: " + action.payload.status)
+        if(action.payload.status === 'success'){
+          console.log("New access token: " + action.payload.data.accessToken)
+          state.accessToken = action.payload.data.accessToken;
+          state.loading = false;
+        }
+      })
   },
   name: "auth",
 });

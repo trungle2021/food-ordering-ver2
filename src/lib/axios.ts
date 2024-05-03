@@ -1,3 +1,4 @@
+import { authSlice, logoutUser } from './../features/Auth/authSlice';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -6,6 +7,7 @@ import axios, {
 } from "axios";
 import axiosRetry from "axios-retry";
 import { store } from "~/app/store";
+import { getNewAccessToken } from "~/features/Auth/authSlice";
 import { origin } from "~/utils/api";
 
 const instance: AxiosInstance = axios.create({
@@ -15,6 +17,8 @@ const instance: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+
 // Exponential back-off retry delay between requests
 
 axiosRetry(instance, {
@@ -22,16 +26,15 @@ axiosRetry(instance, {
   retries: 3,
   
   retryDelay: axiosRetry.exponentialDelay,
-  
-//   retryCondition(error) {
-//     return axiosRetry.isNetworkOrIdempotentRequestError(error) || error?.response?.status === 429 || error?.response?.status === 401;
-// }
  });
 
 
-const onRequest = (
+let refreshingToken:any = null
+
+
+const onRequest = async (
   config: InternalAxiosRequestConfig
-): InternalAxiosRequestConfig => {
+): Promise<InternalAxiosRequestConfig<any>> => {
   const state = store.getState()
   const accessToken = state.auth.accessToken;
   if (accessToken) {
@@ -40,21 +43,42 @@ const onRequest = (
   return config;
 };
 
-const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+const onRequestError = async (error: AxiosError): Promise<AxiosError> => {
   return Promise.reject(error);
 };
 
-const onResponse = (response: AxiosResponse): Promise<AxiosResponse> => {
- 
- 
+const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
   if (!response.data) {
     throw new Error("Something went wrong");
   }
   return response.data;
 };
 
-const onResponseError = (error: any): Promise<AxiosError> => {
-  console.log('On Response Error: ', error)
+const onResponseError = async (error: any): Promise<AxiosError> => {
+  const { config } = error;
+  if (error?.response?.status === 401) {
+    //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
+      const state = store.getState();
+      const userId = state.auth.user._id
+      const refreshToken = state.auth.refreshToken
+      console.log("Refreshing access token")
+      refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({user: userId, token: refreshToken}))
+      const response = await refreshingToken
+      const accessToken = response.payload.data.accessToken;
+      console.log("Access Token: " + accessToken)
+      console.log(accessToken)
+      if (accessToken) {
+        config.headers.Authorization =  "Bearer " + accessToken;
+        return instance.request(config);
+      }
+      refreshingToken = null
+      
+    if (error?.response.data?.error === 'Refresh Token Expired'){
+      //dispatch to logout
+      await store.dispatch(logoutUser(userId))
+    }
+ 
+  }
   return Promise.reject(error?.response?.data);
 };
 

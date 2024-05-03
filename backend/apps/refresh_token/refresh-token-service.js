@@ -4,8 +4,8 @@ const saveRefreshToken = async (refreshTokenObject) => {
   return await RefreshToken.create(refreshTokenObject)
 }
 
-const findRefreshToken = async (userId, refreshToken) => {
-  const token = await RefreshToken.findOne({ user: userId, token: refreshToken })
+const findRefreshToken = async (user, refreshToken) => {
+  const token = await RefreshToken.findOne({ user, token: refreshToken })
   const isValidityToken = await checkValidityToken(token)
   return isValidityToken ? token : null
 }
@@ -16,6 +16,7 @@ const deleteRefreshToken = async (userId) => {
 
 const checkValidityToken = async (token) => {
   if (token && token.expired_at >= new Date()) {
+    console.log(`Refresh token still valid`)
     return true
   }
   if (token) {

@@ -4,7 +4,7 @@ import axios from "~/lib/axios";
 import { LoginPayload } from "~/interface/login.payload";
 import { RegisterPayload } from "~/interface/register.payload";
 import { LogoutPayload } from "~/interface/logout.payload";
-import { get } from 'http';
+import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token.payload";
 
 
 const login = (credential: LoginPayload): Promise<any> => {
@@ -21,8 +21,8 @@ const logout = (userId: LogoutPayload): Promise<any> => {
 
 }
 
-const getNewAccessToken = (refreshToken: string): Promise<any> => {
-  return axios.post(refreshTokenApi, refreshToken);
+const getNewAccessToken = (payload: GetNewAccessTokenPayload): Promise<any> => {
+  return axios.post(refreshTokenApi, payload);
 }
 
 

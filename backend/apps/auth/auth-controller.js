@@ -42,7 +42,7 @@ const login = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
-  const { userId, token } = req.body
+  const { user: userId, token } = req.body
 
   const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {
