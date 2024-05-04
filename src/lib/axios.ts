@@ -48,15 +48,12 @@ const onRequestError = async (error: AxiosError): Promise<AxiosError> => {
 };
 
 const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
-  if (!response.data) {
-    throw new Error("Something went wrong");
-  }
   return response.data;
 };
 
 const onResponseError = async (error: any): Promise<AxiosError> => {
   const { config } = error;
-  if (error?.response?.status === 401) {
+  if (error?.response?.status === 401 && config._retry) {
     //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
       const state = store.getState();
       const userId = state.auth.user._id
