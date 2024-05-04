@@ -1,15 +1,18 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice";
+import balanceReducer from '../features/Balance/balanceSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  balance: balanceReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
+  blacklist: ["balance"]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
