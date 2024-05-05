@@ -4,21 +4,34 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "~/features/Auth/authSlice";
 import { useHistory } from "react-router-dom";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { useState } from "react";
+
+
 
 export const Navbar = ({ items }: { items: NavItems[] }) => {
   const dispatch = useDispatch();
   const auth = useSelector((state: any) => state.auth);
   const id = auth.user._id;
   const history = useHistory();
-  const handleLogout = async () => {
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); // State to control the dialog's open state
+
+  const handleLogout = () => {
+    setLogoutDialogOpen(true); // Open the logout dialog
+  };
+
+  const handleLogoutConfirmed = async () => {
     const payload = {
       user: id
-    }
-    await dispatch<any>(logoutUser(payload))
+    };
+    await dispatch<any>(logoutUser(payload));
     console.log("logged out");
     history.push('/login');
-  }
+  };
 
+  const handleLogoutCancelled = () => {
+    setLogoutDialogOpen(false); // Close the logout dialog
+  };
   return (
     <nav className={styles["navbar__container"]}>
       <ul className={styles["navbar__list"]}>
@@ -43,6 +56,23 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
             </a>
           </li>
       </ul>
+
+
+       {/* Logout Dialog */}
+       <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled}  fullWidth maxWidth='md' >
+        <DialogTitle>Confirm Logout</DialogTitle>
+        <DialogContent>
+          <DialogContentText style={{'fontSize': '30px'}}>
+            Are you sure you want to logout?'
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogoutCancelled}>Cancel</Button>
+          <Button onClick={handleLogoutConfirmed} autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </nav>
   );
 };
