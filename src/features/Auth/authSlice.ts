@@ -56,11 +56,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (payload
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload: LogoutPayload, thunkAPI) => {
   try {
-    const response = await AuthService.logout(payload);
-    const { user, accessToken, refreshToken } = response.data;
-    if (user && accessToken && refreshToken) {
-      return response;
-    } 
+    return await AuthService.logout(payload);
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err);
   }

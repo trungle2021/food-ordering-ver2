@@ -1,3 +1,3 @@
 export interface LogoutPayload {
-    userId: string;
+    user: string;
 }

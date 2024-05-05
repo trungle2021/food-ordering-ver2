@@ -10,8 +10,12 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
   const auth = useSelector((state: any) => state.auth);
   const id = auth.user._id;
   const history = useHistory();
-  const handleLogout = () => {
-    dispatch<any>(logoutUser(id))
+  const handleLogout = async () => {
+    const payload = {
+      user: id
+    }
+    await dispatch<any>(logoutUser(payload))
+    console.log("logged out");
     history.push('/login');
   }
 

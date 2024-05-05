@@ -53,8 +53,10 @@ const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
 
 const onResponseError = async (error: any): Promise<AxiosError> => {
   const { config } = error;
-  if (error?.response?.status === 401 && config._retry) {
+  console.log("Config retry:", config._retry);
+  if (error?.response?.status === 401 && !config._retry) {
     //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
+      config._retry = true
       const state = store.getState();
       const userId = state.auth.user._id
       const refreshToken = state.auth.refreshToken
