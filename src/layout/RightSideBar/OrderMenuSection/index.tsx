@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import { OrderItem } from "~/components/UI/OrderItem";
 import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
-import { Button } from "~/components/UI/Button";
+import { Button } from "@mui/material";
 export const OrderMenuSection = () => {
   const orderItems = [
     { id: "1", name: "A", url: "" },

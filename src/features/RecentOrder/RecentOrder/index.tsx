@@ -1,4 +1,4 @@
-import Card from "~/components/UI/Card";
+import { Card } from "@mui/material";
 import styles from "./styles.module.css";
 import Heart from "~/components/UI/Heart";
 

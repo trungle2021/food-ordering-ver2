@@ -3,13 +3,15 @@ import { Controller } from "react-hook-form";
 
 interface InputFieldProps {
   name: string;
-  label: string;
+  label?: string;
   type: string;
+  placeholder?: string;
+  style?: React.CSSProperties;
   control: any;
 }
 
 export const InputField = (props: InputFieldProps) => {
-  const { name, label, type, control } = props;
+  const { name, label, type, placeholder, style, control } = props;
 
   return (
     <Controller
@@ -24,6 +26,8 @@ export const InputField = (props: InputFieldProps) => {
           label={label}
           type={type}
           variant="outlined"
+          placeholder={placeholder}
+          style={style}
         />
       )}
     />

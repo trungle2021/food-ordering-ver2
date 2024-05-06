@@ -5,7 +5,7 @@ export const HeaderSection = () => {
   return (
     <div className={`${styles["header-section"]}`}>
       <span className={`${styles["header-title"]}`}>Hello, Trung Le</span>
-      <SearchBar placeholder={`What do you want eat today...`} />
+      <SearchBar placeholder={`What do you want to eat today...`} />
     </div>
   );
 };

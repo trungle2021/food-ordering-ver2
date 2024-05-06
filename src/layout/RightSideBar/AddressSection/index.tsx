@@ -1,5 +1,5 @@
+import { Button } from "@mui/material";
 import styles from "./styles.module.css";
-import { Button } from "~/components/UI/Button";
 import { Location } from "~/components/UI/Icon";
 
 export const AddressSection = () => {
