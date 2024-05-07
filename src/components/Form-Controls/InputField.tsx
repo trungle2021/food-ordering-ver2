@@ -27,7 +27,7 @@ export const InputField = (props: InputFieldProps) => {
           type={type}
           variant="outlined"
           placeholder={placeholder}
-          style={style}
+          sx={style}
         />
       )}
     />
