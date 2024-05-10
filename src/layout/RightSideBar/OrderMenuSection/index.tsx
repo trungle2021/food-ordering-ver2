@@ -1,7 +1,6 @@
 import styles from "./styles.module.css";
 import { OrderItem } from "~/components/UI/OrderItem";
 import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
-import { Button } from "@mui/material";
 export const OrderMenuSection = () => {
   const orderItems = [
     { id: "1", name: "A", url: "" },
@@ -53,7 +52,7 @@ export const OrderMenuSection = () => {
       </div>
 
       <div className={`${styles["orderMenu-container__action"]}`}>
-        <Button
+        <button
           className={styles["orderMenu-container__action__button-coupon"]}
         >
           <CouponButtonIcon
@@ -64,12 +63,12 @@ export const OrderMenuSection = () => {
             Have a coupon code?
           </span>
           <ArrowRight size={10} />
-        </Button>
-        <Button
+        </button>
+        <button
           className={styles["orderMenu-container-action__button-checkout"]}
         >
           Checkout
-        </Button>
+        </button>
       </div>
     </div>
   );

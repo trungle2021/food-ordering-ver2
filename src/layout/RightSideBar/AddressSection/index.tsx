@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import styles from "./styles.module.css";
 import { Location } from "~/components/UI/Icon";
 
@@ -16,11 +15,11 @@ export const AddressSection = () => {
             Elm Street, 23
           </span>
         </div>
-        <Button
+        <button
           className={`${styles["address-button"]} ${styles["button-change"]}`}
         >
           Change
-        </Button>
+        </button>
       </div>
       <input
         className={styles["address-container__input"]}
@@ -30,8 +29,8 @@ export const AddressSection = () => {
         placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. "
       />
       <div className={styles["address-container-action"]}>
-        <Button className={`${styles["address-button"]}`}>Add Details</Button>
-        <Button className={`${styles["address-button"]}`}>Add Note</Button>
+        <button className={`${styles["address-button"]}`}>Add Details</button>
+        <button className={`${styles["address-button"]}`}>Add Note</button>
       </div>
     </div>
   );

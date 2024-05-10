@@ -1,6 +1,7 @@
 import { Card } from "@mui/material";
 import styles from "./styles.module.css";
 import Heart from "~/components/UI/Heart";
+import { RecentOrder } from "~/interface/order/recentOrder.response";
 
 interface RecentOrderProps {
   image: string;
@@ -9,7 +10,7 @@ interface RecentOrderProps {
   isFavorite: boolean;
 }
 
-const RecentOrder = (props: RecentOrderProps) => {
+const RecentOrder = (props: RecentOrder) => {
   return (
     <Card>
       <div className={`${styles["recent-order-container"]}`}>

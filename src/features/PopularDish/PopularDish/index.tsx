@@ -2,8 +2,8 @@ import Heart from "~/components/UI/Heart";
 import Discount from "~/components/UI/Discount";
 import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
-import DishResponse from "~/interface/dish/dish";
 import { Card } from "@mui/material";
+import PopularDish from "~/interface/dish/popularDish";
 
 export const Dish = ({
   image,
@@ -13,16 +13,18 @@ export const Dish = ({
   price,
   isFavorite,
   ratingPoint,
-}: DishResponse) => {
+}: PopularDish) => {
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>
         <div className={`${styles["dish-container__header"]}`}>
-          <Discount
+          {discount > 0 && <Discount
             className={`${styles["dish-container--discount"]}`}
             amount={discount}
           />
-          <Heart isFavorite={isFavorite} />
+          }
+
+
         </div>
         <img
           className={`${styles["dish-container__image"]}`}
@@ -30,7 +32,7 @@ export const Dish = ({
           alt=""
         />
         <div className="d-flex justify-between align-center">
-          <Rating ratingPoint={ratingPoint} size={30} />
+          <Rating ratingPoint={ratingPoint} size={20} />
           <span>{itemSold} Sold</span>
         </div>
         <div className={`${styles["dish-container__body"]}`}>
@@ -38,14 +40,19 @@ export const Dish = ({
             <span className={`${styles["dish-container__info--food-name"]}`}>
               {name}
             </span>
-            <span className={`${styles["dish-container__info--price"]}`}>
-              <span className="dollar">$</span>
-              {price}
-            </span>
+            <div className={`${styles["dish-container__info--price"]}`}>
+              <span >
+                <span className="dollar">$</span>{price}
+              </span>
+              <Heart
+                isFavorite={isFavorite || false} // Ensure isFavorite is of type boolean
+              />
+            </div>
           </div>
-          <button className={`${styles["dish-container--add-to-cart-btn"]}`}>
+          <button className={`${styles["dish-container__addToCartBtn"]}`}>
             +
           </button>
+
         </div>
       </div>
     </Card>
