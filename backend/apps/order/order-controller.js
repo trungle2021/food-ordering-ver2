@@ -1,12 +1,23 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-const OrderConfirmInputSchema = require('./model/order-confirm-info-model')
+const OrderConfirmInputSchema = require('./order-confirm-info-schema')
 const OrderService = require('./order-service')
 const orderCancelSchema = require('./model/order-cancel-model')
+
 const getOrders = catchAsyncHandler(async (req, res) => {
   const orders = await OrderService.getOrders({})
   return res.status(200).json({
     status: 'success',
     data: orders
+  })
+})
+
+const getRecentOrders = catchAsyncHandler(async (req, res, next) => {
+  const { id: userId } = req.params
+  const queryString = { ...req.query }
+  const recentOrders = await OrderService.getRecentOrders(userId, queryString)
+  return res.status(200).json({
+    status: 'success',
+    data: recentOrders
   })
 })
 
@@ -121,6 +132,7 @@ const deleteAll = catchAsyncHandler(async (req, res, next) => {
 
 module.exports = {
   getOrders,
+  getRecentOrders,
   getOrder,
   createOrder,
   cancelOrder,

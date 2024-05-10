@@ -125,50 +125,50 @@ const getRecentOrders = async (userId, queryString) => {
         as: 'order_detail'
       }
     },
-    {
-      $addFields: {
-        order_detail: {
-          $reduce: {
-            input: '$order_detail',
-            initialValue: { price: 0 },
-            in: {
-              $cond: {
-                if: { $gt: ['$$this.price', '$$value.price'] },
-                then: '$$this',
-                else: '$$value'
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      $group: {
-        _id: '$_id',
-        order_status: { $first: '$order_status' },
-        payment_status: { $first: '$payment_status' },
-        payment_method: { $first: '$payment_method' },
-        order_total: { $first: '$order_total' },
-        time_completed: { $first: '$time_completed' },
-        created_at: { $first: '$created_at' },
-        user: { $first: '$user' },
-        order_date: { $first: '$order_date' },
-        shipping_address: { $first: '$shipping_address' },
-        __v: { $first: '$__v' },
-        order_detail: { $push: '$order_detail' }
-      }
-    },
-    {
-      $lookup: {
-        from: 'dishes',
-        localField: 'order_detail.dish',
-        foreignField: '_id',
-        as: 'order_detail.dish'
-      }
-    },
-    {
-      $unwind: '$order_detail.dish'
-    }
+    // {
+    //   $addFields: {
+    //     order_detail: {
+    //       $reduce: {
+    //         input: '$order_detail',
+    //         initialValue: { price: 0 },
+    //         in: {
+    //           $cond: {
+    //             if: { $gt: ['$$this.price', '$$value.price'] },
+    //             then: '$$this',
+    //             else: '$$value'
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
+    // {
+    //   $group: {
+    //     _id: '$_id',
+    //     order_status: { $first: '$order_status' },
+    //     payment_status: { $first: '$payment_status' },
+    //     payment_method: { $first: '$payment_method' },
+    //     order_total: { $first: '$order_total' },
+    //     time_completed: { $first: '$time_completed' },
+    //     created_at: { $first: '$created_at' },
+    //     user: { $first: '$user' },
+    //     order_date: { $first: '$order_date' },
+    //     shipping_address: { $first: '$shipping_address' },
+    //     __v: { $first: '$__v' },
+    //     order_detail: { $push: '$order_detail' }
+    //   }
+    // },
+    // {
+    //   $lookup: {
+    //     from: 'dishes',
+    //     localField: 'order_detail.dish',
+    //     foreignField: '_id',
+    //     as: 'order_detail.dish'
+    //   }
+    // },
+    // {
+    //   $unwind: '$order_detail.dish'
+    // }
   ])
   return recentOrders
 }
