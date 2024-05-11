@@ -7,7 +7,7 @@ router.route('/:id')
   .get(OrderController.deleteOrder)
 
 router.route('/recent-orders/users/:id')
-.get(OrderController.getRecentOrders)
+  .get(OrderController.getRecentOrders)
 
 router.route('/confirm/:id')
   .post(OrderController.confirmOrder)

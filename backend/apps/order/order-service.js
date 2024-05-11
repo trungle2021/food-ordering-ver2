@@ -37,6 +37,13 @@ const createOrder = async (order, orderItems) => {
     if (!user) {
       throw new AppError(`Cannot found User with ID: ${userId}`, 404)
     }
+
+    const orderTotal = orderItems.reduce((total, item) => {
+      return total + (item.price * item.quantity)
+    }, 0)
+
+    const clonedObj = { ...order, order_total: orderTotal }
+
     const orderCreated = await Order.create([order], { session })
     await OrderDetailService.createOrderDetails(orderCreated[0]._id, orderItems, { session })
     await session.commitTransaction()
@@ -110,66 +117,78 @@ const completeOrder = async (orderId) => {
 
 const getRecentOrders = async (userId, queryString) => {
   const userIdConverted = await convertToObjectId(userId)
-  const recentOrders = await Order.aggregate([
-    {
-      $match: {
-        order_status: COMPLETED,
-        user: userIdConverted
+  // const recentOrders = await Order.aggregate([
+  //   {
+  //     $match: {
+  //       order_status: COMPLETED,
+  //       user: userIdConverted
+  //     }
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: 'orderdetails',
+  //       localField: '_id',
+  //       foreignField: 'order',
+  //       as: 'order_detail'
+  //     }
+  //   },
+  // {
+  //   $addFields: {
+  //     order_detail: {
+  //       $reduce: {
+  //         input: '$order_detail',
+  //         initialValue: { price: 0 },
+  //         in: {
+  //           $cond: {
+  //             if: { $gt: ['$$this.price', '$$value.price'] },
+  //             then: '$$this',
+  //             else: '$$value'
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // },
+  // {
+  //   $group: {
+  //     _id: '$_id',
+  //     order_status: { $first: '$order_status' },
+  //     payment_status: { $first: '$payment_status' },
+  //     payment_method: { $first: '$payment_method' },
+  //     order_total: { $first: '$order_total' },
+  //     time_completed: { $first: '$time_completed' },
+  //     created_at: { $first: '$created_at' },
+  //     user: { $first: '$user' },
+  //     order_date: { $first: '$order_date' },
+  //     shipping_address: { $first: '$shipping_address' },
+  //     __v: { $first: '$__v' },
+  //     order_detail: { $push: '$order_detail' }
+  //   }
+  // },
+  // {
+  //   $lookup: {
+  //     from: 'dishes',
+  //     localField: 'order_detail.dish',
+  //     foreignField: '_id',
+  //     as: 'order_detail.dish'
+  //   }
+  // },
+  // {
+  //   $unwind: '$order_detail.dish'
+  // }
+  // ])
+  const recentOrders = await Order.find({
+    order_status: COMPLETED,
+    user: userIdConverted
+  })
+    .populate({
+      path: 'order_detail',
+      populate: {
+        path: 'dish',
+        model: 'Dish' // replace with your Dish model name
       }
-    },
-    {
-      $lookup: {
-        from: 'orderdetails',
-        localField: '_id',
-        foreignField: 'order',
-        as: 'order_detail'
-      }
-    },
-    // {
-    //   $addFields: {
-    //     order_detail: {
-    //       $reduce: {
-    //         input: '$order_detail',
-    //         initialValue: { price: 0 },
-    //         in: {
-    //           $cond: {
-    //             if: { $gt: ['$$this.price', '$$value.price'] },
-    //             then: '$$this',
-    //             else: '$$value'
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // },
-    // {
-    //   $group: {
-    //     _id: '$_id',
-    //     order_status: { $first: '$order_status' },
-    //     payment_status: { $first: '$payment_status' },
-    //     payment_method: { $first: '$payment_method' },
-    //     order_total: { $first: '$order_total' },
-    //     time_completed: { $first: '$time_completed' },
-    //     created_at: { $first: '$created_at' },
-    //     user: { $first: '$user' },
-    //     order_date: { $first: '$order_date' },
-    //     shipping_address: { $first: '$shipping_address' },
-    //     __v: { $first: '$__v' },
-    //     order_detail: { $push: '$order_detail' }
-    //   }
-    // },
-    // {
-    //   $lookup: {
-    //     from: 'dishes',
-    //     localField: 'order_detail.dish',
-    //     foreignField: '_id',
-    //     as: 'order_detail.dish'
-    //   }
-    // },
-    // {
-    //   $unwind: '$order_detail.dish'
-    // }
-  ])
+    })
+    .exec()
   return recentOrders
 }
 
