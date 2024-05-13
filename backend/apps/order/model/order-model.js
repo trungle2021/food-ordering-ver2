@@ -15,6 +15,10 @@ const orderSchema = new mongoose.Schema({
     require: [true, 'Order Status is required'],
     default: orderStatus.PENDING
   },
+  order_details: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'OrderDetail'
+  }],
   payment_status: {
     type: String,
     enum: Object.values(paymentStatus),

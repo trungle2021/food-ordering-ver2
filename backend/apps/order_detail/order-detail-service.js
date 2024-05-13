@@ -3,7 +3,7 @@ const OrderDetail = require('./order-detail-model')
 
 const getOrderDetails = async (filter) => {
   return await OrderDetail.find(filter)
-    .populate({ path: 'order' })
+    // .populate({ path: 'order' })
     .populate({ path: 'dish', select: 'name' })
 }
 

@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from "react";
 import RecentOrder from "../RecentOrder";
 import styles from "./styles.module.css";
-import { OrderResponse } from "~/interface/order.response";
-import DishResponse from "~/interface/dish/recentDish";
 import RecentOrderService from "~/services/recent-order/recent.order";
 import { useSelector } from "react-redux";
+import BaseDish from "~/interface/dish/base-dish";
+import OrderDetail from "~/interface/order/order-detail.response";
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);
@@ -18,6 +18,7 @@ export const RecentOrderList: React.FC = () => {
           user_id
         );
         setRecentOrders(response.data);
+        console.log(recentOrders)
       }
     } catch (error) {
       console.log(error);
@@ -29,8 +30,8 @@ export const RecentOrderList: React.FC = () => {
     getRecentOrders();
   }, []);
 
-  const recentOrdersItem = recentOrders.map((order: OrderResponse) => {
-    const dish: DishResponse = order.order_detail.dish;
+  const recentOrdersItem = recentOrders.map((order: OrderDetail) => {
+    const dish: BaseDish = order.dish;
     return (
       <li key={order._id}>
         <RecentOrder

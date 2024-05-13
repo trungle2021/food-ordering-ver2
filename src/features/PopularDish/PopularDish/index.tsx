@@ -3,7 +3,7 @@ import Discount from "~/components/UI/Discount";
 import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
 import { Card } from "@mui/material";
-import PopularDish from "~/interface/dish/popularDish";
+import PopularDish from "~/interface/dish/popular-dish";
 
 export const Dish = ({
   image,

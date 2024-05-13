@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token.payload";
-import { LoginPayload } from "~/interface/login.payload";
-import { LogoutPayload } from "~/interface/logout.payload";
-import { RegisterPayload } from "~/interface/register.payload";
+import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token-payload";
+import { LoginPayload } from "~/interface/login-payload";
+import { LogoutPayload } from "~/interface/logout-payload";
+import { RegisterPayload } from "~/interface/register-payload";
 import AuthService from "~/services/auth/auth.service";
 
 interface AuthState {
@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk(
 
       if (user && accessToken && refreshToken) {
         return response;
-      } 
+      }
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -48,7 +48,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (payload
     const { user, accessToken, refreshToken } = response.data;
     if (user && accessToken && refreshToken) {
       return response;
-    } 
+    }
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -69,7 +69,7 @@ export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', asyn
     const { accessToken } = response.data;
     if (accessToken) {
       return response;
-    } 
+    }
   } catch (err: any) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -87,7 +87,7 @@ export const authSlice = createSlice({
         state.user = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        if(action.payload.status === 'success'){
+        if (action.payload.status === 'success') {
           state.loading = false;
           state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
@@ -108,7 +108,7 @@ export const authSlice = createSlice({
         state.user = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        if(action.payload.status === 'success'){
+        if (action.payload.status === 'success') {
           state.loading = false;
           state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
@@ -128,7 +128,7 @@ export const authSlice = createSlice({
         state.status = null;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
-        if(action.payload.status === 'success'){
+        if (action.payload.status === 'success') {
           state.user = {};
           state.accessToken = "";
           state.refreshToken = "";
@@ -147,7 +147,7 @@ export const authSlice = createSlice({
         // state.isRefreshingToken = true;
       }).addCase(getNewAccessToken.fulfilled, (state, action) => {
         console.log("Status: " + action.payload.status)
-        if(action.payload.status === 'success'){
+        if (action.payload.status === 'success') {
           console.log("New access token: " + action.payload.data.accessToken)
           state.accessToken = action.payload.data.accessToken;
           state.loading = false;

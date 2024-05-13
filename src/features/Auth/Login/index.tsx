@@ -5,7 +5,7 @@ import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
 import { loginUser } from "../authSlice";
-import { LoginPayload } from "../../../interface/login.payload";
+import { LoginPayload } from "../../../interface/login-payload";
 import { Alert } from "@mui/material";
 
 export const Login = () => {
@@ -20,14 +20,14 @@ export const Login = () => {
         .then((result: any) => {
           if (result.payload.status === "success") {
             history.push('/dashboard');
-          }else{
+          } else {
             setErrorMessage(result.payload.message)
           }
         })
         .catch((error: { message: SetStateAction<string> }) => {
           setErrorMessage(error.message);
         });
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
 

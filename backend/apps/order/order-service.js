@@ -3,10 +3,9 @@ const Order = require('./model/order-model')
 const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
-const { processPayment, updateBalanceForInternalAccount } = require('../payment/payment-service')
-const { PROCESSING, CANCELED, COMPLETED, SHIPPING } = require('../../constant/order-status')
-const { PAID, REFUNDED } = require('../../constant/payment-status')
-const { DEPOSIT } = require('../../constant/payment-action')
+const { processPayment } = require('../payment/payment-service')
+const { PROCESSING, COMPLETED, SHIPPING } = require('../../constant/order-status')
+const { PAID } = require('../../constant/payment-status')
 const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 
@@ -117,75 +116,16 @@ const completeOrder = async (orderId) => {
 
 const getRecentOrders = async (userId, queryString) => {
   const userIdConverted = await convertToObjectId(userId)
-  // const recentOrders = await Order.aggregate([
-  //   {
-  //     $match: {
-  //       order_status: COMPLETED,
-  //       user: userIdConverted
-  //     }
-  //   },
-  //   {
-  //     $lookup: {
-  //       from: 'orderdetails',
-  //       localField: '_id',
-  //       foreignField: 'order',
-  //       as: 'order_detail'
-  //     }
-  //   },
-  // {
-  //   $addFields: {
-  //     order_detail: {
-  //       $reduce: {
-  //         input: '$order_detail',
-  //         initialValue: { price: 0 },
-  //         in: {
-  //           $cond: {
-  //             if: { $gt: ['$$this.price', '$$value.price'] },
-  //             then: '$$this',
-  //             else: '$$value'
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // },
-  // {
-  //   $group: {
-  //     _id: '$_id',
-  //     order_status: { $first: '$order_status' },
-  //     payment_status: { $first: '$payment_status' },
-  //     payment_method: { $first: '$payment_method' },
-  //     order_total: { $first: '$order_total' },
-  //     time_completed: { $first: '$time_completed' },
-  //     created_at: { $first: '$created_at' },
-  //     user: { $first: '$user' },
-  //     order_date: { $first: '$order_date' },
-  //     shipping_address: { $first: '$shipping_address' },
-  //     __v: { $first: '$__v' },
-  //     order_detail: { $push: '$order_detail' }
-  //   }
-  // },
-  // {
-  //   $lookup: {
-  //     from: 'dishes',
-  //     localField: 'order_detail.dish',
-  //     foreignField: '_id',
-  //     as: 'order_detail.dish'
-  //   }
-  // },
-  // {
-  //   $unwind: '$order_detail.dish'
-  // }
-  // ])
+
   const recentOrders = await Order.find({
     order_status: COMPLETED,
     user: userIdConverted
   })
     .populate({
-      path: 'order_detail',
+      path: 'order_details',
       populate: {
         path: 'dish',
-        model: 'Dish' // replace with your Dish model name
+        model: 'Dish'
       }
     })
     .exec()
@@ -193,40 +133,6 @@ const getRecentOrders = async (userId, queryString) => {
 }
 
 const cancelOrder = async (orderCancel) => {
-  let orderConfirmed
-  const session = await connection.startSession()
-  try {
-    session.startTransaction()
-    const { order_id: orderId, reason } = orderCancel
-    const order = await Order.findById(orderId)
-    const isOrderProcessed = order.order_status === PROCESSING && order.payment_status === PAID
-    if (!order) {
-      throw new AppError('Order not found', 404)
-    } else if (!isOrderProcessed) {
-      throw new AppError('Order cannot cancel because it has been processed', 409)
-    }
-
-    const userId = order.user_id
-    const amount = order.order_total
-    const action = DEPOSIT
-    const paymentInternalAccountInfo = {
-      user_id: userId,
-      amount,
-      action
-    }
-    updateBalanceForInternalAccount(paymentInternalAccountInfo)
-
-    order.order_status = CANCELED
-    order.payment_status = REFUNDED
-    order.cancel_reason = reason
-    orderConfirmed = order.save()
-    session.commitTransaction()
-  } catch (error) {
-    session.abortTransaction()
-  } finally {
-    session.endSession()
-  }
-  return orderConfirmed
 }
 
 module.exports = {

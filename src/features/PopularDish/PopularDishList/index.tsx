@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { Dish } from "../PopularDish/index";
 import PopularDishService from "../../../services/popular-dish/popular.dish";
-import DishResponse from "../../../interface/dish/recentDish";
+import DishResponse from "../../../interface/order/recent-order.response";
 
 export const PopularDishList = () => {
   const [popularDishes, setPopularDishes] = useState([]);

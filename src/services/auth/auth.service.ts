@@ -1,19 +1,19 @@
 
 import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
 import axios from "~/lib/axios";
-import { LoginPayload } from "~/interface/login.payload";
-import { RegisterPayload } from "~/interface/register.payload";
-import { LogoutPayload } from "~/interface/logout.payload";
-import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token.payload";
+import { LoginPayload } from "~/interface/login-payload";
+import { RegisterPayload } from "~/interface/register-payload";
+import { LogoutPayload } from "~/interface/logout-payload";
+import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token-payload";
 
 
 const login = (credential: LoginPayload): Promise<any> => {
   return axios.post(loginApi, credential);
- 
+
 };
 
 const register = (registerUserFormData: RegisterPayload): Promise<any> => {
- return axios.post(registerApi, registerUserFormData);
+  return axios.post(registerApi, registerUserFormData);
 }
 
 const logout = (payload: LogoutPayload): Promise<any> => {

@@ -1,4 +1,4 @@
-import BaseDish from "./baseDish";
+import BaseDish from "./base-dish";
 
 export default interface PopularDish extends BaseDish {
     itemSold: number | 0;
