@@ -5,6 +5,21 @@ import RecentOrderService from "~/services/recent-order/recent.order";
 import { useSelector } from "react-redux";
 import BaseDish from "~/interface/dish/base-dish";
 import OrderDetail from "~/interface/order/order-detail.response";
+import Order from "~/interface/order/order.response";
+
+function getHighestPriceItem(orderDetailsArray: Array<OrderDetail>): BaseDish | null {
+  let highestPrice = 0;
+  let highestPriceItem: BaseDish | null = null;
+  for(let i = 0; i <= orderDetailsArray.length; i++){
+    const item = orderDetailsArray[i]?.dish;
+    // console.table(item)
+    if(item && item.price > highestPrice){
+      highestPrice = item.price;
+      highestPriceItem = item;
+    }
+  }
+  return highestPriceItem;
+}
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState([]);
@@ -30,22 +45,30 @@ export const RecentOrderList: React.FC = () => {
     getRecentOrders();
   }, []);
 
-  const recentOrdersItem = recentOrders.map((order: OrderDetail) => {
-    const dish: BaseDish = order.dish;
-    return (
-      <li key={order._id}>
-        <RecentOrder
-          image={dish.image}
-          name={dish.name}
-          price={dish.price}
-          isFavorite={true}
-        />
-      </li>
-    );
+  const recentOrdersItem = recentOrders.map((order: Order) => {
+    let orderDetailsList = order.order_details
+    let orderDate = new Date(order.order_date).toLocaleDateString()
+    if(orderDetailsList.length > 0) {
+      const itemHighestPrice = getHighestPriceItem(orderDetailsList)
+      if(itemHighestPrice){
+        return (
+          <li key={order._id}>
+            <RecentOrder
+              image={itemHighestPrice.image}
+              name={itemHighestPrice.name}
+              price={itemHighestPrice.price}
+              isFavorite={true}
+              orderDate={orderDate}
+            />
+          </li>
+        );
+      }
+    }
+   return null
   });
   return (
     <ul className={`${styles["recent-orders-container"]}`}>
-      {recentOrdersItem}
+      {recentOrdersItem.length > 0 ? recentOrdersItem : "No orders found" }
     </ul>
   );
 };

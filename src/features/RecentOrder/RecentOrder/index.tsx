@@ -7,6 +7,7 @@ interface RecentOrderProps {
   name: string;
   price: number;
   isFavorite: boolean;
+  orderDate: string;
 }
 
 const RecentOrder = (props: RecentOrderProps) => {
@@ -27,6 +28,9 @@ const RecentOrder = (props: RecentOrderProps) => {
             >
               <span className="dollar">$</span>
               {props.price}
+            </span>
+            <span>
+              Order Date: {props.orderDate}
             </span>
           </div>
         </div>

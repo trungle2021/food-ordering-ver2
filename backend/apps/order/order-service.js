@@ -123,10 +123,16 @@ const getRecentOrders = async (userId, queryString) => {
   })
     .populate({
       path: 'order_details',
-      populate: {
-        path: 'dish',
-        model: 'Dish'
-      }
+      populate: [
+        {
+          path: 'order',
+          model: 'Order'
+        },
+        {
+          path: 'dish',
+          model: 'Dish'
+        }
+      ]
     })
     .exec()
   return recentOrders
