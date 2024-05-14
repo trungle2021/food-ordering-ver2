@@ -1,18 +1,8 @@
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-interface InputFieldProps {
-  name: string;
-  label?: string;
-  type: string;
-  placeholder?: string;
-  style?: React.CSSProperties;
-  control: any;
-}
 
-export const InputField = (props: InputFieldProps) => {
-  const { name, label, type, placeholder, style, control } = props;
-
+export const InputField = ({ name, control, label, placeholder, type, ...rest }) => {
   return (
     <Controller
       name={name}
@@ -20,6 +10,7 @@ export const InputField = (props: InputFieldProps) => {
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}
+          {...rest}
           helperText={error ? error.message : null}
           error={!!error}
           fullWidth
@@ -27,7 +18,7 @@ export const InputField = (props: InputFieldProps) => {
           type={type}
           variant="outlined"
           placeholder={placeholder}
-          sx={style}
+
         />
       )}
     />
