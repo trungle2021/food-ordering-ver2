@@ -14,6 +14,11 @@ const getDishes = async (queryString) => {
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
+const getDishesByName = async (queryString) => {
+  const features = new ApiFeatures(Dish.find({}), queryString).search()
+  return await Dish.find()
+}
+
 const getDish = async (id) => {
   return await Dish.findById(id)
 }
@@ -94,6 +99,7 @@ const deleteDish = async (dish) => {
 
 module.exports = {
   getDishes,
+  getDishesByName,
   getDish,
   createDishes,
   getPoplularDishes,

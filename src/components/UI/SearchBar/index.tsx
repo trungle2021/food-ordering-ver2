@@ -1,9 +1,23 @@
 import styles from "./styles.module.css";
 import { useForm } from "react-hook-form";
 import { InputField } from "~/components/Form-Controls/InputField";
-import { Autocomplete, InputAdornment, TextField } from "@mui/material";
+import { Autocomplete, InputAdornment } from "@mui/material";
 import { Search } from "@mui/icons-material";
-type SearchProps = {};
+import { useEffect, useState } from "react";
+
+type SearchProps = {
+  placeholder?: string;
+  onSubmitSearchForm: (formData: SearchFormValues) => void;
+};
+
+type SearchFormValues = {
+  productName: string;
+};
+
+const initialFormValues: SearchFormValues = {
+  productName: "",
+};
+
 const top100Films = [
   { title: 'The Shawshank Redemption', year: 1994 },
   { title: 'The Godfather', year: 1972 },
@@ -130,28 +144,42 @@ const top100Films = [
   { title: '3 Idiots', year: 2009 },
   { title: 'Monty Python and the Holy Grail', year: 1975 },
 ];
-export const SearchBar = ({ placeholder }: { placeholder: string }) => {
-  const { register, control } = useForm()
+export const SearchBar = ({ placeholder, onSubmitSearchForm }: SearchProps) => {
+
+  const { handleSubmit, control, setValue } = useForm({
+    mode: 'onTouched',
+    defaultValues: initialFormValues,
+  })
+
+  const onSubmit = (formData: SearchFormValues) => {
+    onSubmitSearchForm(formData);
+  };
+
+  const onError = (error: any) => {
+    console.log("ERROR:::", error);
+  };
+
   return (
-    <form className={`${styles["form-search"]}`}>
-      {/* <SearchIcon className={`${styles["search-icon"]}`} />
-      <InputField
-        name="searchProduct"
-        control={control}
-        type="text"
-        placeholder={placeholder}
-        className={`${styles["search-bar"]}`}
-      /> */}
+    <form className={`${styles["form-search"]}`} onSubmit={handleSubmit(onSubmit, onError)}>
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"
         disableClearable
         options={top100Films.map((option) => option.title)}
+        onInputChange={(event, newValue) => {
+          setValue('productName', newValue);
+          // handleSubmit(onSubmit, onError)();
+        }}
         renderInput={(params) => (
           <InputField
+            name="productName"
+            type="text"
+            placeholder={placeholder}
             {...params}
             label="Search input"
+            control={control}
             InputProps={{
+              ...params.InputProps, // spread params.InputProps here
               startAdornment: (
                 <InputAdornment position="start">
                   <Search />

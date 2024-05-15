@@ -8,10 +8,12 @@ class ApiFeatures {
     const queryObject = { ...this.queryString }
     const excludeFields = ['page', 'limit', 'fields', 'sort']
     excludeFields.forEach(field => delete queryObject[field])
-    if (this.queryString.name) {
-      queryObject.name = { $regex: this.queryString.name, $options: 'i' }
-    }
     this.query = this.query.find(queryObject)
+    return this
+  }
+
+  search(fieldName, value) {
+    this.query = this.query.find({ [fieldName]: { $regex: value, $options: 'i' } })
     return this
   }
 

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchemaValidator from "./login-validator";
-import {  Button, Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { InputField } from "~/components/Form-Controls/InputField";
 import { CheckBoxField } from "~/components/Form-Controls/CheckBoxField";
 import styles from "./styles.module.css";
@@ -26,7 +26,7 @@ const initialFormValues: LoginFormValues = {
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
-  const {status} = useSelector((state:any )=> state.auth)
+  const { status } = useSelector((state: any) => state.auth)
 
   const {
     handleSubmit,
@@ -41,7 +41,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
   const onSubmit = (formData: LoginFormValues) => {
     onSubmitLoginForm(formData);
     //if credentials not valid, still hold current data in input
-    if(status === 'success') reset()
+    if (status === 'success') reset()
   };
 
   const onError = (error: any) => {
