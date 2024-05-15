@@ -15,8 +15,9 @@ const getDishes = async (queryString) => {
 }
 
 const getDishesByName = async (queryString) => {
-  const features = new ApiFeatures(Dish.find({}), queryString).search()
-  return await Dish.find()
+  const features = new ApiFeatures(Dish.find({}), queryString)
+    .search('name', queryString.name, queryString.limit)
+  return await features.query
 }
 
 const getDish = async (id) => {

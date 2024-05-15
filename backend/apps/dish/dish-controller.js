@@ -11,6 +11,16 @@ const getDishes = catchAsyncHandler(async (req, res) => {
   })
 })
 
+const getDishesByName = catchAsyncHandler(async (req, res) => {
+  const queryString = req.query
+  console.log('queryString', queryString)
+  const dishes = await DishService.getDishesByName(queryString)
+  return res.status(200).json({
+    status: 'success',
+    data: dishes
+  })
+})
+
 const getDish = catchAsyncHandler(async (req, res, next) => {
   const { id } = req.params
   const dish = await DishService.getDish(id)
@@ -42,12 +52,13 @@ const createDishes = catchAsyncHandler(async (req, res, next) => {
     data: dishes
   })
 })
-const createDish = catchAsyncHandler(async (req, res, next) => {})
-const updateDish = catchAsyncHandler(async (req, res, next) => {})
-const deleteDish = catchAsyncHandler(async (req, res, next) => {})
+const createDish = catchAsyncHandler(async (req, res, next) => { })
+const updateDish = catchAsyncHandler(async (req, res, next) => { })
+const deleteDish = catchAsyncHandler(async (req, res, next) => { })
 
 module.exports = {
   getDishes,
+  getDishesByName,
   getDish,
   getPoplularDishes,
   createDishes,

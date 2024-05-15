@@ -12,8 +12,8 @@ class ApiFeatures {
     return this
   }
 
-  search(fieldName, value) {
-    this.query = this.query.find({ [fieldName]: { $regex: value, $options: 'i' } })
+  search(fieldName, value, limit) {
+    this.query = this.query.find({ [fieldName]: { $regex: value, $options: 'i' } }).limit(limit)
     return this
   }
 
