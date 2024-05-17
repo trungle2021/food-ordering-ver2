@@ -16,8 +16,8 @@ const getDishes = async (queryString) => {
 
 const getDishesByName = async (queryString) => {
   const features = new ApiFeatures(Dish.find({}), queryString)
-    .search('name', queryString.name, queryString.limit)
-  return await features.query
+    .searchFullText(Dish, queryString.keyword, ['name', 'description'], 5)
+  return features.query
 }
 
 const getDish = async (id) => {

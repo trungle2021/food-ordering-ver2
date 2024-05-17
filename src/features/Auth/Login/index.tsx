@@ -5,7 +5,7 @@ import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
 import { loginUser } from "../authSlice";
-import { LoginPayload } from "../../../interface/login-payload";
+import { LoginPayload } from "../../../interface/auth/login-payload";
 import { Alert } from "@mui/material";
 
 export const Login = () => {

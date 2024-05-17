@@ -3,9 +3,9 @@ import Discount from "~/components/UI/Discount";
 import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
 import { Card } from "@mui/material";
-import PopularDish from "~/interface/dish/popular-dish";
+import PopularDishProps from "~/interface/dish/popular-dish";
 
-export const Dish = ({
+export const PopularDish = ({
   image,
   itemSold,
   discount,
@@ -13,7 +13,7 @@ export const Dish = ({
   price,
   isFavorite,
   ratingPoint,
-}: PopularDish) => {
+}: PopularDishProps) => {
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
-import { PopularDish } from "../PopularDish/index";
-import DishService from "../../../services/dish/dish-service";
-
+import { Dish } from "../PopularDish/index";
+import PopularDishService from "../../../services/dish/dish-service";
+import DishResponse from "../../../interface/order/recent-order.response";
 
 export const PopularDishList = () => {
   const [popularDishes, setPopularDishes] = useState([]);
 
   const getPopularDishes = async () => {
     try {
-      const response = await DishService.fetchPopularDishes(4);
+      const response = await PopularDishService.fetchPopularDishList(4);
       setPopularDishes(response.data);
     } catch (err) {
       console.log(err);
@@ -21,22 +21,20 @@ export const PopularDishList = () => {
   }, []);
 
   const popularDishList = popularDishes.map((item: any) => {
-    const { _id, image, discount, name, price, isFavorite } = item.dish;
+    const { _id, image, discount, name, price, isFavorite }: DishResponse =
+      item.dish;
     const itemSold = item.count;
 
     return (
       <li key={_id}>
-        <PopularDish
+        <Dish
           image={image}
           itemSold={itemSold}
           discount={discount}
           name={name}
           price={price}
           isFavorite={isFavorite}
-          is_active={false}
-          created_at={""}
-          description={""}
-          category={""} />
+        />
       </li>
     );
   });

@@ -12,9 +12,26 @@ const getDishes = catchAsyncHandler(async (req, res) => {
 })
 
 const getDishesByName = catchAsyncHandler(async (req, res) => {
-  const queryString = req.query
-  console.log('queryString', queryString)
+  let queryString = req.query
+  const { keyword, limit } = queryString
+  if (!keyword) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing "keyword" parameter in query string'
+    })
+  }
+  if (limit) {
+    const parsedLimit = parseInt(limit)
+    if (isNaN(parsedLimit)) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid "limit" parameter in query string'
+      })
+    }
+    queryString = { ...queryString, limit: parsedLimit }
+  }
   const dishes = await DishService.getDishesByName(queryString)
+  console.log('dishes', dishes)
   return res.status(200).json({
     status: 'success',
     data: dishes

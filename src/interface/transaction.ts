@@ -1,4 +1,4 @@
-export interface Transaction{
+export interface TransactionProps {
     user: string;
     amount: number;
     payment_method: string;

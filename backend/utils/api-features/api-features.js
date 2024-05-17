@@ -12,8 +12,27 @@ class ApiFeatures {
     return this
   }
 
-  search(fieldName, value, limit) {
-    this.query = this.query.find({ [fieldName]: { $regex: value, $options: 'i' } }).limit(limit)
+  searchFullText(model, value, fields, limit) {
+    this.query = model.aggregate([
+      {
+        $search: {
+          index: 'default',
+          text: {
+            query: value,
+            path: fields,
+            fuzzy: {
+              maxEdits: 2
+            }
+          }
+        }
+      },
+      {
+        $sort: { score: { $meta: 'textScore' } }
+      },
+      {
+        $limit: limit
+      }
+    ])
     return this
   }
 

@@ -35,6 +35,7 @@ const dishSchema = new mongoose.Schema({
   }
 })
 
+dishSchema.index({ name: 'text', description: 'text', price: 'number' })
 const Dish = mongoose.model('Dish', dishSchema)
 
 module.exports = Dish

@@ -1,9 +1,9 @@
 
 import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
 import axios from "~/lib/axios";
-import { LoginPayload } from "~/interface/login-payload";
-import { RegisterPayload } from "~/interface/register-payload";
-import { LogoutPayload } from "~/interface/logout-payload";
+import { LoginPayload } from "~/interface/auth/login-payload";
+import { RegisterPayload } from "~/interface/auth/register-payload";
+import { LogoutPayload } from "~/interface/auth/logout-payload";
 import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token-payload";
 
 

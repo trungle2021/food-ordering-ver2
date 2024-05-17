@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token-payload";
-import { LoginPayload } from "~/interface/login-payload";
-import { LogoutPayload } from "~/interface/logout-payload";
-import { RegisterPayload } from "~/interface/register-payload";
+import { LoginPayload } from "~/interface/auth/login-payload";
+import { LogoutPayload } from "~/interface/auth/logout-payload";
+import { RegisterPayload } from "~/interface/auth/register-payload";
 import AuthService from "~/services/auth/auth.service";
 
 interface AuthState {

@@ -1,6 +1,6 @@
 import OrderDetail from "./order-detail.response";
 
-export default interface Order {
+export default interface OrderProps {
     _id: string;
     user: string;
     order_date: string;

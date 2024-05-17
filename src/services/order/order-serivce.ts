@@ -9,8 +9,8 @@ const fetchRecentOrderList = (limit: number, user_id: string): Promise<any> => {
   return axios.get(`${getRecentOrdersApiAddedUserId}?limit=${limit}`);
 };
 
-export const RecentOrderService = {
+export const OrderService = {
   fetchRecentOrderList,
 };
 
-export default RecentOrderService;
+export default OrderService;
