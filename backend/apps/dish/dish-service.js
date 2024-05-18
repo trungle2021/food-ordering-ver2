@@ -78,6 +78,33 @@ const getPoplularDishes = async (queryString) => {
   }
 }
 
+const searchDishesByFullTextSearch = async(model, value, limit) => {
+  const pipeline = [
+    {
+      $search: {
+        index: 'default',
+        compound: {
+          should: [
+            {
+              autocomplete: {
+                query: value,
+                path: 'name'
+              }
+            }
+          ],
+          minimumShouldMatch: 1
+        }
+      }
+    },
+    {
+      $limit: limit
+    }
+
+  ]
+  return model.aggregate(pipeline)
+}
+
+
 const createDishes = async (dishes) => {
   return await Dish.insertMany(dishes)
 }
@@ -102,8 +129,9 @@ module.exports = {
   getDishes,
   getDishesByName,
   getDish,
-  createDishes,
   getPoplularDishes,
+  searchDishesByFullTextSearch,
+  createDishes,
   createDish,
   updateDish,
   deleteDish

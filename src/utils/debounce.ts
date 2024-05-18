@@ -1,4 +1,4 @@
-const debounce = <T extends unknown[]>(
+export const debounce = <T extends unknown[]>(
     callback: (...args: T) => void,
     delay = 1000
   ): ((...args: T) => void) => {
@@ -11,4 +11,3 @@ const debounce = <T extends unknown[]>(
       }, delay);
     };
   };
-  

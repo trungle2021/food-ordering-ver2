@@ -12,33 +12,7 @@ class ApiFeatures {
     return this
   }
 
-  searchFullText(model, value, fields, limit) {
-    const agg = [
-      {
-        $search: {
-          index: 'default',
-          compound: {
-            should: [
-              {
-                autocomplete: {
-                  query: value,
-                  path: 'name'
-                }
-              }
-            ],
-            minimumShouldMatch: 1
-          }
-        }
-      },
-      {
-        $limit: 5
-      }
-
-    ]
-    this.query = model.aggregate(agg)
-    return this
-  }
-
+  
   sort() {
     let sortBy
     if (this.queryString.sort) {

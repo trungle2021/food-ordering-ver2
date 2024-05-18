@@ -24,16 +24,29 @@ export const HeaderSection = () => {
       setProductNameSuggestion(response.data.map(((item: { dish: { name: any; }; }) => item.dish.name)));
     };
 
-    const fetchDishesByKeyword = async () => {
-      const response: any = await DishService.fetchDishesByName(searchFormValue)
+    const fetchDishesByKeyword = async (keyword: string) => {
+      const response: any = await DishService.fetchDishesByName(keyword)
       setProductNameSuggestion(response.data.map(((item: { name: any; }) => item.name)));
     }
 
+    const fetchDishesByOneLetterKeyword = async (keyword: string) => {
+    }
+
+    // user clicked on a search input -> dropdown will open
     if (suggestionBoxIsOpen) {
+      // if user not type anykeyword then (just click into input) -> fetch suggestion and load to suggestionBox
       if (!searchFormValue) {
         fetchPopularDishes();
       } else {
-        fetchDishesByKeyword();
+      //else if user start typing into search input
+      // if user type 1 letter keyword only and submit -> call api search with regex search strategy
+        if(searchFormValue.length == 1) {
+          fetchDishesByOneLetterKeyword(searchFormValue);
+        }else{
+      // else if more than 1 letter -> call api search with full text search strategy
+          (fetchDishesByKeyword(searchFormValue));
+        }
+       
       }
     }
 

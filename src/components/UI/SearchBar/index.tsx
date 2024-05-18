@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { InputField } from "~/components/Form-Controls/InputField";
 import { Autocomplete, InputAdornment } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import { debounce } from "~/utils/debounce";
+
 
 type SearchProps = {
   placeholder?: string;
@@ -27,7 +29,8 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
   })
 
   const onSubmit = (formData: SearchFormValues) => {
-    onSubmitSearchForm(formData);
+    const debounceSubmitSearchForm = debounce(() => onSubmitSearchForm(formData));
+    debounceSubmitSearchForm();
   };
 
   const onError = (error: any) => {
@@ -65,8 +68,6 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
           />
         )}
       />
-
-
     </form>
   );
 };
