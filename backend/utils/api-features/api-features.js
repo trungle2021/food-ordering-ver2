@@ -13,26 +13,29 @@ class ApiFeatures {
   }
 
   searchFullText(model, value, fields, limit) {
-    this.query = model.aggregate([
+    const agg = [
       {
         $search: {
           index: 'default',
-          text: {
-            query: value,
-            path: fields,
-            fuzzy: {
-              maxEdits: 2
-            }
+          compound: {
+            should: [
+              {
+                autocomplete: {
+                  query: value,
+                  path: 'name'
+                }
+              }
+            ],
+            minimumShouldMatch: 1
           }
         }
       },
       {
-        $sort: { score: { $meta: 'textScore' } }
-      },
-      {
-        $limit: limit
+        $limit: 5
       }
-    ])
+
+    ]
+    this.query = model.aggregate(agg)
     return this
   }
 
