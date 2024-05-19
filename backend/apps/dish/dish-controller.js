@@ -11,7 +11,7 @@ const getDishes = catchAsyncHandler(async (req, res) => {
   })
 })
 
-const getDishesByName = catchAsyncHandler(async (req, res) => {
+const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
   let queryString = req.query
   const { keyword, limit } = queryString
   if (!keyword) {
@@ -30,7 +30,19 @@ const getDishesByName = catchAsyncHandler(async (req, res) => {
     }
     queryString = { ...queryString, limit: parsedLimit }
   }
-  const dishes = await DishService.getDishesByName(queryString)
+  if(keyword.length == 1){
+    delete queryString.keyword
+    const regexPattern = '^' + keyword; // Prepend '^' to the search string to search product name start by keyword
+    const regex = new RegExp(regexPattern, 'i');
+    queryString = {...queryString, name: regex}
+    // search by regex
+    const dishes = await DishService.getDishes(queryString)
+    return res.status(200).json({
+      status: 'success',
+      data: dishes
+    })
+  }
+  const dishes = await DishService.searchDishesByFullTextSearch(queryString.keyword, queryString.limit)
   console.log('dishes', dishes)
   return res.status(200).json({
     status: 'success',
@@ -75,7 +87,7 @@ const deleteDish = catchAsyncHandler(async (req, res, next) => { })
 
 module.exports = {
   getDishes,
-  getDishesByName,
+  searchDishesByFullTextSearch,
   getDish,
   getPoplularDishes,
   createDishes,

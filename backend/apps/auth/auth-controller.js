@@ -1,7 +1,7 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const User = require('../user/user-model')
 const AuthService = require('./auth-service')
-const validateLoginRequest = require('./loginValidator')
+const validateLoginRequest = require('./login-validator')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 
 const register = catchAsyncHandler(async (req, res, next) => {

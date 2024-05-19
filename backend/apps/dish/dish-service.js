@@ -14,11 +14,6 @@ const getDishes = async (queryString) => {
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
-const getDishesByName = async (queryString) => {
-  const features = new ApiFeatures(Dish.find({}), queryString)
-    .searchFullText(Dish, queryString.keyword, ['name', 'description'], 5)
-  return features.query
-}
 
 const getDish = async (id) => {
   return await Dish.findById(id)
@@ -78,7 +73,7 @@ const getPoplularDishes = async (queryString) => {
   }
 }
 
-const searchDishesByFullTextSearch = async(model, value, limit) => {
+const searchDishesByFullTextSearch = async(value, limit) => {
   const pipeline = [
     {
       $search: {
@@ -101,7 +96,7 @@ const searchDishesByFullTextSearch = async(model, value, limit) => {
     }
 
   ]
-  return model.aggregate(pipeline)
+  return Dish.aggregate(pipeline)
 }
 
 
@@ -127,7 +122,6 @@ const deleteDish = async (dish) => {
 
 module.exports = {
   getDishes,
-  getDishesByName,
   getDish,
   getPoplularDishes,
   searchDishesByFullTextSearch,

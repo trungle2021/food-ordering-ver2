@@ -5,7 +5,7 @@ const DishController = require('../dish/dish-controller')
 router.route('/popular-dishes')
   .get(DishController.getPoplularDishes)
 
-router.route('/search').get(DishController.getDishesByName)
+router.route('/search').get(DishController.searchDishesByFullTextSearch)
 
 router.route('/bulk')
   .post(DishController.createDishes)

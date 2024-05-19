@@ -5,8 +5,8 @@ const fetchPopularDishes = (limit: number): Promise<any> => {
   return axios.get(`${getPopularDishesApi}?limit=${limit}`);
 };
 
-const fetchDishesByName = (keyword: string): Promise<any> => {
-  return axios.get(`${getDishesByNameApi}?keyword=${keyword}`);
+const fetchDishesByName = (keyword: string, limit: number): Promise<any> => {
+  return axios.get(`${getDishesByNameApi}?keyword=${keyword}&limit=${limit}`);
 }
 
 export const DishService = {

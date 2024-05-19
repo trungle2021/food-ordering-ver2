@@ -8,45 +8,40 @@ export const HeaderSection = () => {
   const [productNameSuggestion, setProductNameSuggestion] = useState([])
   const [searchFormValue, setSearchFormValue] = useState("");
   const [suggestionBoxIsOpen, setSuggestionBoxIsOpen] = useState(false);
+
   const handleSubmitSearchProduct = (formData: any) => {
-    const { productName } = formData
-    setSearchFormValue(productName)
+    const { keyword } = formData
+    console.log("product name", keyword)
+    setSearchFormValue(keyword)
   }
 
   const handleOpenSuggestionBox = () => {
     setSuggestionBoxIsOpen(true)
   }
 
+  const fetchPopularDishes = async (limit: number) => {
+    
+    const response: any = await DishService.fetchPopularDishes(limit);
+    // console.log(response.data);
+    setProductNameSuggestion(response.data.map(((item: { dish: { name: any; }; }) => item.dish.name)));
+  };
+
+  const fetchDishesByKeyword = async (keyword: string, limit: number) => {
+    const response: any = await DishService.fetchDishesByName(keyword, limit)
+    setProductNameSuggestion(response.data.map(((item: { name: any; }) => item.name)));
+  }
+
   useEffect(() => {
-    const fetchPopularDishes = async () => {
-      const response: any = await DishService.fetchPopularDishes(10);
-      // console.log(response.data);
-      setProductNameSuggestion(response.data.map(((item: { dish: { name: any; }; }) => item.dish.name)));
-    };
-
-    const fetchDishesByKeyword = async (keyword: string) => {
-      const response: any = await DishService.fetchDishesByName(keyword)
-      setProductNameSuggestion(response.data.map(((item: { name: any; }) => item.name)));
-    }
-
-    const fetchDishesByOneLetterKeyword = async (keyword: string) => {
-    }
-
     // user clicked on a search input -> dropdown will open
     if (suggestionBoxIsOpen) {
-      // if user not type anykeyword then (just click into input) -> fetch suggestion and load to suggestionBox
+        // if user not type anykeyword then (just click into input) -> fetch suggestion and load to suggestionBox
       if (!searchFormValue) {
-        fetchPopularDishes();
+        console.log("searchFormValue is empty", searchFormValue)
+        fetchPopularDishes(10);
       } else {
-      //else if user start typing into search input
-      // if user type 1 letter keyword only and submit -> call api search with regex search strategy
-        if(searchFormValue.length == 1) {
-          fetchDishesByOneLetterKeyword(searchFormValue);
-        }else{
-      // else if more than 1 letter -> call api search with full text search strategy
-          (fetchDishesByKeyword(searchFormValue));
-        }
-       
+        console.log("searchFormValue has value", searchFormValue)
+        //else if user start typing into search input
+        fetchDishesByKeyword(searchFormValue, 10)
       }
     }
 
