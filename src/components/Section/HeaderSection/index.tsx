@@ -11,7 +11,6 @@ export const HeaderSection = () => {
 
   const handleSubmitSearchProduct = (formData: any) => {
     const { keyword } = formData
-    console.log("product name", keyword)
     setSearchFormValue(keyword)
   }
 
@@ -55,8 +54,3 @@ export const HeaderSection = () => {
   );
 };
 
-
-// const searchDishByName = (name: string) => {
-//   const response: any = DishService.fetchDishesByName(name)
-//   setProductNameSuggestion(response.data)
-// }

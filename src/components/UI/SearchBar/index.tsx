@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import { useForm } from "react-hook-form";
 import { InputField } from "~/components/Form-Controls/InputField";
-import { Autocomplete, InputAdornment } from "@mui/material";
+import { Autocomplete, InputAdornment, TextField } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { debounce } from "~/utils/debounce";
 
@@ -28,9 +28,15 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
     defaultValues: initialFormValues,
   })
 
+  const handleInputChange = (event: React.ChangeEvent<{}>, newValue: string | null) => {
+    const keyword = newValue == null ? "" : newValue
+    setValue('keyword', keyword);
+    handleSubmit(onSubmit, onError)();
+  };
+
+
   const onSubmit = (formData: SearchFormValues) => {
-    const debounceSubmitSearchForm = debounce(() => onSubmitSearchForm(formData));
-    debounceSubmitSearchForm();
+    onSubmitSearchForm(formData);
   };
 
   const onError = (error: any) => {
@@ -42,32 +48,28 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"
-        disableClearable
         options={dataSuggestion}
         onOpen={onOpenSuggestionBox}
-        onInputChange={(event, newValue) => {
-          setValue('keyword', newValue);
-          handleSubmit(onSubmit, onError)();
+        onInputChange={debounce(handleInputChange, 500)}
+      renderInput={(params) => (
+      <InputField
+        name="keyword"
+        type="text"
+        placeholder={placeholder}
+        {...params}
+        control={control}
+        InputProps={{
+          ...params.InputProps, // spread params.InputProps here
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
         }}
-        renderInput={(params) => (
-          <InputField
-            name="keyword"
-            type="text"
-            placeholder={placeholder}
-            {...params}
-            label="Search input"
-            control={control}
-            InputProps={{
-              ...params.InputProps, // spread params.InputProps here
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
+      />
+)}
       />
     </form>
   );
 };
+
