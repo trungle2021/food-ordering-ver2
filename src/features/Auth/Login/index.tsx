@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
-import { loginUser } from "../authSlice";
 import { LoginPayload } from "../../../interface/auth/login-payload";
 import { Alert } from "@mui/material";
+import { loginUser } from "../authAction";
 
 export const Login = () => {
   const history = useHistory();

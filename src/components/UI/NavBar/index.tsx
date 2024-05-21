@@ -2,10 +2,10 @@
 import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "~/features/Auth/authSlice";
 import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useState } from "react";
+import { logoutUser } from "~/features/Auth/authAction";
 
 
 
@@ -46,23 +46,23 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
             </Link>
           </li>
         ))}
-         <li className={styles["navbar__item"]}>
-            <a
-              onClick={handleLogout}
-              className={styles["navbar__link"]}
-            >
-              <img src="/icon/Logout.svg" />
-              <span>Logout</span>
-            </a>
-          </li>
+        <li className={styles["navbar__item"]}>
+          <a
+            onClick={handleLogout}
+            className={styles["navbar__link"]}
+          >
+            <img src="/icon/Logout.svg" />
+            <span>Logout</span>
+          </a>
+        </li>
       </ul>
 
 
-       {/* Logout Dialog */}
-       <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled}  fullWidth maxWidth='md' >
+      {/* Logout Dialog */}
+      <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
-          <DialogContentText style={{'fontSize': '30px'}}>
+          <DialogContentText style={{ 'fontSize': '30px' }}>
             Are you sure you want to logout?'
           </DialogContentText>
         </DialogContent>

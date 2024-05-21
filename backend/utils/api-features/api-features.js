@@ -12,7 +12,6 @@ class ApiFeatures {
     return this
   }
 
-  
   sort() {
     let sortBy
     if (this.queryString.sort) {

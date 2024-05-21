@@ -30,11 +30,11 @@ const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
     }
     queryString = { ...queryString, limit: parsedLimit }
   }
-  if(keyword.length == 1){
+  if (keyword.length === 1) {
     delete queryString.keyword
-    const regexPattern = '^' + keyword; // Prepend '^' to the search string to search product name start by keyword
-    const regex = new RegExp(regexPattern, 'i');
-    queryString = {...queryString, name: regex}
+    const regexPattern = '^' + keyword // Prepend '^' to the search string to search product name start by keyword
+    const regex = new RegExp(regexPattern, 'i')
+    queryString = { ...queryString, name: regex }
     // search by regex
     const dishes = await DishService.getDishes(queryString)
     return res.status(200).json({

@@ -2,22 +2,22 @@ import { useDispatch } from "react-redux";
 import { RegisterForm } from "./RegisterForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
-import { registerUser } from "../authSlice";
 import { SetStateAction, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Alert } from "@mui/material";
+import { registerUser } from "../authAction";
 
 export const Register = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
- 
+
   const handleSubmitRegisterForm = (formData: any) => {
     dispatch<any>(registerUser(formData))
       .then((result: any) => {
         if (result.payload.status === "success") {
           history.push('/dashboard');
-        }else{
+        } else {
           setErrorMessage(result.payload.message)
         }
       })

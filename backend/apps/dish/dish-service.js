@@ -14,7 +14,6 @@ const getDishes = async (queryString) => {
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
-
 const getDish = async (id) => {
   return await Dish.findById(id)
 }
@@ -73,7 +72,7 @@ const getPoplularDishes = async (queryString) => {
   }
 }
 
-const searchDishesByFullTextSearch = async(value, limit) => {
+const searchDishesByFullTextSearch = async (value, limit) => {
   const pipeline = [
     {
       $search: {
@@ -98,7 +97,6 @@ const searchDishesByFullTextSearch = async(value, limit) => {
   ]
   return Dish.aggregate(pipeline)
 }
-
 
 const createDishes = async (dishes) => {
   return await Dish.insertMany(dishes)

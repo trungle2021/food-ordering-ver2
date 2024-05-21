@@ -1,18 +1,20 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice";
+import searchDishesReducer from "../features/Dish/SearchDish/searchDishesSlice";
 import balanceReducer from '../features/Balance/balanceSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  searchDishes: searchDishesReducer,
   balance: balanceReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["balance"]
+  blacklist: ["balance", "searchDishes"]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -26,7 +28,6 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

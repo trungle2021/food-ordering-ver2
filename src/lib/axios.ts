@@ -1,4 +1,3 @@
-import { authSlice, logoutUser } from './../features/Auth/authSlice';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -7,7 +6,7 @@ import axios, {
 } from "axios";
 import axiosRetry from "axios-retry";
 import { store } from "~/app/store";
-import { getNewAccessToken } from "~/features/Auth/authSlice";
+import { getNewAccessToken, logoutUser } from '~/features/Auth/authAction';
 import { origin } from "~/utils/api";
 
 const instance: AxiosInstance = axios.create({
@@ -22,14 +21,14 @@ const instance: AxiosInstance = axios.create({
 // Exponential back-off retry delay between requests
 
 axiosRetry(instance, {
-  
+
   retries: 3,
-  
+
   retryDelay: axiosRetry.exponentialDelay,
- });
+});
 
 
-let refreshingToken:any = null
+let refreshingToken: any = null
 
 
 const onRequest = async (
@@ -38,7 +37,7 @@ const onRequest = async (
   const state = store.getState()
   const accessToken = state.auth.accessToken;
   if (accessToken) {
-    config.headers.Authorization =  "Bearer " + accessToken;
+    config.headers.Authorization = "Bearer " + accessToken;
   }
   return config;
 };
@@ -56,27 +55,27 @@ const onResponseError = async (error: any): Promise<AxiosError> => {
   console.log("Config retry:", config._retry);
   if (error?.response?.status === 401 && !config._retry) {
     //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
-      config._retry = true
-      const state = store.getState();
-      const userId = state.auth.user._id
-      const refreshToken = state.auth.refreshToken
-      console.log("Refreshing access token")
-      refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({user: userId, token: refreshToken}))
-      const response = await refreshingToken
-      const accessToken = response.payload.data.accessToken;
-      console.log("Access Token: " + accessToken)
-      console.log(accessToken)
-      if (accessToken) {
-        config.headers.Authorization =  "Bearer " + accessToken;
-        return instance.request(config);
-      }
-      refreshingToken = null
-      
-    if (error?.response.data?.error === 'Refresh Token Expired'){
+    config._retry = true
+    const state = store.getState();
+    const userId = state.auth.user._id
+    const refreshToken = state.auth.refreshToken
+    console.log("Refreshing access token")
+    refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({ user: userId, token: refreshToken }))
+    const response = await refreshingToken
+    const accessToken = response.payload.data.accessToken;
+    console.log("Access Token: " + accessToken)
+    console.log(accessToken)
+    if (accessToken) {
+      config.headers.Authorization = "Bearer " + accessToken;
+      return instance.request(config);
+    }
+    refreshingToken = null
+
+    if (error?.response.data?.error === 'Refresh Token Expired') {
       //dispatch to logout
       await store.dispatch(logoutUser(userId))
     }
- 
+
   }
   return Promise.reject(error?.response?.data);
 };

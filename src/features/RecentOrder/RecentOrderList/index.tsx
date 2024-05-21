@@ -32,7 +32,6 @@ export const RecentOrderList: React.FC = () => {
           user_id
         );
         setRecentOrders(response.data);
-        console.log(recentOrders)
       }
     } catch (error) {
       console.log(error);

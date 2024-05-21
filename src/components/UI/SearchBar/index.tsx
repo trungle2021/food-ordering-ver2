@@ -51,23 +51,23 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
         options={dataSuggestion}
         onOpen={onOpenSuggestionBox}
         onInputChange={debounce(handleInputChange, 500)}
-      renderInput={(params) => (
-      <InputField
-        name="keyword"
-        type="text"
-        placeholder={placeholder}
-        {...params}
-        control={control}
-        InputProps={{
-          ...params.InputProps, // spread params.InputProps here
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-        }}
-      />
-)}
+        renderInput={(params) => (
+          <InputField
+            name="keyword"
+            type="text"
+            placeholder={placeholder}
+            {...params}
+            control={control}
+            InputProps={{
+              ...params.InputProps, // spread params.InputProps here
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
       />
     </form>
   );

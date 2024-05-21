@@ -1,12 +1,11 @@
-.sidebar--right{
-    right:0;
+.sidebar--right {
+    right: 0;
     padding: 30px 30px 10px;
     position: relative;
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: #FFFFFF;
     width: 400px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    height: 100%;
 }
