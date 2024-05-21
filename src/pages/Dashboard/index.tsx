@@ -69,10 +69,11 @@ export const Dashboard = () => {
           </Grid>
         </Grid>
       }) : (<>
-        <img style={{ width: "100%" }} src="/BannerMain.png" />
+        <p>Not found</p>
+        {/* <img style={{ width: "100%" }} src="/BannerMain.png" />
         <CategorySection />
         <PopularDishSection />
-        <RecentOrderSection />
+        <RecentOrderSection /> */}
       </>)}
 
     </>

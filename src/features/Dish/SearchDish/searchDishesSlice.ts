@@ -15,7 +15,11 @@ const initialState: searchDishState = {
 
 export const searchDishSlice = createSlice({
     initialState,
-    reducers: {},
+    reducers: {
+        clearSearchData: (state) => {
+            state.data = [];
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(searchDishes.pending, (state, action) => {
@@ -32,5 +36,6 @@ export const searchDishSlice = createSlice({
     name: "searchDish"
 })
 
+export const { clearSearchData } = searchDishSlice.actions
 const { reducer } = searchDishSlice
 export default reducer

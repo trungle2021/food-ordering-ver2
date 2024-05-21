@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 import DishService from "~/services/dish/dish-service";
 import { useDispatch } from "react-redux";
 import { searchDishes } from "~/features/Dish/SearchDish/searchDishesAction";
-import { searchDishSlice } from '../../../features/Dish/SearchDish/searchDishesSlice';
+import { clearSearchData, searchDishSlice } from '../../../features/Dish/SearchDish/searchDishesSlice';
 
 export const HeaderSection = () => {
 
@@ -35,6 +35,7 @@ export const HeaderSection = () => {
     if (suggestionBoxIsOpen) {
       // if user not type anykeyword then (just click into input) -> fetch suggestion and load to suggestionBox
       if (!searchFormValue) {
+        dispatch<any>(clearSearchData())
         loadSuggestion(10);
       } else {
         //else if user start typing into search input
@@ -47,7 +48,12 @@ export const HeaderSection = () => {
             console.log(error.message);
           });
       }
+      if (!searchFormValue) {
+        console.log("search data is empty")
+
+      }
     }
+
 
   }, [searchFormValue, suggestionBoxIsOpen])
 
