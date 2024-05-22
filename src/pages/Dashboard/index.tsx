@@ -12,70 +12,34 @@ export const Dashboard = () => {
     <>
       <HeaderSection />
 
-      {dishes && dishes.data.length > 0 ? dishes.data.map((dish: any) => {
-
-        return <Grid container spacing={2} key={dish._id} rowSpacing={2}>
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
-            <PopularDish
-              itemSold={0}
-              is_active={false}
-              discount={0}
-              created_at={""}
-              name={dish.name}
-              price={0}
-              description={""}
-              image={dish.image}
-              category={""} />
-
+      {dishes.data === null ?
+        <>
+          <img style={{ width: "100%" }} src="/BannerMain.png" />
+          <CategorySection />
+          <PopularDishSection />
+          <RecentOrderSection />
+        </>
+        :
+        dishes.data.length > 0 ?
+          <Grid container spacing={2} rowSpacing={2}>
+            {dishes.data.map((dish: any) => {
+              return (<Grid item xs={12} sm={6} md={4} lg={4} xl={3} key={dish._id}>
+                <PopularDish
+                  itemSold={0}
+                  is_active={false}
+                  discount={0}
+                  created_at={""}
+                  name={dish.name}
+                  price={0}
+                  description={""}
+                  image={dish.image}
+                  category={""} />
+              </Grid>)
+            })}
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
-            <PopularDish
-              itemSold={0}
-              is_active={false}
-              discount={0}
-              created_at={""}
-              name={dish.name}
-              price={0}
-              description={""}
-              image={dish.image}
-              category={""} />
-
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
-            <PopularDish
-              itemSold={0}
-              is_active={false}
-              discount={0}
-              created_at={""}
-              name={dish.name}
-              price={0}
-              description={""}
-              image={dish.image}
-              category={""} />
-
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={3}>
-            <PopularDish
-              itemSold={0}
-              is_active={false}
-              discount={0}
-              created_at={""}
-              name={dish.name}
-              price={0}
-              description={""}
-              image={dish.image}
-              category={""} />
-
-          </Grid>
-        </Grid>
-      }) : (<>
-        <p>Not found</p>
-        {/* <img style={{ width: "100%" }} src="/BannerMain.png" />
-        <CategorySection />
-        <PopularDishSection />
-        <RecentOrderSection /> */}
-      </>)}
-
+          :
+          <p>No dishes found.</p>
+      }``
     </>
   );
 };

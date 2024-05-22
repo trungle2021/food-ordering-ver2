@@ -44,7 +44,9 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
   };
 
   return (
-    <form className={`${styles["form-search"]}`} >
+    <form className={`${styles["form-search"]}`} onSubmit={(e) => {
+      e.preventDefault();
+    }}>
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"

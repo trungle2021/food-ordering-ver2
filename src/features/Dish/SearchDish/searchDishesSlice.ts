@@ -8,7 +8,7 @@ interface searchDishState {
 }
 
 const initialState: searchDishState = {
-    data: [],
+    data: null,
     loading: false,
     error: null
 }
@@ -17,7 +17,7 @@ export const searchDishSlice = createSlice({
     initialState,
     reducers: {
         clearSearchData: (state) => {
-            state.data = [];
+            state.data = null;
         },
     },
     extraReducers: (builder) => {

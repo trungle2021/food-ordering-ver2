@@ -35,7 +35,6 @@ export const HeaderSection = () => {
     if (suggestionBoxIsOpen) {
       // if user not type anykeyword then (just click into input) -> fetch suggestion and load to suggestionBox
       if (!searchFormValue) {
-        dispatch<any>(clearSearchData())
         loadSuggestion(10);
       } else {
         //else if user start typing into search input
@@ -49,8 +48,8 @@ export const HeaderSection = () => {
           });
       }
       if (!searchFormValue) {
+        dispatch<any>(clearSearchData())
         console.log("search data is empty")
-
       }
     }
 

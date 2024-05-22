@@ -82,7 +82,16 @@ const searchDishesByFullTextSearch = async (value, limit) => {
             {
               autocomplete: {
                 query: value,
+                fuzzy: {
+                  maxEdits: 1
+                },
                 path: 'name'
+              }
+            },
+            {
+              text: {
+                query: value,
+                path: 'description'
               }
             }
           ],
