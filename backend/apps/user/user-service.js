@@ -9,6 +9,11 @@ const getUser = async (filter) => {
   return await User.findOne(filter)
 }
 
+const checkIfUserExists  = async (userId) => {
+  const count = await User.countDocuments({user: userId})
+  return true ? count > 0 : false; 
+}
+
 const createUser = async (user) => {
   const isEmailAlreadyExists = await User.findOne({ email: user.email })
   if (isEmailAlreadyExists) throw new AppError('Email already exists', 409)
@@ -28,6 +33,7 @@ const deleteUser = async (filter) => {
 module.exports = {
   getUsers,
   getUser,
+  checkIfUserExists,
   createUser,
   updateUser,
   deleteUser

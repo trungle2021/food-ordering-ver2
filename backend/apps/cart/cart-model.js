@@ -23,6 +23,10 @@ const cartSchema = new mongoose.Schema({
       min: 1
     }
   }],
+  total: {
+    type: Number,
+    required: true
+  },
   created_at: {
     type: Date,
     default: Date.now()

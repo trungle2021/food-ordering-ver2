@@ -1,5 +1,4 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-
 const CartService = require('./cart-service')
 
 const getCarts = catchAsyncHandler(async (req, res) => {
@@ -10,9 +9,9 @@ const getCarts = catchAsyncHandler(async (req, res) => {
   })
 })
 
-const getCart = catchAsyncHandler(async (req, res, next) => {
+const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
   const { id } = req.params.id
-  const cart = await CartService.getCart(id)
+  const cart = await CartService.getCartByUserId(id)
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
@@ -25,23 +24,22 @@ const getCart = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const createCarts = catchAsyncHandler(async (req, res, next) => {
-  const listCarts = req.body
-  const carts = await CartService.createCarts(listCarts)
+
+const addToCart = catchAsyncHandler(async (req, res, next) => {
+  const {userId, dishId, quantity} = req.params
+  const cart = await CartService.addToCart(userId, dishId, quantity)
   return res.status(200).json({
-    status: 'success',
-    data: carts
+    status:'success',
+    data: cart
   })
 })
-const createCart = catchAsyncHandler(async (req, res, next) => {})
 const updateCart = catchAsyncHandler(async (req, res, next) => {})
 const deleteCart = catchAsyncHandler(async (req, res, next) => {})
 
 module.exports = {
   getCarts,
-  getCart,
-  createCarts,
-  createCart,
+  getCartByUserId,
+  addToCart,
   updateCart,
   deleteCart
 }
