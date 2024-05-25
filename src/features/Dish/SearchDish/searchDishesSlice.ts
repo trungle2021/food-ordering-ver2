@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { searchDishes } from "./searchDishesAction";
 
-interface searchDishState {
+interface SearchDishState {
     data: any,
     loading: boolean,
     error: string | null
 }
 
-const initialState: searchDishState = {
+const initialState: SearchDishState = {
     data: null,
     loading: false,
     error: null

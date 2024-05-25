@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Transaction } from "~/interface/transaction";
+import { TransactionProps } from "~/interface/transaction";
 
 interface BalanceState {
     userBalance: number;
-    transactions: Transaction[]
+    transactions: TransactionProps[]
 }
 const initialState: BalanceState= {
     userBalance: 0,
