@@ -9,9 +9,9 @@ const getUser = async (filter) => {
   return await User.findOne(filter)
 }
 
-const checkIfUserExists  = async (userId) => {
-  const count = await User.countDocuments({user: userId})
-  return true ? count > 0 : false; 
+const checkIfUserExists = async (userId) => {
+  const count = await User.countDocuments({ _id: userId })
+  return count > 0
 }
 
 const createUser = async (user) => {

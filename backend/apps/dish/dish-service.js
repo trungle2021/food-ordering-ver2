@@ -1,4 +1,3 @@
-const AppError = require('../error/app-error')
 const Dish = require('./dish-model')
 const Order = require('../order/model/order-model')
 const ApiFeatures = require('../../utils/api-features/api-features')
@@ -14,62 +13,58 @@ const getDishes = async (queryString) => {
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
-const getDish = async (id) => {
-  return await Dish.findById(id)
+const getDish = async (queryString) => {
+  return await Dish.findOne(queryString)
 }
 
 const getPoplularDishes = async (queryString) => {
-  try {
-    const page = queryString.page * 1 || 1
-    const limit = queryString.limit * 1 || 10
-    const skip = (page - 1) * limit
-    return await Order.aggregate([
-      {
-        $match: {
-          order_status: COMPLETED
-        }
-      },
-      {
-        $lookup: {
-          from: 'orderdetails',
-          localField: '_id',
-          foreignField: 'order',
-          as: 'order_detail'
-        }
-      },
-      {
-        $unwind: '$order_detail'
-      },
-      {
-        $group: {
-          _id: '$order_detail.dish',
-          count: { $sum: '$order_detail.quantity' }
-        }
-      },
-      {
-        $lookup: {
-          from: 'dishes',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'dish'
-        }
-      },
-      {
-        $unwind: '$dish'
-      },
-      {
-        $sort: { count: -1 }
-      },
-      {
-        $skip: skip// Skip the first 5 documents
-      },
-      {
-        $limit: limit // Limit the result to 10 documents
+  const page = queryString.page * 1 || 1
+  const limit = queryString.limit * 1 || 10
+  const skip = (page - 1) * limit
+  return await Order.aggregate([
+    {
+      $match: {
+        order_status: COMPLETED
       }
-    ])
-  } catch (e) {
-    throw new AppError(e)
-  }
+    },
+    {
+      $lookup: {
+        from: 'orderdetails',
+        localField: '_id',
+        foreignField: 'order',
+        as: 'order_detail'
+      }
+    },
+    {
+      $unwind: '$order_detail'
+    },
+    {
+      $group: {
+        _id: '$order_detail.dish',
+        count: { $sum: '$order_detail.quantity' }
+      }
+    },
+    {
+      $lookup: {
+        from: 'dishes',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'dish'
+      }
+    },
+    {
+      $unwind: '$dish'
+    },
+    {
+      $sort: { count: -1 }
+    },
+    {
+      $skip: skip// Skip the first 5 documents
+    },
+    {
+      $limit: limit // Limit the result to 10 documents
+    }
+  ])
 }
 
 const searchDishesByFullTextSearch = async (value, limit) => {
@@ -112,17 +107,12 @@ const createDishes = async (dishes) => {
 }
 
 const createDish = async (dish) => {
-  try {
-    return await Dish.create(dish)
-  } catch (error) {
-    throw new AppError(error)
-  }
+  return await Dish.create(dish)
 }
 
 const updateDish = async (dish) => {
 
 }
-
 const deleteDish = async (dish) => {
 
 }

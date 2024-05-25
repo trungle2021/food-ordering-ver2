@@ -96,21 +96,16 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
 }
 
 const saveRefreshTokenToDB = async (token, userId) => {
-  try {
-    // check if user exists
-    const user = await UserService.getUser({ _id: userId })
-    if (!user) throw new AppError('User not found', 404)
+  // check if user exists
+  const user = await UserService.getUser({ _id: userId })
+  if (!user) throw new AppError('User not found', 404)
 
-    // delete existing refresh token, if any
-    await RefreshTokenService.deleteRefreshTokenByUserId(userId)
+  // delete existing refresh token, if any
+  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
 
-    // save new refresh token
-    const refreshTokenObject = new RefreshToken({ token, user: userId })
-    await RefreshTokenService.saveRefreshToken(refreshTokenObject)
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
+  // save new refresh token
+  const refreshTokenObject = new RefreshToken({ token, user: userId })
+  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
 }
 
 module.exports = {

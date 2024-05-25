@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { PopularDish } from "../PopularDish/index";
 import DishService from "../../../services/dish/dish-service";
+import { Grid } from "@mui/material";
 
 
 export const PopularDishList = () => {
@@ -25,7 +26,7 @@ export const PopularDishList = () => {
     const itemSold = item.count;
 
     return (
-      <li key={_id}>
+      <Grid key={_id} item xs={12} sm={6} md={4} lg={4} xl={3}>
         <PopularDish
           image={image}
           itemSold={itemSold}
@@ -36,13 +37,14 @@ export const PopularDishList = () => {
           is_active={false}
           created_at={""}
           description={""}
-          category={""} />
-      </li>
+          category={""}
+        />
+      </Grid>
     );
   });
   return (
-    <ul className={`${styles["popular-dishes-container"]}`}>
+    <Grid container spacing={2} rowSpacing={2}>
       {popularDishList}
-    </ul>
+    </Grid>
   );
 };

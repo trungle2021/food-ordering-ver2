@@ -1,10 +1,10 @@
 class ApiFeatures {
-  constructor(query, queryString) {
+  constructor (query, queryString) {
     this.query = query
     this.queryString = queryString
   }
 
-  filter() {
+  filter () {
     const queryObject = { ...this.queryString }
     const excludeFields = ['page', 'limit', 'fields', 'sort']
     excludeFields.forEach(field => delete queryObject[field])
@@ -12,7 +12,7 @@ class ApiFeatures {
     return this
   }
 
-  sort() {
+  sort () {
     let sortBy
     if (this.queryString.sort) {
       sortBy = this.queryString.sort.split(',').join(' ')
@@ -23,7 +23,7 @@ class ApiFeatures {
     return this
   }
 
-  limitFields() {
+  limitFields () {
     let selectFields
     const excludedVersionField = '-__v'
     if (this.queryString.fields) {
@@ -35,7 +35,7 @@ class ApiFeatures {
     return this
   }
 
-  paginate() {
+  paginate () {
     const page = (this.queryString.page && Number(this.queryString.page)) || 1
     const limit = (this.queryString.limit && Number(this.queryString.limit)) || 10
     const skip = (page - 1) * limit

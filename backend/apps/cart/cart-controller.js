@@ -10,12 +10,12 @@ const getCarts = catchAsyncHandler(async (req, res) => {
 })
 
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params.id
+  const { id } = req.params
   const cart = await CartService.getCartByUserId(id)
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
-      data: null
+      message: 'Cart not found'
     })
   }
   return res.status(200).json({
@@ -24,22 +24,35 @@ const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-
-const addToCart = catchAsyncHandler(async (req, res, next) => {
-  const {userId, dishId, quantity} = req.params
-  const cart = await CartService.addToCart(userId, dishId, quantity)
+const addItem = catchAsyncHandler(async (req, res, next) => {
+  const { userId, dishId, quantity } = req.body
+  const cart = await CartService.addItem(userId, dishId, quantity)
   return res.status(200).json({
-    status:'success',
+    status: 'success',
     data: cart
   })
 })
-const updateCart = catchAsyncHandler(async (req, res, next) => {})
-const deleteCart = catchAsyncHandler(async (req, res, next) => {})
+const updateItem = catchAsyncHandler(async (req, res, next) => {
+  const { userId, dishId, action, quantity } = req.body
+  const updatedCart = await CartService.updateItem(userId, dishId, action, quantity)
+  return res.status(200).json({
+    status: 'success',
+    data: updatedCart
+  })
+})
+const removeItem = catchAsyncHandler(async (req, res, next) => {
+  const { userId, dishId } = req.body
+  const updatedCart = await CartService.removeItem(userId, dishId)
+  return res.status(200).json({
+    status: 'success',
+    data: updatedCart
+  })
+})
 
 module.exports = {
   getCarts,
   getCartByUserId,
-  addToCart,
-  updateCart,
-  deleteCart
+  addItem,
+  updateItem,
+  removeItem
 }

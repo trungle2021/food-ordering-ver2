@@ -18,11 +18,7 @@ const createCoupons = async (coupons) => {
 }
 
 const createCoupon = async (coupon) => {
-  try {
-    return await Coupon.create(coupon)
-  } catch (error) {
-    throw new AppError(error)
-  }
+  return await Coupon.create(coupon)
 }
 
 const updateCoupon = async (coupon) => {

@@ -6,6 +6,7 @@ import BaseDish from "~/interface/dish/base-dish";
 import OrderDetail from "~/interface/order/order-detail.response";
 import Order from "~/interface/order/order.response";
 import OrderService from "~/services/order/order-serivce";
+import { Grid } from "@mui/material";
 
 function getHighestPriceItem(orderDetailsArray: Array<OrderDetail>): BaseDish | null {
   let highestPrice = 0;
@@ -50,7 +51,7 @@ export const RecentOrderList: React.FC = () => {
       const itemHighestPrice = getHighestPriceItem(orderDetailsList)
       if (itemHighestPrice) {
         return (
-          <li key={order._id}>
+          <Grid key={order._id} item xs={12} sm={6} md={4} lg={4} xl={3}>
             <RecentOrder
               image={itemHighestPrice?.image ?? ''}
               name={itemHighestPrice?.name ?? ''}
@@ -58,15 +59,15 @@ export const RecentOrderList: React.FC = () => {
               isFavorite={true}
               orderDate={orderDate}
             />
-          </li>
+          </Grid>
         );
       }
     }
     return null
   });
   return (
-    <ul className={`${styles["recent-orders-container"]}`}>
+    <Grid container spacing={2} rowSpacing={2}>
       {recentOrdersItem.length > 0 ? recentOrdersItem : "No orders found"}
-    </ul>
+    </Grid>
   );
 };

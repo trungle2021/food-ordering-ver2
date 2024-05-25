@@ -4,14 +4,11 @@ const CartController = require('../cart/cart-controller')
 
 router.route('/user/:id')
   .get(CartController.getCartByUserId)
-  .delete(CartController.deleteCart)
-  .put(CartController.updateCart)
-
-router.route('/bulk')
-  .post(CartController.createCarts)
 
 router.route('/')
   .get(CartController.getCarts)
-  .post(CartController.createCart)
+  .post(CartController.addItem)
+  .delete(CartController.removeItem)
+  .put(CartController.updateItem)
 
 module.exports = router

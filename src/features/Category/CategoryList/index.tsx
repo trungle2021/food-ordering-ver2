@@ -3,6 +3,7 @@ import CategoryItem from "../CategoryItem";
 import CategoryService from "../../../services/category/category-service";
 import Category from "../../../interface/category/category";
 import styles from "./styles.module.css";
+import { Grid } from "@mui/material";
 
 export const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState([]);
@@ -24,11 +25,17 @@ export const CategoryList: React.FC = () => {
   const categoryList: React.ReactElement[] = categories.map(
     (item: Category) => {
       const { _id, image, name } = item;
-      return <CategoryItem key={_id} iconLink={image} name={name} />;
+      return (
+        <Grid item xs={12} sm={6} md={4} lg={4} xl={1.5} key={_id}>
+          <CategoryItem iconLink={image} name={name} />
+        </Grid>
+      );
     }
   );
 
   return (
-    <ul className={`${styles["categories__container"]}`}>{categoryList}</ul>
+    <Grid container spacing={3} rowSpacing={2}>
+      {categoryList}
+    </Grid>
   );
 };

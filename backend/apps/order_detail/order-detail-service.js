@@ -1,4 +1,3 @@
-const AppError = require('../error/app-error')
 const OrderDetail = require('./order-detail-model')
 
 const getOrderDetails = async (filter) => {
@@ -33,11 +32,7 @@ const createOrderDetails = async (orderId, orderDetails, options) => {
 }
 
 const createOrderDetail = async (orderdetail, options) => {
-  try {
-    return await OrderDetail.create(orderdetail)
-  } catch (error) {
-    throw new AppError(error)
-  }
+  return await OrderDetail.create(orderdetail)
 }
 
 const updateOrderDetail = async (orderdetail) => {

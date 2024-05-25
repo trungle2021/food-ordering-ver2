@@ -7,10 +7,10 @@ type CategoryProps = {
 
 const CategoryItem = ({ iconLink, name }: CategoryProps) => {
   return (
-    <li className={`${styles["category-item"]}`}>
+    <div className={`${styles["category-item"]}`}>
       <img src={iconLink} />
       <span>{name}</span>
-    </li>
+    </div>
   );
 };
 
