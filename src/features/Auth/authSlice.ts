@@ -5,7 +5,7 @@ interface AuthState {
   user: any;
   accessToken: string;
   refreshToken: string;
-  loading: boolean;
+  isLoading: boolean;
   status: null | object;
   message: string;
   isLoggedIn: boolean;
@@ -15,7 +15,7 @@ const initialState: AuthState = {
   user: {},
   accessToken: "",
   refreshToken: "",
-  loading: false,
+  isLoading: false,
   status: null,
   message: "",
   isLoggedIn: false,
@@ -30,13 +30,13 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.status = null;
         state.user = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         if (action.payload.status === 'success') {
-          state.loading = false;
+          state.isLoading = false;
           state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
@@ -46,18 +46,18 @@ export const authSlice = createSlice({
         }
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.isLoading = false;
         state.status = action.payload.status;
         state.message = action.payload.message
       })
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.status = null;
         state.user = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         if (action.payload.status === 'success') {
-          state.loading = false;
+          state.isLoading = false;
           state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
@@ -67,12 +67,12 @@ export const authSlice = createSlice({
         }
       })
       .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.isLoading = false;
         state.status = action.payload.status;
         state.message = action.payload.message
       })
       .addCase(logoutUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
         state.status = null;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
@@ -80,14 +80,14 @@ export const authSlice = createSlice({
           state.user = {};
           state.accessToken = "";
           state.refreshToken = "";
-          state.loading = false;
+          state.isLoading = false;
           state.status = null;
           state.message = "";
           state.isLoggedIn = false;
         }
       })
       .addCase(logoutUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.isLoading = false;
         state.status = action.payload.status;
         state.message = action.payload.message
       })
@@ -98,7 +98,7 @@ export const authSlice = createSlice({
         if (action.payload.status === 'success') {
           console.log("New access token: " + action.payload.data.accessToken)
           state.accessToken = action.payload.data.accessToken;
-          state.loading = false;
+          state.isLoading = false;
         }
       })
   },

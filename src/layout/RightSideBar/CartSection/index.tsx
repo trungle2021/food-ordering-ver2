@@ -1,7 +1,13 @@
 import styles from "./styles.module.css";
-import { OrderItem } from "~/components/UI/OrderItem";
+import { CartItem } from "~/components/UI/CartItem";
 import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
-export const OrderMenuSection = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+export const CartSection = () => {
+    const userId =  useSelector((state: any) => state.auth.user._id)
+    useEffect(() => {
+
+    })
   const orderItems = [
     { id: "1", name: "A", url: "" },
     { id: "2", name: "B", url: "" },
@@ -11,7 +17,7 @@ export const OrderMenuSection = () => {
   const orderItemList = orderItems.map((item) => {
     return (
       <li key={item.id}>
-        <OrderItem item={item} />
+        <CartItem item={item} />
       </li>
     );
   });

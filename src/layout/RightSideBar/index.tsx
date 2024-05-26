@@ -2,7 +2,7 @@ import styles from "./styles.module.css";
 import { UserSection } from "./UserSection";
 import { BalanceSection } from "./BalanceSection";
 import { AddressSection } from "./AddressSection";
-import { OrderMenuSection } from "./OrderMenuSection";
+import { CartSection } from "./CartSection";
 
 interface RightSideBarProps {
   className: string;
@@ -14,7 +14,7 @@ export default function RightHeader({ className }: RightSideBarProps) {
       <UserSection />
       <BalanceSection />
       <AddressSection />
-      <OrderMenuSection />
+      <CartSection />
     </aside>
   );
 }

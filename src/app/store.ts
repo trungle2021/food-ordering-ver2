@@ -2,19 +2,21 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice";
 import searchDishesReducer from "../features/Dish/SearchDish/searchDishesSlice";
 import balanceReducer from '../features/Balance/balanceSlice';
+import cartReducer from '../features/Cart/cartSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   searchDishes: searchDishesReducer,
-  balance: balanceReducer
+  balance: balanceReducer,
+  cart: cartReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["balance", "searchDishes"]
+  whitelist: ["auth"]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

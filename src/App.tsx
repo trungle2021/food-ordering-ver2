@@ -7,8 +7,6 @@ import { Home } from "./pages/Home";
 import { ForgotPassword } from "./features/Auth/ForgotPassword";
 import { Register } from "./features/Auth/Register";
 import { PrivateRoute } from "./routes/PrivateRoute";
-import { useSelector } from "react-redux";
-import { Dashboard } from "./pages/Dashboard";
 import { PublicRoute } from "./routes/PublicRoute";
 
 function App() {

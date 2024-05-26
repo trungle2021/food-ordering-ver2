@@ -1,10 +1,10 @@
 
-import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
 import axios from "~/lib/axios";
+import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
 import { LoginPayload } from "~/interface/auth/login-payload";
 import { RegisterPayload } from "~/interface/auth/register-payload";
 import { LogoutPayload } from "~/interface/auth/logout-payload";
-import { GetNewAccessTokenPayload } from "~/interface/get-new-access-token-payload";
+import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-payload";
 
 
 const login = (credential: LoginPayload): Promise<any> => {
@@ -20,6 +20,7 @@ const logout = (payload: LogoutPayload): Promise<any> => {
   return axios.post(logoutApi, payload);
 
 }
+
 
 const getNewAccessToken = (payload: GetNewAccessTokenPayload): Promise<any> => {
   return axios.post(refreshTokenApi, payload);

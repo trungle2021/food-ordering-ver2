@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 
-export const OrderItem = ({ item }:{ item : any}) => {
+export const CartItem = ({ item }:{ item : any}) => {
     return (
         <div className={`${styles['order-item-container']}`}>
             <img src={item.url} />

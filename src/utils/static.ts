@@ -3,6 +3,13 @@ export enum TOKEN_TYPE {
   REFRESH_TOKEN = "refresh_token",
 }
 
-export enum LocalStorageKey {
+export enum CART_ACTION_TYPE {
+    ADD = "add",
+    REMOVE = "remove",
+    INCREMENT = "increment",
+    DECREMENT = "decrement"
+}
+
+export enum LOCAL_STORAGE_KEY {
   USER = "user",
 }

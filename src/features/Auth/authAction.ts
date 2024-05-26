@@ -3,7 +3,7 @@ import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-
 import { LoginPayload } from "~/interface/auth/login-payload";
 import { LogoutPayload } from "~/interface/auth/logout-payload";
 import { RegisterPayload } from "~/interface/auth/register-payload";
-import AuthService from "~/services/auth/auth.service";
+import AuthService from "~/services/auth/auth-service";
 
 export const loginUser = createAsyncThunk(
     "auth/loginUser",

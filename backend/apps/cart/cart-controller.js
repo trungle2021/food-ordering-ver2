@@ -41,7 +41,7 @@ const updateItem = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const removeItem = catchAsyncHandler(async (req, res, next) => {
-  const { userId, dishId } = req.body
+  const { userId, dishId } = req.params
   const updatedCart = await CartService.removeItem(userId, dishId)
   return res.status(200).json({
     status: 'success',
