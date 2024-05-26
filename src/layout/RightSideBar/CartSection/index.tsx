@@ -1,22 +1,25 @@
 import styles from "./styles.module.css";
-import { CartItem } from "~/components/UI/CartItem";
 import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getCart } from "~/features/Cart/cartAction";
+import { CartItem } from "~/components/UI/CartItem";
+import CartItemProps from "~/interface/cart/CartItem";
 export const CartSection = () => {
     const userId =  useSelector((state: any) => state.auth.user._id)
-    useEffect(() => {
+    const dispatch = useDispatch();
+    const [cart, setCart] = useState([])
+    useEffect(()=>{
+      dispatch<any>(getCart(userId)).
+      then((response:any) => {
+        setCart(response.payload.items)
+      })
+    },[dispatch])
 
-    })
-  const orderItems = [
-    { id: "1", name: "A", url: "" },
-    { id: "2", name: "B", url: "" },
-    { id: "3", name: "C", url: "" },
-  ];
-
-  const orderItemList = orderItems.map((item) => {
+  const items = cart.map((item: CartItemProps) => {
+    console.log(cart)
     return (
-      <li key={item.id}>
+      <li key={item._id}>
         <CartItem item={item} />
       </li>
     );
@@ -28,7 +31,7 @@ export const CartSection = () => {
         Order Menu
       </h4>
       <ul className={`${styles["orderMenu-container__list"]}`}>
-        {orderItemList}
+        {items}
       </ul>
       <hr
         style={{

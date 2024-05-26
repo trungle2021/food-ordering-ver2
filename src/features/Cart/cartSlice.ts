@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import CartState from "~/interface/cart/CartState";
-import CartActionThunk from '~/features/Cart/cartAction'
+import { addItem, getCart, removeItem, updateItem } from "./cartAction";
 
 const initialState : CartState= {
     items: [],
@@ -14,28 +14,28 @@ const cartSlice = createSlice({
    initialState,
    reducers: {},
    extraReducers: (builder) => {
-       builder.addCase(CartActionThunk.getCart.pending, (state, action) => {
+       builder.addCase(getCart.pending, (state, action) => {
               state.isLoading = true;
        });
-       builder.addCase(CartActionThunk.getCart.fulfilled, (state, action) => {
+       builder.addCase(getCart.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.totalItems;
                 state.totalPrice = action.payload.totalPrice;
        });
-       builder.addCase(CartActionThunk.getCart.rejected, (state, action) => {
+       builder.addCase(getCart.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.error.toString();
        });
-       builder.addCase(CartActionThunk.addItem.pending, (state, action) => {});
-       builder.addCase(CartActionThunk.addItem.fulfilled, (state, action) => {});
-       builder.addCase(CartActionThunk.addItem.rejected, (state, action) => {});
-       builder.addCase(CartActionThunk.updateItem.pending, (state, action) => {});
-       builder.addCase(CartActionThunk.updateItem.fulfilled, (state, action) => {});
-       builder.addCase(CartActionThunk.updateItem.rejected, (state, action) => {});
-       builder.addCase(CartActionThunk.removeItem.pending, (state, action) => {});
-       builder.addCase(CartActionThunk.removeItem.fulfilled, (state, action) => {});
-       builder.addCase(CartActionThunk.removeItem.rejected, (state, action) => {});
+       builder.addCase(addItem.pending, (state, action) => {});
+       builder.addCase(addItem.fulfilled, (state, action) => {});
+       builder.addCase(addItem.rejected, (state, action) => {});
+       builder.addCase(updateItem.pending, (state, action) => {});
+       builder.addCase(updateItem.fulfilled, (state, action) => {});
+       builder.addCase(updateItem.rejected, (state, action) => {});
+       builder.addCase(removeItem.pending, (state, action) => {});
+       builder.addCase(removeItem.fulfilled, (state, action) => {});
+       builder.addCase(removeItem.rejected, (state, action) => {});
    }, 
    name: "cart"
 })

@@ -10,7 +10,7 @@ export const CategoryList: React.FC = () => {
 
   const getCategories = async () => {
     try {
-      const itemLimit = 8;
+      const itemLimit = 6;
       const response = await CategoryService.fetchCategoryList(itemLimit);
       setCategories(response.data);
     } catch (err) {
@@ -26,7 +26,7 @@ export const CategoryList: React.FC = () => {
     (item: Category) => {
       const { _id, image, name } = item;
       return (
-        <Grid item xs={12} sm={6} md={4} lg={4} xl={1.5} key={_id}>
+        <Grid item xs={12} sm={6} md={4} lg={2} xl={2} key={_id}>
           <CategoryItem iconLink={image} name={name} />
         </Grid>
       );

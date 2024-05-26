@@ -30,7 +30,7 @@ export const Dashboard = () => {
                   discount={0}
                   created_at={""}
                   name={dish.name}
-                  price={0}
+                  price={dish.price}
                   description={""}
                   image={dish.image}
                   category={""} />

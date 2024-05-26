@@ -1,6 +1,5 @@
 .category-item img {
-  width: 56px;
-  height: 56px;
+  width: 30%;
   height: auto;
 }
 
@@ -11,12 +10,10 @@
 
 .category-item {
   display: flex;
+
   flex-flow: column wrap;
   background-color: var(--white);
-  flex: 1 1 160px;
-  height: 140px;
   border-radius: 15px;
   align-items: center;
   justify-content: center;
-  /* gap: 10px; */
 }
