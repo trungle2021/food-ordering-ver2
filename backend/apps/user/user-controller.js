@@ -1,7 +1,6 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 
 const UserService = require('./user-service')
-const OrderService = require('../order/order-service')
 
 const getUsers = catchAsyncHandler(async (req, res) => {
   const users = await UserService.getUsers()
@@ -12,8 +11,8 @@ const getUsers = catchAsyncHandler(async (req, res) => {
 })
 
 const getUser = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params
-  const user = await UserService.getUser({ _id: id })
+  const userId = req.userId
+  const user = await UserService.getUser({ _id: userId })
   if (!user) {
     return res.status(404).json({
       status: 'fail',

@@ -42,7 +42,7 @@ const login = catchAsyncHandler(async (req, res, next) => {
 })
 
 const logout = catchAsyncHandler(async (req, res, next) => {
-  const { user: userId } = req.body
+  const userId = req.userId
   if (!userId) {
     return res.status(400).json({
       status: 'fail',
@@ -57,7 +57,8 @@ const logout = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
-  const { user: userId, token } = req.body
+  const { token } = req.body
+  const userId = req.userId
 
   const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {

@@ -2,11 +2,7 @@ const express = require('express')
 const router = express.Router()
 const OrderController = require('../order/order-controller')
 
-router.route('/:id')
-  .get(OrderController.getOrder)
-  .get(OrderController.deleteOrder)
-
-router.route('/recent-orders/users/:id')
+router.route('/recent-orders')
   .get(OrderController.getRecentOrders)
 
 router.route('/confirm/:id')
@@ -17,6 +13,10 @@ router.route('/complete/:id')
 
 router.route('/cancel/:id')
   .post(OrderController.cancelOrder)
+
+router.route('/:id')
+  .get(OrderController.getOrder)
+  .get(OrderController.deleteOrder)
 
 router.route('/')
   .get(OrderController.getOrders)

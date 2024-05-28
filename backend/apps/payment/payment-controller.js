@@ -2,7 +2,7 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const PaymentService = require('./payment-service')
 const PaymentInternalAccountInfo = require('./payment-internal-account-info')
 const topUp = catchAsyncHandler(async (req, res, next) => {
-  const { id: userId } = req.params
+  const userId = req.userId
   const body = {
     user_id: userId,
     ...req.body

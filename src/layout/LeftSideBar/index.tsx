@@ -8,7 +8,7 @@ interface LeftSideBarProps {
 
 
 export default function LeftSideBar({ className }: LeftSideBarProps) {
-  const navItems: NavItems[] = [
+  const navItems: any = [
     {
       url: `${PATH.DASHBOARD}`,
       label: "Dashboard",

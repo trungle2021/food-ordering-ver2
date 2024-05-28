@@ -1,5 +1,5 @@
 export default interface BaseDishProps {
-    _id?: string;
+    _id: string;
     is_active: boolean;
     discount: number;
     created_at: string;

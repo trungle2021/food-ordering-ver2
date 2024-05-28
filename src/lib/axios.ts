@@ -57,10 +57,9 @@ const onResponseError = async (error: any): Promise<AxiosError> => {
     //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
     config._retry = true
     const state = store.getState();
-    const userId = state.auth.user._id
     const refreshToken = state.auth.refreshToken
     console.log("Refreshing access token")
-    refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({ user: userId, token: refreshToken }))
+    refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({ token: refreshToken }))
     const response = await refreshingToken
     const accessToken = response.payload.data.accessToken;
     console.log("Access Token: " + accessToken)
@@ -73,7 +72,7 @@ const onResponseError = async (error: any): Promise<AxiosError> => {
 
     if (error?.response.data?.error === 'Refresh Token Expired') {
       //dispatch to logout
-      await store.dispatch(logoutUser(userId))
+      await store.dispatch(logoutUser())
     }
 
   }

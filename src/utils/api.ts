@@ -8,12 +8,12 @@ const baseOrderApi: string = 'api/v1/orders'
 const getCategoriesApi: string = `${baseCategoryApi}`;
 const getPopularDishesApi: string = `${baseDishApi}/popular-dishes`;
 const getDishesByNameApi: string = `${baseDishApi}/search`;
-const getRecentOrdersApi: string = `${baseOrderApi}/recent-orders/users/USERID`;
+const getRecentOrdersApi: string = `${baseOrderApi}/recent-orders`;
 const loginApi: string = `${baseAuthApi}/login`;
 const registerApi: string = `${baseAuthApi}/register`;
 const logoutApi: string = `${baseAuthApi}/logout`;
 const refreshTokenApi: string = `${baseAuthApi}/refresh-token`;
-const getCartApi: string = `${baseCartApi}/user`;
+const getCartApi: string = `${baseCartApi}`;
 
 
 export {

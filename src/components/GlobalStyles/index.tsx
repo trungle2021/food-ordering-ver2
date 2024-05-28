@@ -1,4 +1,5 @@
 import "./GlobalStyles.css";
+import 'react-toastify/dist/ReactToastify.css'
 import React, { ReactNode } from "react";
 
 interface GlobalStylesProps {

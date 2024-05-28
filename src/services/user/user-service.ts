@@ -1,10 +1,9 @@
-import axios from "src/lib/axios";
+import axios from "~/lib/axios";
 
 const fetchUserList = () => {
   const userApi = "https://reqres.in/api/users";
   return axios.get(userApi);
 };
-
 
 
 export const UserService = {

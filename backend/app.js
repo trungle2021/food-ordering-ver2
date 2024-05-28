@@ -6,7 +6,7 @@ const morganMiddleware = require('./middleware/morgan')
 // const SwaggerRouter = require('./utils/swagger/swagger')
 const apiRouter = require('./routes/router')
 const cors = require('cors')
-// const jwtFilterHandler = require('./middleware/jwt-filter')
+const jwtFilterHandler = require('./middleware/jwt-filter')
 const ErrorController = require('./apps/error/error-controller')
 const AppError = require('./apps/error/app-error')
 
@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // router
 // app.use(SwaggerRouter)
-// app.use(jwtFilterHandler)
+app.use(jwtFilterHandler)
 app.use('/api/v1', apiRouter)
 
 // Handle Unhandle middleware

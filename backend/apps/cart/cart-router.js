@@ -2,14 +2,14 @@ const express = require('express')
 const router = express.Router()
 const CartController = require('../cart/cart-controller')
 
-router.route('/user/:id')
+router.route('/all')
   .get(CartController.getCartByUserId)
 
-router.route('/user/:userId/dish/:dishId')
+router.route('/dish/:dishId')
   .delete(CartController.removeItem)
 
 router.route('/')
-  .get(CartController.getCarts)
+  .get(CartController.getCartByUserId)
   .post(CartController.addItem)
   .put(CartController.updateItem)
 

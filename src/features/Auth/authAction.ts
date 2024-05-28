@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-payload";
 import { LoginPayload } from "~/interface/auth/login-payload";
-import { LogoutPayload } from "~/interface/auth/logout-payload";
 import { RegisterPayload } from "~/interface/auth/register-payload";
 import AuthService from "~/services/auth/auth-service";
 
@@ -33,9 +32,9 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (payload
     }
 });
 
-export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload: LogoutPayload, thunkAPI) => {
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload, thunkAPI) => {
     try {
-        return await AuthService.logout(payload);
+        return await AuthService.logout();
     } catch (err: any) {
         return thunkAPI.rejectWithValue(err);
     }

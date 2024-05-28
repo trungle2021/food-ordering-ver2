@@ -8,10 +8,12 @@ import { ForgotPassword } from "./features/Auth/ForgotPassword";
 import { Register } from "./features/Auth/Register";
 import { PrivateRoute } from "./routes/PrivateRoute";
 import { PublicRoute } from "./routes/PublicRoute";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <GlobalStyles>
+        <ToastContainer/>
       <Switch>
         <PublicRoute path={PATH.LOGIN} component={Login} />
         <PublicRoute path={PATH.REGISTER} component={Register}/>

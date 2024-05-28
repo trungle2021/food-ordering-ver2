@@ -25,6 +25,7 @@ export const Dashboard = () => {
             {dishes.data.map((dish: any) => {
               return (<Grid item xs={12} sm={6} md={4} lg={4} xl={3} key={dish._id}>
                 <PopularDish
+                  _id={dish._id}
                   itemSold={0}
                   is_active={false}
                   discount={0}

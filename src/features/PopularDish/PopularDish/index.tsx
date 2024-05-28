@@ -4,8 +4,14 @@ import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
 import { Card } from "@mui/material";
 import PopularDishProps from "~/interface/dish/popular-dish";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "~/features/Cart/cartAction";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 export const PopularDish = ({
+  _id,
   image,
   itemSold,
   discount,
@@ -14,6 +20,23 @@ export const PopularDish = ({
   isFavorite,
   ratingPoint,
 }: PopularDishProps) => {
+    const [disabled, setDisabled] = useState(false)
+    const dispatch = useDispatch()
+
+    const handleAddButton = (dishId: string) => {
+    const payload = {
+        dishId,
+        quantity: 1,
+    }
+    dispatch<any>(addItem(payload))
+    .then(unwrapResult)
+    .then((payload:any) => {
+        toast.success('Item has been added to the cart.')
+    })
+    .catch((err:any) => {
+        toast.error(err.message)
+    });
+    }
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>
@@ -23,8 +46,6 @@ export const PopularDish = ({
             amount={discount}
           />
           }
-
-
         </div>
         <img
           className={`${styles["dish-container__image"]}`}
@@ -49,10 +70,9 @@ export const PopularDish = ({
               />
             </div>
           </div>
-          <button className={`${styles["dish-container__addToCartBtn"]}`}>
+          <button className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => handleAddButton(_id)}>
             +
           </button>
-
         </div>
       </div>
     </Card>

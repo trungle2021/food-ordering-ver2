@@ -1,7 +1,7 @@
 
 import styles from "./styles.module.css";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useState } from "react";
@@ -9,10 +9,8 @@ import { logoutUser } from "~/features/Auth/authAction";
 
 
 
-export const Navbar = ({ items }: { items: NavItems[] }) => {
+export const Navbar = ({ items }: { items: any }) => {
   const dispatch = useDispatch();
-  const auth = useSelector((state: any) => state.auth);
-  const id = auth.user._id;
   const history = useHistory();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); // State to control the dialog's open state
 
@@ -21,10 +19,7 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
   };
 
   const handleLogoutConfirmed = async () => {
-    const payload = {
-      user: id
-    };
-    await dispatch<any>(logoutUser(payload));
+    await dispatch<any>(logoutUser());
     console.log("logged out");
     history.push('/login');
   };
@@ -35,7 +30,7 @@ export const Navbar = ({ items }: { items: NavItems[] }) => {
   return (
     <nav className={styles["navbar__container"]}>
       <ul className={styles["navbar__list"]}>
-        {items.map((item: NavItems) => (
+        {items.map((item: any) => (
           <li className={styles["navbar__item"]} key={item.url}>
             <Link
               to={item.url}

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import RecentOrder from "../RecentOrder";
-import styles from "./styles.module.css";
 import BaseDish from "~/interface/dish/base-dish";
 import OrderDetail from "~/interface/order/order-detail.response";
 import Order from "~/interface/order/order.response";
@@ -23,18 +21,11 @@ function getHighestPriceItem(orderDetailsArray: Array<OrderDetail>): BaseDish | 
 
 export const RecentOrderList: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
-  const auth = useSelector((state: any) => state.auth);
-  const user_id = auth.user?._id;
   const getRecentOrders = async () => {
     try {
-      if (user_id) {
-        const response = await OrderService.fetchRecentOrderList(
-          4,
-          user_id
-        );
+        const response = await OrderService.fetchRecentOrderList(4);
         setRecentOrders(response.data);
-      }
-    } catch (error) {
+    }catch (error) {
       console.log(error);
     }
 

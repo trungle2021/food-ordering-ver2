@@ -20,28 +20,28 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     throw new AppError('No authorization header', 401)
   }
   const token = extractToken(authHeader)
-  try{
+  try {
     const decodePayload = await JWTService.verifyToken(token, secretKey)
     const { _id } = decodePayload
     const user = await UserService.getUser({ _id })
     if (!user) {
       throw new AppError('Invalid token', 401)
     }
+    console.log('userId in token', _id)
+    req.userId = _id
     next()
-  }catch(error){
-    if (error instanceof TokenExpiredError){
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
       throw new AppError('Token expired', 401)
     }
-    if(error instanceof NotBeforeError){
+    if (error instanceof NotBeforeError) {
       throw new AppError('Token not yet valid', 401)
     }
-    if(error instanceof JsonWebTokenError){
+    if (error instanceof JsonWebTokenError) {
       throw new AppError('Jwt Malformed', 401)
     }
     next(error)
   }
-  
-  
 })
 
 const getCurrentUrl = (originalUrl) => {

@@ -2,14 +2,14 @@ const AppError = require('../error/app-error')
 const Stock = require('./stock-model')
 const DishService = require('../dish/dish-service')
 
-const checkStock = async (item, incrementQuantity) => {
+const checkStock = async (dishId, updateQuantity) => {
   // if (quantity of current item + quantity user want to add ) is greater than quantity of stock => return false
   // if (quantity of stock === 0 ) => return false
-  const stock = await Stock.findOne({ dish: item.dish })
+  const stock = await Stock.findOne({ dish: dishId })
   if (!stock) {
     throw new AppError('The stock for this dish is not initialized. Please initialize it first', 409)
   }
-  if (stock.quantity === 0 || item.quantity + incrementQuantity > stock.quantity) {
+  if (stock.quantity === 0 || updateQuantity > stock.quantity) {
     return false
   }
 
