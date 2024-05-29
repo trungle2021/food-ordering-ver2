@@ -1,29 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './styles.module.css'
 import { useDispatch } from 'react-redux';
 import { updateItem } from '~/features/Cart/cartAction';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import styles from './styles.module.css'
+import CartItemProps from '~/interface/cart/CartItem';
 
-export const CartItem = ({item}:{ item : any}) => {
+export const CartItem = ({item}:{ item : CartItemProps}) => {
     const [disabled, setDisabled] = useState(false)
     const [quantity, setQuantity] = useState(item.quantity);
     const [amount, setAmount] = useState(item.amount);
+    const dispatch = useDispatch();
     const prevQuantityRef = useRef(item.quantity)
 
     useEffect(() =>{
+        // update quantity and amount each time item quantity changes
         setQuantity(item.quantity);
         setAmount(item.amount);
         prevQuantityRef.current = quantity
-
-        console.log(item.quantity);
-        console.log(item.amount);
-        console.log(prevQuantityRef.current);
     }, [item.quantity])
-
-
-
-    const dispatch = useDispatch();
 
     const handleQuantityChange = (event:any) => {
         setQuantity(event.target.value);
@@ -34,6 +29,7 @@ export const CartItem = ({item}:{ item : any}) => {
         if(updateQuantity < 1){
             updateQuantity = 1;
             setQuantity(1);
+            setAmount(item.amount/item.quantity);
             toast.error(`Item quantity must be at least 1`)
             return
         }
@@ -43,21 +39,9 @@ export const CartItem = ({item}:{ item : any}) => {
        }
         dispatch<any>(updateItem(payload))
         .then(unwrapResult)
-        .then((payload:any) => {
-            const items = payload.items;
-            const item = items.find((item:any) => item.dish._id === payload.dishId);
-            if(item){
-                setAmount(item.amount);
-                setQuantity(event.target.value);
-            }
-        })
         .catch((err:any) => {
             toast.error(err.message)
-            if(item.quantity - prevQuantityRef.current === 1 ){
-                setQuantity(prevQuantityRef.current);
-            }else{
-                setQuantity(item.quantity);
-            }
+            setQuantity(item.quantity);
         });
     }
     const handleClickModifyQuantity = (dishId: string, action:string) => {
@@ -69,18 +53,12 @@ export const CartItem = ({item}:{ item : any}) => {
                 }
                 dispatch<any>(updateItem(incrementPayload))
                 .then(unwrapResult)
-                .then((payload:any) =>{
-                    const items = payload.items
-                    const item = items.find((item:any) => item.dish._id === dishId);
-                    if(item){
-                        setAmount(item.amount);
-                        setQuantity(quantity + 1);
-                        prevQuantityRef.current = quantity +1
-                    }
-                })
                 .catch((error:any) => {
                     toast.error(error.message);
                     setDisabled(!disabled)
+                    if(item.quantity - prevQuantityRef.current === 1 ){
+                        setQuantity(item.quantity);
+                    }
                 });
                 break;
             case 'decrement':
@@ -91,23 +69,18 @@ export const CartItem = ({item}:{ item : any}) => {
                 }
                 dispatch<any>(updateItem(decrementPayload))
                 .then(unwrapResult)
-                .then((payload:any) =>{
-                    const items = payload.items
-                    const item = items.find((item:any) => item.dish._id === dishId);
-                    if(item){
-                        setAmount(item.amount);
-                        setQuantity(quantity-1);
-                        prevQuantityRef.current = quantity - 1
-                    }
-                  
-                }).catch((error:any) => {
+                .catch((error:any) => {
                     toast.error(error.message);
+                    if(item.quantity - prevQuantityRef.current === 1 ){
+                        setQuantity(item.quantity);
+                    }
                 });
                 break;
             default:
                 return action;
        }
     }
+
     return (
         <div className={`${styles['cart-item-container']}`}>
             <img src={item.dish.image} />
