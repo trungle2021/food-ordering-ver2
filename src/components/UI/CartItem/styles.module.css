@@ -13,9 +13,9 @@
 
 .dish-container{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: left;
     justify-content: space-evenly;
-    width: 80%;
 }
 .dish-name{
     width: fit-content;
@@ -29,4 +29,9 @@
     width: 15px;
     color: black;
     border-color: black;
+}
+
+.action-button{
+    display: flex;
+    gap: 10px;
 }

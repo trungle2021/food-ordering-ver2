@@ -37,10 +37,10 @@ export const CartSection = () => {
                 }}
             />
             <div>
-                <div className={`${styles["cart-container__service-container"]}`}>
+                {/* <div className={`${styles["cart-container__service-container"]}`}>
                     <span>Service</span>
                     <span>+$1.00</span>
-                </div>
+                </div> */}
                 <div className={`${styles["cart-container__total-container"]}`}>
                     <span
                         className={`${styles["cart-container__total-container__title"]}`}

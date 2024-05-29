@@ -4,11 +4,7 @@ import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
 import { Card } from "@mui/material";
 import PopularDishProps from "~/interface/dish/popular-dish";
-import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "~/features/Cart/cartAction";
-import { unwrapResult } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
-import { useState } from "react";
+import { useAddToCart } from "~/hooks/useAddToCart";
 
 export const PopularDish = ({
   _id,
@@ -20,23 +16,8 @@ export const PopularDish = ({
   isFavorite,
   ratingPoint,
 }: PopularDishProps) => {
-    const [disabled, setDisabled] = useState(false)
-    const dispatch = useDispatch()
-
-    const handleAddButton = (dishId: string) => {
-    const payload = {
-        dishId,
-        quantity: 1,
-    }
-    dispatch<any>(addItem(payload))
-    .then(unwrapResult)
-    .then((payload:any) => {
-        toast.success('Item has been added to the cart.')
-    })
-    .catch((err:any) => {
-        toast.error(err.message)
-    });
-    }
+    const handleAddButton = useAddToCart();
+   
   return (
     <Card>
       <div className={`${styles["dish-container"]}`}>
