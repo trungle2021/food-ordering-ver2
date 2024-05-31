@@ -7,7 +7,7 @@ import { Bills } from "~/pages/Bill";
 import { Settings } from "~/pages/Setting";
 import { Switch } from 'react-router-dom';
 import { PrivateRoute } from "./PrivateRoute";
-import { Checkout } from "~/features/Order/checkout";
+import { Checkout } from "~/features/Order/Checkout";
 
 
 function Routes() {

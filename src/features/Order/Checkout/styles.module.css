@@ -1,0 +1,6 @@
+.checkout-container{
+    width: 100%;
+    border-radius: 15px;
+    padding: 30px;
+    background-color: var(--white);
+}

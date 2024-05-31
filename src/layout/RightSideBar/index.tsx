@@ -13,8 +13,8 @@ export default function RightHeader({ className }: RightSideBarProps) {
     <aside className={`${className} ${styles["sidebar--right"]}`}>
       <UserSection />
       <BalanceSection />
-      {/* <AddressSection />
-      <CartSection /> */}
+      <AddressSection />
+      <CartSection />
     </aside>
   );
 }

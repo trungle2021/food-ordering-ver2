@@ -14,12 +14,11 @@ export const UserSection = () => {
   return (
     <div className={styles["user-container"]}>
       <div className={styles["user-container__function"]}>
-        <OrderDiscussion size={25} />
-        <Notification size={25} />
-        <SettingBlack size={25} />
+        <OrderDiscussion size={45} />
+        <Notification size={45} />
+        <SettingBlack size={45} />
       </div>
-      <span>Hello {name} </span>
-      <Avatar className={styles["user-container__avatar"]} size={25} />
+      <Avatar className={styles["user-container__avatar"]} size={45} />
     </div>
   );
 };
