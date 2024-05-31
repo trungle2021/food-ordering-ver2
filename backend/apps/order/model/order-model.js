@@ -9,16 +9,22 @@ const orderSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'User'
   },
+  order_details: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'OrderDetail'
+  }],
+  order_total: {
+    type: Number,
+    default: 0,
+    required: [true, 'Order Total is required'],
+    min: 0
+  },
   order_status: {
     type: String,
     enum: Object.values(orderStatus),
     require: [true, 'Order Status is required'],
     default: orderStatus.PENDING
   },
-  order_details: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'OrderDetail'
-  }],
   payment_status: {
     type: String,
     enum: Object.values(paymentStatus),
@@ -42,18 +48,13 @@ const orderSchema = new mongoose.Schema({
     type: String,
     require: [true, 'Shipping Address is required']
   },
-  order_total: {
-    type: Number,
-    default: 0,
-    required: [true, 'Order Total is required'],
-    min: 0
-  },
   order_date: {
     type: Date,
     required: [true, 'Order Date is required']
   },
   cancel_reason: {
-    type: String
+    type: String,
+    default: null
   },
   time_completed: {
     type: Date,
@@ -64,7 +65,8 @@ const orderSchema = new mongoose.Schema({
     default: Date.now()
   },
   updated_at: {
-    type: Date
+    type: Date,
+    default: null
   }
 })
 

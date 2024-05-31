@@ -1,3 +1,6 @@
+.cart-container{
+    position: relative;
+}
 .cart-container__action {
     display: flex;
     flex-direction: column;

@@ -20,13 +20,6 @@ const orderdetailSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Dish quantity is required'],
     min: 0
-  },
-  created_at: {
-    type: Date,
-    default: Date.now()
-  },
-  updated_at: {
-    type: Date
   }
 })
 

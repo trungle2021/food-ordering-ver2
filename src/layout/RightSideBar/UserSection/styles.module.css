@@ -3,6 +3,7 @@
     justify-content: space-between;
     padding: 0 10px;
     align-items: center;
+    position: relative;
 }
 
 .user-container__function{

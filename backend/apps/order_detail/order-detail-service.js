@@ -14,8 +14,8 @@ const getOrderDetail = async (id) => {
   return orderdetail
 }
 
-const createOrderDetails = async (orderId, orderDetails, options) => {
-  const orderDetailModified = orderDetails.map(item => {
+const createOrderDetails = async (orderId, orderItems, options) => {
+  const orderDetailModified = orderItems.map(item => {
     return {
       order: orderId,
       dish: item.dish_id,

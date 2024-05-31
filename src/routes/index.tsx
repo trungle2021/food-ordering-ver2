@@ -7,6 +7,7 @@ import { Bills } from "~/pages/Bill";
 import { Settings } from "~/pages/Setting";
 import { Switch } from 'react-router-dom';
 import { PrivateRoute } from "./PrivateRoute";
+import { Checkout } from "~/features/Order/checkout";
 
 
 function Routes() {
@@ -18,6 +19,7 @@ function Routes() {
       <PrivateRoute path={PATH.ORDER_HISTORY} component={OrderHistory}/>
       <PrivateRoute path={PATH.BILLS} component={Bills} />
       <PrivateRoute path={PATH.SETTINGS} component={Settings}/>
+      <PrivateRoute path={PATH.CHECKOUT} component={Checkout}/>
     </Switch>
   );
 }

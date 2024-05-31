@@ -9,6 +9,7 @@ import { Register } from "./features/Auth/Register";
 import { PrivateRoute } from "./routes/PrivateRoute";
 import { PublicRoute } from "./routes/PublicRoute";
 import { ToastContainer } from "react-toastify";
+import { Checkout } from "./features/Order/checkout";
 
 function App() {
   return (

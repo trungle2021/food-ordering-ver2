@@ -41,7 +41,6 @@ const createOrder = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
   const {
     order_date: orderDate,
-    order_total: orderTotal,
     shipping_address: shippingAddress,
     order_items: orderItems
   } = payload
@@ -49,7 +48,6 @@ const createOrder = catchAsyncHandler(async (req, res, next) => {
   const order = {
     user: userId,
     order_date: orderDate,
-    order_total: orderTotal,
     shipping_address: shippingAddress
   }
 
@@ -120,7 +118,9 @@ const completeOrder = catchAsyncHandler(async (req, res, next) => {
     data: order
   })
 })
+
 const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
+
 const deleteAll = catchAsyncHandler(async (req, res, next) => {
   await OrderService.deleteAll()
   return res.status(200).json({

@@ -5,12 +5,21 @@ import { useEffect, useState } from "react";
 import { getCart } from "~/features/Cart/cartAction";
 import { CartItem } from "~/components/UI/CartItem";
 import CartItemProps from "~/interface/cart/CartItem";
+import { useHistory } from 'react-router-dom';
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
+    const history = useHistory() 
     useEffect(() => {
         dispatch<any>(getCart())
     }, [dispatch])
+
+    const handleCheckoutAction = () => {
+        console.log(cart.items)
+        // call api checkout items in cart here
+        history.push('/checkout')
+
+    }
 
 
 
@@ -70,6 +79,7 @@ export const CartSection = () => {
                 </button>
                 <button
                     className={styles["cart-container-action__button-checkout"]}
+                    onClick={handleCheckoutAction}
                 >
                     Checkout
                 </button>

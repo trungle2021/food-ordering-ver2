@@ -1,6 +1,5 @@
 const AppError = require('../error/app-error')
 const Order = require('./model/order-model')
-const UserService = require('../user/user-service')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
 const { processPayment } = require('../payment/payment-service')
@@ -31,20 +30,13 @@ const createOrder = async (order, orderItems) => {
   const session = await connection.startSession()
   try {
     session.startTransaction()
-    const userId = order.user
-    const user = await UserService.getUser({ _id: userId })
-    if (!user) {
-      throw new AppError(`Cannot found User with ID: ${userId}`, 404)
-    }
-
     const orderTotal = orderItems.reduce((total, item) => {
       return total + (item.price * item.quantity)
     }, 0)
-
-    const clonedObj = { ...order, order_total: orderTotal }
-
+    order.order_total = orderTotal
     const orderCreated = await Order.create([order], { session })
-    await OrderDetailService.createOrderDetails(orderCreated[0]._id, orderItems, { session })
+    const orderId = orderCreated[0]._id
+    await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
     await session.commitTransaction()
     return orderCreated
   } catch (error) {
@@ -53,15 +45,6 @@ const createOrder = async (order, orderItems) => {
   } finally {
     await session.endSession()
   }
-}
-
-const deleteOrder = async (filter) => {
-  await Order.deleteOne(filter)
-}
-
-const deleteAll = async () => {
-  await Order.deleteMany({})
-  await OrderDetailService.deleteAll()
 }
 
 const confirmOrder = async (orderConfirmInfo) => {
@@ -139,6 +122,15 @@ const getRecentOrders = async (userId, queryString) => {
 }
 
 const cancelOrder = async (orderCancel) => {
+}
+
+const deleteOrder = async (filter) => {
+  await Order.deleteOne(filter)
+}
+
+const deleteAll = async () => {
+  await Order.deleteMany({})
+  await OrderDetailService.deleteAll()
 }
 
 module.exports = {

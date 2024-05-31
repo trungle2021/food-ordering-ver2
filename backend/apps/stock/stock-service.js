@@ -23,6 +23,11 @@ const createStock = async (dishId, quantity) => {
     throw new AppError('Dish does not exist', 404)
   }
 
+  const existingStock = await Stock.countDocuments({ dish: dishId }) > 0
+  if (existingStock) {
+    throw new AppError('The stock for this dish is already existed', 409)
+  }
+
   // Create a new stock entry
   const stock = new Stock({ dish: dishId, quantity })
 

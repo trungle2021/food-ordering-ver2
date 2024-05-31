@@ -5,7 +5,7 @@ import { updateItem } from "~/features/Cart/cartAction";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-export const useModifyQuantityCart = (item: CartItemProps) => {
+export const useCartItem = (item: CartItemProps) => {
     const [disabled, setDisabled] = useState(false)
     const [quantity, setQuantity] = useState(item.quantity);
     const [amount, setAmount] = useState(item.amount);
@@ -13,9 +13,8 @@ export const useModifyQuantityCart = (item: CartItemProps) => {
     const prevQuantityRef = useRef(item.quantity)
 
     useEffect(() =>{
-        // update quantity and amount each time item quantity changes
-        setQuantity(item.quantity);
-        setAmount(item.amount);
+        setQuantity(item.quantity)
+        setAmount(item.amount)
         prevQuantityRef.current = quantity
     }, [item.quantity])
 
@@ -80,4 +79,12 @@ export const useModifyQuantityCart = (item: CartItemProps) => {
        }
     }
 
+    return {
+        handleQuantityChange,
+        submitQuantityChange,
+        handleClickModifyQuantity,
+        quantity,
+        amount,
+        disabled
+    }
 }
