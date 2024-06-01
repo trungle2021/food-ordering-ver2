@@ -1,11 +1,10 @@
 .sidebar--left {
   position: relative;
-  left: 0;
+  /* width: 120px; */
+  width: 350px;
   background-color: #ffffff;
-  width: 120px;
   overflow: hidden;
   transition: width 0.2s linear;
-  box-shadow: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar__logo {
@@ -16,7 +15,7 @@
   transition: all 0.5s ease;
 }
 
-.sidebar--left:hover {
+/* .sidebar--left:hover {
   width: 350px;
   transition: all 0.5s ease;
-}
+} */

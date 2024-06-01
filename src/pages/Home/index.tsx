@@ -16,8 +16,8 @@ export const Home = () => {
     <div className="wrapper-container">
       <LeftSideBar className="sidebar" />
       <MainContent />
-      {/* <RightSideBar className="sidebar"/> */}
-      {!match && <RightSideBar className="sidebar" />}
+      <RightSideBar className="sidebar"/>
+      {/* {!match && <RightSideBar className="sidebar" />} */}
     </div>
   );
 };

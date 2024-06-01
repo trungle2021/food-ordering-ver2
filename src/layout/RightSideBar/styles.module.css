@@ -1,11 +1,11 @@
 .sidebar--right {
-    right: 0;
-    padding: 25px 15px 10px;
-    position: relative;
-    overflow-y: auto;
-    background-color: #FFFFFF;
-    width: 400px;
     display: flex;
     flex-direction: column;
+    position: relative;
+    width: 400px;
+    overflow-y: auto;
+    right: 0;
+    padding: 25px 15px 10px;
     gap: 20px;
+    background-color: #FFFFFF;
 }

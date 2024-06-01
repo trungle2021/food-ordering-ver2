@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
-import { CouponButtonIcon, ArrowRight } from "~/components/UI/Icon";
+import { CouponButtonIcon, ArrowRightIcon } from "~/components/UI/Icon";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getCart } from "~/features/Cart/cartAction";
 import { CartItem } from "~/components/UI/CartItem";
 import CartItemProps from "~/interface/cart/CartItem";
@@ -18,7 +18,6 @@ export const CartSection = () => {
         console.log(cart.items)
         // call api checkout items in cart here
         history.push('/checkout')
-
     }
 
 
@@ -75,7 +74,7 @@ export const CartSection = () => {
                     <span className={styles["cart-container__button-coupon-text"]}>
                         Have a coupon code?
                     </span>
-                    <ArrowRight size={10} />
+                    <ArrowRightIcon size={10} />
                 </button>
                 <button
                     className={styles["cart-container-action__button-checkout"]}

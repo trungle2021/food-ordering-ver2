@@ -9,7 +9,7 @@ export enum PATH {
   FOOD_ORDER = "/food-order",
   FAVORITE = "/favorite",
   ORDER_HISTORY = "/order-history",
-  BILLS = "/bills",
-  SETTINGS = "/settings",
+  BILL = "/bill",
+  SETTING = "/setting",
   CHECKOUT = '/checkout'
 }

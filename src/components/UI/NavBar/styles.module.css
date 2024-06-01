@@ -1,5 +1,9 @@
 .navbar__list{
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }
   .navbar__link {
     position: relative;
@@ -11,26 +15,37 @@
     align-items: center;
     list-style-type: none;
     text-decoration: none;
+    gap: 10px;
   }
 
   .navbar__item{
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+  }
+
+  .navbar__item:hover {
+    background-color: var(--primary);
+  }
+
+
+  .navbar__item:hover object > svg{
+    fill: var(--white);
+  }
+
+  .navbar__item:hover span{
+    color: var(--white);
   }
   
-  .navbar__link img {
-    position: relative;
+  .navbar__link svg {
     width: 35px;
     height: 35px;
-    top: 14px;
-    text-align: center;
     margin: 0 20px;
   }
   
   .navbar__link span {
     position: relative;
-    top: 12px;
-    margin-left: 10px;
-    display: table-cell;
-    text-align: left;
     vertical-align: middle
   }

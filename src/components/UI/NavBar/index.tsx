@@ -1,11 +1,13 @@
 
-import styles from "./styles.module.css";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { useState } from "react";
 import { logoutUser } from "~/features/Auth/authAction";
+import styles from "./styles.module.css";
+import { LogoutIcon } from "../Icon";
+
 
 
 
@@ -20,7 +22,6 @@ export const Navbar = ({ items }: { items: any }) => {
 
   const handleLogoutConfirmed = async () => {
     await dispatch<any>(logoutUser());
-    console.log("logged out");
     history.push('/login');
   };
 
@@ -36,7 +37,7 @@ export const Navbar = ({ items }: { items: any }) => {
               to={item.url}
               className={styles["navbar__link"]}
             >
-              <img src={item.src} />
+                {item.icon}
               <span>{item.label}</span>
             </Link>
           </li>
@@ -46,12 +47,11 @@ export const Navbar = ({ items }: { items: any }) => {
             onClick={handleLogout}
             className={styles["navbar__link"]}
           >
-            <img src="/icon/Logout.svg" />
+            <LogoutIcon/>
             <span>Logout</span>
           </a>
         </li>
       </ul>
-
 
       {/* Logout Dialog */}
       <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
@@ -68,6 +68,7 @@ export const Navbar = ({ items }: { items: any }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
     </nav>
   );
 };
