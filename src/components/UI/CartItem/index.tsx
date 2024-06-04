@@ -1,13 +1,9 @@
 import styles from './styles.module.css'
 import CartItemProps from '~/interface/cart/CartItem';
 import { useCartItem } from '~/hooks/useCartItem';
-import { unwrapResult } from '@reduxjs/toolkit';
-import { updateItem } from '~/features/Cart/cartAction';
-import { useDispatch } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 
-export const CartItem = ({item}: {item : CartItemProps}) => {
+
+export const CartItem = ({item, imageSize}: {item : CartItemProps, imageSize: string}) => {
     const {
         quantity,
         amount,
@@ -17,9 +13,11 @@ export const CartItem = ({item}: {item : CartItemProps}) => {
         handleClickModifyQuantity
     } = useCartItem(item)
 
+    const imageClass = imageSize === 'small' ? 'image--small' : 'image--normal';
+
     return (
         <div className={`${styles['cart-item-container']}`}>
-            <img src={item.dish.image} />
+            <img className={`${styles['image']} ${styles[imageClass]}`} src={item.dish.image} />
             <div className={`${styles['dish-container']}`}>
                 <span className={`${styles['dish-name']}`}>{item.dish.name}</span>
                 <div>

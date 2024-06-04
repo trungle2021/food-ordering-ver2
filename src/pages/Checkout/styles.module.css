@@ -1,0 +1,140 @@
+.checkout-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 15px;
+    padding: 30px;
+    background-color: var(--white);
+}
+
+.checkout-container__wrapper{
+    border: 1px solid #dbdbdb;
+    padding:30px;
+    border-radius: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+
+/* Address */
+
+.checkout-container__address {
+    flex: 1 1 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    font-size: 1.5rem;
+}
+
+.address-title {
+    color: #9e8fa6;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.address-content {
+    display: flex;
+    align-items: center;
+}
+
+.address-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    color: #f4c300;
+}
+
+.address-heading {
+    display: flex;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #333;
+}
+
+.address-description {
+    color: #9e8fa6;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.address-description textarea{
+    background-color: rgb(240, 240, 240);
+    border-radius: 10px;
+    width: 100%;
+    height: 100px;
+}
+
+/* Order Item */
+
+.checkout-container__order-details{
+    flex: 2 1 auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.cart-container__list{
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 500px;
+    min-height: 200px;
+    gap: 30px;
+    padding: 30px;
+}
+.cart-item-container{
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: space-between;
+}
+.cart-item-container .image{
+    width: 8rem;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin: 30px;
+    overflow-y: auto;
+}
+.dish-container{
+    width: 70%;
+}
+.dish-name{
+    font-size: 1.8rem;
+}
+
+.xQuantity{
+    font-size: 1.8rem;
+
+}
+.dish-quantity{
+    font-size: 1.8rem;
+}
+.dish-price{
+    font-size: 1.8rem;
+}
+
+/* Total */
+.checkout-container__total{
+    display: flex;
+    justify-content: space-between;
+    margin: 30px;
+}
+.checkout-container__total-title{
+    font-size: 2rem;
+
+}
+
+.checkout-container__total-total-amount{
+    font-size: 2.3rem;
+}
+
+.checkout-container-button-payment{
+    padding: 15px;
+    width: 10%;
+    background-color: var(--primary);
+    color: var(--white);
+    align-self: flex-end;
+    margin: 30px;
+}

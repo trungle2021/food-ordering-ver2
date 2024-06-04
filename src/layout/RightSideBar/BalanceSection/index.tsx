@@ -2,8 +2,9 @@ import styles from "./styles.module.css";
 import { TopUp, Transfer } from "~/components/UI/Icon";
 export const BalanceSection = () => {
   return (
+    <>
+    <h4 className="title-section">Your Balance</h4>
     <div className={`${styles["balance-container"]} `}>
-      <h4 className="title-section">Your Balance</h4>
       <img
         className={styles["balance-container__background-image"]}
         src="/CardBalanceBackground.png"
@@ -17,19 +18,20 @@ export const BalanceSection = () => {
         </div>
         <div className={styles["balance-container__function-item"]}>
           <TopUp
-            className={styles["balance-container__function-button"]}
-            size={50}
+            fill="#fff"
+            className={`${styles["balance-container__function-button"]}`}
           />
           <span>Top Up</span>
         </div>
         <div className={styles["balance-container__function-item"]}>
           <Transfer
-            className={styles["balance-container__function-button"]}
-            size={50}
+            fill="#fff"
+            className={`${styles["balance-container__function-button"]}`}
           />
           <span>Transfer</span>
         </div>
       </div>
     </div>
+    </>
   );
 };

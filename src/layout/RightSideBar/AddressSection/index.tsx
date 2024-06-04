@@ -1,15 +1,14 @@
 import styles from "./styles.module.css";
-import { Location } from "~/components/UI/Icon";
+import { LocationIcon } from "~/components/UI/Icon";
 
 export const AddressSection = () => {
   return (
     <div className={`${styles["address-container"]}`}>
-      <h4 className={`${styles["address-container__title"]}`}>Your Address</h4>
+      <h4 className='title-section'>Your Address</h4>
       <div className={styles["address-container__info"]}>
         <div className={styles["address-info__location"]}>
-          <Location
+          <LocationIcon
             className={`${styles["address-info__location-icon"]}`}
-            size={30}
           />
           <span className={`${styles["address-info__location-text"]}`}>
             Elm Street, 23

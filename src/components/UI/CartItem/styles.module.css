@@ -5,10 +5,18 @@
     gap: 5px;
 }
 
-.cart-item-container img{
-    width: 12%;
+.cart-item-container .image{
+    width: 8rem;
     height: auto;
     border-radius: 10px;
+}
+
+.cart-item-container .image--small{
+    width: 4rem;
+}
+
+.cart-item-container .image--normal{
+    width: 8rem;
 }
 
 .dish-container{

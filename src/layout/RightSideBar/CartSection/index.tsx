@@ -6,6 +6,7 @@ import { getCart } from "~/features/Cart/cartAction";
 import { CartItem } from "~/components/UI/CartItem";
 import CartItemProps from "~/interface/cart/CartItem";
 import { useHistory } from 'react-router-dom';
+import { toast } from "react-toastify";
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
@@ -16,6 +17,10 @@ export const CartSection = () => {
 
     const handleCheckoutAction = () => {
         console.log(cart.items)
+        if(cart.items.length === 0){
+            toast.error("Cart is empty")
+            return;
+        }
         // call api checkout items in cart here
         history.push('/checkout')
     }
@@ -24,14 +29,14 @@ export const CartSection = () => {
 
     return (
         <div className={`${styles["cart-container"]}`}>
-            <h4 className={`${styles["cart-container__title"]} title-section`}>
+            <h4 className='title-section'>
                 Your Cart
             </h4>
             <ul className={`${styles["cart-container__list"]}`}>
                 { cart && cart.items.length > 0 ? cart.items.map((item: CartItemProps) => {
                     return (
                         <li key={item._id}>
-                            <CartItem item={item} />
+                            <CartItem item={item} imageSize='small' />
                         </li>
                     );
                 }): "Cart is empty"}
@@ -45,10 +50,7 @@ export const CartSection = () => {
                 }}
             />
             <div>
-                {/* <div className={`${styles["cart-container__service-container"]}`}>
-                    <span>Service</span>
-                    <span>+$1.00</span>
-                </div> */}
+
                 <div className={`${styles["cart-container__total-container"]}`}>
                     <span
                         className={`${styles["cart-container__total-container__title"]}`}
@@ -68,13 +70,12 @@ export const CartSection = () => {
                     className={styles["cart-container__action__button-coupon"]}
                 >
                     <CouponButtonIcon
-                        size={30}
                         className={styles["cart-container__button-coupon-icon"]}
                     />
                     <span className={styles["cart-container__button-coupon-text"]}>
                         Have a coupon code?
                     </span>
-                    <ArrowRightIcon size={10} />
+                    <ArrowRightIcon />
                 </button>
                 <button
                     className={styles["cart-container-action__button-checkout"]}

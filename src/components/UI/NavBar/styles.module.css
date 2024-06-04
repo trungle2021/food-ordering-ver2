@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px;
+  padding-top: 20px;
 }
   .navbar__link {
     position: relative;
@@ -20,9 +20,6 @@
 
   .navbar__item{
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border-radius: 8px;
   }
 
@@ -31,7 +28,7 @@
   }
 
 
-  .navbar__item:hover object > svg{
+  .navbar__item:hover svg path{
     fill: var(--white);
   }
 

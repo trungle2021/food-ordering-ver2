@@ -1,10 +1,9 @@
 .sidebar--left {
   position: relative;
-  /* width: 120px; */
-  width: 350px;
+  flex: 0 0 9.5rem;
   background-color: #ffffff;
   overflow: hidden;
-  transition: width 0.2s linear;
+  transition: flex-basis 0.3s ease-in-out;
 }
 
 .sidebar__logo {
@@ -15,7 +14,7 @@
   transition: all 0.5s ease;
 }
 
-/* .sidebar--left:hover {
-  width: 350px;
-  transition: all 0.5s ease;
-} */
+.sidebar--left:hover {
+    flex-basis: 25rem;
+    /* transition: all 0.5s ease; */
+}
