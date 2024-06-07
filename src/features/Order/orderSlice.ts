@@ -20,14 +20,14 @@ const orderSlice = createSlice({
     reducers:{},
     name: 'order',
     extraReducers: (builder) => {
-        builder.addCase(getOrders.pending, (state, action) => {
+        builder.addCase(getOrderHistory.pending, (state, action) => {
             state.isLoading = true;
         });
-        builder.addCase(getOrders.fulfilled, (state, action) => {
+        builder.addCase(getOrderHistory.fulfilled, (state, action) => {
             state.isLoading = false;
             state.orders = action.payload;
         });
-        builder.addCase(getOrders.rejected, (state, action) => {
+        builder.addCase(getOrderHistory.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.error.message || "Something went wrong";
         });

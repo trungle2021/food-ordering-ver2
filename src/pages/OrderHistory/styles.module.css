@@ -1,4 +1,37 @@
-.searchbar-container{
-    width: auto;
-    height: 30px;
+.order-history-container{
+
+}
+.order-container{
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+}
+
+.order-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 1 auto;
+    padding: 12px 24px;
+}
+
+.order-item-info{
+    display: flex;
+}
+.order-item-image{
+    background: #e1e1e1;
+    border: 1px solid #e1e1e1;
+    flex-shrink: 0;
+    height: 80px;
+    width: 80px;
+}
+.order-item-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.item-actions{
+    align-self: flex-end;
 }

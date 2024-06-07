@@ -36,6 +36,16 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const getOrderHistory = catchAsyncHandler(async (req, res, next) => {
+  const userId = req.userId
+  const queryString = { ...req.query }
+  const orderHistory = await OrderService.getOrderHistory(userId, queryString)
+  return res.status(200).json({
+    status: 'success',
+    data: orderHistory
+  })
+})
+
 const createOrder = catchAsyncHandler(async (req, res, next) => {
   const payload = req.body
   const userId = req.userId
@@ -133,6 +143,7 @@ module.exports = {
   getOrders,
   getRecentOrders,
   getOrder,
+  getOrderHistory,
   createOrder,
   cancelOrder,
   confirmOrder,

@@ -9,8 +9,8 @@ import { debounce } from "~/utils/debounce";
 type SearchProps = {
   placeholder?: string;
   onSubmitSearchForm: (formData: SearchFormValues) => void;
-  onOpenSuggestionBox: () => void;
-  dataSuggestion: Array<any>;
+  onOpenSuggestionBox?: () => void;
+  dataSuggestion?: Array<any>;
 };
 
 type SearchFormValues = {
@@ -50,8 +50,8 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"
-        options={dataSuggestion}
-        onOpen={onOpenSuggestionBox}
+        options={dataSuggestion === undefined ? [] : dataSuggestion}
+        onOpen={onOpenSuggestionBox === undefined ? () => { } : onOpenSuggestionBox}
         onInputChange={debounce(handleInputChange, 500)}
         renderInput={(params) => (
           <InputField

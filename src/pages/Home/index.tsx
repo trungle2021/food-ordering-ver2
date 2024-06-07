@@ -8,7 +8,7 @@ import { PATH } from "~/routes/routes.constant";
 
 export const Home = () => {
     const match = useRouteMatch({
-        path: PATH.CHECKOUT,
+        path: PATH.DASHBOARD,
         exact: true
     })
 
@@ -17,7 +17,7 @@ export const Home = () => {
       <LeftSideBar className="sidebar" />
       <MainContent />
       {/* <RightSideBar className="sidebar"/> */}
-      {!match && <RightSideBar className="sidebar" />}
+      {match && <RightSideBar className="sidebar" />}
     </div>
   );
 };

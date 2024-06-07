@@ -13,7 +13,6 @@ export const Checkout = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const cart = useSelector((state: any) => state.cart)
-    const user = useSelector((state: any) => state.auth)
 
     useEffect(() => {
         dispatch<any>(getCart()).then((result: any) => {

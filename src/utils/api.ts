@@ -9,6 +9,8 @@ const getCategoriesApi: string = `${baseCategoryApi}`;
 const getPopularDishesApi: string = `${baseDishApi}/popular-dishes`;
 const getDishesByNameApi: string = `${baseDishApi}/search`;
 const getRecentOrdersApi: string = `${baseOrderApi}/recent-orders`;
+const getOrderHistoryApi: string = `${baseOrderApi}/history`;
+
 const loginApi: string = `${baseAuthApi}/login`;
 const registerApi: string = `${baseAuthApi}/register`;
 const logoutApi: string = `${baseAuthApi}/logout`;
@@ -28,6 +30,7 @@ export {
   getPopularDishesApi,
   getDishesByNameApi,
   getRecentOrdersApi,
+  getOrderHistoryApi,
   getCartApi,
 
   loginApi,

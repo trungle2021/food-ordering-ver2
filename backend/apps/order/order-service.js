@@ -26,6 +26,17 @@ const getOrder = async (filter) => {
   return order
 }
 
+const getOrderHistory = async (userId, queryString) => {
+  const userIdConverted = await convertToObjectId(userId)
+  const features = new ApiFeatures(Order.find({ user: userIdConverted }), queryString)
+    .filter()
+    .limitFields()
+    .sort()
+    .paginate()
+
+  return await features.query
+}
+
 const createOrder = async (order, orderItems) => {
   const session = await connection.startSession()
   try {
@@ -136,6 +147,7 @@ const deleteAll = async () => {
 module.exports = {
   getOrders,
   getOrder,
+  getOrderHistory,
   getRecentOrders,
   createOrder,
   confirmOrder,
