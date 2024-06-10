@@ -1,5 +1,5 @@
 import { SetStateAction, useEffect, useState } from "react";
-import { SearchBar } from "~/components/UI/SearchBar";
+import { SearchBar } from "~/components/SearchBar";
 import styles from "./styles.module.css";
 import DishService from "~/services/dish/dish-service";
 import { useDispatch } from "react-redux";

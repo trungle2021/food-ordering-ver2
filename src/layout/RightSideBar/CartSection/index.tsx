@@ -3,7 +3,7 @@ import { CouponButtonIcon, ArrowRightIcon } from "~/components/UI/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCart } from "~/features/Cart/cartAction";
-import { CartItem } from "~/components/UI/CartItem";
+import { CartItem } from "~/components/CartItem";
 import CartItemProps from "~/interface/cart/CartItem";
 import { useHistory } from 'react-router-dom';
 import { toast } from "react-toastify";

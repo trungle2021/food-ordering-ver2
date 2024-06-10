@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import  ForgotPasswordFormValidator  from "./forgot-password-validator";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
-import { InputField } from '~/components/Form-Controls/InputField';
+import { InputField } from '~/components/FormControls/InputField';
 
 type ForgotPasswordFormValues = {
   email: string;

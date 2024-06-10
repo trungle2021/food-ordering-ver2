@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import RegisterFormValidator from './register-form-validator'
-import { InputField } from "~/components/Form-Controls/InputField";
+import { InputField } from "~/components/FormControls/InputField";
 
 type RegisterFormValues = {
   email: string;

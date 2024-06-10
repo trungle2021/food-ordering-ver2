@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { logoutUser } from "~/features/Auth/authAction";
 import styles from "./styles.module.css";
-import { LogoutIcon } from "../Icon";
+import { LogoutIcon } from "../UI/Icon";
 
 
 
@@ -54,7 +54,7 @@ export const Navbar = ({ items }: { items: any }) => {
       </ul>
 
       {/* Logout Dialog */}
-      <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
+      {/* <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
           <DialogContentText style={{ 'fontSize': '30px' }}>
@@ -67,7 +67,7 @@ export const Navbar = ({ items }: { items: any }) => {
             Logout
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
     </nav>
   );

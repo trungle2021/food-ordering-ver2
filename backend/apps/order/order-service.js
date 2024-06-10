@@ -34,7 +34,13 @@ const getOrderHistory = async (userId, queryString) => {
     .sort()
     .paginate()
 
-  return await features.query
+  return await features.query.populate({
+    path: 'order_details',
+    populate: {
+      path: 'dish',
+      select: 'name image'
+    }
+  })
 }
 
 const createOrder = async (order, orderItems) => {

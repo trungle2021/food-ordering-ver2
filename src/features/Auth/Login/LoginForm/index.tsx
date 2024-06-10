@@ -4,8 +4,8 @@ import React from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import loginSchemaValidator from "./login-validator";
 import { Button, Stack } from "@mui/material";
-import { InputField } from "~/components/Form-Controls/InputField";
-import { CheckBoxField } from "~/components/Form-Controls/CheckBoxField";
+import { InputField } from "~/components/FormControls/InputField";
+import { CheckBoxField } from "~/components/FormControls/CheckBoxField";
 import styles from "./styles.module.css";
 import { useSelector } from "react-redux";
 

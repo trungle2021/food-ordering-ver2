@@ -1,7 +1,7 @@
 import { PATH } from "~/routes/routes.constant";
 import styles from "./styles.module.css";
 import { Logo } from "~/components/UI/Logo";
-import { Navbar } from "~/components/UI/NavBar";
+import { Navbar } from "~/components/NavBar";
 import { BillIcon, DashBoardIcon, FavoriteIcon, FoodOrderIcon, OrderHistoryIcon, SettingIcon } from "~/components/UI/Icon";
 interface LeftSideBarProps {
   className?: string;
