@@ -1,4 +1,4 @@
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const Coupon = require('./coupon-model')
 
 const getCoupons = async () => {

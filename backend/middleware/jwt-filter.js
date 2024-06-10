@@ -1,6 +1,6 @@
 const whitelist = require('../utils/whitelist/whitelist-url')
 const UserService = require('../apps/user/user-service')
-const AppError = require('../apps/error/app-error')
+const AppError = require('../utils/error/app-error')
 const secretKey = process.env.JWT_SECRET_KEY
 const catchAsyncHandler = require('../utils/catch-async/catch-async-handler')
 const JWTService = require('../utils/jwt/jwt-service')

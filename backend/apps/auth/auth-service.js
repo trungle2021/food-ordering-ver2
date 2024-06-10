@@ -4,7 +4,7 @@ const refreshTokenExpired = process.env.JWT_REFRESH_TOKEN_EXPIRATION
 const UserService = require('../user/user-service')
 const JWTService = require('../../utils/jwt/jwt-service')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const RefreshToken = require('../refresh_token/refresh-token-model')
 
 const tokenOptions = {

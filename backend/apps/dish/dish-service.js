@@ -10,6 +10,8 @@ const getDishes = async (queryString) => {
     .limitFields()
     .paginate()
 
+    // return 1;
+
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 

@@ -87,7 +87,6 @@ button {
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, .26);
     font-weight: 400;
-    padding: 8px 10px;
 }
 
 button:active {

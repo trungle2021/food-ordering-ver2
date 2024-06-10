@@ -1,4 +1,4 @@
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const User = require('./user-model')
 
 const getUsers = async () => {

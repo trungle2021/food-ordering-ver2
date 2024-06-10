@@ -1,4 +1,4 @@
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const DishService = require('../dish/dish-service')
 const StockService = require('../stock/stock-service')
 const Cart = require('./cart-model')

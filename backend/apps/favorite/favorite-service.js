@@ -1,5 +1,5 @@
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const Favorite = require('./favorite-model')
 
 const getFavorites = async () => {

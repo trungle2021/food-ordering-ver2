@@ -4,6 +4,7 @@ import styles from './styles.module.css'
 import { TableContainer, Table as MuiTable, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination } from '@mui/material'
 import { useState } from "react";
 import { Container } from "@mui/system";
+import { convertUtcToLocal } from "~/utils/convertUTCToLocalTimeZone";
 
 const data = [
     {
@@ -146,6 +147,8 @@ const data = [
         "shipping_address": "123 Main St, Exampleville, CA"
     }
 ]
+
+console.log(convertUtcToLocal("2023-12-21T09:07:09.960Z"))
 export const OrderHistory = () => {
     const handleSubmitSearchForm = () => {
         console.log("Search form submitted");
@@ -155,21 +158,20 @@ export const OrderHistory = () => {
     const [page, setPage] = useState(0);
 
 
-
     return <>
         <HeaderPage pageName="Order History" />
         {/* <SearchBar onSubmitSearchForm={handleSubmitSearchForm} /> */}
         <Container maxWidth='xl'>
             {data.map(order => (
-                <div className={styles['order-container']}>
+                <div className={styles['order-container']} key={order._id}>
                     <div className={styles['order-container__header']}>
-                        <div>Order Date: {order.order_date}</div>
+                        <div>Order Date: {convertUtcToLocal(order.order_date).toLocaleDateString()}</div>
                         <div>Order Status: {order.order_status}</div>
                     </div>
 
                     <div className={styles['order-container__body']}>
                         {order.order_details.map(orderDetail => (
-                            <div className={styles['order-item']}>
+                            <div className={styles['order-item']} key={orderDetail._id}>
                                 <div className={styles['order-item__info']}>
                                     <img className={styles['order-item--image']} src={orderDetail.dish.image} alt="product" />
                                     <div className={styles['order-item__details']}>
@@ -199,39 +201,3 @@ export const OrderHistory = () => {
         </Container>
     </>
 };
-
-
-
-
-{/* <TableContainer>
-<MuiTable sx={{ tableLayout: 'fixed', width: '100%' }}>
-    <TableHead>
-        <TableRow>
-            <TableCell>Order Number</TableCell>
-            <TableCell>Total Charge</TableCell>
-            <TableCell>Placed On</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Total</TableCell>
-            <TableCell>Status</TableCell>
-        </TableRow>
-    </TableHead>
-    <TableBody>
-        {data.map((row, index) => (
-            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-
-            </TableRow>
-        ))}
-    </TableBody>
-    <TableFooter>
-        <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-    </TableFooter>
-</MuiTable>
-</TableContainer> */}

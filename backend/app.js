@@ -8,7 +8,7 @@ const apiRouter = require('./routes/router')
 const cors = require('cors')
 const jwtFilterHandler = require('./middleware/jwt-filter')
 const ErrorController = require('./apps/error/error-controller')
-const AppError = require('./apps/error/app-error')
+const AppError = require('./utils/error/app-error')
 
 // config middleware
 app.use(cors())

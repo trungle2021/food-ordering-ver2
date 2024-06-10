@@ -1,5 +1,5 @@
 const UserService = require('../user/user-service')
-const AppError = require('../../apps/error/app-error')
+const AppError = require('../../utils/error/app-error')
 const { INTERNAL_ACCOUNT, CASH, BANK_TRANSFER, CREDIT_CARD } = require('../../constant/payment-method')
 const { DEPOSIT, WITHDRAW } = require('../../constant/payment-action')
 const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {

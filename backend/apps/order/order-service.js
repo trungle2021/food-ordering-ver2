@@ -1,4 +1,4 @@
-const AppError = require('../error/app-error')
+const AppError = require('../../utils/error/app-error')
 const Order = require('./model/order-model')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
