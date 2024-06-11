@@ -39,10 +39,13 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
 const getOrderHistory = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
   const queryString = { ...req.query }
-  const orderHistory = await OrderService.getOrderHistory(userId, queryString)
+  const { orderHistory, totalItem } = await OrderService.getOrderHistory(userId, queryString)
   return res.status(200).json({
     status: 'success',
-    data: orderHistory
+    data: {
+      totalItem,
+      orderHistory
+    }
   })
 })
 

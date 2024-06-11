@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const Modal = ({children}) => {
+export const Modal = () => {
 
   return (
-    <div>Modal</div>
+    <div>children</div>
   )
 }

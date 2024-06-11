@@ -4,14 +4,11 @@ const ApiFeatures = require('../../utils/api-features/api-features')
 const { COMPLETED } = require('../../constant/order-status')
 
 const getDishes = async (queryString) => {
-  const features = new ApiFeatures(Dish.find(), queryString)
+  const features = new ApiFeatures(Dish.find({}), queryString)
     .filter()
     .sort()
     .limitFields()
-    .paginate()
-
-    // return 1;
-
+    // .paginate()
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
