@@ -1,168 +1,79 @@
 import { HeaderPage } from "~/components/HeaderPage";
-import { SearchBar } from "~/components/SearchBar";
 import styles from './styles.module.css'
-import { TableContainer, Table as MuiTable, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination } from '@mui/material'
-import { useState } from "react";
-import { Container } from "@mui/system";
+import { Box, Container } from "@mui/system";
 import { convertUtcToLocal } from "~/utils/convertUTCToLocalTimeZone";
+import { useDispatch, useSelector } from "react-redux";
+import { Pagination } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getOrderHistory } from "~/features/Order/orderAction";
+import { DateRangePicker, Dropdown } from 'rsuite';
+import { SearchBar } from "~/components/SearchBar";
+import { SearchBarReactSuite } from "~/components/SearchBar/SearchBarReactSuite";
 
-const data = [
-    {
-        "order_details": [
-            {
-                "_id": "658400cd4226d923d45633cc",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "658400cd4226d923d45633ca",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c718c",
-                    "name": "Mac & Cheese",
-                    "image": "http://localhost:1337/images/mac-and-cheese.jpg"
-                },
-                "quantity": 2,
-                "price": 8.99,
-                "__v": 0
-            },
-            {
-                "_id": "658400cd4226d923d45633cd",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "658400cd4226d923d45633ca",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c718d",
-                    "name": "Margherita Pizza",
-                    "image": "http://localhost:1337/images/margherita-pizza.jpg"
-                },
-                "quantity": 1,
-                "price": 12.99,
-                "__v": 0
-            }
-        ],
-        "order_total": 30.97,
-        "order_status": "completed",
-        "payment_status": "paid",
-        "payment_method": null,
-        "cancel_reason": null,
-        "time_completed": null,
-        "created_at": "2023-12-21T09:07:09.956Z",
-        "updated_at": null,
-        "_id": "658400cd4226d923d45633ca",
-        "user": "65741dbdc65e820e07b382bf",
-        "order_date": "2023-12-10T00:00:00.000Z",
-        "shipping_address": "123 Main St, Exampleville, CA"
-    },
-    {
-        "order_details": [
-            {
-                "_id": "6584010c4226d923d45633d6",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "6584010c4226d923d45633d4",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c719c",
-                    "name": "Mushroom Risotto",
-                    "image": "http://localhost:1337/images/mushroom-risotto.jpg"
-                },
-                "quantity": 2,
-                "price": 8.99,
-                "__v": 0
-            },
-            {
-                "_id": "6584010c4226d923d45633d7",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "6584010c4226d923d45633d4",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c7199",
-                    "name": "Beef Tacos",
-                    "image": "http://localhost:1337/images/beef-tacos.jpg"
-                },
-                "quantity": 1,
-                "price": 12.99,
-                "__v": 0
-            },
-            {
-                "_id": "6584010c4226d923d45633d8",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "6584010c4226d923d45633d4",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c7195",
-                    "name": "Vegan Buddha Bowl",
-                    "image": "http://localhost:1337/images/vegan-buddha-bowl.jpg"
-                },
-                "quantity": 4,
-                "price": 2.99,
-                "__v": 0
-            }
-        ],
-        "order_total": 42.93,
-        "order_status": "completed",
-        "payment_status": "paid",
-        "payment_method": null,
-        "cancel_reason": null,
-        "time_completed": null,
-        "created_at": "2023-12-21T09:07:09.956Z",
-        "updated_at": null,
-        "_id": "6584010c4226d923d45633d4",
-        "user": "65741dbdc65e820e07b382bf",
-        "order_date": "2023-12-10T00:00:00.000Z",
-        "shipping_address": "123 Main St, Exampleville, CA"
-    },
-    {
-        "order_details": [
-            {
-                "_id": "6584011e4226d923d45633dd",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "6584011e4226d923d45633db",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c7190",
-                    "name": "Veggie Burger",
-                    "image": "http://localhost:1337/images/veggie-burger.jpg"
-                },
-                "quantity": 2,
-                "price": 8.99,
-                "__v": 0
-            },
-            {
-                "_id": "6584011e4226d923d45633df",
-                "created_at": "2023-12-21T09:07:09.960Z",
-                "order": "6584011e4226d923d45633db",
-                "dish": {
-                    "_id": "65742b8e7c4e4913081c7195",
-                    "name": "Vegan Buddha Bowl",
-                    "image": "http://localhost:1337/images/vegan-buddha-bowl.jpg"
-                },
-                "quantity": 4,
-                "price": 2.99,
-                "__v": 0
-            }
-        ],
-        "order_total": 29.94,
-        "order_status": "completed",
-        "payment_status": "paid",
-        "payment_method": null,
-        "cancel_reason": null,
-        "time_completed": null,
-        "created_at": "2023-12-21T09:07:09.956Z",
-        "updated_at": null,
-        "_id": "6584011e4226d923d45633db",
-        "user": "65741dbdc65e820e07b382bf",
-        "order_date": "2023-12-10T00:00:00.000Z",
-        "shipping_address": "123 Main St, Exampleville, CA"
-    }
-]
-
-console.log(convertUtcToLocal("2023-12-21T09:07:09.960Z"))
 export const OrderHistory = () => {
-    const handleSubmitSearchForm = () => {
-        console.log("Search form submitted");
+
+    const dispatch = useDispatch()
+    const orderState = useSelector((state: any) => state.order)
+    const [category, setCategory] = useState('Category')
+    const [orderStatus, setOrderStatus] = useState('Order Status')
+    useEffect(() => {
+        dispatch<any>(getOrderHistory({ page: 1, limit: 10 }))
+    }, [dispatch])
+
+    const orderHistory = orderState.orders
+    const totalPages = orderState.totalPages
+
+
+
+    const handlePageChange = (event: any, newPageChange: number) => {
+        dispatch<any>(getOrderHistory({ page: newPageChange, limit: 10 }))
     }
 
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [page, setPage] = useState(0);
+    const handleCategoryChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
+        console.log('Selected eventKey:', eventKey);
+        const content = (event.target as HTMLElement).innerText;
+        setCategory(content || "")
+        // Implement your logic here based on the selected eventKey
+    };
 
+    const handleOrderStatusChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
+        console.log('Selected eventKey:', eventKey);
+        const content = (event.target as HTMLElement).innerText;
+        setOrderStatus(content || "")
+        // Implement your logic here based on the selected eventKey
+    };
+
+    // const handleSubmitSearchForm = () => {
+
+    // }
 
     return <>
         <HeaderPage pageName="Order History" />
         {/* <SearchBar onSubmitSearchForm={handleSubmitSearchForm} /> */}
         <Container maxWidth='xl'>
-            {data.map(order => (
+            <Box sx={{ display: 'flex', gap: '20px' }}>
+                <DateRangePicker />
+                <Dropdown title={category} trigger='hover' onSelect={handleCategoryChange}>
+                    <Dropdown.Item eventKey="new-file">New File</Dropdown.Item>
+                    <Dropdown.Item eventKey="new-file-current-profile">New File with Current Profile</Dropdown.Item>
+                    <Dropdown.Item eventKey="download-as">Download As...</Dropdown.Item>
+                    <Dropdown.Item eventKey="export-pdf">Export PDF</Dropdown.Item>
+                    <Dropdown.Item eventKey="export-html">Export HTML</Dropdown.Item>
+                    <Dropdown.Item eventKey="settings">Settings</Dropdown.Item>
+                    <Dropdown.Item eventKey="about">About</Dropdown.Item>
+                </Dropdown>
+
+                <Dropdown title={orderStatus} trigger='hover' onSelect={handleOrderStatusChange}>
+                    <Dropdown.Item eventKey="completed">Completed</Dropdown.Item>
+                    <Dropdown.Item eventKey="pending">Pending</Dropdown.Item>
+                    <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
+                </Dropdown>
+
+                <SearchBarReactSuite style={{width: '500px', marginLeft: 'auto'}} size="md" placeholder="Search by dish name"/>
+            </Box>
+
+
+            {orderHistory && orderHistory.map((order: any) => (
                 <div className={styles['order-container']} key={order._id}>
                     <div className={styles['order-container__header']}>
                         <div>Order Date: {convertUtcToLocal(order.order_date).toLocaleDateString()}</div>
@@ -170,7 +81,7 @@ export const OrderHistory = () => {
                     </div>
 
                     <div className={styles['order-container__body']}>
-                        {order.order_details.map(orderDetail => (
+                        {order.order_details.map((orderDetail: any) => (
                             <div className={styles['order-item']} key={orderDetail._id}>
                                 <div className={styles['order-item__info']}>
                                     <img className={styles['order-item--image']} src={orderDetail.dish.image} alt="product" />
@@ -192,12 +103,15 @@ export const OrderHistory = () => {
                             </div>
                         </div>
                         <div className={styles['order__actions']}>
-                            <button className={styles["order__actions--review-button"]}>Đánh Giá</button>
+                            <button className={styles["order__actions--review-button"]}>Review</button>
                             <button className={styles["order__actions--reorder-button"]}>Order Again</button>
                         </div>
                     </div>
                 </div>
             ))}
+            <Box display="flex" justifyContent="flex-end" paddingY={4}>
+                <Pagination count={totalPages} color="primary" onChange={handlePageChange} />
+            </Box>
         </Container>
     </>
 };

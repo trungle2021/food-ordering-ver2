@@ -9,15 +9,16 @@ const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 
 const getOrders = async (queryString) => {
-  const totalItems = Order.countDocuments(queryString)
   const features = new ApiFeatures(Order.find(), queryString)
     .filter()
     .limitFields()
     .sort()
     .paginate()
 
+  const totalItem = await features.countItems()
   const orders = await features.query
-  return { totalItems, orders }
+
+  return { totalItem, orders }
 }
 
 const getOrder = async (filter) => {
@@ -35,14 +36,16 @@ const getOrderHistory = async (userId, queryString) => {
     .limitFields()
     .sort()
     .paginate()
-
-  return await features.query.populate({
+  const orders = await features.query.populate({
     path: 'order_details',
     populate: {
       path: 'dish',
       select: 'name image'
     }
   })
+  const { totalItems, totalPages } = await features.getPaginationInfo()
+
+  return { totalItems, totalPages, orders }
 }
 
 const createOrder = async (order, orderItems) => {

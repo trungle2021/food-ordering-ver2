@@ -5,3 +5,4 @@ declare module "*.ts";
 declare module "*.jsx";
 declare module "*.svg";
 declare module 'react-router-dom';
+declare module 'react-date-range';

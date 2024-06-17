@@ -190,3 +190,7 @@ button:hover {
     margin-top: 5px;
     /* Add some space between the input and the error message */
 }
+
+.rs-dropdown > button {
+    background-color: var(--white);
+}

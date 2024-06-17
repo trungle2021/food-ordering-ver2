@@ -1,9 +1,9 @@
 const AppError = require('../../utils/error/app-error')
+
 class ApiFeatures {
   constructor (query, queryString) {
     this.query = query
     this.queryString = queryString
-    this.totalItem = undefined
   }
 
   excludeFields (queryObject, fields = ['page', 'limit', 'fields', 'sort']) {
@@ -18,12 +18,16 @@ class ApiFeatures {
     return this
   }
 
-  async countItems () {
+  async getPaginationInfo () {
     let queryObject = { ...this.queryString }
     queryObject = this.excludeFields(queryObject)
     const Model = this.query.model
-    this.totalItems = await Model.countDocuments(queryObject)
-    return this
+    const totalItems = await Model.countDocuments(queryObject)
+    const limit =
+            (this.queryString.limit && Number(this.queryString.limit)) || 10
+    const totalPages = Math.ceil(totalItems / limit)
+
+    return { totalItems, totalPages }
   }
 
   sort () {
@@ -57,8 +61,8 @@ class ApiFeatures {
     const limit =
             (this.queryString.limit && Number(this.queryString.limit)) || 10
     const skip = (page - 1) * limit
-
     this.query = this.query.skip(skip).limit(limit)
+
     return this
   }
 }

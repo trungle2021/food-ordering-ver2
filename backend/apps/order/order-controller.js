@@ -4,7 +4,8 @@ const OrderService = require('./order-service')
 const orderCancelSchema = require('./model/order-cancel-model')
 
 const getOrders = catchAsyncHandler(async (req, res) => {
-  const orders = await OrderService.getOrders({})
+  const queryString = { ...req.query }
+  const orders = await OrderService.getOrders(queryString)
   return res.status(200).json({
     status: 'success',
     data: orders
@@ -39,12 +40,13 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
 const getOrderHistory = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
   const queryString = { ...req.query }
-  const { orderHistory, totalItem } = await OrderService.getOrderHistory(userId, queryString)
+  const { totalItems, totalPages, orders } = await OrderService.getOrderHistory(userId, queryString)
   return res.status(200).json({
     status: 'success',
     data: {
-      totalItem,
-      orderHistory
+      totalItems,
+      totalPages,
+      orders
     }
   })
 })
@@ -132,7 +134,7 @@ const completeOrder = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const deleteOrder = catchAsyncHandler(async (req, res, next) => {})
+const deleteOrder = catchAsyncHandler(async (req, res, next) => { })
 
 const deleteAll = catchAsyncHandler(async (req, res, next) => {
   await OrderService.deleteAll()

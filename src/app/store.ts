@@ -3,6 +3,7 @@ import authReducer from "../features/Auth/authSlice";
 import searchDishesReducer from "../features/Dish/SearchDish/searchDishesSlice";
 import balanceReducer from '../features/Balance/balanceSlice';
 import cartReducer from '../features/Cart/cartSlice';
+import orderReducer from '../features/Order/orderSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   searchDishes: searchDishesReducer,
   balance: balanceReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  order: orderReducer
 });
 
 const persistConfig = {

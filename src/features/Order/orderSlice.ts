@@ -1,23 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import OrderProps from "~/interface/order/order-response";
+import { getOrderHistory } from "./orderAction";
 
 
 
 interface OrderState {
-    orders: OrderProps[],
     isLoading: boolean,
+    orders: OrderProps[],
+    totalPages: number,
     error: string | null
 }
 
 const initialState: OrderState = {
     orders: [],
     isLoading: false,
+    totalPages: 1,
     error: null
 }
 
 const orderSlice = createSlice({
     initialState,
-    reducers:{},
+    reducers: {},
     name: 'order',
     extraReducers: (builder) => {
         builder.addCase(getOrderHistory.pending, (state, action) => {
@@ -25,7 +28,8 @@ const orderSlice = createSlice({
         });
         builder.addCase(getOrderHistory.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.orders = action.payload;
+            state.orders = action.payload.data.orders;
+            state.totalPages = action.payload.data.totalPages;
         });
         builder.addCase(getOrderHistory.rejected, (state, action) => {
             state.isLoading = false;
@@ -33,3 +37,7 @@ const orderSlice = createSlice({
         });
     }
 })
+
+const { reducer } = orderSlice;
+export default reducer;
+

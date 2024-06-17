@@ -86,3 +86,7 @@ color: rgba(0, 0, 0, .54);
 .order__actions--reorder-button{
 
 }
+
+.order-pagination{
+    text-align: right;
+}
