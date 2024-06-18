@@ -6,16 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getOrderHistory } from "~/features/Order/orderAction";
-import { DateRangePicker, Dropdown } from 'rsuite';
-import { SearchBar } from "~/components/SearchBar";
+import { Button, DateRangePicker, Dropdown } from 'rsuite';
 import { SearchBarReactSuite } from "~/components/SearchBar/SearchBarReactSuite";
+import { DateRange } from "rsuite/esm/DateRangePicker/types";
 
 export const OrderHistory = () => {
 
     const dispatch = useDispatch()
     const orderState = useSelector((state: any) => state.order)
-    const [category, setCategory] = useState('Category')
+    const [filter, setFilter] = useState('')
     const [orderStatus, setOrderStatus] = useState('Order Status')
+
     useEffect(() => {
         dispatch<any>(getOrderHistory({ page: 1, limit: 10 }))
     }, [dispatch])
@@ -26,42 +27,47 @@ export const OrderHistory = () => {
 
 
     const handlePageChange = (event: any, newPageChange: number) => {
-        dispatch<any>(getOrderHistory({ page: newPageChange, limit: 10 }))
+        dispatch<any>(getOrderHistory({ filter: orderStatus, page: newPageChange, limit: 10 }))
     }
 
-    const handleCategoryChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
-        console.log('Selected eventKey:', eventKey);
-        const content = (event.target as HTMLElement).innerText;
-        setCategory(content || "")
-        // Implement your logic here based on the selected eventKey
+    const handleDateRangeChange = (range: DateRange | null) => {
+        if (range) {
+            const startDate = range[0].toISOString()
+            const endDate = range[1].toISOString()
+            const updatedStartDateFilter = filter.replace(/(start_order_date=)[^&]*/, `start_order_date[gte]=${startDate}`)
+            const updatedEndDateFilter = updatedStartDateFilter.replace(/(end_order_date=)[^&]*/, `end_order_date[lte}=${endDate}`)
+            setFilter(updatedEndDateFilter)
+            dispatch<any>(getOrderHistory({ filter: updatedEndDateFilter, page: 1, limit: 10 }))
+        }
     };
 
     const handleOrderStatusChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
-        console.log('Selected eventKey:', eventKey);
         const content = (event.target as HTMLElement).innerText;
         setOrderStatus(content || "")
-        // Implement your logic here based on the selected eventKey
+        //check if current filter has order_status
+        const isOrderStatusExistOnFilter = filter.includes('order_status')
+        if(isOrderStatusExistOnFilter){
+            const newFilter = filter.replace(/(order_status=)[^&]*/, `order_status=${eventKey}`)
+            setFilter(newFilter)
+            dispatch<any>(getOrderHistory({ filter: newFilter, page: 1, limit: 10 }))
+            return
+        }else{
+            const newFilter = filter.concat(`order_status=${eventKey}`)
+            setFilter(newFilter)
+            dispatch<any>(getOrderHistory({ filter: newFilter, page: 1, limit: 10 }))
+        }
     };
 
-    // const handleSubmitSearchForm = () => {
 
-    // }
+    const handleSubmitSearchForm = () => {
+
+    }
 
     return <>
         <HeaderPage pageName="Order History" />
-        {/* <SearchBar onSubmitSearchForm={handleSubmitSearchForm} /> */}
         <Container maxWidth='xl'>
             <Box sx={{ display: 'flex', gap: '20px' }}>
-                <DateRangePicker />
-                <Dropdown title={category} trigger='hover' onSelect={handleCategoryChange}>
-                    <Dropdown.Item eventKey="new-file">New File</Dropdown.Item>
-                    <Dropdown.Item eventKey="new-file-current-profile">New File with Current Profile</Dropdown.Item>
-                    <Dropdown.Item eventKey="download-as">Download As...</Dropdown.Item>
-                    <Dropdown.Item eventKey="export-pdf">Export PDF</Dropdown.Item>
-                    <Dropdown.Item eventKey="export-html">Export HTML</Dropdown.Item>
-                    <Dropdown.Item eventKey="settings">Settings</Dropdown.Item>
-                    <Dropdown.Item eventKey="about">About</Dropdown.Item>
-                </Dropdown>
+                <DateRangePicker onChange={handleDateRangeChange} />
 
                 <Dropdown title={orderStatus} trigger='hover' onSelect={handleOrderStatusChange}>
                     <Dropdown.Item eventKey="completed">Completed</Dropdown.Item>
@@ -69,7 +75,7 @@ export const OrderHistory = () => {
                     <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
                 </Dropdown>
 
-                <SearchBarReactSuite style={{width: '500px', marginLeft: 'auto'}} size="md" placeholder="Search by dish name"/>
+                <SearchBarReactSuite style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
             </Box>
 
 

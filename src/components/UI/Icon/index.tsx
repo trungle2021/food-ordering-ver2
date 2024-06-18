@@ -109,7 +109,9 @@ export function Avatar({ className, size }: any) {
     return (
         <img
             className={className}
-            srcSet="/src/app/assets/images/Avatar.png"
+            srcSet="/src/assets/images/Avatar.png"
+            width={40}
+            height={40}
         />
     );
 }
