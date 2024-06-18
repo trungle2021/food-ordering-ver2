@@ -17,6 +17,7 @@ class ApiFeatures {
     const queryString = JSON.stringify(queryObject)
     const queryStringReplaced = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
     this.queryObject = JSON.parse(queryStringReplaced)
+    console.log(this.queryObject)
     this.query = this.query.find(queryObject)
     return this
   }

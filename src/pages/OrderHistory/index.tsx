@@ -34,28 +34,29 @@ export const OrderHistory = () => {
         if (range) {
             const startDate = range[0].toISOString()
             const endDate = range[1].toISOString()
-            const updatedStartDateFilter = filter.replace(/(start_order_date=)[^&]*/, `start_order_date[gte]=${startDate}`)
-            const updatedEndDateFilter = updatedStartDateFilter.replace(/(end_order_date=)[^&]*/, `end_order_date[lte}=${endDate}`)
-            setFilter(updatedEndDateFilter)
-            dispatch<any>(getOrderHistory({ filter: updatedEndDateFilter, page: 1, limit: 10 }))
+            const queryParams = new URLSearchParams(filter);
+            queryParams.set('order_date[gte]', startDate);
+            queryParams.set('order_date[lte]', endDate);
+    
+            const updatedFilter = queryParams.toString();
+            setFilter(updatedFilter)
+            dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
         }
     };
 
     const handleOrderStatusChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
         setOrderStatus(content || "")
-        //check if current filter has order_status
-        const isOrderStatusExistOnFilter = filter.includes('order_status')
-        if(isOrderStatusExistOnFilter){
-            const newFilter = filter.replace(/(order_status=)[^&]*/, `order_status=${eventKey}`)
-            setFilter(newFilter)
-            dispatch<any>(getOrderHistory({ filter: newFilter, page: 1, limit: 10 }))
-            return
-        }else{
-            const newFilter = filter.concat(`order_status=${eventKey}`)
-            setFilter(newFilter)
-            dispatch<any>(getOrderHistory({ filter: newFilter, page: 1, limit: 10 }))
+        const queryParams = new URLSearchParams(filter);
+        if (eventKey) {
+            queryParams.set('order_status', eventKey);
+        } else {
+            queryParams.delete('order_status'); // Remove the filter if eventKey is null or empty
         }
+    
+        const updatedFilter = queryParams.toString();
+        setFilter(updatedFilter)
+        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     };
 
 
