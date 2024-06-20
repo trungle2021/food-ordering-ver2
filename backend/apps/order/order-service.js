@@ -15,10 +15,10 @@ const getOrders = async (queryString) => {
     .sort()
     .paginate()
 
-  const totalItem = await features.countItems()
+  //   const totalItem = await features.countItems()
   const orders = await features.query
 
-  return { totalItem, orders }
+  return { orders }
 }
 
 const getOrder = async (filter) => {
@@ -31,11 +31,20 @@ const getOrder = async (filter) => {
 
 const getOrderHistory = async (userId, queryString) => {
   const userIdConverted = await convertToObjectId(userId)
-  const features = new ApiFeatures(Order.find({ user: userIdConverted }), queryString)
+  let modifiedOrderDate, modifiedQueryString
+  const orderDate = queryString.order_date
+  if (orderDate && typeof orderDate === 'object') {
+    modifiedOrderDate = convertDateStringToDateObject(orderDate)
+    modifiedQueryString = { ...queryString, order_date: modifiedOrderDate }
+  } else {
+    modifiedQueryString = { ...queryString }
+  }
+  const features = new ApiFeatures(Order.find({ user: userIdConverted }), modifiedQueryString)
     .filter()
     .limitFields()
     .sort()
     .paginate()
+
   const orders = await features.query.populate({
     path: 'order_details',
     populate: {
@@ -46,6 +55,19 @@ const getOrderHistory = async (userId, queryString) => {
   const { totalItems, totalPages } = await features.getPaginationInfo()
 
   return { totalItems, totalPages, orders }
+}
+
+const convertDateStringToDateObject = (orderDate) => {
+  console.log('orderDate: ', orderDate)
+  for (const key in orderDate) {
+    console.log('key: ', key)
+
+    if (Object.prototype.hasOwnProperty.call(orderDate, key)) {
+      orderDate[key] = new Date(orderDate[key])
+      console.log('date', new Date(orderDate[key]))
+    }
+  }
+  return orderDate
 }
 
 const createOrder = async (order, orderItems) => {

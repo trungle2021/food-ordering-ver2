@@ -6,25 +6,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getOrderHistory } from "~/features/Order/orderAction";
-import { Button, DateRangePicker, Dropdown } from 'rsuite';
+import { DateRangePicker, Dropdown } from 'rsuite';
 import { SearchBarReactSuite } from "~/components/SearchBar/SearchBarReactSuite";
 import { DateRange } from "rsuite/esm/DateRangePicker/types";
 
+
 export const OrderHistory = () => {
 
-    const dispatch = useDispatch()
     const orderState = useSelector((state: any) => state.order)
+    const orderHistory = orderState.orders
+    const totalPages = orderState.totalPages
+
+    const [dateRange, setDateRange] = useState<any>(() => {
+        const filterDateRangeStorage = JSON.parse(sessionStorage.getItem('orderHistoryDateFilter') || 'null');
+        if(!filterDateRangeStorage) {
+            return []
+        }
+        const [startDate, endDate] = filterDateRangeStorage
+
+        return [new Date(startDate), new Date(endDate)]
+    })
     const [filter, setFilter] = useState('')
     const [orderStatus, setOrderStatus] = useState('Order Status')
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch<any>(getOrderHistory({ page: 1, limit: 10 }))
     }, [dispatch])
-
-    const orderHistory = orderState.orders
-    const totalPages = orderState.totalPages
-
-
 
     const handlePageChange = (event: any, newPageChange: number) => {
         dispatch<any>(getOrderHistory({ filter: orderStatus, page: newPageChange, limit: 10 }))
@@ -32,12 +41,16 @@ export const OrderHistory = () => {
 
     const handleDateRangeChange = (range: DateRange | null) => {
         if (range) {
+            const dateRange = [range[0], range[1]]
             const startDate = range[0].toISOString()
-            const endDate = range[1].toISOString()
+            range[1].setHours(23, 59, 59, 999);
+            const endDate = range[1].toISOString();
+            setDateRange(dateRange)
+            sessionStorage.setItem('orderHistoryDateFilter', JSON.stringify(dateRange));
             const queryParams = new URLSearchParams(filter);
             queryParams.set('order_date[gte]', startDate);
             queryParams.set('order_date[lte]', endDate);
-    
+
             const updatedFilter = queryParams.toString();
             setFilter(updatedFilter)
             dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
@@ -53,11 +66,16 @@ export const OrderHistory = () => {
         } else {
             queryParams.delete('order_status'); // Remove the filter if eventKey is null or empty
         }
-    
+
         const updatedFilter = queryParams.toString();
         setFilter(updatedFilter)
         dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     };
+
+    const handleClearDateRange = () => {
+        setDateRange([])
+        sessionStorage.removeItem('orderHistoryDateFilter');
+    }
 
 
     const handleSubmitSearchForm = () => {
@@ -68,7 +86,11 @@ export const OrderHistory = () => {
         <HeaderPage pageName="Order History" />
         <Container maxWidth='xl'>
             <Box sx={{ display: 'flex', gap: '20px' }}>
-                <DateRangePicker onChange={handleDateRangeChange} />
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={handleDateRangeChange} 
+                    onClean={handleClearDateRange}
+                    />
 
                 <Dropdown title={orderStatus} trigger='hover' onSelect={handleOrderStatusChange}>
                     <Dropdown.Item eventKey="completed">Completed</Dropdown.Item>

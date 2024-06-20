@@ -27,7 +27,6 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     if (!user) {
       throw new AppError('Invalid token', 401)
     }
-    console.log('userId in token', _id)
     req.userId = _id
     next()
   } catch (error) {

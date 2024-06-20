@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const OrderController = require('../order/order-controller')
 
-
 router.route('/recent-orders')
   .get(OrderController.getRecentOrders)
 

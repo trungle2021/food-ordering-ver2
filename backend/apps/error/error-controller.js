@@ -33,7 +33,9 @@ const sendErrorProduction = (err, res) => {
 
 const ErrorController = (err, req, res, next) => {
   err.status = err.status || 'error'
-  console.log('Error Name' + err.name)
+  console.log('Error Name: ' + err.name)
+  console.log('Log Error: ' + err)
+  console.log('Log Stack: ' + err.stack)
   switch (err.name) {
     case 'ValidationError':
       err.statusCode = 400
