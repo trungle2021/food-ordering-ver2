@@ -1,7 +1,7 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-const OrderConfirmInputSchema = require('./order-confirm-info-schema')
+const OrderConfirmInputSchema = require('./validation-schema/order-confirm-info-schema')
 const OrderService = require('./order-service')
-const orderCancelSchema = require('./model/order-cancel-model')
+const orderCancelSchema = require('./validation-schema/order-cancel-model')
 
 const getOrders = catchAsyncHandler(async (req, res) => {
   const queryString = { ...req.query }

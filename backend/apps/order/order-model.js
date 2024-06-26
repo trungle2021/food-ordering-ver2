@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
-const orderStatus = require('../../../constant/order-status')
-const paymentStatus = require('../../../constant/payment-status')
-const paymentMethod = require('../../../constant/payment-method')
+const orderStatus = require('../../constant/order-status')
+const paymentStatus = require('../../constant/payment-status')
+const paymentMethod = require('../../constant/payment-method')
 const ObjectId = mongoose.Schema.Types.ObjectId
 
 const orderSchema = new mongoose.Schema({

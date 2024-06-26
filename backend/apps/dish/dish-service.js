@@ -1,5 +1,5 @@
 const Dish = require('./dish-model')
-const Order = require('../order/model/order-model')
+const Order = require('../order/order-model')
 const ApiFeatures = require('../../utils/api-features/api-features')
 const { COMPLETED } = require('../../constant/order-status')
 

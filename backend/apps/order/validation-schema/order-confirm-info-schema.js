@@ -1,6 +1,6 @@
 const Joi = require('joi')
-const paymentMethods = require('../../constant/payment-method')
-const validateObjectAgainstSchema = require('../../utils/joi/validation')
+const paymentMethods = require('../../../constant/payment-method')
+const validateObjectAgainstSchema = require('../../../utils/joi/validation')
 
 
 const orderConfirmInfoSchema = Joi.object({

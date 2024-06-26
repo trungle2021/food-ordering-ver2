@@ -44,7 +44,7 @@ export const OrderHistory = () => {
     }, [dispatch])
 
     const handlePageChange = (event: any, newPageChange: number) => {
-        dispatch<any>(getOrderHistory({ filter: orderStatus, page: newPageChange, limit: 10 }))
+        dispatch<any>(getOrderHistory({ filter, page: newPageChange, limit: 10 }))
     }
 
     const handleDateRangeChange = (range: DateRange | null) => {
@@ -94,7 +94,11 @@ export const OrderHistory = () => {
     }
 
     const handleOnSubmitSearchDishByName = (dishName: string) => {
-        console.log('Dish name: ' + dishName);
+        queryParams.set('name', dishName);
+        const updatedFilter = queryParams.toString();
+        setFilter(updatedFilter)
+        history.push({ search: queryParams.toString() })
+        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     }
 
     const OrderHistoryFilter = <>
@@ -123,9 +127,9 @@ export const OrderHistory = () => {
             Something went wrong
         </div>
     } else if (orderHistory.length === 0) {
-        content = <div style={{textAlign: 'center'}}>
+        content = <div style={{ textAlign: 'center' }}>
             {OrderHistoryFilter}
-            <p style={{paddingTop: '40px'}}>No data found.</p>
+            <p style={{ paddingTop: '40px' }}>No data found.</p>
         </div>
     } else {
         content = <>

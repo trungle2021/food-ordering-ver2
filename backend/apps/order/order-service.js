@@ -1,5 +1,5 @@
 const AppError = require('../../utils/error/app-error')
-const Order = require('./model/order-model')
+const Order = require('./order-model')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
 const { processPayment } = require('../payment/payment-service')
@@ -31,6 +31,20 @@ const getOrder = async (filter) => {
 
 const getOrderHistory = async (userId, queryString) => {
   const userIdConverted = await convertToObjectId(userId)
+
+  const result = await Order.find({ user: userIdConverted })
+  .populate({
+    path: 'order_details',
+    populate: {
+      path: 'dish',
+      match: {
+        name: { $regex: 'Beef', $options: 'i' } // Case-insensitive regex match
+      }
+    }
+  });
+
+  console.log(result)
+
   let modifiedOrderDate, modifiedQueryString
   const orderDate = queryString.order_date
   if (orderDate && typeof orderDate === 'object') {
