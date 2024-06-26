@@ -40,7 +40,7 @@ export const Dashboard = () => {
           </Grid>
           :
           <p>No dishes found.</p>
-      }``
+      }
     </>
   );
 };
