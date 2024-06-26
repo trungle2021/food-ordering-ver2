@@ -40,9 +40,8 @@ export const OrderHistory = () => {
 
 
     useEffect(() => {
-        console.log(filter)
         dispatch<any>(getOrderHistory({ filter, page: 1, limit: 10 }))
-    }, [])
+    }, [dispatch])
 
     const handlePageChange = (event: any, newPageChange: number) => {
         dispatch<any>(getOrderHistory({ filter: orderStatus, page: newPageChange, limit: 10 }))
@@ -94,6 +93,10 @@ export const OrderHistory = () => {
         dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     }
 
+    const handleOnSubmitSearchDishByName = (dishName: string) => {
+        console.log('Dish name: ' + dishName);
+    }
+
     const OrderHistoryFilter = <>
         <Box sx={{ display: 'flex', gap: '20px' }}>
             <DateRangePicker
@@ -108,7 +111,7 @@ export const OrderHistory = () => {
                 <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
             </Dropdown>
 
-            <SearchBarReactSuite style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
+            <SearchBarReactSuite onSubmit={handleOnSubmitSearchDishByName} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
         </Box>
     </>
 
