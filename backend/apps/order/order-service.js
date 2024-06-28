@@ -31,51 +31,154 @@ const getOrder = async (filter) => {
 
 const getOrderHistory = async (userId, queryString) => {
   const userIdConverted = await convertToObjectId(userId)
+  const page = (queryString.page && Number(queryString.page)) || 1
+  const pageSize = (queryString.limit && Number(queryString.limit)) || 10
+  const skipNum = (page - 1) * pageSize
+  const orderStatus = queryString.order_status
+  const orderDate = queryString.order_date
+  const dishName = queryString.dish_name
 
-  const result = await Order.find({ user: userIdConverted })
-  .populate({
-    path: 'order_details',
-    populate: {
-      path: 'dish',
-      match: {
-        name: { $regex: 'Beef', $options: 'i' } // Case-insensitive regex match
+  const match = {
+    $match: {
+      user: userIdConverted
+    }
+  }
+
+  const lookupOrderDetail = {
+    $lookup: {
+      from: 'orderdetails',
+      localField: '_id',
+      foreignField: 'order',
+      as: 'order_details'
+    }
+  }
+
+  const unwindOrderDetail = {
+    $unwind: '$order_details'
+  }
+
+  const lookupDish = {
+    $lookup: {
+      from: 'dishes',
+      localField: 'order_details.dish',
+      foreignField: '_id',
+      as: 'order_details.dish'
+    }
+  }
+
+  const unwindDish = {
+    $unwind: '$order_details.dish'
+  }
+
+  const group = {
+    $group: {
+      _id: '$_id',
+      order_status: { $first: '$order_status' },
+      payment_status: { $first: '$payment_status' },
+      payment_method: { $first: '$payment_method' },
+      order_total: { $first: '$order_total' },
+      time_completed: { $first: '$time_completed' },
+      created_at: { $first: '$created_at' },
+      updated_at: { $first: '$updated_at' },
+      user: { $first: '$user' },
+      order_date: { $first: '$order_date' },
+      shipping_address: { $first: '$shipping_address' },
+      order_details: { $push: '$order_details' },
+      __v: { $first: '$__v' }
+    }
+  }
+
+  const project = {
+    $project: {
+      _id: 1,
+      user: 1,
+      order_status: 1,
+      order_total: 1,
+      payment_status: 1,
+      payment_method: 1,
+      order_date: 1,
+      order_details: {
+        dish: {
+          name: 1,
+          image: 1
+        },
+        quantity: 1,
+        price: 1
+      },
+      shipping_address: 1,
+      time_completed: 1,
+      created_at: 1,
+      updated_at: 1
+    }
+  }
+
+  const sort = {
+    $sort: { order_date: 1 }
+  }
+
+  const skip = {
+    $skip: skipNum
+  }
+
+  const limit = {
+    $limit: pageSize
+  }
+
+  if (orderStatus) {
+    match.order_status = orderStatus
+  }
+
+  if (orderDate && typeof orderDate === 'object') {
+    const modifiedOrderDate = convertDateStringToDateObject(orderDate)
+    match.order_date = modifiedOrderDate
+  }
+
+  const count = {
+    $count: 'count'
+  }
+
+  const countTotalOrderHistoryPipeline = [
+    match,
+    lookupOrderDetail,
+    unwindOrderDetail,
+    lookupDish,
+    unwindDish,
+    count
+  ]
+
+  const getOrderHistoryPipeline = [
+    match,
+    lookupOrderDetail,
+    unwindOrderDetail,
+    lookupDish,
+    unwindDish,
+    group,
+    project,
+    sort,
+    skip,
+    limit
+  ]
+
+  if (dishName) {
+    const matchDishByDishName = {
+      $match: {
+        'order_details.dish.name': { $regex: dishName, $options: 'i' }
       }
     }
-  });
-
-  console.log(result)
-
-  let modifiedOrderDate, modifiedQueryString
-  const orderDate = queryString.order_date
-  if (orderDate && typeof orderDate === 'object') {
-    modifiedOrderDate = convertDateStringToDateObject(orderDate)
-    modifiedQueryString = { ...queryString, order_date: modifiedOrderDate }
-  } else {
-    modifiedQueryString = { ...queryString }
+    getOrderHistoryPipeline.splice(4, matchDishByDishName)
+    countTotalOrderHistoryPipeline.splice(4, matchDishByDishName)
   }
-  const features = new ApiFeatures(Order.find({ user: userIdConverted }), modifiedQueryString)
-    .filter()
-    .limitFields()
-    .sort()
-    .paginate()
 
-  const orders = await features.query.populate({
-    path: 'order_details',
-    populate: {
-      path: 'dish',
-      select: 'name image'
-    }
-  })
-  const { totalItems, totalPages } = await features.getPaginationInfo()
+  const totalPages = await Order.aggregate(countTotalOrderHistoryPipeline)
+  const result = await Order.aggregate(getOrderHistoryPipeline)
 
+  const totalItems = result.length > 0 ? result[0].totalItems : 0
+  const orders = result
   return { totalItems, totalPages, orders }
 }
 
 const convertDateStringToDateObject = (orderDate) => {
-  console.log('orderDate: ', orderDate)
   for (const key in orderDate) {
-    console.log('key: ', key)
-
     if (Object.prototype.hasOwnProperty.call(orderDate, key)) {
       orderDate[key] = new Date(orderDate[key])
       console.log('date', new Date(orderDate[key]))

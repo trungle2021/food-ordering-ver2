@@ -11,20 +11,21 @@ class ApiFeatures {
     return queryObject
   }
 
-  filter () {
+  prepareQueryObject () {
     let queryObject = { ...this.queryString }
     queryObject = this.excludeFields(queryObject)
     const queryString = JSON.stringify(queryObject)
-    const queryStringReplaced = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    return queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+  }
+
+  filter () {
+    const queryStringReplaced = this.prepareQueryObject()
     this.query = this.query.find(JSON.parse(queryStringReplaced))
     return this
   }
 
   async getPaginationInfo () {
-    let queryObject = { ...this.queryString }
-    queryObject = this.excludeFields(queryObject)
-    const queryString = JSON.stringify(queryObject)
-    const queryStringReplaced = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    const queryStringReplaced = this.prepareQueryObject()
     const Model = this.query.model
     const totalItems = await Model.countDocuments(JSON.parse(queryStringReplaced))
     const limit =
