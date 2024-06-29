@@ -137,26 +137,12 @@ const getOrderHistory = async (userId, queryString) => {
     $count: 'count'
   }
 
-  const countTotalOrderHistoryPipeline = [
-    match,
-    lookupOrderDetail,
-    unwindOrderDetail,
-    lookupDish,
-    unwindDish,
-    count
-  ]
-
   const getOrderHistoryPipeline = [
     match,
     lookupOrderDetail,
     unwindOrderDetail,
-    lookupDish,
-    unwindDish,
-    group,
-    project,
-    sort,
-    skip,
-    limit
+    lookupDish, // after lookup dish object become dish array
+    unwindDish // convert dish array into dish object
   ]
 
   if (dishName) {
@@ -165,15 +151,46 @@ const getOrderHistory = async (userId, queryString) => {
         'order_details.dish.name': { $regex: dishName, $options: 'i' }
       }
     }
-    getOrderHistoryPipeline.splice(4, matchDishByDishName)
-    countTotalOrderHistoryPipeline.splice(4, matchDishByDishName)
+    getOrderHistoryPipeline.push({
+      $facet: {
+        totalCount: [
+          matchDishByDishName,
+          group, // group and reassemble order details back into array
+          count
+        ],
+        orders: [
+          group, // group and reassemble order details back into array
+          project, // select field from dish object
+          sort,
+          skip,
+          limit
+          // You can include the final project stage here if needed for shaping the output
+        ]
+      }
+    })
+  } else {
+    getOrderHistoryPipeline.push(
+      group,
+      {
+        $facet: {
+          totalCount: [
+            count
+          ],
+          orders: [
+            project, // select field from dish object
+            sort,
+            skip,
+            limit
+            // You can include the final project stage here if needed for shaping the output
+          ]
+        }
+      })
   }
 
-  const totalPages = await Order.aggregate(countTotalOrderHistoryPipeline)
   const result = await Order.aggregate(getOrderHistoryPipeline)
-
-  const totalItems = result.length > 0 ? result[0].totalItems : 0
-  const orders = result
+  const totalItems = result[0].totalCount[0].count || 0
+  const totalPages = Math.ceil(totalItems / pageSize)
+  const orders = result[0].orders
   return { totalItems, totalPages, orders }
 }
 
