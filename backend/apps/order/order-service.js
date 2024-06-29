@@ -125,13 +125,15 @@ const getOrderHistory = async (userId, queryString) => {
   }
 
   if (orderStatus) {
-    match.order_status = orderStatus
+    match.$match.order_status = orderStatus
   }
 
   if (orderDate && typeof orderDate === 'object') {
     const modifiedOrderDate = convertDateStringToDateObject(orderDate)
-    match.order_date = modifiedOrderDate
+    match.$match.order_date = modifiedOrderDate
   }
+
+  console.log(match)
 
   const count = {
     $count: 'count'
@@ -164,24 +166,23 @@ const getOrderHistory = async (userId, queryString) => {
           sort,
           skip,
           limit
-          // You can include the final project stage here if needed for shaping the output
         ]
       }
     })
   } else {
     getOrderHistoryPipeline.push(
-      group,
       {
         $facet: {
           totalCount: [
+            group,
             count
           ],
           orders: [
+            group,
             project, // select field from dish object
             sort,
             skip,
             limit
-            // You can include the final project stage here if needed for shaping the output
           ]
         }
       })
