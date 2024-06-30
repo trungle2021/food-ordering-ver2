@@ -156,12 +156,13 @@ const getOrderHistory = async (userId, queryString) => {
     getOrderHistoryPipeline.push({
       $facet: {
         totalCount: [
-          matchDishByDishName,
           group, // group and reassemble order details back into array
+          matchDishByDishName,
           count
         ],
         orders: [
           group, // group and reassemble order details back into array
+          matchDishByDishName,
           project, // select field from dish object
           sort,
           skip,
@@ -189,7 +190,7 @@ const getOrderHistory = async (userId, queryString) => {
   }
 
   const result = await Order.aggregate(getOrderHistoryPipeline)
-  const totalItems = result[0].totalCount[0].count || 0
+  const totalItems = result[0].totalCount[0]?.count || 0
   const totalPages = Math.ceil(totalItems / pageSize)
   const orders = result[0].orders
   return { totalItems, totalPages, orders }
