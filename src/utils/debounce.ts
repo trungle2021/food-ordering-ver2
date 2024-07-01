@@ -11,14 +11,3 @@ export const debounce = <T extends unknown[]>(
     }, delay);
   };
 };
-
-// export const debounce = (callback: any, delay: any) => {
-//   let timerId: any;
-
-//   return () => {
-//     clearTimeout(timerId);
-//     timerId = setTimeout(() => {
-//       callback();
-//     }, delay);
-//   };
-// };

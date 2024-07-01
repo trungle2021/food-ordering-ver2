@@ -122,7 +122,7 @@ export const OrderHistory = () => {
                 <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
             </Dropdown>
 
-            <SearchBarReactSuite value={search} onSubmit={dishName => handleOnSubmitSearchDishByNameDebounced(dishName)} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
+            <SearchBarReactSuite focusOnReload={true} value={search} onSubmit={dishName =>  handleOnSubmitSearchDishByNameDebounced(dishName)} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
         </Box>
     </>
 
