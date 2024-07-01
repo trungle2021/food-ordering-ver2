@@ -1,27 +1,29 @@
 import { Input, InputGroup } from 'rsuite';
 import { SearchIcon } from '../UI/Icon';
-import { debounce } from '~/utils/debounce';
+import { useState } from 'react';
 
 
 interface SearchBarReactSuiteProps {
-  placeholder: string;
-  onSubmit: (dishName: string) => void;
-  [key: string]: any; // To accept any other props dynamically
+    value: any;
+    placeholder: string;
+    onSubmit: (dishName: string) => void;
+    [key: string]: any; // To accept any other props dynamically
 };
 
 
+export const SearchBarReactSuite: React.FC<SearchBarReactSuiteProps> = ({ value, placeholder, onSubmit, ...props }) => {
+    const [inputValue, setInputValue] = useState(value)
 
-export const SearchBarReactSuite: React.FC<SearchBarReactSuiteProps> = ({ placeholder, onSubmit, ...props }) => {
-  const handleInputChange = (dishName: string) => {
-    onSubmit(dishName)
-  }
-
-  return (
-    <InputGroup {...props}>
-      <Input placeholder={placeholder} onChange={debounce(handleInputChange, 1000)}  />
-      <InputGroup.Addon>
-        <SearchIcon />
-      </InputGroup.Addon>
-    </InputGroup>
-  )
+    const handleInputChange = (value: string, event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(value)
+        onSubmit(value)
+    }
+    return (
+        <InputGroup {...props}>
+            <Input value={inputValue} placeholder={placeholder} onChange={(value, event) => handleInputChange(value, event)} />
+            <InputGroup.Addon>
+                <SearchIcon />
+            </InputGroup.Addon>
+        </InputGroup>
+    )
 }

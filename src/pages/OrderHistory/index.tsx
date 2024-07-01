@@ -11,6 +11,7 @@ import { useQuery } from "~/hooks/useQuery";
 import { useHistory } from "react-router-dom";
 import { DateRangePicker, Dropdown } from "rsuite";
 import { SearchBarReactSuite } from "~/components/SearchBar/SearchBarReactSuite";
+import { debounce } from "~/utils/debounce";
 
 
 
@@ -21,6 +22,8 @@ export const OrderHistory = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const orderState = useSelector((state: any) => state.order)
+    const [search, setSearch] = useState('')
+    // const debounce = useDebounce(search)
     const [dateRange, setDateRange] = useState<any>(() => {
         if (queryParams.has('order_date[gte]') && queryParams.has('order_date[lte]')) {
             const startDate = new Date(queryParams.get('order_date[gte]') as string)
@@ -93,13 +96,17 @@ export const OrderHistory = () => {
         dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     }
 
+
     const handleOnSubmitSearchDishByName = (dishName: string) => {
-        queryParams.set('name', dishName);
+        setSearch(dishName)
+        queryParams.set('dish_name', dishName);
         const updatedFilter = queryParams.toString();
         setFilter(updatedFilter)
         history.push({ search: queryParams.toString() })
         dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
     }
+
+    const handleOnSubmitSearchDishByNameDebounced = debounce(handleOnSubmitSearchDishByName, 500)
 
     const OrderHistoryFilter = <>
         <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -115,7 +122,7 @@ export const OrderHistory = () => {
                 <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
             </Dropdown>
 
-            <SearchBarReactSuite onSubmit={handleOnSubmitSearchDishByName} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
+            <SearchBarReactSuite value={search} onSubmit={dishName => handleOnSubmitSearchDishByNameDebounced(dishName)} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
         </Box>
     </>
 

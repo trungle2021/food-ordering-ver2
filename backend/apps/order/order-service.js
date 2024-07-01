@@ -124,6 +124,24 @@ const getOrderHistory = async (userId, queryString) => {
     $limit: pageSize
   }
 
+  const count = {
+    $count: 'count'
+  }
+
+  const facet = {
+    $facet: {
+      totalCount: [
+        count
+      ],
+      orders: [
+        project, // select field from dish object
+        sort,
+        skip,
+        limit
+      ]
+    }
+  }
+
   if (orderStatus) {
     match.$match.order_status = orderStatus
   }
@@ -133,18 +151,14 @@ const getOrderHistory = async (userId, queryString) => {
     match.$match.order_date = modifiedOrderDate
   }
 
-  console.log(match)
-
-  const count = {
-    $count: 'count'
-  }
-
   const getOrderHistoryPipeline = [
     match,
     lookupOrderDetail,
     unwindOrderDetail,
     lookupDish, // after lookup dish object become dish array
-    unwindDish // convert dish array into dish object
+    unwindDish, // convert dish array into dish object
+    group, // group and reassemble order details back into array
+    facet
   ]
 
   if (dishName) {
@@ -153,40 +167,8 @@ const getOrderHistory = async (userId, queryString) => {
         'order_details.dish.name': { $regex: dishName, $options: 'i' }
       }
     }
-    getOrderHistoryPipeline.push({
-      $facet: {
-        totalCount: [
-          group, // group and reassemble order details back into array
-          matchDishByDishName,
-          count
-        ],
-        orders: [
-          group, // group and reassemble order details back into array
-          matchDishByDishName,
-          project, // select field from dish object
-          sort,
-          skip,
-          limit
-        ]
-      }
-    })
-  } else {
-    getOrderHistoryPipeline.push(
-      {
-        $facet: {
-          totalCount: [
-            group,
-            count
-          ],
-          orders: [
-            group,
-            project, // select field from dish object
-            sort,
-            skip,
-            limit
-          ]
-        }
-      })
+    facet.$facet.totalCount.splice(0, 0, matchDishByDishName)
+    facet.$facet.orders.splice(0, 0, matchDishByDishName)
   }
 
   const result = await Order.aggregate(getOrderHistoryPipeline)
