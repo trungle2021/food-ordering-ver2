@@ -1,4 +1,6 @@
 const OrderDetail = require('./order-detail-model')
+const DishService = require('../dish/dish-service')
+const AppError = require('../../utils/error/app-error')
 
 const getOrderDetails = async (filter) => {
   return await OrderDetail.find(filter)
@@ -15,20 +17,26 @@ const getOrderDetail = async (id) => {
 }
 
 const createOrderDetails = async (orderId, orderItems, options) => {
-  const orderDetailModified = orderItems.map(item => {
-    return {
-      order: orderId,
-      dish: item.dish_id,
-      quantity: item.quantity,
-      price: item.price
+  const { isValid, invalidDish } = await DishService.validateDishesById(orderItems)
+  if (isValid) {
+    const orderDetailModified = orderItems.map(item => {
+      return {
+        order: orderId,
+        dish: item.dish_id,
+        quantity: item.quantity,
+        price: item.price
+      }
+    })
+
+    if (options) {
+      return await OrderDetail.insertMany(orderDetailModified, options)
     }
-  })
 
-  if (options) {
-    return await OrderDetail.insertMany(orderDetailModified, options)
+    return await OrderDetail.insertMany(orderDetailModified)
+  } else {
+    console.error('Invalid dish object', invalidDish)
+    throw new AppError('Invalid dish object encountered.', 404)
   }
-
-  return await OrderDetail.insertMany(orderDetailModified)
 }
 
 const createOrderDetail = async (orderdetail, options) => {

@@ -116,6 +116,16 @@ const deleteDish = async (dish) => {
 
 }
 
+const validateDishesById = async (orderItems) => {
+  const dishIds = orderItems.map(item => item.dish_id)
+  const dishes = await Dish.find({ _id: { $in: dishIds } })
+
+  if (dishes.length !== dishIds.length) {
+    return { isValid: false, invalidDish: dishIds.filter(id => !dishes.map(dish => dish._id).includes(id)) }
+  }
+  return { isValid: true }
+}
+
 module.exports = {
   getDishes,
   getDish,
@@ -124,5 +134,6 @@ module.exports = {
   createDishes,
   createDish,
   updateDish,
-  deleteDish
+  deleteDish,
+  validateDishesById
 }

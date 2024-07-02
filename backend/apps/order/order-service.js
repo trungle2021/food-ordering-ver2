@@ -40,7 +40,6 @@ const getOrderHistory = async (userId, queryString) => {
   const orderDate = modifiedQueryObject.order_date
   const dishName = queryString.dish_name
 
-
   const match = {
     $match: {
       user: userIdConverted
@@ -102,6 +101,7 @@ const getOrderHistory = async (userId, queryString) => {
       order_date: 1,
       order_details: {
         dish: {
+          _id: 1,
           name: 1,
           image: 1
         },
@@ -116,7 +116,7 @@ const getOrderHistory = async (userId, queryString) => {
   }
 
   const sort = {
-    $sort: { order_date: 1 }
+    $sort: { order_date: -1 }
   }
 
   const skip = {

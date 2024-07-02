@@ -52,7 +52,7 @@ const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
 
 const getDish = catchAsyncHandler(async (req, res, next) => {
   const { id } = req.params
-  const dish = await DishService.getDish(id)
+  const dish = await DishService.getDish({ _id: id })
   if (!dish) {
     return res.status(404).json({
       status: 'fail',

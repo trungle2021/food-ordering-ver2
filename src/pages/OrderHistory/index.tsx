@@ -18,12 +18,12 @@ import { debounce } from "~/utils/debounce";
 
 export const OrderHistory = () => {
 
+    let content = null
     const queryParams = useQuery()
     const history = useHistory()
     const dispatch = useDispatch()
     const orderState = useSelector((state: any) => state.order)
     const [search, setSearch] = useState('')
-    // const debounce = useDebounce(search)
     const [dateRange, setDateRange] = useState<any>(() => {
         if (queryParams.has('order_date[gte]') && queryParams.has('order_date[lte]')) {
             const startDate = new Date(queryParams.get('order_date[gte]') as string)
@@ -34,7 +34,6 @@ export const OrderHistory = () => {
     })
     const [filter, setFilter] = useState(queryParams.toString())
     const [orderStatus, setOrderStatus] = useState('Order Status')
-    let content
 
     const orderHistory = orderState.orders
     const isLoading = orderState.isLoading
@@ -50,6 +49,13 @@ export const OrderHistory = () => {
         dispatch<any>(getOrderHistory({ filter, page: newPageChange, limit: 10 }))
     }
 
+    const updateAndApplyFilter = (queryParams: URLSearchParams) => {
+        const updatedFilter = queryParams.toString();
+        setFilter(updatedFilter);
+        history.push({ search: updatedFilter });
+        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }));
+    }
+
     const handleDateRangeChange = (range: DateRange | null) => {
         if (range) {
             const dateRange = [range[0], range[1]]
@@ -62,10 +68,7 @@ export const OrderHistory = () => {
             queryParams.set('order_date[gte]', startDate.toISOString());
             queryParams.set('order_date[lte]', endDate.toISOString());
 
-            const updatedFilter = queryParams.toString();
-            setFilter(updatedFilter)
-            history.push({ search: queryParams.toString() })
-            dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
+            updateAndApplyFilter(queryParams)
         }
     };
 
@@ -74,15 +77,16 @@ export const OrderHistory = () => {
         setOrderStatus(content || "")
         const queryParams = new URLSearchParams(filter);
         if (eventKey) {
+            if (eventKey === 'all') {
+                queryParams.delete('order_status'); // Remove the filter if eventKey is all
+                updateAndApplyFilter(queryParams)
+                return
+            }
             queryParams.set('order_status', eventKey);
         } else {
             queryParams.delete('order_status'); // Remove the filter if eventKey is null or empty
         }
-
-        const updatedFilter = queryParams.toString();
-        setFilter(updatedFilter)
-        history.push({ search: queryParams.toString() });
-        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
+        updateAndApplyFilter(queryParams)
     };
 
     const handleClearDateRange = () => {
@@ -90,23 +94,28 @@ export const OrderHistory = () => {
         const queryParams = new URLSearchParams(filter);
         queryParams.delete('order_date[gte]');
         queryParams.delete('order_date[lte]');
-        const updatedFilter = queryParams.toString();
-        setFilter(updatedFilter)
-        history.push({ search: queryParams.toString() });
-        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
+        updateAndApplyFilter(queryParams)
     }
 
 
     const handleOnSubmitSearchDishByName = (dishName: string) => {
+        if(dishName.trim() === search.trim()){
+            return
+        }
+        if (dishName.trim() === '') {
+            const queryParams = new URLSearchParams(filter);
+            queryParams.delete('dish_name')
+            setSearch('')
+            updateAndApplyFilter(queryParams)
+            return
+        }
         setSearch(dishName)
         queryParams.set('dish_name', dishName);
-        const updatedFilter = queryParams.toString();
-        setFilter(updatedFilter)
-        history.push({ search: queryParams.toString() })
-        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }))
+        updateAndApplyFilter(queryParams)
+        return
     }
 
-    const handleOnSubmitSearchDishByNameDebounced = debounce(handleOnSubmitSearchDishByName, 500)
+    const handleOnSubmitSearchDishByNameDebounced = debounce(handleOnSubmitSearchDishByName, 1000)
 
     const OrderHistoryFilter = <>
         <Box sx={{ display: 'flex', gap: '20px' }}>
@@ -117,12 +126,13 @@ export const OrderHistory = () => {
             />
 
             <Dropdown title={orderStatus} trigger='hover' onSelect={handleOrderStatusChange}>
+                <Dropdown.Item eventKey="all">All</Dropdown.Item>
                 <Dropdown.Item eventKey="completed">Completed</Dropdown.Item>
                 <Dropdown.Item eventKey="pending">Pending</Dropdown.Item>
                 <Dropdown.Item eventKey="canceled">Canceled</Dropdown.Item>
             </Dropdown>
 
-            <SearchBarReactSuite focusOnReload={true} value={search} onSubmit={dishName =>  handleOnSubmitSearchDishByNameDebounced(dishName)} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
+            <SearchBarReactSuite focusOnReload={true} value={search} onSubmit={dishName => handleOnSubmitSearchDishByNameDebounced(dishName)} style={{ width: '500px', marginLeft: 'auto' }} size="md" placeholder="Search by dish name" />
         </Box>
     </>
 
@@ -150,7 +160,7 @@ export const OrderHistory = () => {
 
                     <div className={styles['order-container__body']}>
                         {order.order_details.map((orderDetail: any) => (
-                            <div className={styles['order-item']} key={orderDetail._id}>
+                            <div className={styles['order-item']} key={orderDetail.dish._id}>
                                 <div className={styles['order-item__info']}>
                                     <img className={styles['order-item--image']} src={orderDetail.dish.image} alt="product" />
                                     <div className={styles['order-item__details']}>

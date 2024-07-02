@@ -22,10 +22,10 @@ export const SearchBarReactSuite: React.FC<SearchBarReactSuiteProps> = ({ value,
 
     useEffect(() => {
         // Focus the input element when the component mounts
-        if(inputValue){
+        if(inputValue && inputValue.trim() !== '' && focusOnReload){
             inputRef.current?.focus();
         }
-    }, []); // Empty dependency array ensures this effect runs only once after the initial render
+    }, []);
 
     return (
         <InputGroup {...props}>
