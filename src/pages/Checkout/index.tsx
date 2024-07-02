@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux"
 import { HeaderPage } from "~/components/HeaderPage"
 import { useHistory } from "react-router-dom"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { LocationIcon } from "~/components/UI/Icon"
 import CartItemProps from "~/interface/cart/CartItem"
 import { getCart } from "~/features/Cart/cartAction"
 import styles from './styles.module.css'
+import { Dropdown } from "rsuite"
 
 
 
@@ -13,7 +14,7 @@ export const Checkout = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const cart = useSelector((state: any) => state.cart)
-
+    const [paymentMethod, setPaymentMethod] = useState('Choose payment method')
     useEffect(() => {
         dispatch<any>(getCart()).then((result: any) => {
             if (result.payload.items.length === 0) {
@@ -22,24 +23,60 @@ export const Checkout = () => {
         })
     }, [dispatch])
 
+    const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
+        const content = (event.target as HTMLElement).innerText;
+        setPaymentMethod(content || '')
+    }
+
     return (
         <>
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
                 <div className={styles['checkout-container__wrapper']}>
-                    <div className={styles['checkout-container__address']}>
-                        <div className={styles['address-title']}>Delivery Address</div>
-                        <div className={styles['address-content']}>
-                            <div className={styles['address-heading']}>
-                                <LocationIcon />
-                                Elm Street, 23
+                    <div className={styles['checkout-container__info']}>
+
+                        <div className="payment-container">
+                            <div className={styles['title']}>Payment Information</div>
+                            <div className={styles['payment-content']}>
+                                <Dropdown title={paymentMethod} onSelect={handlePaymentMethodChange}>
+                                    <Dropdown.Item eventKey="internal">Internal Account</Dropdown.Item>
+                                    <Dropdown.Item eventKey="bank">Bank Account</Dropdown.Item>
+                                </Dropdown>
+
+                                <div className={styles['payment-content__info']}>
+                                    {paymentMethod.toLowerCase() === 'internal account' && <div className={styles['payment-content__info__internal-account']}>
+                                        <div className={styles['payment-content__info__internal']}>Current Balance: 500$</div>
+                                        <button className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
+                                    </div>}
+                                    
+                                    {paymentMethod.toLowerCase() === 'bank account' && 
+                                    <div className={styles['payment-content__info__bank-account']}>
+                                        <span>Choose card: <span>VPBank - Ngân hàng Việt Nam Thịnh vượng
+                                        **** 4370</span></span>
+                                    </div>}
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div className="address-container">
+                            <div className={styles['title']}>Delivery Address</div>
+                            <div className={styles['address-content']}>
+                                <div className={styles['address-heading']}>
+                                    <LocationIcon />
+                                    Elm Street, 23
+                                </div>
+                            </div>
+                            <div className={styles['address-description']}>
+                                <textarea placeholder="Add your notes" />
                             </div>
                         </div>
-                        <div className={styles['address-description']}>
-                            <textarea placeholder="Add your notes" />
-                        </div>
+
                     </div>
+
                     <div className={styles['checkout-container__order-details']}>
                         <ul className={`${styles["cart-container__list"]}`}>
                             {cart ? cart.items.map((item: CartItemProps) => {
