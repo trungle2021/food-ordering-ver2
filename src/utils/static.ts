@@ -10,6 +10,11 @@ export enum CART_ACTION_TYPE {
     DECREMENT = "decrement"
 }
 
+export enum PAYMENT_METHOD {
+  BANK = 'bank account',
+  INTERNAL = 'internal account'
+}
+
 export enum LOCAL_STORAGE_KEY {
   USER = "user",
 }

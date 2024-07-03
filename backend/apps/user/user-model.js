@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const { ObjectId } = require('mongodb')
+const { required } = require('joi')
 
 // name, password, balance, phone, email, created_at, updated_at
 const userSchema = new mongoose.Schema({
@@ -34,6 +36,12 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String
   },
+  user_address: [
+    {
+        type: ObjectId,
+        ref: 'UserAddress'
+    }
+  ],
   created_at: {
     type: Date,
     default: Date.now()

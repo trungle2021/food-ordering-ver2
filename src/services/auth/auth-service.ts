@@ -1,6 +1,6 @@
 
 import axios from "~/lib/axios";
-import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
+import { loginApi, registerApi, logoutApi, refreshTokenApi, getUserInfoApi } from "~/utils/api";
 import { LoginPayload } from "~/interface/auth/login-payload";
 import { RegisterPayload } from "~/interface/auth/register-payload";
 import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-payload";
@@ -8,7 +8,6 @@ import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-
 
 const login = (credential: LoginPayload): Promise<any> => {
   return axios.post(loginApi, credential);
-
 };
 
 const register = (registerUserFormData: RegisterPayload): Promise<any> => {
@@ -30,7 +29,7 @@ const AuthService = {
   login,
   register,
   logout,
-  getNewAccessToken
+  getNewAccessToken,
 };
 
 export default AuthService;

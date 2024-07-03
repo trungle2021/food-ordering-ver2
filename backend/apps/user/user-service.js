@@ -6,7 +6,17 @@ const getUsers = async () => {
 }
 
 const getUser = async (filter) => {
-  return await User.findOne(filter)
+  return await User.findOne(filter).populate({
+    path: 'user_address',
+    match: {
+      is_default_address: true
+    },
+    select:{
+      '_id': 1,
+      'is_default_address': 1,
+      'address': 1
+    }
+  })
 }
 
 const checkIfUserExists = async (userId) => {

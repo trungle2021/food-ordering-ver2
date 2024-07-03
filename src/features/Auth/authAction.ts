@@ -52,3 +52,4 @@ export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', asyn
         return thunkAPI.rejectWithValue(err);
     }
 })
+
