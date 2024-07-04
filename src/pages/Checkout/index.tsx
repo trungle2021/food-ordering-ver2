@@ -6,10 +6,12 @@ import { LocationIcon } from "~/components/UI/Icon"
 import CartItemProps from "~/interface/cart/CartItem"
 import { getCart } from "~/features/Cart/cartAction"
 import styles from './styles.module.css'
-import { Dropdown } from "rsuite"
+import { Dropdown, List } from "rsuite"
 import { useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
 import UserService from "~/services/user/user-service"
+import { Avatar, Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
+import { Box } from "@mui/system"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -44,7 +46,6 @@ export const Checkout = () => {
             }
             return;
         }
-        // get user info
         getUserInfo()
     }, [userId])
 
@@ -70,10 +71,10 @@ export const Checkout = () => {
         setPaymentMethod(content || '')
     }
 
-    const handleAddressChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
-        if(addressList.length > 0){
-            const selectedAddress = addressList.find((address:any) => address._id === eventKey)
-            if(selectedAddress){
+    const handleAddressChange = (eventKey: string | null) => {
+        if (addressList.length > 0) {
+            const selectedAddress = addressList.find((address: any) => address._id === eventKey)
+            if (selectedAddress) {
                 setDefaultAddress(selectedAddress)
             }
         }
@@ -87,18 +88,9 @@ export const Checkout = () => {
 
     }
 
-    const handleOnToggleAddressDropDown = (open?: boolean | undefined) => {
-        if (open) {
-            getAllUserAddress()
-        }
-        return
-    }
-
     const handleOnTogglePaymentMethodDropDown = (open?: boolean | undefined) => {
         console.log("isOpen Payment: ", open)
     }
-
-
 
     const onSubmit = (data: any) => {
         console.log("data: ", data)
@@ -109,6 +101,20 @@ export const Checkout = () => {
     const onError = (error: any) => {
         console.log("ERROR:::", error);
     }
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+        getAllUserAddress()
+        setOpen(true)
+    };
+    const handleClose = () => setOpen(false);
+
+    const [value, setValue] = useState('female');
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue((event.target as HTMLInputElement).value);
+    };
+
 
     return (
         <>
@@ -148,11 +154,55 @@ export const Checkout = () => {
                                 <div className={styles['address-content']}>
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
-                                        <Dropdown title={defaultAddress.address} onSelect={handleAddressChange} onToggle={handleOnToggleAddressDropDown}>
-                                            {addressList.length > 0 && addressList.map((address: any) =>
-                                                <Dropdown.Item key={address._id} eventKey={address._id}>{address.address}</Dropdown.Item>
-                                            )}
-                                        </Dropdown>
+                                        <div>{defaultAddress.address}</div>
+                                        <Button onClick={handleOpen}>Change</Button>
+                                        <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={open}>
+                                            <DialogTitle sx={{fontSize: '2rem'}}>My Address</DialogTitle>
+                                            <FormControl>
+                                                <RadioGroup
+                                                    aria-labelledby="demo-controlled-radio-buttons-group"
+                                                    name="controlled-radio-buttons-group"
+                                                    value={value}
+                                                    onChange={handleChange}
+                                                >
+                                                    <List>
+                                                        {addressList.map((address: any) => (
+                                                            <ListItem key={address._id} sx={{padding: '30px'}}>
+                                                                <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', }}>
+                                                                    <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start'}}>
+                                                                        <FormControlLabel value={address._id} control={<Radio />} label="" />
+                                                                        <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
+                                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                                <div style={{ display: 'flex', }}>
+                                                                                    <div>{address.recipient}</div>
+                                                                                    <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', margin: '0 8px' }}></div>
+                                                                                    <div style={{color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem'}}>{address.phone}</div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div style={{color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem'}}>{address.address}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style={{
+                                                                        background: 'none',
+                                                                        border: 0,
+                                                                        color: '#08f',
+                                                                        outline: 'none',
+                                                                        fontSize: '1.3rem',
+                                                                        padding: '4px',
+                                                                        whiteSpace: 'nowrap'
+                                                                    }}>Update</div>
+                                                                </div>
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <DialogActions>
+                                                <button  style={{padding: '10px'}} onClick={handleClose}>Cancel</button>
+                                                <button  style={{padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)'}} type="submit">Confirm</button>
+                                            </DialogActions>
+                                        </Dialog>
+
                                     </div>
                                 </div>
                                 <div className={styles['address-description']}>
@@ -192,9 +242,9 @@ export const Checkout = () => {
                     </div>
 
                     <button type="submit" className={styles['checkout-container-button-payment']}>Proceed To Payment</button>
-                </form>
+                </form >
 
-            </div>
+            </div >
         </>
     )
 }

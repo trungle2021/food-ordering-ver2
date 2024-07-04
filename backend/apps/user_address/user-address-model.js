@@ -6,6 +6,14 @@ const userAddressSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Address is required']
   },
+  recipient: {
+    type: String,
+    required: [true, 'Name receiver is required']
+  },
+  phone: {
+    type: String,
+    required: [true, 'Phone is required']
+  },
   is_default_address: {
     type: Boolean,
     default: false
