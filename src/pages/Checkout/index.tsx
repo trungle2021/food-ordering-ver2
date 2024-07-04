@@ -7,22 +7,21 @@ import CartItemProps from "~/interface/cart/CartItem"
 import { getCart } from "~/features/Cart/cartAction"
 import styles from './styles.module.css'
 import { Dropdown, List } from "rsuite"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
 import UserService from "~/services/user/user-service"
-import { Avatar, Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
-import { Box } from "@mui/system"
+import { Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
+import { capitalizeFirstLetter } from "~/utils/capitalizeFirstLetter";
+import { register } from "module"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
     address: string,
-    orderDetails: []
 }
 
 const initialFormValues: CheckoutFormValues = {
     paymentMethod: PAYMENT_METHOD.INTERNAL,
     address: '',
-    orderDetails: []
 }
 
 const loginSchemaValidator = {
@@ -30,33 +29,39 @@ const loginSchemaValidator = {
 }
 
 export const Checkout = () => {
+
     const history = useHistory()
     const dispatch = useDispatch()
+
     const cart = useSelector((state: any) => state.cart)
     const auth = useSelector((state: any) => state.auth)
+    const userId = auth?.user?._id
+
+    const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
+    const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState<any>({})
     const [addressList, setAddressList] = useState([])
-    const userId = auth?.user?._id
+    const [radioAddressId, setRadioAddressId] = useState('');
+    const [disableSubmitButton, setDisableSubmitButton] = useState(false)
+
+    const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
+        defaultValues: initialFormValues,
+    });
+
+
     useEffect(() => {
         const getUserInfo = async () => {
             const response = await UserService.getUserInfo(userId)
             const userAddressList = response?.data?.user_address
             if (userAddressList.length > 0) {
-                setDefaultAddress(response.data.user_address[0])
+                const defaultAddress = response.data.user_address[0]
+                setDefaultAddress(defaultAddress)
+                setRadioAddressId(defaultAddress._id)
             }
             return;
         }
         getUserInfo()
     }, [userId])
-
-    const [paymentMethod, setPaymentMethod] = useState('Choose payment method')
-    const {
-        handleSubmit,
-        reset,
-        control,
-    } = useForm<CheckoutFormValues>({
-        defaultValues: initialFormValues,
-    });
 
     useEffect(() => {
         dispatch<any>(getCart()).then((result: any) => {
@@ -66,56 +71,53 @@ export const Checkout = () => {
         })
     }, [dispatch])
 
+
+
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
         setPaymentMethod(content || '')
     }
 
-    const handleAddressChange = (eventKey: string | null) => {
-        if (addressList.length > 0) {
-            const selectedAddress = addressList.find((address: any) => address._id === eventKey)
-            if (selectedAddress) {
-                setDefaultAddress(selectedAddress)
-            }
-        }
-    }
 
-    const getAllUserAddress = async () => {
+    const handleOpen = async () => {
         const response = await UserService.getUserAddressesById(userId);
         if (response?.data.length > 0) {
             setAddressList(response.data)
         }
+        setOpenUserAddressModal(true)
+    };
 
-    }
+    const handleClose = () => setOpenUserAddressModal(false);
 
-    const handleOnTogglePaymentMethodDropDown = (open?: boolean | undefined) => {
-        console.log("isOpen Payment: ", open)
+    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRadioAddressId((event.target as HTMLInputElement).value);
+    };
+
+    const handleConfirmAddressChange = () => {
+        console.log(radioAddressId)
+        const selectedAddress = addressList.find((address: any) => address._id === radioAddressId)
+        if (selectedAddress) {
+            setDefaultAddress(selectedAddress)
+            setOpenUserAddressModal(false)
+        }
     }
 
     const onSubmit = (data: any) => {
-        console.log("data: ", data)
-        // call api create order
-        console.log('submit')
+        const modifiedData = {
+            ...data,
+            address: defaultAddress._id
+        }
+
+        // check if cart.items has length > 0
+        if (cart.items.length > 0) {
+
+        }
+        console.log("data: ", modifiedData)
     }
 
     const onError = (error: any) => {
         console.log("ERROR:::", error);
     }
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => {
-        getAllUserAddress()
-        setOpen(true)
-    };
-    const handleClose = () => setOpen(false);
-
-    const [value, setValue] = useState('female');
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue((event.target as HTMLInputElement).value);
-    };
-
-
     return (
         <>
             <HeaderPage pageName="Order" />
@@ -124,62 +126,38 @@ export const Checkout = () => {
                 <form noValidate onSubmit={handleSubmit(onSubmit, onError)} >
                     <div className={styles['checkout-container__wrapper']}>
                         <div className={styles['checkout-container__info']}>
-
-                            <div className="payment-container">
-                                <div className={styles['title']}>Payment Information</div>
-                                <div className={styles['payment-content']}>
-                                    <Dropdown title={paymentMethod} onSelect={handlePaymentMethodChange} onToggle={handleOnTogglePaymentMethodDropDown}>
-                                        <Dropdown.Item eventKey="internal">Internal Account</Dropdown.Item>
-                                        <Dropdown.Item eventKey="bank">Bank Account</Dropdown.Item>
-                                    </Dropdown>
-
-                                    <div className={styles['payment-content__info']}>
-                                        {paymentMethod.toLowerCase() === 'internal account' && <div className={styles['payment-content__info__internal-account']}>
-                                            <div className={styles['payment-content__info__internal']}>Current Balance: 500$</div>
-                                            <button className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
-                                        </div>}
-
-                                        {paymentMethod.toLowerCase() === 'bank account' &&
-                                            <div className={styles['payment-content__info__bank-account']}>
-                                                <span>Your bank account: <span>VPBank - Ngân hàng Việt Nam Thịnh vượng
-                                                    **** 4370</span></span>
-                                            </div>}
-
-                                    </div>
-                                </div>
-                            </div>
-
                             <div className="address-container">
-                                <div className={styles['title']}>Delivery Address</div>
+                                <div className={styles['title']}>Delivery Address: </div>
                                 <div className={styles['address-content']}>
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         <Button onClick={handleOpen}>Change</Button>
-                                        <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={open}>
-                                            <DialogTitle sx={{fontSize: '2rem'}}>My Address</DialogTitle>
+                                        <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={openUserAddressModal}>
+                                            <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
                                             <FormControl>
                                                 <RadioGroup
                                                     aria-labelledby="demo-controlled-radio-buttons-group"
                                                     name="controlled-radio-buttons-group"
-                                                    value={value}
-                                                    onChange={handleChange}
+                                                    value={radioAddressId}
+                                                    onChange={handleRadioChange}
                                                 >
                                                     <List>
-                                                        {addressList.map((address: any) => (
-                                                            <ListItem key={address._id} sx={{padding: '30px'}}>
+                                                        {addressList?.length > 0 && addressList.map((address: any) => (
+                                                            <ListItem key={address._id} sx={{ padding: '30px' }}>
                                                                 <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', }}>
-                                                                    <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start'}}>
+                                                                    <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start' }}>
                                                                         <FormControlLabel value={address._id} control={<Radio />} label="" />
                                                                         <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                                                                 <div style={{ display: 'flex', }}>
                                                                                     <div>{address.recipient}</div>
                                                                                     <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', margin: '0 8px' }}></div>
-                                                                                    <div style={{color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem'}}>{address.phone}</div>
+                                                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem' }}>{address.phone}</div>
                                                                                 </div>
                                                                             </div>
-                                                                            <div style={{color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem'}}>{address.address}</div>
+                                                                            <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
+
                                                                         </div>
                                                                     </div>
                                                                     <div style={{
@@ -189,7 +167,8 @@ export const Checkout = () => {
                                                                         outline: 'none',
                                                                         fontSize: '1.3rem',
                                                                         padding: '4px',
-                                                                        whiteSpace: 'nowrap'
+                                                                        whiteSpace: 'nowrap',
+                                                                        cursor: 'pointer'
                                                                     }}>Update</div>
                                                                 </div>
                                                             </ListItem>
@@ -197,9 +176,9 @@ export const Checkout = () => {
                                                     </List>
                                                 </RadioGroup>
                                             </FormControl>
-                                            <DialogActions>
-                                                <button  style={{padding: '10px'}} onClick={handleClose}>Cancel</button>
-                                                <button  style={{padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)'}} type="submit">Confirm</button>
+                                            <DialogActions sx={{ display: 'flex', gap: '10px', margin: '10px 24px' }}>
+                                                <button style={{ padding: '10px' }} onClick={handleClose}>Cancel</button>
+                                                <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
                                             </DialogActions>
                                         </Dialog>
 
@@ -209,7 +188,43 @@ export const Checkout = () => {
                                     <textarea placeholder="Add your notes" />
                                 </div>
                             </div>
+                            <div className="payment-container">
+                                <div className={styles['title']}>Payment Information: </div>
+                                <div className={styles['payment-content']}>
+                                    <Controller
+                                        name="paymentMethod"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Dropdown
+                                                title={paymentMethod}
+                                                onSelect={(eventKey, event) => {
+                                                    handlePaymentMethodChange(eventKey, event);
+                                                    field.onChange((event.target as HTMLElement).innerText); // Update the field value in react-hook-form
+                                                }}
+                                                {...field} // Pass the field props to the Dropdown component
+                                            >
+                                                <Dropdown.Item eventKey={PAYMENT_METHOD.INTERNAL}>Internal Account</Dropdown.Item>
+                                                <Dropdown.Item eventKey={PAYMENT_METHOD.BANK}>Bank Account</Dropdown.Item>
+                                            </Dropdown>
+                                        )}
+                                    />
 
+                                    <div className={styles['payment-content__info']}>
+                                        {paymentMethod.toLowerCase() === 'internal account' && <div className={styles['payment-content__info__internal-account']}>
+                                            <div className={styles['payment-content__info__internal']}>Current Balance: 500$</div>
+                                            <button className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
+                                        </div>}
+
+                                        {
+                                            paymentMethod.toLowerCase() === 'bank account' &&
+                                            <div className={styles['payment-content__info__bank-account']}>
+                                                <span>Your bank account: <span>VPBank - Ngân hàng Việt Nam Thịnh vượng **** 4370</span></span>
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className={styles['checkout-container__order-details']}>
@@ -248,3 +263,21 @@ export const Checkout = () => {
         </>
     )
 }
+
+
+{/* <form noValidate onSubmit={handleSubmit(onSubmit, onError)} >
+                <Controller
+                    name="paymentMethod"
+                    control={control}
+                    render={({ field }) => (
+                        <Dropdown
+                            title={paymentMethod}
+                            onSelect={handlePaymentMethodChange}
+                            {...field} // Pass the field props to the Dropdown component
+                        >
+                            <Dropdown.Item eventKey={PAYMENT_METHOD.INTERNAL}>Internal Account</Dropdown.Item>
+                            <Dropdown.Item eventKey={PAYMENT_METHOD.BANK}>Bank Account</Dropdown.Item>
+                        </Dropdown>
+                    )}
+                />
+</form> */}

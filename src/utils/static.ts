@@ -11,8 +11,8 @@ export enum CART_ACTION_TYPE {
 }
 
 export enum PAYMENT_METHOD {
-  BANK = 'bank account',
-  INTERNAL = 'internal account'
+  BANK = 'Bank Account',
+  INTERNAL = 'Internal Account'
 }
 
 export enum LOCAL_STORAGE_KEY {

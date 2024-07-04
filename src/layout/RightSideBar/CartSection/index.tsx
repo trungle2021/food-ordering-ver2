@@ -66,7 +66,7 @@ export const CartSection = () => {
             </div>
 
             <div className={`${styles["cart-container__action"]}`}>
-                <button
+                {/* <button
                     className={styles["cart-container__action__button-coupon"]}
                 >
                     <CouponButtonIcon
@@ -76,7 +76,7 @@ export const CartSection = () => {
                         Have a coupon code?
                     </span>
                     <ArrowRightIcon />
-                </button>
+                </button> */}
                 <button
                     className={styles["cart-container-action__button-checkout"]}
                     onClick={handleCheckoutAction}
