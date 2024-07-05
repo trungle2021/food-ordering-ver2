@@ -263,21 +263,3 @@ export const Checkout = () => {
         </>
     )
 }
-
-
-{/* <form noValidate onSubmit={handleSubmit(onSubmit, onError)} >
-                <Controller
-                    name="paymentMethod"
-                    control={control}
-                    render={({ field }) => (
-                        <Dropdown
-                            title={paymentMethod}
-                            onSelect={handlePaymentMethodChange}
-                            {...field} // Pass the field props to the Dropdown component
-                        >
-                            <Dropdown.Item eventKey={PAYMENT_METHOD.INTERNAL}>Internal Account</Dropdown.Item>
-                            <Dropdown.Item eventKey={PAYMENT_METHOD.BANK}>Bank Account</Dropdown.Item>
-                        </Dropdown>
-                    )}
-                />
-</form> */}
