@@ -13,6 +13,7 @@ import UserService from "~/services/user/user-service"
 import { Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
 import { capitalizeFirstLetter } from "~/utils/capitalizeFirstLetter";
 import { register } from "module"
+import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -43,7 +44,7 @@ export const Checkout = () => {
     const [addressList, setAddressList] = useState([])
     const [radioAddressId, setRadioAddressId] = useState('');
     const [disableSubmitButton, setDisableSubmitButton] = useState(false)
-
+    const [openTopUpModal, setOpenTopUpModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
@@ -71,13 +72,10 @@ export const Checkout = () => {
         })
     }, [dispatch])
 
-
-
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
         setPaymentMethod(content || '')
     }
-
 
     const handleOpen = async () => {
         const response = await UserService.getUserAddressesById(userId);
@@ -118,8 +116,19 @@ export const Checkout = () => {
     const onError = (error: any) => {
         console.log("ERROR:::", error);
     }
+
+    const handleOpenTopUpModal = () => {
+        console.log("open modal")
+        setOpenTopUpModal(true)
+    }
+
+    const handleCloseTopUpModal = () => {
+        console.log("close modal")
+        setOpenTopUpModal(false)
+    }
+
     return (
-        <>
+<>
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -133,6 +142,8 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         <Button onClick={handleOpen}>Change</Button>
+                                        <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal}/>
+
                                         <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
                                             <FormControl>
@@ -181,7 +192,6 @@ export const Checkout = () => {
                                                 <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
                                             </DialogActions>
                                         </Dialog>
-
                                     </div>
                                 </div>
                                 <div className={styles['address-description']}>
@@ -212,7 +222,7 @@ export const Checkout = () => {
                                     <div className={styles['payment-content__info']}>
                                         {paymentMethod.toLowerCase() === 'internal account' && <div className={styles['payment-content__info__internal-account']}>
                                             <div className={styles['payment-content__info__internal']}>Current Balance: 500$</div>
-                                            <button className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
+                                            <button type="button" onClick={handleOpenTopUpModal} className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
                                         </div>}
 
                                         {
