@@ -118,17 +118,16 @@ export const Checkout = () => {
     }
 
     const handleOpenTopUpModal = () => {
-        console.log("open modal")
         setOpenTopUpModal(true)
     }
 
     const handleCloseTopUpModal = () => {
-        console.log("close modal")
         setOpenTopUpModal(false)
     }
 
     return (
 <>
+            <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal}/>
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -142,7 +141,6 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         <Button onClick={handleOpen}>Change</Button>
-                                        <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal}/>
 
                                         <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>

@@ -1,13 +1,13 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const PaymentService = require('./payment-service')
 const PaymentInternalAccountInfo = require('./payment-internal-account-info')
+const paymentAction = require('../../constant/payment-action')
+
+
 const topUp = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
-  const body = {
-    user_id: userId,
-    ...req.body
-  }
-  const paymentInternalAccountInfo = PaymentInternalAccountInfo.validate(body)
+  const paymentInternalAccountInfo = PaymentInternalAccountInfo.validate(req.body)
+
   if (!paymentInternalAccountInfo.result) {
     return res.status(400).json({
       status: 'fail',
@@ -15,10 +15,20 @@ const topUp = catchAsyncHandler(async (req, res, next) => {
       error: paymentInternalAccountInfo
     })
   }
-  await PaymentService.updateBalanceForInternalAccount(paymentInternalAccountInfo.data)
+
+  const body = {
+    user_id: userId,
+    action: paymentAction.DEPOSIT,
+    ...req.body
+  }
+  
+  const currentBalanceUpdated = await PaymentService.updateBalanceForInternalAccount(body)
   return res.status(200).json({
     status: 'success',
-    message: 'Deposit Success'
+    data: {
+      message: 'Top up successfully',
+      current_balance: currentBalanceUpdated
+    }
   })
 })
 

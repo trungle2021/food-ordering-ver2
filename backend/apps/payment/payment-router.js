@@ -2,7 +2,7 @@ const express = require('express')
 const PaymentController = require('./payment-controller')
 const router = express.Router()
 
-router.route('/topup/:id')
+router.route('/top-up')
   .post(PaymentController.topUp)
 
 module.exports = router

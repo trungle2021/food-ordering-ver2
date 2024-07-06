@@ -2,38 +2,42 @@ const UserService = require('../user/user-service')
 const AppError = require('../../utils/error/app-error')
 const { INTERNAL_ACCOUNT, CASH, BANK_TRANSFER, CREDIT_CARD } = require('../../constant/payment-method')
 const { DEPOSIT, WITHDRAW } = require('../../constant/payment-action')
+
 const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
   const { user_id: userId, amount, action } = paymentInternalAccountInfo
   const user = await UserService.getUser()
   if (!user) {
     throw new AppError(`Cannot found User with id: ${userId}`, 404)
   }
-  let newBalance = null
+  let newBalance = 0
 
-  const currentBalance = user.balance
+  if (amount <= 0){
+    throw new AppError(`Amount must be greater than 0`, 400)
+  }
+
+  const currentBalanceParsed = Number.parseFloat(user.balance)
+  const amountParsed = Number.parseFloat(amount)
   switch (action) {
     case DEPOSIT:
-      newBalance = currentBalance + amount
+      newBalance = currentBalanceParsed + amountParsed
       break
     case WITHDRAW:
-      newBalance = currentBalance - amount
+      if(checkInternalAccountEnoughBalance(currentBalanceParsed, amountParsed)){
+        throw new AppError(`Account Balance is not enough`, 402)
+      }
+      newBalance = currentBalanceParsed - amountParsed
       break
     default:
       throw new AppError(`Invalid action ${action}`, 500)
   }
-  return await UserService.updateUser({ _id: userId }, { balance: newBalance })
+  console.log("New Balance: " , newBalance)
+  const result = await UserService.updateUser({ _id: userId }, { balance: newBalance })
+  const currentBalanceUpdated = result.balance
+  return currentBalanceUpdated
 }
 
-const checkInternalAccountEnoughBalance = async (userId, amountNeedToPurchase) => {
-  const user = await UserService.getUser({ _id: userId })
-  if (!user) {
-    throw new AppError(`Cannot found User with id: ${userId}`, 404)
-  }
-  const currentBalance = user.balance
-  if (amountNeedToPurchase > currentBalance) {
-    return false
-  }
-  return true
+const checkInternalAccountEnoughBalance = async (currentBalance, amountNeedToPurchase) => {
+  return amountNeedToPurchase > currentBalance
 }
 
 const processPayment = async (order, orderConfirmInfo) => {

@@ -6,10 +6,9 @@ const baseCartApi: string = 'api/v1/carts'
 const baseDishApi: string = 'api/v1/dishes'
 const baseCategoryApi: string = 'api/v1/categories'
 const baseOrderApi: string = 'api/v1/orders'
+const basePaymentApi: string = 'api/v1/payments'
 
 const getUserAddressApi: string = `${baseUserAddressApi}/users`
-
-
 const getUserInfoApi: string = `${baseUserApi}`
 
 const getCategoriesApi: string = `${baseCategoryApi}`;
@@ -17,6 +16,8 @@ const getPopularDishesApi: string = `${baseDishApi}/popular-dishes`;
 const getDishesByNameApi: string = `${baseDishApi}/search`;
 const getRecentOrdersApi: string = `${baseOrderApi}/recent-orders`;
 const getOrderHistoryApi: string = `${baseOrderApi}/history`;
+
+const topUpApi = `${basePaymentApi}/top-up`
 
 const loginApi: string = `${baseAuthApi}/login`;
 const registerApi: string = `${baseAuthApi}/register`;
@@ -34,6 +35,7 @@ export {
   baseOrderApi,
   baseUserApi,
   baseUserAddressApi,
+  basePaymentApi,
 
   getUserAddressApi,
   getUserInfoApi,
@@ -44,6 +46,8 @@ export {
   getRecentOrdersApi,
   getOrderHistoryApi,
   getCartApi,
+
+  topUpApi,
 
   loginApi,
   registerApi,

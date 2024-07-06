@@ -11,6 +11,7 @@ export enum CART_ACTION_TYPE {
 }
 
 export enum PAYMENT_METHOD {
+  MOMO = 'MoMo Account',
   BANK = 'Bank Account',
   INTERNAL = 'Internal Account'
 }

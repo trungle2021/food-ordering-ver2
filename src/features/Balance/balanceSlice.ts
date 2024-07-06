@@ -1,19 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { TransactionProps } from "~/interface/transaction";
+import { topUp } from "./balanceAction";
 
 interface BalanceState {
     userBalance: number;
-    transactions: TransactionProps[]
+    transactions: TransactionProps[],
+    isLoading: boolean;
+    errors: null
 }
 const initialState: BalanceState= {
     userBalance: 0,
-    transactions: []
+    transactions: [],
+    isLoading: false,
+    errors: null
 }
 
 export const balanceSlice = createSlice({
     initialState,
     reducers:{},
-    extraReducers: (builder) => {},
+    extraReducers: (builder) => {
+        builder.addCase(topUp.pending, (action, state) => {
+            
+        })
+        .addCase(topUp.fulfilled, (action, state) =>{})
+        .addCase(topUp.rejected, (action, state) =>{})
+    },
     name: "balance"
 })
 
