@@ -18,9 +18,20 @@ export const nameValidator = yup.string()
 
 export const phoneValidator = yup.string()
     .required('Phone is required')
+    .matches(/^[0-9]+$/, "Phone number must be only digits")
     .min(10, 'Phone must be at least 10 characters')
     .max(15, 'Phone must not exceed 15 characters');
 
+export const paymentMethodValidator = yup.string()
+    .required('Payment method is required')
+
+export const recipientValidator = yup.string()
+    .required('Recipient is required')
+
+export const addressValidator = yup.string()
+    .required('Address is required')
+
+export const isDefaultAddressValidator = yup.boolean()
 
 export const numberValidator = yup.string()
     .transform((value) => value.trim())
@@ -33,14 +44,13 @@ export const numberValidator = yup.string()
             const floatNumber = parseFloat(value)
             const floatNumberIsUndefined = floatNumber === undefined
             const floatNumberIsZero = floatNumber == 0
-          
-            if(valueIsNotANumber || floatNumberIsUndefined || (floatNumberIsUndefined && floatNumberIsZero)) return false
+
+            if (valueIsNotANumber || floatNumberIsUndefined || (floatNumberIsUndefined && floatNumberIsZero)) return false
             return true
         }
     )
     .test('greater-than-zero', 'Amount must be greater than 0', (value) => parseFloat(value) > 0)
 
-  
 
-export const paymentMethodValidator = yup.string()
-    .required('Payment method is required')
+
+

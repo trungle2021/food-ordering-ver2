@@ -16,7 +16,6 @@ export const CartSection = () => {
     }, [dispatch])
 
     const handleCheckoutAction = () => {
-        console.log(cart.items)
         if(cart.items.length === 0){
             toast.error("Cart is empty")
             return;
