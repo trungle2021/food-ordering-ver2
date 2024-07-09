@@ -54,7 +54,7 @@ export const Navbar = ({ items }: { items: any }) => {
       </ul>
 
       {/* Logout Dialog */}
-      {/* <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
+      <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
           <DialogContentText style={{ 'fontSize': '30px' }}>
@@ -67,7 +67,7 @@ export const Navbar = ({ items }: { items: any }) => {
             Logout
           </Button>
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
 
     </nav>
   );

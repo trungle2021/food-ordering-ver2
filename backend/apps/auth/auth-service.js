@@ -2,6 +2,7 @@ const secretKey = process.env.JWT_SECRET_KEY
 const accessTokenExpired = process.env.JWT_ACCESS_TOKEN_EXPIRATION
 const refreshTokenExpired = process.env.JWT_REFRESH_TOKEN_EXPIRATION
 const UserService = require('../user/user-service')
+const BalanceService = require('../balance/balance-service')
 const JWTService = require('../../utils/jwt/jwt-service')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 const AppError = require('../../utils/error/app-error')
@@ -14,7 +15,8 @@ const tokenOptions = {
 
 const register = async (userData) => {
   const newUser = await UserService.createUser(userData)
-  const { password, balance, ...rest } = newUser._doc
+  await BalanceService.createBalance({ user: newUser._id })
+  const { password, ...rest } = newUser._doc
   const { _id } = rest
   const payload = { _id }
 
@@ -44,7 +46,7 @@ const login = async (emailInput, passwordInput) => {
   )
   if (!passwordIsValid) throw new AppError('Password invalid', 400)
 
-  const { password, balance, ...rest } = user._doc
+  const { password, ...rest } = user._doc
   const { _id } = rest
   const payload = { _id }
   const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(

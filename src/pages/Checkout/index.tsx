@@ -14,6 +14,7 @@ import { Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLab
 import { capitalizeFirstLetter } from "~/utils/capitalizeFirstLetter";
 import { register } from "module"
 import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
+import { getBalance } from "~/features/Balance/balanceAction"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -36,6 +37,10 @@ export const Checkout = () => {
 
     const cart = useSelector((state: any) => state.cart)
     const auth = useSelector((state: any) => state.auth)
+    const balance = useSelector((state: any) => state.balance)
+    const amount = balance.amount
+
+
     const userId = auth?.user?._id
 
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
@@ -43,12 +48,15 @@ export const Checkout = () => {
     const [defaultAddress, setDefaultAddress] = useState<any>({})
     const [addressList, setAddressList] = useState([])
     const [radioAddressId, setRadioAddressId] = useState('');
-    const [disableSubmitButton, setDisableSubmitButton] = useState(false)
+
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
 
+    useEffect(() => {
+        dispatch<any>(getBalance())
+    }, [dispatch])
 
     useEffect(() => {
         const getUserInfo = async () => {
@@ -126,8 +134,8 @@ export const Checkout = () => {
     }
 
     return (
-<>
-            <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal}/>
+        <>
+            <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -219,7 +227,7 @@ export const Checkout = () => {
 
                                     <div className={styles['payment-content__info']}>
                                         {paymentMethod.toLowerCase() === 'internal account' && <div className={styles['payment-content__info__internal-account']}>
-                                            <div className={styles['payment-content__info__internal']}>Current Balance: 500$</div>
+                                            <div className={styles['payment-content__info__internal']}>Current Balance: ${amount}</div>
                                             <button type="button" onClick={handleOpenTopUpModal} className={styles['payment-content__info__internal-button-topup']}>TopUp</button>
                                         </div>}
 

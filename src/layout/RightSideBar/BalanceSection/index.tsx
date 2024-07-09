@@ -1,8 +1,29 @@
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./styles.module.css";
 import { TopUp, Transfer } from "~/components/UI/Icon";
+import { useEffect, useState } from "react";
+import { getBalance } from "~/features/Balance/balanceAction";
+import { PaymentTopUpModal } from "~/components/PaymentTopUpModal";
 export const BalanceSection = () => {
+    const dispatch = useDispatch()
+    const balance = useSelector((state: any) => state.balance)
+    const amount = balance.amount
+    const [openTopUpModal, setOpenTopUpModal] = useState(false)
+
+    const handleOpenTopUpModal = () => {
+        setOpenTopUpModal(true)
+    }
+
+    const handleCloseTopUpModal = () => {
+        setOpenTopUpModal(false)
+    }
+
+    useEffect(() => {
+        dispatch<any>(getBalance())
+    }, [dispatch])
   return (
     <>
+    <PaymentTopUpModal open={openTopUpModal} onClose={handleCloseTopUpModal} />
     <h4 className="title-section">Your Balance</h4>
     <div className={`${styles["balance-container"]} `}>
       <img
@@ -13,10 +34,10 @@ export const BalanceSection = () => {
         <div className={styles["balance-container__content-info"]}>
           <p className={styles["balance-container__info-title"]}>Balance</p>
           <span className={styles["balance-container__info-amount"]}>
-            $12.000
+            ${amount}
           </span>
         </div>
-        <div className={styles["balance-container__function-item"]}>
+        <div onClick={handleOpenTopUpModal} className={styles["balance-container__function-item"]}>
           <TopUp
             fill="#fff"
             className={`${styles["balance-container__function-button"]}`}

@@ -21,16 +21,6 @@ html {
     font-size: 62.5%;
 }
 
-body,
-span,
-p
-{
-    font-size: 1.6rem;
-}
-
-
-
-
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

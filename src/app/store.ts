@@ -7,6 +7,8 @@ import orderReducer from '../features/Order/orderSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
+
+
 const rootReducer = combineReducers({
   auth: authReducer,
   searchDishes: searchDishesReducer,
@@ -18,7 +20,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"]
+  whitelist: ["auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

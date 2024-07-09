@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 
 
 export const InputField = (props: any) => {
-  const { name, control, label, placeholder, type, ...rest } = props;
+  const { name, control, label, placeholder, type, enableHelperText = true, ...rest } = props;
   return (
     <Controller
       name={name}
@@ -13,14 +13,13 @@ export const InputField = (props: any) => {
         <TextField
           {...field}
           {...rest}
-          helperText={error ? error.message : null}
+          helperText={enableHelperText && error?.message}
           error={!!error}
           fullWidth
           label={label}
           type={type}
           variant="outlined"
           placeholder={placeholder}
-
         />
       )}
     />

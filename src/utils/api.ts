@@ -7,6 +7,7 @@ const baseDishApi: string = 'api/v1/dishes'
 const baseCategoryApi: string = 'api/v1/categories'
 const baseOrderApi: string = 'api/v1/orders'
 const basePaymentApi: string = 'api/v1/payments'
+const baseBalanceApi: string = 'api/v1/balances'
 
 const getUserAddressApi: string = `${baseUserAddressApi}/users`
 const getUserInfoApi: string = `${baseUserApi}`
@@ -17,6 +18,7 @@ const getDishesByNameApi: string = `${baseDishApi}/search`;
 const getRecentOrdersApi: string = `${baseOrderApi}/recent-orders`;
 const getOrderHistoryApi: string = `${baseOrderApi}/history`;
 
+const getBalanceApi: string = `${baseBalanceApi}`
 const topUpApi = `${basePaymentApi}/top-up`
 
 const loginApi: string = `${baseAuthApi}/login`;
@@ -36,6 +38,7 @@ export {
   baseUserApi,
   baseUserAddressApi,
   basePaymentApi,
+  baseBalanceApi,
 
   getUserAddressApi,
   getUserInfoApi,
@@ -47,6 +50,7 @@ export {
   getOrderHistoryApi,
   getCartApi,
 
+  getBalanceApi,
   topUpApi,
 
   loginApi,

@@ -3,7 +3,6 @@ const PaymentService = require('./payment-service')
 const PaymentInternalAccountInfo = require('./payment-internal-account-info')
 const paymentAction = require('../../constant/payment-action')
 
-
 const topUp = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
   const paymentInternalAccountInfo = PaymentInternalAccountInfo.validate(req.body)
@@ -17,11 +16,11 @@ const topUp = catchAsyncHandler(async (req, res, next) => {
   }
 
   const body = {
+    ...req.body,
     user_id: userId,
-    action: paymentAction.DEPOSIT,
-    ...req.body
+    payment_method: paymentAction.DEPOSIT
   }
-  
+
   const currentBalanceUpdated = await PaymentService.updateBalanceForInternalAccount(body)
   return res.status(200).json({
     status: 'success',

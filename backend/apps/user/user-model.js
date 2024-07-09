@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const { ObjectId } = require('mongodb')
-const { required } = require('joi')
 
 // name, password, balance, phone, email, created_at, updated_at
 const userSchema = new mongoose.Schema({
@@ -29,17 +28,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validator.isEmail, 'Please provide a valid email address']
   },
-  balance: {
-    type: Number,
-    default: 0
-  },
   avatar: {
     type: String
   },
   user_address: [
     {
-        type: ObjectId,
-        ref: 'UserAddress'
+      type: ObjectId,
+      ref: 'UserAddress'
     }
   ],
   created_at: {

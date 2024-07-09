@@ -5,8 +5,10 @@ import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
 import { LoginPayload } from "../../../interface/auth/login-payload";
-import { Alert } from "@mui/material";
+import { Alert, Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { loginUser } from "../authAction";
+import { updateBalance } from "~/features/Balance/balanceSlice";
+import { getBalance } from "~/features/Balance/balanceAction";
 
 export const Login = () => {
   const history = useHistory();
@@ -30,11 +32,13 @@ export const Login = () => {
     } catch (error: any) { }
   };
 
-
   return (
+    
     <div className="wrapper-container">
+          
       <div className="form">
         <h1 className="form-title">Sign in</h1>
+        
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <LoginForm onSubmitLoginForm={handleSubmitLoginForm} />
         <OR text="OR" />

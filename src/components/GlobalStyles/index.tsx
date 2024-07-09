@@ -1,6 +1,6 @@
-import "./GlobalStyles.css";
 import 'react-toastify/dist/ReactToastify.css'
 import 'rsuite/dist/rsuite-no-reset.min.css';
+import "./GlobalStyles.css";
 import React, { ReactNode } from "react";
 
 interface GlobalStylesProps {
