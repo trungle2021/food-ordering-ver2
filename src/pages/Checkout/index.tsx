@@ -15,6 +15,7 @@ import { capitalizeFirstLetter } from "~/utils/capitalizeFirstLetter";
 import { register } from "module"
 import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
+import { AddAddressModal } from "~/components/AddAddressModal"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -50,6 +51,7 @@ export const Checkout = () => {
     const [radioAddressId, setRadioAddressId] = useState('');
 
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
+    const [openAddAddressModal, setOpenAddAddressModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
@@ -85,7 +87,7 @@ export const Checkout = () => {
         setPaymentMethod(content || '')
     }
 
-    const handleOpen = async () => {
+    const handleOpenUserAddress = async () => {
         const response = await UserService.getUserAddressesById(userId);
         if (response?.data.length > 0) {
             setAddressList(response.data)
@@ -93,7 +95,25 @@ export const Checkout = () => {
         setOpenUserAddressModal(true)
     };
 
-    const handleClose = () => setOpenUserAddressModal(false);
+    const handleCloseUserAddress = () => setOpenUserAddressModal(false);
+
+    const handleOpenAddAddress = () => {
+        // Open modal to add new address
+        setOpenAddAddressModal(true)
+    }
+
+    const handleCloseAddAddressModal = () => {
+        setOpenAddAddressModal(false)
+    }
+
+    const handleOpenTopUpModal = () => {
+        setOpenTopUpModal(true)
+    }
+
+    const handleCloseTopUpModal = () => {
+        setOpenTopUpModal(false)
+    }
+   
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRadioAddressId((event.target as HTMLInputElement).value);
@@ -125,17 +145,12 @@ export const Checkout = () => {
         console.log("ERROR:::", error);
     }
 
-    const handleOpenTopUpModal = () => {
-        setOpenTopUpModal(true)
-    }
-
-    const handleCloseTopUpModal = () => {
-        setOpenTopUpModal(false)
-    }
+  
 
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
+            <AddAddressModal  maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -148,9 +163,11 @@ export const Checkout = () => {
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
-                                        <Button onClick={handleOpen}>Change</Button>
+                                        {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>}
+                                         {/* <Button onClick={handleOpenAddAddress}>Add Address</Button> */}
+                                        
 
-                                        <Dialog maxWidth='xs' fullWidth onClose={handleClose} open={openUserAddressModal}>
+                                        <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
                                             <FormControl>
                                                 <RadioGroup
@@ -167,10 +184,9 @@ export const Checkout = () => {
                                                                         <FormControlLabel value={address._id} control={<Radio />} label="" />
                                                                         <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <div style={{ display: 'flex', }}>
-                                                                                    <div>{address.recipient}</div>
-                                                                                    <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', margin: '0 8px' }}></div>
-                                                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem' }}>{address.phone}</div>
+                                                                                <div style={{ display: 'flex', fontSize: '1.4rem' , alignItems: 'center'}}>
+                                                                                    <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', padding: '0 4px' }}>{address.recipient}</div>
+                                                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem', padding: '0 4px' }}>{address.phone}</div>
                                                                                 </div>
                                                                             </div>
                                                                             <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
@@ -194,7 +210,7 @@ export const Checkout = () => {
                                                 </RadioGroup>
                                             </FormControl>
                                             <DialogActions sx={{ display: 'flex', gap: '10px', margin: '10px 24px' }}>
-                                                <button style={{ padding: '10px' }} onClick={handleClose}>Cancel</button>
+                                                <button style={{ padding: '10px' }} onClick={handleCloseUserAddress}>Cancel</button>
                                                 <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
                                             </DialogActions>
                                         </Dialog>

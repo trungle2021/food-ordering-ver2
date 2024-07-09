@@ -25,16 +25,21 @@ export const phoneValidator = yup.string()
 export const numberValidator = yup.string()
     .transform((value) => value.trim())
     .required('Amount is required')
-    .test('greater-than-zero', 'Amount must be greater than 0', (value) => parseFloat(value) > 0)
     .test(
         'is-decimal',
         'Amount must be a number',
         (value) => {
-            const floatValue = parseFloat(value)
-            if(!floatValue || isNaN(value as any)) return false
+            const valueIsNotANumber = isNaN(value as any)
+            const floatNumber = parseFloat(value)
+            const floatNumberIsUndefined = floatNumber === undefined
+            const floatNumberIsZero = floatNumber == 0
+          
+            if(valueIsNotANumber || floatNumberIsUndefined || (floatNumberIsUndefined && floatNumberIsZero)) return false
             return true
         }
     )
+    .test('greater-than-zero', 'Amount must be greater than 0', (value) => parseFloat(value) > 0)
+
   
 
 export const paymentMethodValidator = yup.string()

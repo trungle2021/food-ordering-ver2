@@ -1,15 +1,16 @@
 const UserAddress = require('./user-address-model')
 
 const getUserAddresses = async (filter) => {
-  return await UserAddress.find(filter).populate({ path: 'user', select: 'name -_id' })
+  return await UserAddress.find(filter)
+  // .populate({ path: 'user', select: 'name -_id' })
 }
 
 const getUserAddress = async (filter) => {
   return await UserAddress.findOne(filter).populate({ path: 'user' })
 }
 
-const createUserAddress = async (user) => {
-  return await UserAddress.create(user)
+const createUserAddress = async (data) => {
+  return await UserAddress.create(data)
 }
 
 const updateUserAddress = async (filter, data, option) => {
