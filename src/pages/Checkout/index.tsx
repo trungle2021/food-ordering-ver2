@@ -161,7 +161,7 @@ export const Checkout = () => {
                                 <div className={styles['address-content']}>
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
-                                        {/* <div>{defaultAddress.address}</div> */}
+                                        <div>{defaultAddress.address}</div>
                                         {/* {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>} */}
                                          <Button onClick={handleOpenAddAddress}>Add Address</Button>
                                         

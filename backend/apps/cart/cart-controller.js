@@ -1,17 +1,11 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const CartService = require('./cart-service')
 
-const getCarts = catchAsyncHandler(async (req, res) => {
-  const carts = await CartService.getCarts()
-  return res.status(200).json({
-    status: 'success',
-    data: carts
-  })
-})
+
 
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
-  const cart = await CartService.getCartByUserId(userId)
+  const cart = await CartService.getCartByUserId({user: userId})
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
@@ -53,7 +47,6 @@ const removeItem = catchAsyncHandler(async (req, res, next) => {
 })
 
 module.exports = {
-  getCarts,
   getCartByUserId,
   addItem,
   updateItem,

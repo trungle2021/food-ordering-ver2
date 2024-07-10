@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import RecentOrder from "../RecentOrder";
-import BaseDish from "~/interface/dish/base-dish";
+import BaseDish from "~/interface/dish/baseDish";
 import OrderDetail from "~/interface/order/order-detail.response";
 import Order from "~/interface/order/order.response";
 import OrderService from "~/services/order/order-serivce";

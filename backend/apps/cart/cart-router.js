@@ -2,8 +2,7 @@ const express = require('express')
 const router = express.Router()
 const CartController = require('../cart/cart-controller')
 
-router.route('/all')
-  .get(CartController.getCartByUserId)
+
 
 router.route('/dish/:dishId')
   .delete(CartController.removeItem)

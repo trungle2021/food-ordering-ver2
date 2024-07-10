@@ -1,20 +1,22 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice";
 import searchDishesReducer from "../features/Dish/SearchDish/searchDishesSlice";
 import balanceReducer from '../features/Balance/balanceSlice';
 import cartReducer from '../features/Cart/cartSlice';
 import orderReducer from '../features/Order/orderSlice';
+import addressReducer from '../features/Address/addressSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 
 
-const rootReducer = combineReducers({
+const combinedReducers = combineReducers({
   auth: authReducer,
   searchDishes: searchDishesReducer,
   balance: balanceReducer,
   cart: cartReducer,
-  order: orderReducer
+  order: orderReducer,
+  address: addressReducer
 });
 
 const persistConfig = {
@@ -22,6 +24,13 @@ const persistConfig = {
   storage,
   whitelist: ["auth"],
 };
+
+const rootReducer = (state: any, action: AnyAction) => {
+  if (action.type === "USER_LOGOUT") {
+    state = {} as RootState;
+  }
+  return combinedReducers(state, action);
+}
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

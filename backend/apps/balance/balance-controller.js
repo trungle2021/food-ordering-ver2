@@ -1,9 +1,9 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const BalanceService = require('./balance-service')
 
-const getBalance = catchAsyncHandler(async (req, res) => {
-  const userId = req.userId
-  const result = await BalanceService.getBalance({ user: userId })
+const getBalanceByUserId = catchAsyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const result = await BalanceService.getBalance({ user: id })
   return res.status(200).json({
     status: 'success',
     data: result
@@ -11,7 +11,7 @@ const getBalance = catchAsyncHandler(async (req, res) => {
 })
 
 const createBalance = catchAsyncHandler(async (req, res) => {
-  const userId = req.userId
+  const { userId } = req.body;
   const result = await BalanceService.createBalance({ user: userId })
   return res.status(200).json({
     status: 'success',
@@ -20,10 +20,15 @@ const createBalance = catchAsyncHandler(async (req, res) => {
 })
 
 const updateBalance = catchAsyncHandler(async (req, res) => {
-  const userId = req.userId
-  const filter = { user: userId }
-  const data = req.body
-  const result = await BalanceService.updateBalance(filter, data)
+  const { userId: user, ...rest } = req.body;
+
+  const modifiedPayload = {
+    user,
+    ...rest,
+  };
+
+  const filter = { user }
+  const result = await BalanceService.updateBalance(filter, modifiedPayload)
   return res.status(200).json({
     status: 'success',
     data: result
@@ -31,7 +36,7 @@ const updateBalance = catchAsyncHandler(async (req, res) => {
 })
 
 module.exports = {
-  getBalance,
+  getBalanceByUserId,
   createBalance,
   updateBalance
 }

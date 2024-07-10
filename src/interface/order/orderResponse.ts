@@ -1,4 +1,4 @@
-import OrderDetail from "./order-detail-response";
+import OrderDetail from "./orderDetailResponse";
 
 export default interface OrderProps {
     _id: string;

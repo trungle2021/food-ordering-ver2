@@ -6,6 +6,8 @@ import { InputField } from '../FormControls/InputField';
 import addAddressValidator from './addAddressValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { addAddress } from '~/features/Address/addressAction';
+import { updateAddress } from '~/features/Auth/authSlice';
 
 type AddAddressModalProps = {
     open: boolean
@@ -24,6 +26,7 @@ type AddAddressFormValues = {
 export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressModalProps) => {
     const dispatch = useDispatch()
     const {user} = useSelector((state:any) => state.auth)
+    // const address = useSelector((state:any) => state.address)
     const name = user?.name
 
     const initialFormValues: AddAddressFormValues = {
@@ -47,7 +50,9 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
 
     const onSubmit = (formData: any) => {
         console.log(formData)
-        dispatch<any>(addAddress(formData))
+        dispatch<any>(addAddress(formData)).then((result:any) => {
+            dispatch<any>(updateAddress(result))
+        })
     }
 
     return (

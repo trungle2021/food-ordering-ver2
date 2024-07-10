@@ -1,5 +1,5 @@
-import BaseDish from "../dish/base-dish";
-import Order from "./order-response";
+import BaseDish from "../dish/baseDish";
+import Order from "./orderResponse";
 
 export default interface OrderDetailProps {
     created_at: string;

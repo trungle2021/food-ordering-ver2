@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoginForm } from "./LoginForm";
 import { OR } from "~/components/UI/OR";
 import { Socials } from "~/components/UI/Socials";
-import { LoginPayload } from "../../../interface/auth/login-payload";
+import { LoginPayload } from "../../../interface/auth/loginPayload";
 import { Alert, Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { loginUser } from "../authAction";
 import { updateBalance } from "~/features/Balance/balanceSlice";

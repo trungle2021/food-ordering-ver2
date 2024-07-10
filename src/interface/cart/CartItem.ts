@@ -1,4 +1,4 @@
-import BaseDishProps from "../dish/base-dish";
+import BaseDishProps from "../dish/baseDish";
 
 export default interface CartItemProps {
   _id: string;

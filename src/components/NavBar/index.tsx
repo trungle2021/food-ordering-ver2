@@ -22,6 +22,7 @@ export const Navbar = ({ items }: { items: any }) => {
 
   const handleLogoutConfirmed = async () => {
     await dispatch<any>(logoutUser());
+    await dispatch({type: "USER_LOGOUT",})
     history.push('/login');
   };
 
