@@ -12,13 +12,13 @@ const addItem = async (payload: {dishId: string, updateQuantity: number}) => {
 };
 
 
-const updateItem = async (payload: {itemId: string, updateQuantity: number}) => {
+const updateItem = async (payload: {dishId: string, updateQuantity: number}) => {
     const response = await axios.put(baseCartApi, payload);
     return response.data;
 };
 
-const removeItem = async (itemId: string) => {
-    const response = await axios.delete(`${baseCartApi}/${itemId}`);
+const removeItem = async (dishId: string) => {
+    const response = await axios.delete(`${baseCartApi}/${dishId}`);
     return response.data;
 };
 

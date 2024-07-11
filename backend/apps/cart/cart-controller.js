@@ -30,8 +30,8 @@ const addItem = catchAsyncHandler(async (req, res, next) => {
 const updateItem = catchAsyncHandler(async (req, res, next) => {
   // ! Need to validate request body
 
-  const { itemId, updateQuantity } = req.body
-  const updatedCart = await CartService.updateItem(itemId, updateQuantity)
+  const { dishId, updateQuantity } = req.body
+  const updatedCart = await CartService.updateItem(dishId, updateQuantity)
   return res.status(200).json({
     status: 'success',
     data: updatedCart

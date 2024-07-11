@@ -12,7 +12,7 @@ export const useAddToCart = () => {
  
         if(itemExistsInCart) {
             const payload = {
-                itemId: itemExistsInCart._id,
+                dishId: itemExistsInCart.dish._id,
                 updateQuantity: itemExistsInCart.quantity + 1
             }
             dispatch<any>(updateItem(payload))

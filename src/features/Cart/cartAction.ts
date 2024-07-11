@@ -9,10 +9,10 @@ export const addItem = createAsyncThunk("cart/addItem", async (item: any) => {
     return await CartService.addItem(item);
 });
 
-export const updateItem = createAsyncThunk("cart/updateItem", async ({itemId, updateQuantity}: {itemId: string, updateQuantity: number}) => {
-    return await CartService.updateItem({itemId, updateQuantity});
+export const updateItem = createAsyncThunk("cart/updateItem", async ({dishId, updateQuantity}: {dishId: string, updateQuantity: number}) => {
+    return await CartService.updateItem({dishId, updateQuantity});
 });
 
-export const removeItem = createAsyncThunk("cart/removeItem", async (itemId: string) => {
-    return await CartService.removeItem(itemId);
+export const removeItem = createAsyncThunk("cart/removeItem", async (dishId: string) => {
+    return await CartService.removeItem(dishId);
 });
