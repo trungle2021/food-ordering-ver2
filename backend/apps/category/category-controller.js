@@ -12,6 +12,8 @@ const getCategories = catchAsyncHandler(async (req, res) => {
 })
 
 const getCategory = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const { id } = req.params
   const category = await CategoryService.getCategory(id)
   if (!category) {
@@ -27,6 +29,8 @@ const getCategory = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategories = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const payload = req.body
   const categories = await CategoryService.createCategories(payload)
   if (!categories) {
@@ -42,6 +46,8 @@ const createCategories = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategory = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const payload = req.body
   const category = await CategoryService.createCategory(payload)
   return res.status(200).json({
@@ -50,6 +56,8 @@ const createCategory = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const updateCategory = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const filter = {
     _id: req.params.id
   }

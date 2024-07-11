@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const OrderDetailController = require('./order-detail-controller')
 
-router.route('/:id')
+router.route('/:order_detail_id')
   .get(OrderDetailController.getOrderDetail)
   .get(OrderDetailController.deleteOrderDetail)
   .put(OrderDetailController.updateOrderDetail)

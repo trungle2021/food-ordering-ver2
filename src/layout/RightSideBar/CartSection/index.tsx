@@ -10,9 +10,11 @@ import { toast } from "react-toastify";
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
+    const auth = useSelector((state: any) => state.auth)
+    const userId = auth?.user?._id
     const history = useHistory() 
     useEffect(() => {
-        dispatch<any>(getCart())
+        dispatch<any>(getCart(userId))
     }, [dispatch])
 
     const handleCheckoutAction = () => {

@@ -1,6 +1,7 @@
 export interface Address {
-    address: string;
+    recipient: string;
     phone: string;
-    user: string;
+    address: string;
     isDefaultAddress:boolean
+    user: string;
 }

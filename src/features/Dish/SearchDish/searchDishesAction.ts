@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import DishService from '~/services/dish/dish-service';
+import DishService from '~/services/dish/dishService';
 
 interface SearchDishesPayload {
     keyword: string;

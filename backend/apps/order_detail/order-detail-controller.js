@@ -11,8 +11,10 @@ const getOrderDetails = catchAsyncHandler(async (req, res) => {
 })
 
 const getOrderDetail = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params
-  const orderdetail = await OrderDetailService.getOrderDetail(id)
+  // ! Need to validate request body
+
+  const { order_detail_id: orderDetailId } = req.params
+  const orderdetail = await OrderDetailService.getOrderDetail(orderDetailId)
   if (!orderdetail) {
     return res.status(404).json({
       status: 'fail',
@@ -26,6 +28,8 @@ const getOrderDetail = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createOrderDetails = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const listOrderDetails = req.body
   const orderdetails = await OrderDetailService.createOrderDetails(listOrderDetails)
   return res.status(200).json({

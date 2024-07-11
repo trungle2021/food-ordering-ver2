@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { HeaderPage } from "~/components/HeaderPage"
 import { useHistory } from "react-router-dom"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { LocationIcon } from "~/components/UI/Icon"
 import CartItemProps from "~/interface/cart/CartItem"
 import { getCart } from "~/features/Cart/cartAction"
@@ -9,10 +9,8 @@ import styles from './styles.module.css'
 import { Dropdown, List } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
-import UserService from "~/services/user/user-service"
+import UserService from "~/services/user/userService"
 import { Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
-import { capitalizeFirstLetter } from "~/utils/capitalizeFirstLetter";
-import { register } from "module"
 import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
 import { AddAddressModal } from "~/components/AddAddressModal"
@@ -57,12 +55,12 @@ export const Checkout = () => {
     });
 
     useEffect(() => {
-        dispatch<any>(getBalance())
+        dispatch<any>(getBalance(userId))
     }, [dispatch])
 
     useEffect(() => {
         const getUserInfo = async () => {
-            const response = await UserService.getUserInfo(userId)
+            const response = await UserService.getUserInfoByUserId(userId)
             const userAddressList = response?.data?.user_address
             if (userAddressList.length > 0) {
                 const defaultAddress = response.data.user_address[0]
@@ -75,7 +73,7 @@ export const Checkout = () => {
     }, [userId])
 
     useEffect(() => {
-        dispatch<any>(getCart()).then((result: any) => {
+        dispatch<any>(getCart(userId)).then((result: any) => {
             if (result.payload.items.length === 0) {
                 history.push('/dashboard');
             }
@@ -88,7 +86,7 @@ export const Checkout = () => {
     }
 
     const handleOpenUserAddress = async () => {
-        const response = await UserService.getUserAddressesById(userId);
+        const response = await UserService.getUserAddressesByUserId(userId);
         if (response?.data.length > 0) {
             setAddressList(response.data)
         }
@@ -112,7 +110,7 @@ export const Checkout = () => {
     const handleCloseTopUpModal = () => {
         setOpenTopUpModal(false)
     }
-   
+
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRadioAddressId((event.target as HTMLInputElement).value);
@@ -144,12 +142,12 @@ export const Checkout = () => {
         console.log("ERROR:::", error);
     }
 
-  
+
 
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <AddAddressModal  maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
+            <AddAddressModal maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -163,8 +161,8 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         {/* {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>} */}
-                                         <Button onClick={handleOpenAddAddress}>Add Address</Button>
-                                        
+                                        <Button onClick={handleOpenAddAddress}>Add Address</Button>
+
 
                                         <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
@@ -183,7 +181,7 @@ export const Checkout = () => {
                                                                         <FormControlLabel value={address._id} control={<Radio />} label="" />
                                                                         <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
                                                                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <div style={{ display: 'flex', fontSize: '1.4rem' , alignItems: 'center'}}>
+                                                                                <div style={{ display: 'flex', fontSize: '1.4rem', alignItems: 'center' }}>
                                                                                     <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', padding: '0 4px' }}>{address.recipient}</div>
                                                                                     <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem', padding: '0 4px' }}>{address.phone}</div>
                                                                                 </div>

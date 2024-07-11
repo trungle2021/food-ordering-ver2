@@ -12,6 +12,8 @@ const getDishes = catchAsyncHandler(async (req, res) => {
 })
 
 const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
+  // ! Need to validate request body
+
   let queryString = req.query
   const { keyword, limit } = queryString
   if (!keyword) {
@@ -43,6 +45,8 @@ const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
     })
   }
   const dishes = await DishService.searchDishesByFullTextSearch(queryString.keyword, queryString.limit)
+  // ! Need to validate request body
+
   console.log('dishes', dishes)
   return res.status(200).json({
     status: 'success',
@@ -51,6 +55,8 @@ const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
 })
 
 const getDish = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const { id } = req.params
   const dish = await DishService.getDish({ _id: id })
   if (!dish) {

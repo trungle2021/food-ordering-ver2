@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-payload";
-import { LoginPayload } from "~/interface/auth/login-payload";
-import { RegisterPayload } from "~/interface/auth/register-payload";
-import AuthService from "~/services/auth/auth-service";
+import { GetNewAccessTokenPayload } from "~/interface/auth/getNewAccessTokenPayload";
+import { LoginPayload } from "~/interface/auth/loginPayload";
+import { RegisterPayload } from "~/interface/auth/registerPayload";
+import AuthService from "~/services/auth/authService";
 
 export const loginUser = createAsyncThunk(
     "auth/loginUser",

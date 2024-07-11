@@ -4,10 +4,9 @@ const PaymentInternalAccountInfo = require('./payment-internal-account-info')
 const paymentAction = require('../../constant/payment-action')
 
 const topUp = catchAsyncHandler(async (req, res, next) => {
-  const userId = req.userId
   const paymentInternalAccountInfo = PaymentInternalAccountInfo.validate(req.body)
 
-  if (!paymentInternalAccountInfo.result) {
+  if (!paymentInternalAccountInfo.isValid) {
     return res.status(400).json({
       status: 'fail',
       message: 'Invalid payment format',
@@ -17,7 +16,6 @@ const topUp = catchAsyncHandler(async (req, res, next) => {
 
   const body = {
     ...req.body,
-    user_id: userId,
     payment_method: paymentAction.DEPOSIT
   }
 

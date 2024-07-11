@@ -191,8 +191,12 @@ const convertDateStringToDateObject = (orderDate) => {
   return orderDate
 }
 
-const createOrder = async (order, orderItems) => {
+const createOrder = async (order) => {
   const session = await connection.startSession()
+
+  // ! clientside no need to send orderItems
+  // ! retrieve orderItems here then calculate order_total
+  const orderItems = []
   try {
     session.startTransaction()
     const orderTotal = orderItems.reduce((total, item) => {

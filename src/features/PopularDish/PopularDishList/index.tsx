@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import styles from "./styles.module.css";
 import { PopularDish } from "../PopularDish/index";
-import DishService from "../../../services/dish/dish-service";
+import DishService from "../../../services/dish/dishService";
 import { Grid } from "@mui/material";
 
 

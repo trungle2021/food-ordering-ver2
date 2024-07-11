@@ -1,7 +1,7 @@
 import { SetStateAction, useEffect, useState } from "react";
 import { SearchBar } from "~/components/SearchBar";
 import styles from "./styles.module.css";
-import DishService from "~/services/dish/dish-service";
+import DishService from "~/services/dish/dishService";
 import { useDispatch } from "react-redux";
 import { searchDishes } from "~/features/Dish/SearchDish/searchDishesAction";
 import { clearSearchData, searchDishSlice } from '../../../features/Dish/SearchDish/searchDishesSlice';

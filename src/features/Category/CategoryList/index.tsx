@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CategoryItem from "../CategoryItem";
-import CategoryService from "../../../services/category/category-service";
+import CategoryService from "../../../services/category/categoryService";
 import Category from "../../../interface/category/category";
 import styles from "./styles.module.css";
 import { Grid } from "@mui/material";

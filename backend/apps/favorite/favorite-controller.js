@@ -11,6 +11,8 @@ const getFavorites = catchAsyncHandler(async (req, res) => {
 })
 
 const getFavoriteByUserId = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const { user_id: userId } = req.params
   console.log(userId)
   const favorite = await FavoriteService.getFavoriteByUserId(userId)
@@ -27,6 +29,8 @@ const getFavoriteByUserId = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createFavorites = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const listFavorites = req.body
   const favorites = await FavoriteService.createFavorites(listFavorites)
   return res.status(200).json({
@@ -35,6 +39,8 @@ const createFavorites = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const createFavorite = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const favoriteReqBody = {
     user_id: req.body.user_id,
     dish_id: req.body.dish_id

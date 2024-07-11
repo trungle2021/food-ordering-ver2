@@ -6,7 +6,7 @@ router.route('/')
   .post(BalanceController.createBalance)
   .put(BalanceController.updateBalance)
 
-router.route('/users/:id')
-.get(BalanceController.getBalanceByUserId)
+router.route('/users/:user_id')
+  .get(BalanceController.getBalanceByUserId)
 
 module.exports = router

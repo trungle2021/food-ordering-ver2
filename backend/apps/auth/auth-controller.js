@@ -5,8 +5,9 @@ const validateLoginRequest = require('./login-validator')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 
 const register = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const userInput = req.body
-  console.log('User input' + req.body)
   const newUser = new User(userInput)
   await newUser.validate()
   const tokens = await AuthService.register(userInput)
@@ -42,7 +43,9 @@ const login = catchAsyncHandler(async (req, res, next) => {
 })
 
 const logout = catchAsyncHandler(async (req, res, next) => {
-  const userId = req.userId
+  // ! Need to validate request body
+
+  const userId = req.user_id
   if (!userId) {
     return res.status(400).json({
       status: 'fail',
@@ -57,8 +60,10 @@ const logout = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
+  // ! Need to validate request body
+
   const { token } = req.body
-  const userId = req.userId
+  const userId = req.user_id
 
   const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {

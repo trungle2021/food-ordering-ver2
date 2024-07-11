@@ -3,14 +3,14 @@ const validateObjectAgainstSchema = (object, schema) => {
   if (error) {
     const errorMessages = error.details.map((detail) => detail.message)
     return {
-      data: object,
       isValid: false,
+      data: object,
       error_count: error.details.length,
       errors: errorMessages
     }
   }
   return {
-    result: true,
+    isValid: true,
     data: object
   }
 }

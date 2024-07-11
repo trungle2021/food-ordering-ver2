@@ -20,14 +20,15 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     throw new AppError('No authorization header', 401)
   }
   const token = extractToken(authHeader)
+  console.log('token', token)
   try {
     const decodePayload = await JWTService.verifyToken(token, secretKey)
     const { _id } = decodePayload
     const user = await UserService.getUser({ _id })
     if (!user) {
-      throw new AppError('Invalid token', 401)
+      throw new AppError('User not exists', 401)
     }
-    req.userId = _id
+    req.user_id = _id
     next()
   } catch (error) {
     if (error instanceof TokenExpiredError) {
@@ -55,5 +56,3 @@ const extractToken = (authHeader) => {
 }
 
 module.exports = jwtFilterHandler
-
-// incoming request -> check whitelist url -> if in whitelist then can next, else stop them then extract

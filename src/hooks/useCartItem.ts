@@ -32,7 +32,8 @@ export const useCartItem = (item: CartItemProps) => {
             return
         }
        const payload = {
-            dishId: item.dish._id,
+            // dishId: item.dish._id,
+            itemId: item._id,
             updateQuantity
        }
         dispatch<any>(updateItem(payload))
@@ -42,11 +43,12 @@ export const useCartItem = (item: CartItemProps) => {
             setQuantity(item.quantity);
         });
     }
-    const handleClickModifyQuantity = (dishId: string, action:string) => {
+    const handleClickModifyQuantity = (itemId: string, action:string) => {
        switch (action) {
             case 'increment':
                 const incrementPayload = {
-                    dishId,
+                    // dishId,
+                    itemId,
                     updateQuantity: quantity + 1
                 }
                 dispatch<any>(updateItem(incrementPayload))
@@ -62,7 +64,8 @@ export const useCartItem = (item: CartItemProps) => {
             case 'decrement':
                 setDisabled(!disabled);
                 const decrementPayload = {
-                    dishId,
+                    // dishId,
+                    itemId,
                     updateQuantity: quantity - 1
                 }
                 dispatch<any>(updateItem(decrementPayload))

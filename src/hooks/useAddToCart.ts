@@ -9,17 +9,22 @@ export const useAddToCart = () => {
 
     const handleAddButton = (dishId: string) => {
         const itemExistsInCart = cart.items.find((item:any) => item.dish._id === dishId);
-        const payload = {
-            dishId,
-            quantity: 1,
-        }
+ 
         if(itemExistsInCart) {
-            dispatch<any>(updateItem({dishId, updateQuantity: itemExistsInCart.quantity + 1}))
+            const payload = {
+                itemId: itemExistsInCart._id,
+                updateQuantity: itemExistsInCart.quantity + 1
+            }
+            dispatch<any>(updateItem(payload))
             .then(unwrapResult)
             .catch((err:any) => {
                 toast.error(err.message)
             });
         }else{
+            const payload = {
+                dishId,
+                quantity: 1,
+            }
             dispatch<any>(addItem(payload))
             .then(unwrapResult)
             .then((payload:any) => {

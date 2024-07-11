@@ -3,7 +3,7 @@ import Discount from "~/components/UI/Discount";
 import styles from "./styles.module.css";
 import { Rating } from "~/components/UI/Rating";
 import { Card } from "@mui/material";
-import PopularDishProps from "~/interface/dish/popular-dish";
+import PopularDishProps from "~/interface/dish/popularDish";
 import { useAddToCart } from "~/hooks/useAddToCart";
 
 export const PopularDish = ({

@@ -1,9 +1,9 @@
 
 import axios from "~/lib/axios";
 import { loginApi, registerApi, logoutApi, refreshTokenApi, getUserInfoApi } from "~/utils/api";
-import { LoginPayload } from "~/interface/auth/login-payload";
-import { RegisterPayload } from "~/interface/auth/register-payload";
-import { GetNewAccessTokenPayload } from "~/interface/auth/get-new-access-token-payload";
+import { LoginPayload } from "~/interface/auth/loginPayload";
+import { RegisterPayload } from "~/interface/auth/registerPayload";
+import { GetNewAccessTokenPayload } from "~/interface/auth/getNewAccessTokenPayload";
 
 
 const login = (credential: LoginPayload): Promise<any> => {
