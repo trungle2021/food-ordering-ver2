@@ -6,13 +6,13 @@ const getCart = async(userId:string) => {
     return response.data;
 };     
 
-const addItem = async (payload: {dishId: string, updateQuantity: number}) => {
+const addItem = async (payload: {userId:string, dishId: string, quantity: number}) => {
     const response = await axios.post(baseCartApi,payload)
     return response.data;
 };
 
 
-const updateItem = async (payload: {dishId: string, updateQuantity: number}) => {
+const updateItem = async (payload: {userId:string, dishId: string, updateQuantity: number}) => {
     const response = await axios.put(baseCartApi, payload);
     return response.data;
 };

@@ -43,7 +43,7 @@ const ErrorController = (err, req, res, next) => {
       break
     case 'CastError':
       err.statusCode = 400
-      err.message = 'Invalid data'
+      err.message = 'Bad Request'
       break
     case 'MongoNetworkError':
       err.statusCode = 503

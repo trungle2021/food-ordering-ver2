@@ -17,10 +17,12 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     }
   }
   if (!authHeader) {
-    throw new AppError('No authorization header', 401)
+    throw new AppError('Missing authorization header', 401)
   }
   const token = extractToken(authHeader)
-  console.log('token', token)
+  if (!token){
+    throw new AppError('Missing access token', 401)
+  }
   try {
     const decodePayload = await JWTService.verifyToken(token, secretKey)
     const { _id } = decodePayload

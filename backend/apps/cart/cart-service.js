@@ -1,9 +1,11 @@
 const AppError = require('../../utils/error/app-error')
 const DishService = require('../dish/dish-service')
+const UserService = require('../user/user-service')
 const StockService = require('../stock/stock-service')
 const Cart = require('./cart-model')
 const { INCREMENT, DECREMENT } = require('../../constant/cart-action')
 const { moneyFormatter } = require('../../utils/formater/money-formatter')
+const { ObjectId } = require('mongodb')
 
 const getCarts = async () => {
   return await Cart.find({}).populate({ path: 'category', select: 'name' })
@@ -17,9 +19,13 @@ const getCartByUserId = async (queryString) => {
 }
 
 const addItem = async (userId, dishId, quantity) => {
-  // ! need to check userId exits
+  const user = await UserService.getUser({_id: userId})
 
-  const dish = await DishService.getDish({ _id: dishId })
+  if(!user){
+    throw new AppError('User not exists', 404)
+  }
+
+  const dish = await DishService.getDish({ _id: new ObjectId(dishId) })
 
   if (!dish) {
     throw new AppError('Dish not exists', 404)
@@ -87,7 +93,10 @@ const updateItem = async (userId, dishId, updateQuantity) => {
     throw new AppError('Not enough quantity in cart', 409)
   }
 
-  // ! need to check userId exits
+  const user = UserService.getUser({_id: userId})
+  if(!user){
+    throw new AppError('User not exists', 404)
+  }
 
   const dish = await DishService.getDish({ _id: dishId })
 
@@ -99,6 +108,10 @@ const updateItem = async (userId, dishId, updateQuantity) => {
     path: 'items.dish',
     select: 'name price image is_active'
   })
+
+  if(!cart || cart.items.length == 0){
+    throw new AppError('Cart not found', 404)
+  }
   const { itemIndex, item: itemExistsInCart } = findItemInCart(
     cart,
     dish._id.toString()
@@ -189,6 +202,7 @@ const removeItem = async (userId, dishId) => {
 }
 
 const findItemInCart = (cart, dishId) => {
+  
   const itemIndex = cart.items.findIndex(
     (item) => item.dish._id.toString() === dishId
   )

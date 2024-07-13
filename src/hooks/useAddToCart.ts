@@ -4,6 +4,8 @@ import { toast } from "react-toastify"
 import { addItem, updateItem } from "~/features/Cart/cartAction"
 
 export const useAddToCart = () => {
+    const auth = useSelector((state:any) => state.auth)
+    const userId = auth?.user?._id
     const cart = useSelector((state: any) => state.cart)
     const dispatch = useDispatch()
 
@@ -12,6 +14,7 @@ export const useAddToCart = () => {
  
         if(itemExistsInCart) {
             const payload = {
+                userId,
                 dishId: itemExistsInCart.dish._id,
                 updateQuantity: itemExistsInCart.quantity + 1
             }
@@ -22,6 +25,7 @@ export const useAddToCart = () => {
             });
         }else{
             const payload = {
+                userId,
                 dishId,
                 quantity: 1,
             }

@@ -9,6 +9,7 @@ const addItemSchemaValidator = Joi.object({
   quantity: Joi.number().required()
 })
 const updateItemSchemaValidator = Joi.object({
+  userId: Joi.string().required(),
   dishId: Joi.string().required(),
   updateQuantity: Joi.number().required()
 })

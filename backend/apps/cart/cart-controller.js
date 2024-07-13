@@ -2,9 +2,7 @@ const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const CartService = require('./cart-service')
 
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
-  const { user_id: userId } = req.params
-  // ! Need to validate request body
-
+  const { userId } = req.params
   const cart = await CartService.getCartByUserId({ user: userId })
   if (!cart) {
     return res.status(404).json({
@@ -19,8 +17,8 @@ const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
 })
 
 const addItem = catchAsyncHandler(async (req, res, next) => {
-  const { user_id: userId, dishId, quantity } = req.body
-  // ! Need to validate request body
+  const { userId, dishId, quantity } = req.body
+  // console.log()
   const cart = await CartService.addItem(userId, dishId, quantity)
   return res.status(200).json({
     status: 'success',
@@ -28,17 +26,16 @@ const addItem = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const updateItem = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
+  const { userId, dishId, updateQuantity } = req.body
 
-  const { dishId, updateQuantity } = req.body
-  const updatedCart = await CartService.updateItem(dishId, updateQuantity)
+  const updatedCart = await CartService.updateItem(userId, dishId, updateQuantity)
   return res.status(200).json({
     status: 'success',
     data: updatedCart
   })
 })
 const removeItem = catchAsyncHandler(async (req, res, next) => {
-  const { user_id: userId, dishId } = req.params
+  const { userId, dishId } = req.params
   // ! Need to validate request body
 
   const updatedCart = await CartService.removeItem(userId, dishId)
