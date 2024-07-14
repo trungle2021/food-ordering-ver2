@@ -67,7 +67,7 @@ const logout = async (userId) => {
   await RefreshTokenService.deleteRefreshTokenByUserId(userId)
 }
 
-const getNewAccessToken = async (userId) => {
+const renewAccessToken = async (userId) => {
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 400)
@@ -114,5 +114,5 @@ module.exports = {
   register,
   login,
   logout,
-  getNewAccessToken
+  renewAccessToken
 }

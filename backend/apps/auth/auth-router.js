@@ -1,20 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const AuthController = require('./../auth/auth-controller')
-const AppError = require('../../utils/error/app-error')
-
-const validBodyLoginHandler = (req, res, next) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    next(new AppError('Email and Password is required', 400))
-  }
-  next()
-}
+const { login, register, logout, renewAccessToken } = require('./../auth/auth-controller')
+const validateRequest = require('../../utils/joi/validate-request-schema')
+const { loginRequestSchema, registerRequestSchema, logoutRequestSchema, refreshTokenRequestSchema } = require('./auth-request-validator')
+const { BODY } = require('../../constant/request-types')
 
 router
-  .post('/login', validBodyLoginHandler, AuthController.login)
-  .post('/register', AuthController.register)
-  .post('/logout', AuthController.logout)
-  .post('/refresh-token', AuthController.getNewAccessToken)
+  .post('/login', validateRequest(loginRequestSchema, BODY), login)
+  .post('/register', validateRequest(registerRequestSchema, BODY), register)
+  .post('/logout', validateRequest(logoutRequestSchema, BODY), logout)
+  .post('/refresh-token', validateRequest(refreshTokenRequestSchema, BODY), renewAccessToken)
 
 module.exports = router

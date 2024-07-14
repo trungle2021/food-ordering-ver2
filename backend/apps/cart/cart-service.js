@@ -19,9 +19,9 @@ const getCartByUserId = async (queryString) => {
 }
 
 const addItem = async (userId, dishId, quantity) => {
-  const user = await UserService.getUser({_id: userId})
+  const user = await UserService.getUser({ _id: userId })
 
-  if(!user){
+  if (!user) {
     throw new AppError('User not exists', 404)
   }
 
@@ -93,8 +93,8 @@ const updateItem = async (userId, dishId, updateQuantity) => {
     throw new AppError('Not enough quantity in cart', 409)
   }
 
-  const user = UserService.getUser({_id: userId})
-  if(!user){
+  const user = UserService.getUser({ _id: userId })
+  if (!user) {
     throw new AppError('User not exists', 404)
   }
 
@@ -109,7 +109,7 @@ const updateItem = async (userId, dishId, updateQuantity) => {
     select: 'name price image is_active'
   })
 
-  if(!cart || cart.items.length == 0){
+  if (!cart) {
     throw new AppError('Cart not found', 404)
   }
   const { itemIndex, item: itemExistsInCart } = findItemInCart(
@@ -202,7 +202,6 @@ const removeItem = async (userId, dishId) => {
 }
 
 const findItemInCart = (cart, dishId) => {
-  
   const itemIndex = cart.items.findIndex(
     (item) => item.dish._id.toString() === dishId
   )

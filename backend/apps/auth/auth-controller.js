@@ -1,57 +1,39 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-const User = require('../user/user-model')
 const AuthService = require('./auth-service')
-const validateLoginRequest = require('./login-validator')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 
 const register = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const userInput = req.body
-  const newUser = new User(userInput)
-  await newUser.validate()
-  const tokens = await AuthService.register(userInput)
-  if (tokens) {
-    return res.status(201).json({
-      status: 'success',
-      data: tokens
+  const registerResult = await AuthService.register(req.body)
+  if (!registerResult) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Register new user failed'
     })
   }
+  return res.status(201).json({
+    status: 'success',
+    data: registerResult
+  })
 })
 
 const login = catchAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body
-  const validateLoginInputResult = validateLoginRequest({ email, password })
-  if (validateLoginInputResult.isValid === false) {
+
+  const loginResult = await AuthService.login(email, password)
+  if (!loginResult) {
     return res.status(400).json({
-      status: 'fail',
-      message: validateLoginInputResult
-    })
-  }
-  const tokens = await AuthService.login(email, password)
-  if (tokens) {
-    res.status(200).json({
-      status: 'success',
-      data: tokens
-    })
-  } else {
-    res.status(400).json({
       status: 'fail',
       message: 'Invalid email or password'
     })
   }
+  return res.status(200).json({
+    status: 'success',
+    data: loginResult
+  })
 })
 
 const logout = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const userId = req.user_id
-  if (!userId) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'User ID is required'
-    })
-  }
+  const { userId } = req.params
   await RefreshTokenService.deleteRefreshTokenByUserId(userId)
   res.status(200).json({
     status: 'success',
@@ -59,11 +41,8 @@ const logout = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { token } = req.body
-  const userId = req.user_id
+const renewAccessToken = catchAsyncHandler(async (req, res, next) => {
+  const { userId, token } = req.body
 
   const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
   if (!refreshToken) {
@@ -73,25 +52,26 @@ const getNewAccessToken = catchAsyncHandler(async (req, res, next) => {
       message: 'Token expired or not found'
     })
   }
-  const newAccessToken = await AuthService.getNewAccessToken(userId)
-  if (newAccessToken) {
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        accessToken: newAccessToken
-      }
-    })
-  } else {
+  const newAccessToken = await AuthService.renewAccessToken(userId)
+
+  if (!newAccessToken) {
     return res.status(500).json({
       status: 'error',
       message: 'Cannot get new access token'
     })
   }
+
+  return res.status(200).json({
+    status: 'success',
+    data: {
+      accessToken: newAccessToken
+    }
+  })
 })
 
 module.exports = {
   register,
   login,
   logout,
-  getNewAccessToken
+  renewAccessToken
 }
