@@ -5,7 +5,6 @@ const StockService = require('../stock/stock-service')
 const Cart = require('./cart-model')
 const { INCREMENT, DECREMENT } = require('../../constant/cart-action')
 const { moneyFormatter } = require('../../utils/formater/money-formatter')
-const { ObjectId } = require('mongodb')
 
 const getCarts = async () => {
   return await Cart.find({}).populate({ path: 'category', select: 'name' })
@@ -19,22 +18,22 @@ const getCart = async (filter) => {
 }
 
 const addItem = async (userId, dishId, quantity) => {
-  const user = await UserService.getUser({ _id: userId })
+  const [user, dish, cart] = await Promise.all([
+    UserService.getUser({ _id: userId }),
+    DishService.getDish({ _id: dishId }),
+    Cart.findOne({ user: userId }).populate({
+      path: 'items.dish',
+      select: 'name price image is_active'
+    })
+  ])
 
   if (!user) {
     throw new AppError('User not exists', 404)
   }
 
-  const dish = await DishService.getDish({ _id: new ObjectId(dishId) })
-
   if (!dish) {
     throw new AppError('Dish not exists', 404)
   }
-
-  const cart = await Cart.findOne({ user: userId }).populate({
-    path: 'items.dish',
-    select: 'name price image is_active'
-  })
 
   const newItem = {
     dish,
@@ -62,7 +61,6 @@ const addItem = async (userId, dishId, quantity) => {
   const { item: itemExistsInCart } = findItemInCart(cart, dish._id.toString())
   if (!itemExistsInCart) {
     // If the item does not exist, add a new item to the items list.
-
     const isStockEnough = await StockService.checkStock(dish._id, 1)
     if (!isStockEnough) {
       throw new AppError('Item has reached the maximum quantity limit', 409)
