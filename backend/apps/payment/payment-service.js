@@ -5,7 +5,7 @@ const BalanceService = require('../balance/balance-service')
 const logger = require('../../utils/logging/winston')
 
 const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
-  const { user_id: userId, amount, payment_method: paymentMethod } = paymentInternalAccountInfo
+  const { userId, amount, payment_method: paymentMethod } = paymentInternalAccountInfo
 
   const balance = await BalanceService.getBalance({ user: userId })
   if (!balance) {
@@ -60,7 +60,7 @@ const processPayment = async (order, orderConfirmInfo) => {
       const amount = order.order_total
       const action = WITHDRAW
       const paymentInternalAccountInfo = {
-        user_id: userId,
+        userId,
         amount,
         action
       }

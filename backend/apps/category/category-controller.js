@@ -12,10 +12,8 @@ const getCategories = catchAsyncHandler(async (req, res) => {
 })
 
 const getCategory = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { id } = req.params
-  const category = await CategoryService.getCategory(id)
+  const { categoryId } = req.params
+  const category = await CategoryService.getCategory({ _id: categoryId })
   if (!category) {
     return res.status(404).json({
       status: 'fail',
@@ -29,8 +27,6 @@ const getCategory = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategories = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
   const payload = req.body
   const categories = await CategoryService.createCategories(payload)
   if (!categories) {
@@ -46,8 +42,6 @@ const createCategories = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createCategory = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
   const payload = req.body
   const category = await CategoryService.createCategory(payload)
   return res.status(200).json({
@@ -56,10 +50,9 @@ const createCategory = catchAsyncHandler(async (req, res, next) => {
   })
 })
 const updateCategory = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
+  const { categoryId } = req.body
   const filter = {
-    _id: req.params.id
+    _id: categoryId
   }
   const payload = req.body
   const category = await CategoryService.updateCategory(filter, payload)
@@ -69,7 +62,23 @@ const updateCategory = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const deleteCategory = catchAsyncHandler(async (req, res, next) => {})
+const deleteCategory = catchAsyncHandler(async (req, res, next) => {
+  const { categoryId } = req.params
+  const filter = {
+    _id: categoryId
+  }
+  const result = await CategoryService.deleteCategory(filter)
+  if (!result) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Delete category failed'
+    })
+  }
+  return res.status(200).json({
+    status: 'success',
+    data: 'Delete category successfully'
+  })
+})
 
 module.exports = {
   getCategories,

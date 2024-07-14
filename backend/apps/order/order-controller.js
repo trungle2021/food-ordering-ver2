@@ -1,7 +1,5 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-const OrderConfirmInputSchema = require('./validation-schema/order-confirm-info-schema')
 const OrderService = require('./order-service')
-const orderCancelSchema = require('./validation-schema/order-cancel-model')
 
 const getOrders = catchAsyncHandler(async (req, res) => {
   const queryString = { ...req.query }
@@ -13,9 +11,7 @@ const getOrders = catchAsyncHandler(async (req, res) => {
 })
 
 const getRecentOrders = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { user_id: userId } = req.params
+  const { userId } = req.params
   const queryString = { ...req.query }
   const recentOrders = await OrderService.getRecentOrders(userId, queryString)
   return res.status(200).json({
@@ -25,10 +21,8 @@ const getRecentOrders = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getOrder = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { order_id: orderId } = req.params.id
-  const order = await OrderService.getOrder(orderId)
+  const { orderId } = req.params
+  const order = await OrderService.getOrder({ _id: orderId })
   if (!order) {
     return res.status(404).json({
       status: 'fail',
@@ -42,9 +36,7 @@ const getOrder = catchAsyncHandler(async (req, res, next) => {
 })
 
 const getOrderHistory = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { user_id: userId } = req.params
+  const { userId } = req.params
   const queryString = { ...req.query }
   const { totalItems, totalPages, orders } = await OrderService.getOrderHistory(userId, queryString)
   return res.status(200).json({
@@ -57,102 +49,14 @@ const getOrderHistory = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const createOrder = catchAsyncHandler(async (req, res, next) => {
-  const orderConfirmValidation = OrderConfirmInputSchema.validate(req.body)
-
-  if (!orderConfirmValidation.isValid) {
-    return res.status(400).json({
-      status: 'fail',
-      error: orderConfirmValidation
-    })
-  }
-
-  const {
-    order_date: orderDate,
-    shipping_address: shippingAddress,
-    user_id: userId
-  } = req.body
-
-  const order = {
-    user: userId,
-    order_date: orderDate,
-    shipping_address: shippingAddress
-  }
-
-  const orderCreated = await OrderService.createOrder(order)
-  res.status(200).json({
-    status: 'success',
-    data: orderCreated
-  })
-})
-
-const confirmOrder = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { order_id: orderId } = req.params
-
-  const orderConfirmValidator = OrderConfirmInputSchema.validate(req.body)
-
-  if (!orderConfirmValidator.isValid) {
-    return res.status(400).json({
-      status: 'fail',
-      error: orderConfirmValidator
-    })
-  }
-
-  const orderConfirmInfo = {
-    order_id: orderId,
-    ...req.body
-  }
-
-  const orderConfirmed = await OrderService.confirmOrder(orderConfirmInfo)
-  if (orderConfirmed) {
-    return res.status(200).json({
-      status: 'success',
-      message: 'Order Successfully'
-    })
-  } else {
-    return res.status(500).json({
-      status: 'fail',
-      message: 'Order Failed'
-    })
-  }
-})
-
-const cancelOrder = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { order_id: orderId } = req.params
-  const validateOrderCancelInput = orderCancelSchema.validate(req.body)
-  if (!validateOrderCancelInput.result) {
-    return res.status(400).json({
-      status: 'fail',
-      error: validateOrderCancelInput
-    })
-  }
-  const orderCancel = {
-    order_id: orderId,
-    ...req.body
-  }
-  await OrderService.cancelOrder(orderCancel)
-  return res.status(200).json({
-    status: 'success',
-    message: 'Order Cancelled Successfully'
-  })
-})
-
 const completeOrder = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { order_id: orderId } = req.params
+  const { orderId } = req.body
   const order = await OrderService.completeOrder(orderId)
   return res.status(200).json({
     status: 'success',
     data: order
   })
 })
-
-const deleteOrder = catchAsyncHandler(async (req, res, next) => { })
 
 const deleteAll = catchAsyncHandler(async (req, res, next) => {
   await OrderService.deleteAll()
@@ -162,15 +66,45 @@ const deleteAll = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const checkoutOrder = catchAsyncHandler(async (req, res, next) => {
+  const orderCreated = await OrderService.createOrder(req.body)
+  res.status(200).json({
+    status: 'success',
+    data: orderCreated
+  })
+})
+
+const confirmOrder = catchAsyncHandler(async (req, res, next) => {
+  const orderConfirmed = await OrderService.confirmOrder(req.body)
+  if (orderConfirmed) {
+    return res.status(200).json({
+      status: 'success',
+      message: 'Order Successfully'
+    })
+  } else {
+    return res.status(409).json({
+      status: 'fail',
+      message: 'Order Failed'
+    })
+  }
+})
+
+const cancelOrder = catchAsyncHandler(async (req, res, next) => {
+  await OrderService.cancelOrder(req.body)
+  return res.status(200).json({
+    status: 'success',
+    message: 'Order Cancelled Successfully'
+  })
+})
+
 module.exports = {
   getOrders,
   getRecentOrders,
   getOrder,
   getOrderHistory,
-  createOrder,
+  checkoutOrder,
   cancelOrder,
   confirmOrder,
   completeOrder,
-  deleteOrder,
   deleteAll
 }

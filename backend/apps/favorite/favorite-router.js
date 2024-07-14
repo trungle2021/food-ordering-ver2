@@ -1,19 +1,25 @@
 const express = require('express')
 const router = express.Router()
-const FavoriteController = require('../favorite/favorite-controller')
+const {
+  getFavoriteByUserId,
+  createFavorite,
+  deleteFavorite
+} = require('../favorite/favorite-controller')
+const {
+  deleteFavoriteRequestSchema,
+  getFavoriteByUserIdRequestSchema,
+  createFavoriteRequestSchema
+} = require('../favorite/favorite-request-validator')
+const validateRequest = require('../../utils/joi/validate-request-schema')
+const { PARAMS, BODY } = require('../../constant/request-types')
 
-router.route('/:id')
-  .get(FavoriteController.deleteFavorite)
+router.route('/:favoriteId')
+  .delete(validateRequest(deleteFavoriteRequestSchema, PARAMS), deleteFavorite)
 
-router.route('/user/:user_id')
-  .get(FavoriteController.getFavoriteByUserId)
-
-router.route('/bulk')
-  .post(FavoriteController.createFavorites)
+router.route('/user/:userId')
+  .get(validateRequest(getFavoriteByUserIdRequestSchema, PARAMS), getFavoriteByUserId)
 
 router.route('/')
-  .get(FavoriteController.getFavorites)
-  .post(FavoriteController.createFavorite)
-  .put(FavoriteController.updateFavorite)
+  .post(validateRequest(createFavoriteRequestSchema, BODY), createFavorite)
 
 module.exports = router

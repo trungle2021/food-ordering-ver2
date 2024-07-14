@@ -3,7 +3,7 @@ const CartService = require('./cart-service')
 
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
   const { userId } = req.params
-  const cart = await CartService.getCartByUserId({ user: userId })
+  const cart = await CartService.getCart({ user: userId })
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
@@ -36,8 +36,6 @@ const updateItem = catchAsyncHandler(async (req, res, next) => {
 })
 const removeItem = catchAsyncHandler(async (req, res, next) => {
   const { userId, dishId } = req.params
-  // ! Need to validate request body
-
   const updatedCart = await CartService.removeItem(userId, dishId)
   return res.status(200).json({
     status: 'success',
@@ -46,7 +44,6 @@ const removeItem = catchAsyncHandler(async (req, res, next) => {
 })
 
 const findItem = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
   const { itemId } = req.params
   const item = await CartService.findItem(itemId)
   return res.status(200).json({

@@ -12,8 +12,6 @@ const getDishes = catchAsyncHandler(async (req, res) => {
 })
 
 const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
-  // ! Need to validate request body
-
   let queryString = req.query
   const { keyword, limit } = queryString
   if (!keyword) {

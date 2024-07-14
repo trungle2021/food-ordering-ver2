@@ -1,22 +1,40 @@
 const express = require('express')
 const router = express.Router()
-const DishController = require('../dish/dish-controller')
+const {
+  getPoplularDishes,
+  searchDishesByFullTextSearch,
+  createDishes,
+  getDish,
+  deleteDish,
+  updateDish,
+  getDishes,
+  createDish
+} = require('../dish/dish-controller')
+const validateRequest = require('../../utils/joi/validate-request-schema')
+const {
+  searchDishesByFullTextSearchRequestSchema,
+  getDishRequestSchema,
+  deleteDishRequestSchema,
+  updateDishRequestSchema,
+  createDishRequestSchema
+} = require('./dish-request-validator')
+const { PARAMS, BODY, QUERY } = require('../../constant/request-types')
 
 router.route('/popular-dishes')
-  .get(DishController.getPoplularDishes)
-
-router.route('/search').get(DishController.searchDishesByFullTextSearch)
+  .get(getPoplularDishes)
 
 router.route('/bulk')
-  .post(DishController.createDishes)
+  .post(createDishes)
 
-router.route('/:id')
-  .get(DishController.getDish)
-  .get(DishController.deleteDish)
-  .put(DishController.updateDish)
+router.route('/search').get(validateRequest(searchDishesByFullTextSearchRequestSchema, QUERY), searchDishesByFullTextSearch)
+
+router.route('/:dishId')
+  .get(validateRequest(getDishRequestSchema, PARAMS), getDish)
+  .delete(validateRequest(deleteDishRequestSchema, PARAMS), deleteDish)
 
 router.route('/')
-  .get(DishController.getDishes)
-  .post(DishController.createDish)
+  .get(getDishes)
+  .post(validateRequest(createDishRequestSchema, BODY), createDish)
+  .put(validateRequest(updateDishRequestSchema, BODY), updateDish)
 
 module.exports = router

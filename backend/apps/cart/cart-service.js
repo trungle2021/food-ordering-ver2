@@ -11,8 +11,8 @@ const getCarts = async () => {
   return await Cart.find({}).populate({ path: 'category', select: 'name' })
 }
 
-const getCartByUserId = async (queryString) => {
-  return await Cart.findOne(queryString).populate({
+const getCart = async (filter) => {
+  return await Cart.findOne(filter).populate({
     path: 'items.dish',
     select: 'name price image is_active'
   })
@@ -211,7 +211,7 @@ const findItemInCart = (cart, dishId) => {
 
 module.exports = {
   getCarts,
-  getCartByUserId,
+  getCart,
   addItem,
   updateItem,
   removeItem

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const UserController = require('./../user/user-controller')
 
-router.route('/:user_id')
+router.route('/:userId')
   .get(UserController.getUser)
 
 router.route('/')

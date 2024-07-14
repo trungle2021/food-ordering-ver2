@@ -7,7 +7,9 @@ const { PROCESSING, COMPLETED, SHIPPING } = require('../../constant/order-status
 const { PAID } = require('../../constant/payment-status')
 const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
-
+const CartService = require('../cart/cart-service')
+const UserService = require('../user/user-service')
+const AddressService = require('../address/address-service')
 const getOrders = async (queryString) => {
   const features = new ApiFeatures(Order.find(), queryString)
     .filter()
@@ -22,11 +24,7 @@ const getOrders = async (queryString) => {
 }
 
 const getOrder = async (filter) => {
-  const order = await Order.findOne(filter)
-  if (!order) {
-    return null
-  }
-  return order
+  return await Order.findOne(filter)
 }
 
 const getOrderHistory = async (userId, queryString) => {
@@ -191,18 +189,39 @@ const convertDateStringToDateObject = (orderDate) => {
   return orderDate
 }
 
-const createOrder = async (order) => {
+const createOrder = async (payload) => {
+  const { userId, addressId } = payload
   const session = await connection.startSession()
+  const user = await UserService.getUser({ _id: userId })
+  if (!user) {
+    throw new AppError('User not found', 404)
+  }
+  const address = await AddressService.getAddress({ _id: addressId })
 
-  // ! clientside no need to send orderItems
-  // ! retrieve orderItems here then calculate order_total
-  const orderItems = []
+  if (!address) {
+    throw new AppError('Address not found', 404)
+  }
+  const cart = await CartService.getCart({ user: userId })
+  if (!cart) {
+    throw new AppError('Cart not found', 404)
+  }
+  const orderItems = cart?.items
+
+  if (orderItems.length === 0) {
+    throw new AppError('Cart is empty', 409)
+  }
   try {
     session.startTransaction()
     const orderTotal = orderItems.reduce((total, item) => {
       return total + (item.price * item.quantity)
     }, 0)
-    order.order_total = orderTotal
+    const order = {
+      user: userId,
+      order_details: [...orderItems],
+      order_total: orderTotal,
+      order_date: Date.now(),
+      address: address._id
+    }
     const orderCreated = await Order.create([order], { session })
     const orderId = orderCreated[0]._id
     await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
@@ -223,8 +242,7 @@ const confirmOrder = async (orderConfirmInfo) => {
     session.startTransaction()
 
     const {
-      order_id: orderId,
-      shipping_address: shippingAddress,
+      orderId,
       payment_info: { payment_method: paymentMethod }
     } = orderConfirmInfo
 
@@ -235,7 +253,6 @@ const confirmOrder = async (orderConfirmInfo) => {
     orderAfterPaid = await processPayment(order, orderConfirmInfo)
     orderAfterPaid.payment_method = paymentMethod
     orderAfterPaid.order_status = PROCESSING
-    orderAfterPaid.shipping_address = shippingAddress
     orderAfterPaid.payment_status = PAID
     await orderAfterPaid.save()
     session.commitTransaction()

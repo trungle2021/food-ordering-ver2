@@ -10,8 +10,8 @@ const getCategories = async (queryString) => {
   return await features.query
 }
 
-const getCategory = async (id) => {
-  return await Category.findById(id).populate({ path: 'dish', select: 'name -_id' })
+const getCategory = async (queryString) => {
+  return await Category.findOne(queryString).populate({ path: 'dish', select: 'name -_id' })
 }
 
 const createCategory = async (category) => {
@@ -26,8 +26,8 @@ const updateCategory = async (filter, update) => {
   return await Category.findOneAndUpdate(filter, update, { new: true })
 }
 
-const deleteCategory = async (category) => {
-
+const deleteCategory = async (filter) => {
+  return await Category.deleteOne(filter)
 }
 
 module.exports = {

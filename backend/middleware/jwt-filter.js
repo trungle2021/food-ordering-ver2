@@ -20,7 +20,7 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     throw new AppError('Missing authorization header', 401)
   }
   const token = extractToken(authHeader)
-  if (!token){
+  if (!token) {
     throw new AppError('Missing access token', 401)
   }
   try {
@@ -30,7 +30,7 @@ const jwtFilterHandler = catchAsyncHandler(async (req, res, next) => {
     if (!user) {
       throw new AppError('User not exists', 401)
     }
-    req.user_id = _id
+    req.userId = _id
     next()
   } catch (error) {
     if (error instanceof TokenExpiredError) {

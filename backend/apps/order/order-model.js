@@ -44,7 +44,7 @@ const orderSchema = new mongoose.Schema({
     },
     default: null
   },
-  shipping_address: {
+  address: {
     type: String,
     require: [true, 'Shipping Address is required']
   },

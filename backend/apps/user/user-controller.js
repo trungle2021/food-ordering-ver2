@@ -13,7 +13,7 @@ const getUsers = catchAsyncHandler(async (req, res) => {
 const getUser = catchAsyncHandler(async (req, res, next) => {
   // ! Need to validate request body
 
-  const { user_id: userId } = req.params
+  const { userId } = req.params
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     return res.status(404).json({

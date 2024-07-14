@@ -9,10 +9,10 @@ router
   .put(UserAddressController.updateUserAddress)
 
 router
-  .route('/:address_id')
+  .route('/:addressId')
   .get(UserAddressController.getUserAddress)
   .delete(UserAddressController.deleteUserAddress)
 
-router.route('/users/:user_id').get(UserAddressController.getUserAddressesByUserID)
+router.route('/users/:userId').get(UserAddressController.getUserAddressesByUserID)
 
 module.exports = router

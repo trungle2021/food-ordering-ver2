@@ -1,29 +1,41 @@
 const express = require('express')
 const router = express.Router()
-const OrderController = require('../order/order-controller')
+const {
+  getRecentOrders,
+  confirmOrder,
+  completeOrder,
+  cancelOrder,
+  getOrderHistory,
+  getOrder,
+  getOrders,
+  checkoutOrder,
+  deleteAll
+} = require('../order/order-controller')
+// const validateRequest = require('../../utils/joi/validate-request-schema')
 
-router.route('/recent-orders/users/:user_id')
-  .get(OrderController.getRecentOrders)
+router.route('/recent-orders/users/:userId')
+  .get(getRecentOrders)
 
-router.route('/confirm/:order_id')
-  .post(OrderController.confirmOrder)
+router.route('/confirm')
+  .post(confirmOrder)
 
-router.route('/complete/:order_id')
-  .post(OrderController.completeOrder)
+router.route('/complete')
+  .post(completeOrder)
 
-router.route('/cancel/:order_id')
-  .post(OrderController.cancelOrder)
+router.route('/cancel')
+  .post(cancelOrder)
 
-router.route('/history/users/:user_id')
-  .get(OrderController.getOrderHistory)
+router.route('/check-out')
+  .post(checkoutOrder)
 
-router.route('/:order_id')
-  .get(OrderController.getOrder)
-  .get(OrderController.deleteOrder)
+router.route('/history/users/:userId')
+  .get(getOrderHistory)
+
+router.route('/:orderId')
+  .get(getOrder)
 
 router.route('/')
-  .get(OrderController.getOrders)
-  .post(OrderController.createOrder)
-  .delete(OrderController.deleteAll)
+  .get(getOrders)
+  .delete(deleteAll)
 
 module.exports = router
