@@ -13,8 +13,8 @@ const cancelOrderRequestSchema = Joi.object({
 
 const confirmOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
-  payment_info: Joi.object({
-    payment_method: Joi.string().valid(
+  paymentInfo: Joi.object({
+    paymentMethod: Joi.string().valid(
       ...Object.values(paymentMethods)
     ).required()
   })

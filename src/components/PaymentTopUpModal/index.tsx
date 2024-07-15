@@ -56,8 +56,8 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
 
         if (selectedItem) {
             const data = {
-                balance_source: selectedItem.name,
-                payment_method: formData.paymentMethod,
+                balanceSource: selectedItem.name,
+                paymentMethod: formData.paymentMethod,
                 amount: formData.amount
             }
             dispatch<any>(topUp(data))

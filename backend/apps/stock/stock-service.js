@@ -16,8 +16,9 @@ const checkStock = async (dishId, updateQuantity) => {
   return true
 }
 
-const createStock = async (dishId, quantity) => {
-// Check if the dish exists
+const createStock = async (payload) => {
+  const { dishId, quantity } = payload
+  // Check if the dish exists
   const dish = await DishService.getDish({ _id: dishId })
   if (!dish) {
     throw new AppError('Dish does not exist', 404)

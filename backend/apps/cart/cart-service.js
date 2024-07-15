@@ -19,7 +19,7 @@ const getCart = async (filter) => {
 
 const addItem = async (userId, dishId, quantity) => {
   const [user, dish, cart] = await Promise.all([
-    UserService.getUser({ _id: userId }),
+    UserService.checkIfUserExists({ _id: userId }),
     DishService.getDish({ _id: dishId }),
     Cart.findOne({ user: userId }).populate({
       path: 'items.dish',

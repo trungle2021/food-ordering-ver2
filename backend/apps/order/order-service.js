@@ -9,7 +9,7 @@ const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 const CartService = require('../cart/cart-service')
 const UserService = require('../user/user-service')
-const AddressService = require('../address/address-service')
+const AddressService = require('../user_address/user-address-service')
 const getOrders = async (queryString) => {
   const features = new ApiFeatures(Order.find(), queryString)
     .filter()
@@ -243,7 +243,7 @@ const confirmOrder = async (orderConfirmInfo) => {
 
     const {
       orderId,
-      payment_info: { payment_method: paymentMethod }
+      paymentInfo: { paymentMethod }
     } = orderConfirmInfo
 
     const order = await Order.findById(orderId)

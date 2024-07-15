@@ -16,7 +16,7 @@ const topUp = catchAsyncHandler(async (req, res, next) => {
 
   const body = {
     ...req.body,
-    payment_method: paymentAction.DEPOSIT
+    paymentMethod: paymentAction.DEPOSIT
   }
 
   const currentBalanceUpdated = await PaymentService.updateBalanceForInternalAccount(body)

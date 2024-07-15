@@ -11,10 +11,8 @@ const getUserAddresses = catchAsyncHandler(async (req, res) => {
 })
 
 const getUserAddressesByUserID = catchAsyncHandler(async (req, res) => {
-  // ! Need to validate request body
-
-  const { id } = req.params
-  const userAddresses = await UserAddressService.getUserAddresses({ user: id })
+  const { userId } = req.params
+  const userAddresses = await UserAddressService.getUserAddresses({ user: userId })
   return res.status(200).json({
     status: 'success',
     data: userAddresses
@@ -22,9 +20,7 @@ const getUserAddressesByUserID = catchAsyncHandler(async (req, res) => {
 })
 
 const getUserAddress = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { address_id: addressId } = req.params
+  const { addressId } = req.params
   const userAddress = await UserAddressService.getUserAddress({ _id: addressId })
 
   if (!userAddress) {
@@ -41,15 +37,7 @@ const getUserAddress = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createUserAddress = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { userId: user, ...rest } = req.body
-
-  const modifiedPayload = {
-    user,
-    ...rest
-  }
-  const address = await UserAddressService.createUserAddress(modifiedPayload)
+  const address = await UserAddressService.createUserAddress(req.body)
   return res.status(200).json({
     status: 'success',
     data: address
@@ -57,18 +45,10 @@ const createUserAddress = catchAsyncHandler(async (req, res, next) => {
 })
 
 const updateUserAddress = catchAsyncHandler(async (req, res, next) => {
-  // ! Need to validate request body
-
-  const { userId: user, ...rest } = req.body
-
-  const modifiedPayload = {
-    user,
-    ...rest
-  }
-
+  const { userId: user } = req.body
   const filter = { user }
   const data = {
-    ...modifiedPayload,
+    ...req.body,
     updated_at: Date.now()
   }
   const option = { new: true }

@@ -8,7 +8,7 @@ const userAddressSchema = new mongoose.Schema({
   },
   recipient: {
     type: String,
-    required: [true, 'Name receiver is required']
+    required: [true, 'Recipient is required']
   },
   phone: {
     type: String,

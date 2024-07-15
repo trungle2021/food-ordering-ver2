@@ -4,8 +4,8 @@ const { DEPOSIT, WITHDRAW } = require('../../constant/payment-action')
 const BalanceService = require('../balance/balance-service')
 const logger = require('../../utils/logging/winston')
 
-const updateBalanceForInternalAccount = async (paymentInternalAccountInfo) => {
-  const { userId, amount, payment_method: paymentMethod } = paymentInternalAccountInfo
+const updateBalanceForInternalAccount = async (payload) => {
+  const { userId, amount, paymentMethod } = payload
 
   const balance = await BalanceService.getBalance({ user: userId })
   if (!balance) {
@@ -45,10 +45,10 @@ const internalAccountIsEnoughBalance = async (currentBalance, purchaseAmount) =>
 
 const processPayment = async (order, orderConfirmInfo) => {
   const {
-    payment_info: paymentInfo
+    paymentInfo
   } = orderConfirmInfo
 
-  const paymentMethod = paymentInfo.payment_method
+  const paymentMethod = paymentInfo.paymentMethod
 
   if (!order) {
     throw new AppError('Order is required for payment process', 500)
