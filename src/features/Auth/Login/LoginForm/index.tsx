@@ -16,13 +16,13 @@ interface LoginFormProps {
 type LoginFormValues = {
   email: string;
   password: string;
-  rememberMe?: boolean;
+  // rememberMe?: boolean;
 };
 
 const initialFormValues: LoginFormValues = {
   email: "",
   password: "",
-  rememberMe: false
+  // rememberMe: false
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
@@ -65,11 +65,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
             control={control}
           />
           <div className={`${styles["login-form__function"]}`}>
-            <CheckBoxField
+            {/* <CheckBoxField
               label="Remember me"
               name="rememberMe"
               control={control}
-            />
+            /> */}
             <Link to="/forgot-password">Forgot password ?</Link>
           </div>
           <Button type="submit" variant="contained" color="primary">

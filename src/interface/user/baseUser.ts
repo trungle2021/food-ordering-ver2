@@ -1,4 +1,4 @@
-import { Address } from "../address/addressState";
+import { Address } from "../address/addressProps";
 
 export interface BaseUser {
   _id: string;

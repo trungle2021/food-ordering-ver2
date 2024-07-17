@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateAddress } from '~/features/Auth/authSlice';
 import UserService from "~/services/user/userService"
+import { UpdateAddressModal } from '../UpdateAddressModal';
+import { AddressProps } from '~/interface/address/addressProps';
 
 type UserAddressModalProps = {
     open: boolean,
     onSubmit: (data: any) => void,
+    onOpen: () => void
     onClose: () => void,
     maxWidth?: false | Breakpoint | undefined;
 }
@@ -28,20 +31,22 @@ const sortAddressListByDefaultAddress = (addressList: any) => {
     })
 }
 
-export const UserAddressModal = ({ open, onClose, onSubmit }: UserAddressModalProps) => {
+export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddressModalProps) => {
 
     const dispatch = useDispatch()
     const userId = useSelector((state: any) => state.auth?.user?._id)
-    const [addressList, setAddressList] = useState([])
-    const [addressId, setAddressId] = useState('');
+    const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
+
+    const [addressList, setAddressList] = useState<AddressProps[]>([])
+    const [address, setAddress] = useState<AddressProps | null>(null);
     useEffect(() => {
         if (userId && open) {
             UserService.getUserAddressList(userId).then((response) => {
                 // sort with default address first
                 const sortedAddressList = sortAddressListByDefaultAddress(response.data)
-                const defaultAddress = sortedAddressList.find((address: any) => address.is_default_address)
+                const defaultAddress = sortedAddressList[0]
                 if (defaultAddress) {
-                    setAddressId(defaultAddress?._id)
+                    setAddress(defaultAddress)
                 }
                 setAddressList(sortedAddressList)
             }).catch((error) => {
@@ -52,31 +57,55 @@ export const UserAddressModal = ({ open, onClose, onSubmit }: UserAddressModalPr
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const addressId = (event.target as HTMLInputElement).value;
-        setAddressId(addressId);
+        const selectedAddress = addressList.find((address) => address._id === addressId);
+        if(selectedAddress) {
+            setAddress(selectedAddress);
+        }
     };
 
     const handleConfirmAddressChange = () => {
-        // call API to set default address
-        dispatch<any>(updateAddress({ userId, addressId })).then((response: any) => {
-            if (response.payload) {
-                onSubmit(response.payload)
-            }
-        })
+        if(address){
+            const addressId = address._id
+            // call API to set default address
+            dispatch<any>(updateAddress({ userId, addressId })).then((response: any) => {
+                if (response.payload) {
+                    onSubmit(response.payload)
+                }
+            })
+        }
+        
+    }
+
+    const handleCloseUpdateAddressModal = () => {
+        onClose
+        setOpenUpdateAddressModal(false)
     }
 
     const handleCloseUserAddress = () => onClose()
 
-    const handleOpenUpdateAddressModal = () => {
-
+    const handleOpenUpdateAddressModal = (addressId: string) => {
+        const selectedAddress = addressList.find((address) => address._id === addressId);
+        if(selectedAddress) {
+            setAddress(selectedAddress);
+        }
+        onClose()
+        setOpenUpdateAddressModal(true)
     }
+
+    const handleGoBackUpateAddressModal = () => {
+        onOpen()
+    }
+
     return (
+        <>
+        <UpdateAddressModal userAddress={address}  maxWidth='xs' open={openUpdateAddressModal} onClose={handleCloseUpdateAddressModal} onGoBack={handleGoBackUpateAddressModal}/>
         <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress}>
             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
             <FormControl>
                 <RadioGroup
                     aria-labelledby="demo-controlled-radio-buttons-group"
                     name="controlled-radio-buttons-group"
-                    value={addressId}
+                    value={address?._id || ''}
                     onChange={handleRadioChange}
                 >
                     <List>
@@ -106,7 +135,7 @@ export const UserAddressModal = ({ open, onClose, onSubmit }: UserAddressModalPr
                                         padding: '4px',
                                         whiteSpace: 'nowrap',
                                         cursor: 'pointer'
-                                    }} onClick={handleOpenUpdateAddressModal}>Update</div>
+                                    }} onClick={() => handleOpenUpdateAddressModal(address?._id)}>Update</div>
                                 </div>
                             </ListItem>
                         ))}
@@ -118,5 +147,6 @@ export const UserAddressModal = ({ open, onClose, onSubmit }: UserAddressModalPr
                 <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
             </DialogActions>
         </Dialog>
+        </>
     )
 }

@@ -37,7 +37,7 @@ const register = async (userData) => {
 
 const login = async (emailInput, passwordInput) => {
   const user = await UserService.getUser({ email: emailInput })
-
+  console.log("USER LOGIN", user)
   if (!user) { throw new AppError(`Cannot found user with email ${emailInput}`, 404) }
 
   const passwordIsValid = await user.comparePassword(

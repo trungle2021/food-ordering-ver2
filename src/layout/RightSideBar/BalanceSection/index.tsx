@@ -3,7 +3,7 @@ import styles from "./styles.module.css";
 import { TopUp, Transfer } from "~/components/UI/Icon";
 import { useEffect, useState } from "react";
 import { getBalance } from "~/features/Balance/balanceAction";
-import { PaymentTopUpModal } from "~/components/PaymentTopUpModal";
+import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal";
 export const BalanceSection = () => {
     const dispatch = useDispatch()
     const auth = useSelector((state: any) => state.auth)

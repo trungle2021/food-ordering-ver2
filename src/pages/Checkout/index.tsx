@@ -43,7 +43,6 @@ export const Checkout = () => {
     const [defaultAddress, setDefaultAddress] = useState<any>({})
 
     const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
-    const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
     const [openAddAddressModal, setOpenAddAddressModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
@@ -66,8 +65,11 @@ export const Checkout = () => {
     useEffect(() => {
         const getUserInfo = async () => {
             const response = await UserService.getUserInfo(userId)
-                const defaultAddress = response?.data?.user_address
-                setDefaultAddress(defaultAddress)
+                if(response.data.user_address.length > 0){
+                    const defaultAddress = response?.data?.user_address[0]
+                    setDefaultAddress(defaultAddress)
+                }
+                return
         }
         getUserInfo()
     }, [userId])
@@ -125,7 +127,7 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onClose={handleCloseUserAddressModal} onSubmit={handleOnChangeUserAddress} />
+            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={() => setOpenUserAddressModal(true)} onClose={handleCloseUserAddressModal} onSubmit={handleOnChangeUserAddress} />
             <AddAddressModal maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
