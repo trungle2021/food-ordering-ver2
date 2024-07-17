@@ -1,13 +1,13 @@
 import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Input, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField } from '@mui/material'
 import { useState } from 'react'
-import { InputField } from '../FormControls/InputField'
 import { Controller, useForm } from 'react-hook-form'
 import { PAYMENT_METHOD } from '~/utils/static'
 import { yupResolver } from '@hookform/resolvers/yup'
-import topUpSchemaValidator from '~/components/PaymentTopUpModal/topUpValidator'
+import topUpSchemaValidator from '~/components/Modal/PaymentTopUpModal/topUpValidator'
 import { topUp } from '~/features/Balance/balanceAction'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { InputField } from '~/components/FormControls/InputField'
 
 type PaymentTopUpModalProps = {
     open: boolean

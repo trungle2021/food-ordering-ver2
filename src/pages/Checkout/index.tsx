@@ -11,10 +11,10 @@ import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
 import UserService from "~/services/user/userService"
 import { Button } from "@mui/material"
-import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
+import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
-import { AddAddressModal } from "~/components/AddAddressModal"
-import { UserAddressModal } from "~/components/UserAddressModal"
+import { AddAddressModal } from "~/components/Modal/AddAddressModal"
+import { UserAddressModal } from "~/components/Modal/UserAddressModal"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -40,11 +40,10 @@ export const Checkout = () => {
 
 
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
-    const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState<any>({})
 
-
-
+    const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
+    const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
     const [openAddAddressModal, setOpenAddAddressModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({

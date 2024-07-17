@@ -57,7 +57,7 @@ const updateUserAddress = async (filter, payload) => {
   if (!isUserExists) {
     throw new Error('User not found', 404)
   }
-  
+
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
@@ -75,7 +75,7 @@ const updateUserAddress = async (filter, payload) => {
     }
 
     // Step 2: Update the address specified by filter with the new data
-    const updatedAddress = await UserAddress.updateOne(filter, data, {
+    const updatedAddress = await UserAddress.updateOne(filter, payload, {
       new: true,
       upsert: false
     }).session(session)
@@ -83,7 +83,7 @@ const updateUserAddress = async (filter, payload) => {
     // Step 3: If the document was updated, update user_address list in the User document
     const updatedAddressSuccess = updatedAddress.nModified > 0
     const updateUserAddressList = async () => {
-      await User.findByIdAndUpdate(user, {
+      await User.findByIdAndUpdate(userId, {
         $addToSet: { user_address: updatedAddress._id }
       }).session(session)
     }

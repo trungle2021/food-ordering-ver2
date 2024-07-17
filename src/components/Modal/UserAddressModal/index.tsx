@@ -16,7 +16,7 @@ type UserAddressFormValues = {
 }
 
 const initialFormValues: UserAddressFormValues = {
-   
+
 };
 
 const sortAddressListByDefaultAddress = (addressList: any) => {
@@ -28,18 +28,21 @@ const sortAddressListByDefaultAddress = (addressList: any) => {
     })
 }
 
-export const UserAddressModal = ({open, onClose, onSubmit}: UserAddressModalProps) => {
+export const UserAddressModal = ({ open, onClose, onSubmit }: UserAddressModalProps) => {
 
     const dispatch = useDispatch()
     const userId = useSelector((state: any) => state.auth?.user?._id)
     const [addressList, setAddressList] = useState([])
     const [addressId, setAddressId] = useState('');
-
     useEffect(() => {
         if (userId && open) {
             UserService.getUserAddressList(userId).then((response) => {
                 // sort with default address first
                 const sortedAddressList = sortAddressListByDefaultAddress(response.data)
+                const defaultAddress = sortedAddressList.find((address: any) => address.is_default_address)
+                if (defaultAddress) {
+                    setAddressId(defaultAddress?._id)
+                }
                 setAddressList(sortedAddressList)
             }).catch((error) => {
                 console.log(error)
@@ -59,18 +62,13 @@ export const UserAddressModal = ({open, onClose, onSubmit}: UserAddressModalProp
                 onSubmit(response.payload)
             }
         })
-
-
-
-        // const selectedAddress = addressList.find((address: any) => address._id === addressId)
-        // if (selectedAddress) {
-            // setDefaultAddress(selectedAddress)
-            // setOpenUserAddressModal(false)
-        // }
     }
 
     const handleCloseUserAddress = () => onClose()
 
+    const handleOpenUpdateAddressModal = () => {
+
+    }
     return (
         <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress}>
             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
@@ -86,15 +84,16 @@ export const UserAddressModal = ({open, onClose, onSubmit}: UserAddressModalProp
                             <ListItem key={address._id} sx={{ padding: '30px' }}>
                                 <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', }}>
                                     <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start' }}>
-                                        <FormControlLabel checked={address.is_default_address} value={address._id} control={<Radio />} label="" />
+                                        <FormControlLabel value={address._id} control={<Radio />} label="" />
                                         <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                <div style={{ display: 'flex', fontSize: '1.4rem', alignItems: 'center' }}>
+                                                <div style={{ display: 'flex', fontSize: '1.4rem', alignItems: 'center', justifyContent: 'center' }}>
                                                     <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', padding: '0 4px' }}>{address.recipient}</div>
-                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem', padding: '0 4px' }}>{address.phone}</div>
+                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', padding: '0 4px' }}>{address.phone}</div>
                                                 </div>
                                             </div>
                                             <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
+                                            {address.is_default_address && <div style={{ color: 'red', fontSize: '1rem', padding: '0 4px', border: '.5px solid red' }}>Default Address</div>}
 
                                         </div>
                                     </div>
@@ -107,7 +106,7 @@ export const UserAddressModal = ({open, onClose, onSubmit}: UserAddressModalProp
                                         padding: '4px',
                                         whiteSpace: 'nowrap',
                                         cursor: 'pointer'
-                                    }}>Update</div>
+                                    }} onClick={handleOpenUpdateAddressModal}>Update</div>
                                 </div>
                             </ListItem>
                         ))}
