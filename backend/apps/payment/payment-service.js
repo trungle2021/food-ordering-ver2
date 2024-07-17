@@ -5,7 +5,7 @@ const BalanceService = require('../balance/balance-service')
 const logger = require('../../utils/logging/winston')
 
 const updateBalanceForInternalAccount = async (payload) => {
-  const { userId, amount, paymentMethod } = payload
+  const { userId, amount, paymentAction } = payload
 
   const balance = await BalanceService.getBalance({ user: userId })
   if (!balance) {
@@ -20,8 +20,9 @@ const updateBalanceForInternalAccount = async (payload) => {
 
   const currentBalanceParsed = Number.parseFloat(balance.amount)
   const amountParsed = Number.parseFloat(amount)
-  switch (paymentMethod) {
+  switch (paymentAction) {
     case DEPOSIT:
+      // Assuming the money has been deducted from the external account.
       newBalance = currentBalanceParsed + amountParsed
       break
     case WITHDRAW:
@@ -31,7 +32,7 @@ const updateBalanceForInternalAccount = async (payload) => {
       newBalance = currentBalanceParsed - amountParsed
       break
     default:
-      throw new AppError(`Invalid action: ${paymentMethod}`, 500)
+      throw new AppError(`Invalid action: ${paymentAction}`, 500)
   }
   console.log('New Balance: ', newBalance)
   const result = await BalanceService.updateBalance({ user: userId }, { amount: newBalance })

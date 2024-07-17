@@ -2,8 +2,9 @@ const Joi = require('joi')
 
 const topUpRequestSchema = Joi.object({
   userId: Joi.string().required(),
-  balanceSource: Joi.string().allow('', null).optional(),
+  paymentMethodId: Joi.string().allow('', null).optional(),
   paymentMethod: Joi.string().allow('', null).optional(),
+  source: Joi.string().allow('', null).optional(),
   amount: Joi.number().required()
 })
 

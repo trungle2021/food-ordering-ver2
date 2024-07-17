@@ -6,7 +6,7 @@ const getUsers = async () => {
 }
 
 const getUser = async (filter) => {
-  return await User.findOne(filter).populate({
+  const user = await User.findOne(filter).populate({
     path: 'user_address',
     match: {
       is_default_address: true
@@ -16,7 +16,18 @@ const getUser = async (filter) => {
       is_default_address: 1,
       address: 1
     }
-  })
+  }).lean()
+
+  // Check if user_address is populated and is an array with 1 elements matches the condition is_default_address: true
+  if (user && Array.isArray(user.user_address) && user.user_address.length === 1) {
+    // Since only one address is matched, take the first element of the array
+    user.user_address = user.user_address[0]
+  } else {
+    // If no address is matched, set user_address to null or an empty object
+    user.user_address = null
+  }
+
+  return user
 }
 
 const checkIfUserExists = async (userId) => {

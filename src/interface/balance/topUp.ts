@@ -1,5 +1,7 @@
 export default interface TopUpProps {
+    userId: string,
     amount: number,
-    balanceSource: string,
-    paymentMethod: string
+    source: string,
+    paymentMethodId: string,
+    paymentMethod: string,
 }

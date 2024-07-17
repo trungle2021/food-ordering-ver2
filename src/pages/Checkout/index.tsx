@@ -6,14 +6,15 @@ import { LocationIcon } from "~/components/UI/Icon"
 import CartItemProps from "~/interface/cart/CartItem"
 import { getCart } from "~/features/Cart/cartAction"
 import styles from './styles.module.css'
-import { Dropdown, List } from "rsuite"
+import { Dropdown } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
 import UserService from "~/services/user/userService"
-import { Button, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, ListItem, ListItemAvatar, ListItemButton, Modal, Radio, RadioGroup, Typography } from "@mui/material"
+import { Button } from "@mui/material"
 import { PaymentTopUpModal } from "~/components/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
 import { AddAddressModal } from "~/components/AddAddressModal"
+import { UserAddressModal } from "~/components/UserAddressModal"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -25,9 +26,6 @@ const initialFormValues: CheckoutFormValues = {
     address: '',
 }
 
-const loginSchemaValidator = {
-
-}
 
 export const Checkout = () => {
 
@@ -35,18 +33,17 @@ export const Checkout = () => {
     const dispatch = useDispatch()
 
     const cart = useSelector((state: any) => state.cart)
-    const auth = useSelector((state: any) => state.auth)
+    const userId = useSelector((state: any) => state.auth?.user?._id)
     const balance = useSelector((state: any) => state.balance)
+
     const amount = balance.amount
 
-
-    const userId = auth?.user?._id
 
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
     const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState<any>({})
-    const [addressList, setAddressList] = useState([])
-    const [radioAddressId, setRadioAddressId] = useState('');
+
+
 
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
     const [openAddAddressModal, setOpenAddAddressModal] = useState(false)
@@ -58,19 +55,6 @@ export const Checkout = () => {
         dispatch<any>(getBalance(userId))
     }, [dispatch])
 
-    useEffect(() => {
-        const getUserInfo = async () => {
-            const response = await UserService.getUserInfoByUserId(userId)
-            const userAddressList = response?.data?.user_address
-            if (userAddressList.length > 0) {
-                const defaultAddress = response.data.user_address[0]
-                setDefaultAddress(defaultAddress)
-                setRadioAddressId(defaultAddress._id)
-            }
-            return;
-        }
-        getUserInfo()
-    }, [userId])
 
     useEffect(() => {
         dispatch<any>(getCart(userId)).then((result: any) => {
@@ -80,20 +64,27 @@ export const Checkout = () => {
         })
     }, [dispatch])
 
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const response = await UserService.getUserInfo(userId)
+                const defaultAddress = response?.data?.user_address
+                setDefaultAddress(defaultAddress)
+        }
+        getUserInfo()
+    }, [userId])
+
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
         setPaymentMethod(content || '')
     }
 
     const handleOpenUserAddress = async () => {
-        const response = await UserService.getUserAddressesByUserId(userId);
-        if (response?.data.length > 0) {
-            setAddressList(response.data)
-        }
         setOpenUserAddressModal(true)
-    };
+    }
 
-    const handleCloseUserAddress = () => setOpenUserAddressModal(false);
+    const handleOnChangeUserAddress = (userAddress: any) => {
+        console.log(userAddress)
+    }
 
     const handleOpenAddAddress = () => {
         setOpenAddAddressModal(true)
@@ -111,18 +102,8 @@ export const Checkout = () => {
         setOpenTopUpModal(false)
     }
 
-
-    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRadioAddressId((event.target as HTMLInputElement).value);
-    };
-
-    const handleConfirmAddressChange = () => {
-        console.log(radioAddressId)
-        const selectedAddress = addressList.find((address: any) => address._id === radioAddressId)
-        if (selectedAddress) {
-            setDefaultAddress(selectedAddress)
-            setOpenUserAddressModal(false)
-        }
+    const handleCloseUserAddressModal = () => {
+        setOpenUserAddressModal(false)
     }
 
     const onSubmit = (data: any) => {
@@ -130,8 +111,6 @@ export const Checkout = () => {
             ...data,
             address: defaultAddress._id
         }
-
-        // check if cart.items has length > 0
         if (cart.items.length > 0) {
 
         }
@@ -147,6 +126,7 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
+            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onClose={handleCloseUserAddressModal} onSubmit={handleOnChangeUserAddress} />
             <AddAddressModal maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
@@ -160,11 +140,10 @@ export const Checkout = () => {
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
-                                        {/* {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>} */}
-                                        <Button onClick={handleOpenAddAddress}>Add Address</Button>
+                                        {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>}
 
 
-                                        <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
+                                        {/* <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
                                             <FormControl>
                                                 <RadioGroup
@@ -210,7 +189,7 @@ export const Checkout = () => {
                                                 <button style={{ padding: '10px' }} onClick={handleCloseUserAddress}>Cancel</button>
                                                 <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
                                             </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                     </div>
                                 </div>
                                 <div className={styles['address-description']}>

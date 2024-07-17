@@ -16,21 +16,23 @@ type PaymentTopUpModalProps = {
 }
 
 type TopUpFormValues = {
-    paymentMethod: '';
     amount: string;
+    paymentMethodId: string;
 }
 
 const initialFormValues: TopUpFormValues = {
-    paymentMethod: '',
     amount: '',
+    paymentMethodId: '',
 };
 
 const paymentSource = [
     {
+        id: '101',
         name: PAYMENT_METHOD.MOMO,
         value: '0375958748'
     },
     {
+        id: '102',
         name: PAYMENT_METHOD.BANK,
         value: 'VPBank - Ngân hàng Việt Nam Thịnh vượng **** 4370'
     }
@@ -40,8 +42,9 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
 
     const dispatch = useDispatch()
     const balance = useSelector((state: any) => state.balance)
+    const userId = useSelector((state: any) => state.auth.user._id)
     const [errors, setErrors] = useState<any>({})
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, reset, control } = useForm({
         defaultValues: initialFormValues,
         resolver: yupResolver(topUpSchemaValidator),
         mode: 'onChange',
@@ -52,20 +55,22 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
     const onError = (errors: any) => setErrors(errors)
 
     const onSubmit = (formData: any) => {
-        const selectedItem = paymentSource.find((item) => item.value === formData.paymentMethod);
-
-        if (selectedItem) {
-            const data = {
-                balanceSource: selectedItem.name,
-                paymentMethod: formData.paymentMethod,
-                amount: formData.amount
-            }
-            dispatch<any>(topUp(data))
-            if(!balance.errors){
+        const payload = {
+            ...formData,
+            userId,
+        }
+        dispatch<any>(topUp(payload)).then((result: any) => {
+            console.log("Result.error: ", result.error)
+            console.log("Result: ", result)
+            if (result.error) {
+                toast.error("Top up failed")
+            } else {
                 onClose()
+                reset()
                 toast.success('Top up successfully')
             }
-        }
+        })
+
     }
 
     return (
@@ -75,10 +80,10 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
                     <DialogTitle sx={{ fontSize: '2rem' }}>Top Up</DialogTitle>
                     <DialogContent>
                         <div style={{ padding: '20px 0' }}>
-                            <FormControl fullWidth error={Boolean(errors?.paymentMethod)}>
-                                <InputLabel id="balance-source-select-label">Balance Source</InputLabel>
+                            <FormControl fullWidth error={Boolean(errors?.paymentMethodId)}>
+                                <InputLabel id="balance-source-select-label">Payment Method</InputLabel>
                                 <Controller
-                                    name="paymentMethod"
+                                    name="paymentMethodId"
                                     control={control}
                                     render={({ field }) => (
                                         <Select
@@ -91,19 +96,19 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
                                                 setErrors({})
                                             }}
                                             renderValue={(selected) => {
-                                                const selectedItem = paymentSource.find((item) => item.value === selected);
+                                                const selectedItem = paymentSource.find((item) => item.id === selected);
                                                 return selectedItem ? `${selectedItem.value}` : 'Select an option';
                                             }}
                                         >
                                             {paymentSource.map((payment: any) => {
                                                 return (
-                                                    <MenuItem key={payment.name} value={payment.value}>{payment.name}</MenuItem>
+                                                    <MenuItem key={payment.name} value={payment.id}>{payment.name}</MenuItem>
                                                 )
                                             })}
                                         </Select>
                                     )}
                                 />
-                                {errors?.paymentMethod && <FormHelperText sx={{ color: 'red' }}>{errors?.paymentMethod?.message}</FormHelperText>}
+                                {errors?.paymentMethodId && <FormHelperText sx={{ color: 'red' }}>{errors?.paymentMethodId?.message}</FormHelperText>}
 
                             </FormControl>
                         </div>

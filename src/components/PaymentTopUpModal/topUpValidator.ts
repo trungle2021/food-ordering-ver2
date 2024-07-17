@@ -3,6 +3,6 @@ import { numberValidator, paymentMethodValidator } from "~/utils/schemaValidator
 
 const schema = yup.object().shape({
   amount: numberValidator,
-  paymentMethod: paymentMethodValidator,
+  paymentMethodId: paymentMethodValidator,
 });
 export default schema;

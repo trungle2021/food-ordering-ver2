@@ -10,7 +10,7 @@ const {
 } = require('./user-address-controller')
 const validateRequest = require('../../utils/joi/validate-request-schema')
 const { BODY, PARAMS } = require('../../constant/request-types')
-const { createUserAddressRequestSchema, updateUserAddressRequestSchema, getUserAddressRequestSchema, deleteUserAddressRequestSchema } = require('./user_address-request-validator')
+const { createUserAddressRequestSchema, updateUserAddressRequestSchema, getUserAddressRequestSchema, deleteUserAddressRequestSchema, getUserAddressesByUserIDRequestSchema } = require('./user_address-request-validator')
 
 router
   .route('/')
@@ -23,6 +23,6 @@ router
   .get(validateRequest(getUserAddressRequestSchema, PARAMS), getUserAddress)
   .delete(validateRequest(deleteUserAddressRequestSchema, PARAMS), deleteUserAddress)
 
-router.route('/users/:userId').get(validateRequest(), getUserAddressesByUserID)
+router.route('/users/:userId').get(validateRequest(getUserAddressesByUserIDRequestSchema, PARAMS), getUserAddressesByUserID)
 
 module.exports = router

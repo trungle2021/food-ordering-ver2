@@ -2,11 +2,11 @@ import axios from "~/lib/axios";
 import { getUserAddressApi, getUserInfoApi } from "~/utils/api";
 
 
-const getUserInfoByUserId = (userId: string) => {
+const getUserInfo = (userId: string) => {
     return axios.get(`${getUserInfoApi}/${userId}`)
 }
 
-const getUserAddressesByUserId = (userId: string) => {
+const getUserAddressList = (userId: string) => {
     return axios.get(`${getUserAddressApi}/${userId}`)
 }
 
@@ -14,8 +14,8 @@ const getUserAddressesByUserId = (userId: string) => {
 
 
 export const UserService = {
-    getUserInfoByUserId,
-    getUserAddressesByUserId,
+    getUserInfo,
+    getUserAddressList,
 };
 
 export default UserService;

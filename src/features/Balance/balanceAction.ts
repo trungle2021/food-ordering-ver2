@@ -7,6 +7,6 @@ export const getBalance = createAsyncThunk("balance/getBalance", async (userId:s
     return await BalanceService.getBalanceByUserId(userId);
 });
 
-export const topUp = createAsyncThunk("balance/topUp", async(data : TopUpProps) => {
-    return await PaymentService.topUp(data);
+export const topUp = createAsyncThunk("balance/topUp", async(payload : TopUpProps) => {
+    return await PaymentService.topUp(payload);
 });     

@@ -1,25 +1,13 @@
 const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
 const PaymentService = require('./payment-service')
-const PaymentInternalAccountInfo = require('./payment-internal-account-info')
 const paymentAction = require('../../constant/payment-action')
 
 const topUp = catchAsyncHandler(async (req, res, next) => {
-  const paymentInternalAccountInfo = PaymentInternalAccountInfo.validate(req.body)
-
-  if (!paymentInternalAccountInfo.isValid) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid payment format',
-      error: paymentInternalAccountInfo
-    })
-  }
-
-  const body = {
+  const payload = {
     ...req.body,
-    paymentMethod: paymentAction.DEPOSIT
+    paymentAction: paymentAction.DEPOSIT
   }
-
-  const currentBalanceUpdated = await PaymentService.updateBalanceForInternalAccount(body)
+  const currentBalanceUpdated = await PaymentService.updateBalanceForInternalAccount(payload)
   return res.status(200).json({
     status: 'success',
     data: {

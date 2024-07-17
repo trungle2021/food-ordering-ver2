@@ -51,12 +51,16 @@ const createUserAddress = async (payload) => {
   }
 }
 
-const updateUserAddress = async (filter, data) => {
+const updateUserAddress = async (filter, payload) => {
+  const { isDefaultAddress, userId } = payload
+  const isUserExists = UserService.checkIfUserExists({ _id: userId })
+  if (!isUserExists) {
+    throw new Error('User not found', 404)
+  }
+  
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
-    const { is_default_address: isDefaultAddress, user } = data
-
     // Step 1: If user wants to change default address, update existing default address
     if (isDefaultAddress) {
       const addressDefault = await UserAddress.findOne({

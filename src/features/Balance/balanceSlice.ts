@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { TransactionProps } from "~/interface/transaction";
+import { TransactionProps } from "~/interface/transaction/transaction";
 import { getBalance, topUp } from "./balanceAction";
 
 interface BalanceState {
@@ -35,7 +35,7 @@ export const balanceSlice = createSlice({
             console.log("getBalance rejected action", action)
 
             state.isLoading = false;
-            state.errors = action.error.message || "Something went wrong";
+            state.errors = "Something went wrong";
         });
 
 
@@ -50,7 +50,7 @@ export const balanceSlice = createSlice({
         builder.addCase(topUp.rejected, (state, action) =>{
             console.log("topup rejected action", action)
             state.isLoading = false;
-            state.errors = action.error.message || "Something went wrong";
+            state.errors = "Top up failed";
         });
     },
     name: "balance"

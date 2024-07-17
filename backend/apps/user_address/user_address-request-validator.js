@@ -8,10 +8,12 @@ const createUserAddressRequestSchema = Joi.object({
 })
 
 const updateUserAddressRequestSchema = Joi.object({
+  userId: Joi.string().required(),
   addressId: Joi.string().required(),
   address: Joi.string().required(),
   phone: Joi.string().min(10).max(15).required(),
-  recipient: Joi.string().min(2).max(50).required()
+  recipient: Joi.string().min(2).max(50).required(),
+  isDefaultAddress: Joi.boolean().required()
 })
 
 const getUserAddressRequestSchema = Joi.object({
