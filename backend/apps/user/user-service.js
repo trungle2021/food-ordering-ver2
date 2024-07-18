@@ -17,7 +17,6 @@ const getUser = async (filter) => {
       address: 1
     }
   })
-
 }
 
 const checkIfUserExists = async (userId) => {

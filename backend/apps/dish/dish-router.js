@@ -29,12 +29,12 @@ router.route('/bulk')
 router.route('/search').get(validateRequest(searchDishesByFullTextSearchRequestSchema, QUERY), searchDishesByFullTextSearch)
 
 router.route('/:dishId')
-  .get(validateRequest(getDishRequestSchema, PARAMS), getDish)
-  .delete(validateRequest(deleteDishRequestSchema, PARAMS), deleteDish)
+  .get(validateRequest(getDishRequestSchema, [PARAMS]), getDish)
+  .delete(validateRequest(deleteDishRequestSchema, [PARAMS]), deleteDish)
 
 router.route('/')
   .get(getDishes)
-  .post(validateRequest(createDishRequestSchema, BODY), createDish)
-  .put(validateRequest(updateDishRequestSchema, BODY), updateDish)
+  .post(validateRequest(createDishRequestSchema, [BODY]), createDish)
+  .put(validateRequest(updateDishRequestSchema, [BODY]), updateDish)
 
 module.exports = router

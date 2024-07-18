@@ -1,10 +1,10 @@
 import { Breakpoint, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup } from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateAddress } from '~/features/Auth/authSlice';
+import { updateAddressInState } from '~/features/Auth/authSlice';
 import UserService from "~/services/user/userService"
 import { UpdateAddressModal } from '../UpdateAddressModal';
-import { AddressProps } from '~/interface/address/addressProps';
+import { AddressResponse } from '~/interface/address/addressResponse';
 
 type UserAddressModalProps = {
     open: boolean,
@@ -37,8 +37,8 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddres
     const userId = useSelector((state: any) => state.auth?.user?._id)
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
 
-    const [addressList, setAddressList] = useState<AddressProps[]>([])
-    const [address, setAddress] = useState<AddressProps | null>(null);
+    const [addressList, setAddressList] = useState<AddressResponse[]>([])
+    const [address, setAddress] = useState<AddressResponse | null>(null);
     useEffect(() => {
         if (userId && open) {
             UserService.getUserAddressList(userId).then((response) => {
@@ -67,7 +67,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddres
         if(address){
             const addressId = address._id
             // call API to set default address
-            dispatch<any>(updateAddress({ userId, addressId })).then((response: any) => {
+            dispatch<any>(updateAddressInState({ userId, addressId })).then((response: any) => {
                 if (response.payload) {
                     onSubmit(response.payload)
                 }
@@ -122,7 +122,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddres
                                                 </div>
                                             </div>
                                             <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
-                                            {address.is_default_address && <div style={{ color: 'red', fontSize: '1rem', padding: '0 4px', border: '.5px solid red' }}>Default Address</div>}
+                                            {address.isDefaultAddress && <div style={{ color: 'red', fontSize: '1rem', padding: '0 4px', border: '.5px solid red' }}>Default Address</div>}
 
                                         </div>
                                     </div>

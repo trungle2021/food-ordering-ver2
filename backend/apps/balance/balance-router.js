@@ -6,10 +6,10 @@ const { createBalanceRequestSchema, updateBalanceRequestSchema, getBalanceByUser
 const { createBalance, updateBalance, getBalanceByUserId } = require('./balance-controller')
 
 router.route('/')
-  .post(validateRequest(createBalanceRequestSchema, BODY), createBalance)
-  .put(validateRequest(updateBalanceRequestSchema, BODY), updateBalance)
+  .post(validateRequest(createBalanceRequestSchema, [BODY]), createBalance)
+  .put(validateRequest(updateBalanceRequestSchema, [BODY]), updateBalance)
 
 router.route('/users/:userId?')
-  .get(validateRequest(getBalanceByUserIdRequestSchema, PARAMS), getBalanceByUserId)
+  .get(validateRequest(getBalanceByUserIdRequestSchema, [PARAMS]), getBalanceByUserId)
 
 module.exports = router

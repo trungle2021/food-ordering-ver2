@@ -4,15 +4,16 @@ import { Controller } from "react-hook-form";
 type CheckBoxFieldProps = {
   name: string;
   label: string;
-  checked?: false;
+  checked?: boolean;
   control: any;
+  disabled?: boolean;
 };
 
 export const CheckBoxField = ({
   name,
   label,
-  checked,
   control,
+  disabled
 }: CheckBoxFieldProps) => {
   return (
     <Controller
@@ -20,7 +21,13 @@ export const CheckBoxField = ({
       name={name}
       render={({ field }: any) => (
         <FormControlLabel
-          control={<Checkbox label={label} checked={checked} {...field} />}
+          control={<Checkbox
+             label={label}
+              disabled={disabled}
+              checked={field.value} 
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              {...field} />}
           label={label}
         />
       )}

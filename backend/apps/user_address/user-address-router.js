@@ -15,14 +15,14 @@ const { createUserAddressRequestSchema, updateUserAddressRequestSchema, getUserA
 router
   .route('/')
   .get(getUserAddresses)
-  .post(validateRequest(createUserAddressRequestSchema, BODY), createUserAddress)
-  .put(validateRequest(updateUserAddressRequestSchema, BODY), updateUserAddress)
+  .post(validateRequest(createUserAddressRequestSchema, [BODY]), createUserAddress)
+  .put(validateRequest(updateUserAddressRequestSchema, [BODY]), updateUserAddress)
 
 router
   .route('/:addressId')
-  .get(validateRequest(getUserAddressRequestSchema, PARAMS), getUserAddress)
-  .delete(validateRequest(deleteUserAddressRequestSchema, PARAMS), deleteUserAddress)
+  .get(validateRequest(getUserAddressRequestSchema, [PARAMS]), getUserAddress)
+  .delete(validateRequest(deleteUserAddressRequestSchema, [PARAMS]), deleteUserAddress)
 
-router.route('/users/:userId').get(validateRequest(getUserAddressesByUserIDRequestSchema, PARAMS), getUserAddressesByUserID)
+router.route('/users/:userId').get(validateRequest(getUserAddressesByUserIDRequestSchema, [PARAMS]), getUserAddressesByUserID)
 
 module.exports = router

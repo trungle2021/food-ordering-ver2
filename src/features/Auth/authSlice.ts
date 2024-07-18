@@ -36,11 +36,12 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
   initialState,
   reducers: {
-    updateAddress: (state, action) => {
-      const currentUserAddressList = [...(<[]>state?.user?.user_address)];
-      if (state.user && state.user.user_address) {
+    updateAddressInState: (state, action) => {
+        const newAddress = action.payload
+      if (state.user && state.user.user_address.length > 0) {
         const currentUserAddressList = [...state.user.user_address];
-        state.user.user_address = [...currentUserAddressList, action.payload];
+        state.user.user_address = [...currentUserAddressList, newAddress];
+        console.log(state.user.user_address);
       }
     },
   },
@@ -105,5 +106,5 @@ export const authSlice = createSlice({
   name: "auth",
 });
 const { reducer, actions } = authSlice;
-export const { updateAddress } = actions;
+export const { updateAddressInState } = actions;
 export default reducer;

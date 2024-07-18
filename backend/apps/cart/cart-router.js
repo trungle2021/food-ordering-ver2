@@ -14,13 +14,13 @@ router.route('/dish/:dishId?').delete(CartController.removeItem)
 router
   .route('/users/:userId?')
   .get(
-    validateRequest(getCartByUserIdSchemaValidator, PARAMS),
+    validateRequest(getCartByUserIdSchemaValidator, [PARAMS]),
     CartController.getCartByUserId
   )
 
 router
   .route('/')
-  .post(validateRequest(addItemSchemaValidator, BODY), CartController.addItem)
-  .put(validateRequest(updateItemSchemaValidator, BODY), CartController.updateItem)
+  .post(validateRequest(addItemSchemaValidator, [BODY]), CartController.addItem)
+  .put(validateRequest(updateItemSchemaValidator, [BODY]), CartController.updateItem)
 
 module.exports = router

@@ -14,12 +14,12 @@ const validateRequest = require('../../utils/joi/validate-request-schema')
 const { PARAMS, BODY } = require('../../constant/request-types')
 
 router.route('/:favoriteId')
-  .delete(validateRequest(deleteFavoriteRequestSchema, PARAMS), deleteFavorite)
+  .delete(validateRequest(deleteFavoriteRequestSchema, [PARAMS]), deleteFavorite)
 
 router.route('/user/:userId')
-  .get(validateRequest(getFavoriteByUserIdRequestSchema, PARAMS), getFavoriteByUserId)
+  .get(validateRequest(getFavoriteByUserIdRequestSchema, [PARAMS]), getFavoriteByUserId)
 
 router.route('/')
-  .post(validateRequest(createFavoriteRequestSchema, BODY), createFavorite)
+  .post(validateRequest(createFavoriteRequestSchema, [BODY]), createFavorite)
 
 module.exports = router

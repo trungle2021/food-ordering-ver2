@@ -18,15 +18,15 @@ const {
 const { PARAMS, BODY } = require('../../constant/request-types')
 
 router.route('/:categoryId')
-  .get(validateRequest(getCategoryRequestSchema, PARAMS), getCategory)
-  .delete(validateRequest(deleteCategoryRequestSchema, PARAMS), deleteCategory)
+  .get(validateRequest(getCategoryRequestSchema, [PARAMS]), getCategory)
+  .delete(validateRequest(deleteCategoryRequestSchema, [PARAMS]), deleteCategory)
 
 router.route('/bulk')
   .post(createCategories)
 
 router.route('/')
   .get(getCategories)
-  .post(validateRequest(createCategoryRequestSchema, BODY), createCategory)
-  .put(validateRequest(updateCategoryRequestSchema, BODY), updateCategory)
+  .post(validateRequest(createCategoryRequestSchema, [BODY]), createCategory)
+  .put(validateRequest(updateCategoryRequestSchema, [BODY]), updateCategory)
 
 module.exports = router

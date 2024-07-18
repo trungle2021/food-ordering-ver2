@@ -1,4 +1,4 @@
-export type AddressProps = {
+export type AddressResponse = {
     _id: string;
     recipient: string;
     phone: string;

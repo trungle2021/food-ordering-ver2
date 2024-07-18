@@ -13,96 +13,124 @@ const getUserAddress = async (filter) => {
 }
 
 const createUserAddress = async (payload) => {
-  const { userId: user } = payload
-  const isUserExists = UserService.checkIfUserExists({ _id: user })
-  if (!isUserExists) {
-    throw new Error('User not found', 404)
-  }
+  /*
+    if user want to create a new address and set it as default address:
+    - check if there is already a default address
+    - if there is a default address, set it to false
+    - create a new address and set it as default (set is_default_address to true)
+    - add the new address to user_address list in the User document
+    else if user want to create a new address but not set it as default address:
+    - create a new address and set is_default_address to false
+    - add the new address to user_address list in the User document
+*/
+
+  const { is_default_address: isDefaultAddress, userId } = payload
+
+  // Add the user field to the payload
+  // Delete the userId field
+  payload.user = userId
+  delete payload.userId
+
   const session = await mongoose.startSession()
   session.startTransaction()
 
   try {
-    // Step 1: Create a new address in UserAddress
-    const result = await UserAddress.create([payload], { session })
-    const newAddress = result[0]
-    console.log('newAddress', newAddress)
-    // Step 2: Update the user_address list in the User document
-    const updatedUser = await User.findByIdAndUpdate(
-      user,
-      {
-        $addToSet: { user_address: newAddress._id }
-      },
-      { session }
-    )
+    await checkIfUserExists(userId)
 
+    // User want to create a new address and set it as default address
+    await handleIfUserWantToChangeDefaultAddress(isDefaultAddress, payload, session)
+    // Create a new address in UserAddress
+    const result = await UserAddress.create([payload], { session })
+    // Step 2: Update the user_address list in the User document
+    let newAddress
+    if (result.length > 0) {
+      newAddress = result[0]
+      const addressId = newAddress._id
+      await updateUserAddressList(userId, addressId, session)
+    }
     // Commit the transaction
     await session.commitTransaction()
-    session.endSession()
-    console.log('updatedUser', updatedUser)
 
     return newAddress
   } catch (error) {
     // If any operation fails, abort the transaction
     await session.abortTransaction()
-    session.endSession()
-
     console.error('Error creating user address:', error)
     throw error
+  } finally {
+    session.endSession()
   }
 }
 
-const updateUserAddress = async (filter, payload) => {
-  const { isDefaultAddress, userId } = payload
-  const isUserExists = UserService.checkIfUserExists({ _id: userId })
-  if (!isUserExists) {
-    throw new Error('User not found', 404)
-  }
+const updateUserAddress = async (payload) => {
+  const { is_default_address: isDefaultAddress, userId } = payload
+  payload.user = userId
+  delete payload.userId
 
   const session = await mongoose.startSession()
   session.startTransaction()
   try {
+    await checkIfUserExists(userId)
+
     // Step 1: If user wants to change default address, update existing default address
-    if (isDefaultAddress) {
-      const addressDefault = await UserAddress.findOne({
-        is_default_address: true
-      }).session(session)
-      const isAddressDefaultExists = addressDefault !== undefined
-      if (isAddressDefaultExists) {
-        await UserAddress.findByIdAndUpdate(addressDefault._id, {
-          is_default_address: false
-        }).session(session)
-      }
-    }
+    await handleIfUserWantToChangeDefaultAddress(isDefaultAddress, payload, session)
 
     // Step 2: Update the address specified by filter with the new data
-    const updatedAddress = await UserAddress.updateOne(filter, payload, {
+    const updatedAddress = await UserAddress.updateOne(userId, payload, {
       new: true,
       upsert: false
     }).session(session)
 
     // Step 3: If the document was updated, update user_address list in the User document
     const updatedAddressSuccess = updatedAddress.nModified > 0
-    const updateUserAddressList = async () => {
-      await User.findByIdAndUpdate(userId, {
-        $addToSet: { user_address: updatedAddress._id }
-      }).session(session)
-    }
 
     if (updatedAddressSuccess) {
-      updateUserAddressList()
+      const updatedAddressId = updatedAddress._id
+      await updateUserAddressList(userId, updatedAddressId, session)
     }
 
     // Commit the transaction
     await session.commitTransaction()
-    session.endSession()
-
     return updatedAddress
   } catch (error) {
     // If any operation fails, abort the transaction
     await session.abortTransaction()
-    session.endSession()
     console.error('Error updating user address:', error)
     throw error
+  } finally {
+    session.endSession()
+  }
+}
+
+const checkIfUserExists = async (userId) => {
+  const isUserExists = await UserService.checkIfUserExists({ _id: userId })
+  if (!isUserExists) {
+    throw new Error('User not found', 404)
+  }
+}
+
+const updateUserAddressList = async (userId, updatedAddressId, session) => {
+  await User.findByIdAndUpdate(userId, {
+    $addToSet: { user_address: updatedAddressId }
+  }).session(session)
+}
+
+const handleIfUserWantToChangeDefaultAddress = async (isDefaultAddress, payload, session) => {
+  const userWantToChangeDefaultAddress = isDefaultAddress === true
+  if (userWantToChangeDefaultAddress) {
+    const addressDefault = await UserAddress.findOne({
+      is_default_address: true
+    }).session(session)
+
+    if (addressDefault) {
+      const addressDefaultId = addressDefault._id
+      // update existing default address to false
+      await UserAddress.findByIdAndUpdate(addressDefaultId, {
+        is_default_address: false
+      }).session(session)
+    } else {
+      payload.is_default_address = false
+    }
   }
 }
 

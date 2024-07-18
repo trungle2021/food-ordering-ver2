@@ -142,7 +142,7 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>}
-
+-
 
                                         {/* <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
                                             <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>

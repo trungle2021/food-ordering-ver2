@@ -1,4 +1,4 @@
-import { Address } from "../address/addressProps";
+import { AddressResponse } from "../address/addressResponse";
 
 export interface BaseUser {
   _id: string;
@@ -6,6 +6,6 @@ export interface BaseUser {
   phone: string;
   email: string;
   avatar: string;
-  user_address: Address[];
+  user_address: AddressResponse[];
 }
 

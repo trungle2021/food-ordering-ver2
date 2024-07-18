@@ -4,9 +4,10 @@ import { useForm } from 'react-hook-form';
 import addAddressValidator from './addAddressValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { addAddress } from '~/features/Address/addressAction';
-import { updateAddress } from '~/features/Auth/authSlice';
+import { addAddressAsync } from '~/features/Address/addressAction';
+import { updateAddressInState } from '~/features/Auth/authSlice';
 import { InputField } from '~/components/FormControls/InputField';
+import { CheckBoxField } from '~/components/FormControls/CheckBoxField';
 
 type AddAddressModalProps = {
     open: boolean
@@ -24,8 +25,9 @@ type AddAddressFormValues = {
 
 export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressModalProps) => {
     const dispatch = useDispatch()
-    const {user} = useSelector((state:any) => state.auth)
-    // const address = useSelector((state:any) => state.address)
+    const user = useSelector((state: any) => state.auth.user)
+    const userHasDefaultAddress = user?.user_address.length > 0 
+    const userId = user?._id
     const name = user?.name
 
     const initialFormValues: AddAddressFormValues = {
@@ -34,7 +36,7 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
         address: '',
         is_default_address: true,
     };
-    
+
     const { handleSubmit, control } = useForm({
         defaultValues: initialFormValues,
         resolver: yupResolver(addAddressValidator),
@@ -48,9 +50,19 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
     }
 
     const onSubmit = (formData: any) => {
-        console.log(formData)
-        dispatch<any>(addAddress(formData)).then((result:any) => {
-            dispatch<any>(updateAddress(result))
+        const payload = {
+            ...formData,
+            userId
+        }
+        dispatch<any>(addAddressAsync(payload)).then((result: any) => {
+            if(result.error){
+                handleOnClose()
+                return toast.error("Add Address Failed")
+            }
+            dispatch<any>(updateAddressInState(result))
+            handleOnClose()
+                return toast.success("Address Added Successfully")
+
         })
     }
 
@@ -81,8 +93,14 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
                             />
                         </div>
                         <FormGroup>
-                            <FormControlLabel control={<Checkbox name='is_default_address' defaultChecked />} label="Set as default address" />
+                            <CheckBoxField
+                                label="Set as default address"
+                                name="is_default_address"
+                                checked={userHasDefaultAddress}
+                                control={control}
+                            />
                         </FormGroup>
+
                     </DialogContent>
                     <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>

@@ -6,6 +6,6 @@ const { topUpRequestSchema } = require('./payment-request-validator')
 const { BODY } = require('../../constant/request-types')
 
 router.route('/top-up')
-  .post(validateRequest(topUpRequestSchema, BODY), PaymentController.topUp)
+  .post(validateRequest(topUpRequestSchema, [BODY]), PaymentController.topUp)
 
 module.exports = router

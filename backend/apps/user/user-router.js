@@ -6,7 +6,7 @@ const { PARAMS } = require('../../constant/request-types')
 const { getUserRequestSchema } = require('./user-request-validator')
 
 router.route('/:userId')
-  .get(validateRequest(getUserRequestSchema, PARAMS), UserController.getUser)
+  .get(validateRequest(getUserRequestSchema, [PARAMS]), UserController.getUser)
 
 router.route('/')
   .get(UserController.getUsers)

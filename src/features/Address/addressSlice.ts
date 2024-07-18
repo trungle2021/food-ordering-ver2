@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addAddress } from "./addressAction";
-import { Address } from "~/interface/address/addressState";
+import { addAddressAsync } from "./addressAction";
+import { AddressResponse } from "~/interface/address/addressResponse";
 
 type AddressState = {
-    addresses: Address[];
+    addresses: AddressResponse[];
     isLoading: boolean;
     errors: string
 }
@@ -18,15 +18,15 @@ const addressSlice = createSlice({
     initialState,
     reducers:{},
     extraReducers: (builder) => {
-        builder.addCase(addAddress.pending, (state, action) => {
+        builder.addCase(addAddressAsync.pending, (state, action) => {
             state.isLoading = true;
         });
-        builder.addCase(addAddress.fulfilled, (state, action) => {
+        builder.addCase(addAddressAsync.fulfilled, (state, action) => {
             state.isLoading = false;
             state.addresses = [...state.addresses, action.payload];
             state.errors = '';
         });
-        builder.addCase(addAddress.rejected, (state, action) => {
+        builder.addCase(addAddressAsync.rejected, (state, action) => {
             state.isLoading = false;
             state.errors = action?.error?.message || 'Something went wrong'
         });
