@@ -6,13 +6,13 @@ interface BalanceState {
     amount: number;
     transactions: TransactionProps[],
     isLoading: boolean;
-    errors: string
+    error: string
 }
 const initialState: BalanceState= {
     amount: 0,
     transactions: [],
     isLoading: false,
-    errors: ''
+    error: ''
 }
 
 export const balanceSlice = createSlice({
@@ -35,7 +35,7 @@ export const balanceSlice = createSlice({
             console.log("getBalance rejected action", action)
 
             state.isLoading = false;
-            state.errors = "Something went wrong";
+            state.error = "Something went wrong";
         });
 
 
@@ -50,7 +50,7 @@ export const balanceSlice = createSlice({
         builder.addCase(topUp.rejected, (state, action) =>{
             console.log("topup rejected action", action)
             state.isLoading = false;
-            state.errors = "Top up failed";
+            state.error = "Top up failed";
         });
     },
     name: "balance"

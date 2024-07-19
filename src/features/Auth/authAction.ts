@@ -9,9 +9,9 @@ export const loginUser = createAsyncThunk(
     async (payload: LoginPayload, thunkAPI) => {
         try {
             const response = await AuthService.login(payload);
-            const { user, accessToken, refreshToken } = response.data;
+            const { accessToken, refreshToken } = response.data;
 
-            if (user && accessToken && refreshToken) {
+            if (accessToken && refreshToken) {
                 return response;
             }
         } catch (err: any) {
@@ -23,8 +23,8 @@ export const loginUser = createAsyncThunk(
 export const registerUser = createAsyncThunk('auth/registerUser', async (payload: RegisterPayload, thunkAPI) => {
     try {
         const response = await AuthService.register(payload);
-        const { user, accessToken, refreshToken } = response.data;
-        if (user && accessToken && refreshToken) {
+        const {  accessToken, refreshToken } = response.data;
+        if ( accessToken && refreshToken) {
             return response;
         }
     } catch (err: any) {
@@ -32,9 +32,9 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (payload
     }
 });
 
-export const logoutUser = createAsyncThunk('auth/logoutUser', async (payload, thunkAPI) => {
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (userId:string, thunkAPI) => {
     try {
-        return await AuthService.logout();
+        return await AuthService.logout(userId);
     } catch (err: any) {
         return thunkAPI.rejectWithValue(err);
     }

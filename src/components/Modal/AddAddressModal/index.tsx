@@ -1,13 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Breakpoint, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, RadioGroup } from '@mui/material'
+import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, RadioGroup } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import addAddressValidator from './addAddressValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { addAddressAsync } from '~/features/Address/addressAction';
-import { updateAddressInState } from '~/features/Auth/authSlice';
 import { InputField } from '~/components/FormControls/InputField';
 import { CheckBoxField } from '~/components/FormControls/CheckBoxField';
+import { createAddress } from '~/features/User/userAction';
+import { updateAddressInState } from '~/features/User/userSlice';
 
 type AddAddressModalProps = {
     open: boolean
@@ -25,7 +25,7 @@ type AddAddressFormValues = {
 
 export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressModalProps) => {
     const dispatch = useDispatch()
-    const user = useSelector((state: any) => state.auth.user)
+    const user = useSelector((state: any) => state.user.user._id)
     const userHasDefaultAddress = user?.user_address.length > 0 
     const userId = user?._id
     const name = user?.name
@@ -54,7 +54,7 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
             ...formData,
             userId
         }
-        dispatch<any>(addAddressAsync(payload)).then((result: any) => {
+        dispatch<any>(createAddress(payload)).then((result: any) => {
             if(result.error){
                 handleOnClose()
                 return toast.error("Add Address Failed")

@@ -5,55 +5,36 @@ import {
   logoutUser,
   registerUser,
 } from "./authAction";
-import { BaseUser } from "~/interface/user/baseUser";
 
 interface AuthState {
-  user: BaseUser | null;
   accessToken: string;
   refreshToken: string;
   isLoading: boolean;
   message: string;
+  error: string;
   isLoggedIn: boolean;
   isRefreshingToken: null | object;
 }
 const initialState: AuthState = {
-  user: {
-    _id: "",
-    name: "",
-    phone: "",
-    email: "",
-    avatar: "",
-    user_address: [],
-  },
   accessToken: "",
   refreshToken: "",
   isLoading: false,
   message: "",
+  error: "",
   isLoggedIn: false,
   isRefreshingToken: null,
 };
 
 export const authSlice = createSlice({
   initialState,
-  reducers: {
-    updateAddressInState: (state, action) => {
-        const newAddress = action.payload
-      if (state.user && state.user.user_address.length > 0) {
-        const currentUserAddressList = [...state.user.user_address];
-        state.user.user_address = [...currentUserAddressList, newAddress];
-        console.log(state.user.user_address);
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
-        state.user = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
           state.isLoading = false;
-          state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
           state.message = "Login success";
@@ -61,15 +42,14 @@ export const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.message = action.payload.message;
+        state.error = 'Login failed';
       })
-      .addCase(registerUser.pending, (state) => {
+
+      builder.addCase(registerUser.pending, (state) => {
         state.isLoading = true;
-        state.user = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
           state.isLoading = false;
-          state.user = action.payload.data.user;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
           state.message = "Register success";
@@ -77,13 +57,14 @@ export const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.message = action.payload.message;
+        state.error = 'Register failed';
       })
+
+      builder
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {
-          state.user = null;
           state.accessToken = "";
           state.refreshToken = "";
           state.isLoading = false;
@@ -92,9 +73,10 @@ export const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
-        state.message = action.payload.message;
+        state.error = 'Logout failed';
       })
-      .addCase(getNewAccessToken.pending, (state) => {
+
+      builder.addCase(getNewAccessToken.pending, (state) => {
         // state.isRefreshingToken = true;
       })
       .addCase(getNewAccessToken.fulfilled, (state, action) => {
@@ -106,5 +88,4 @@ export const authSlice = createSlice({
   name: "auth",
 });
 const { reducer, actions } = authSlice;
-export const { updateAddressInState } = actions;
 export default reducer;

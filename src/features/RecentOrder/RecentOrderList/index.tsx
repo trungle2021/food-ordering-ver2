@@ -22,8 +22,7 @@ function getHighestPriceItem(orderDetailsArray: Array<OrderDetail>): BaseDish | 
 
 export const RecentOrderList: React.FC = () => {
     const [recentOrders, setRecentOrders] = useState<Order[]>([]);
-    const auth = useSelector((state: any) => state.auth);
-    const userId = auth.user?._id;
+    const userId = useSelector((state: any) => state.user?.user?._id);
     const limit = 4
     const getRecentOrders = async () => {
         try {

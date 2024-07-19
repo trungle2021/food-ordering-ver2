@@ -1,4 +1,4 @@
-import { AddressResponse } from "../address/addressResponse";
+import { AddressResponse } from "./addressResponse";
 
 export interface BaseUser {
   _id: string;

@@ -42,7 +42,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
 
     const dispatch = useDispatch()
     const balance = useSelector((state: any) => state.balance)
-    const userId = useSelector((state: any) => state.auth.user._id)
+    const userId = useSelector((state: any) => state.user.user._id)
     const [errors, setErrors] = useState<any>({})
     const { handleSubmit, reset, control } = useForm({
         defaultValues: initialFormValues,

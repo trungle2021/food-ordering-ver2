@@ -1,7 +1,6 @@
 const origin: string = "http://localhost:1337/";
 const baseAuthApi: string = 'api/v1/auth'
 const baseUserApi: string = 'api/v1/users'
-const baseUserAddressApi: string = 'api/v1/user-addresses'
 const baseCartApi: string = 'api/v1/carts'
 const baseDishApi: string = 'api/v1/dishes'
 const baseCategoryApi: string = 'api/v1/categories'
@@ -10,8 +9,8 @@ const basePaymentApi: string = 'api/v1/payments'
 const baseBalanceApi: string = 'api/v1/balances'
 
 //* USER API
-const getUserAddressApi: string = `${baseUserAddressApi}/users`
-const getUserInfoApi: string = `${baseUserApi}`
+const getUserAddressListApi: string = `${baseUserApi}/:userId/addresses`
+const getUserByUserIdApi: string = `${baseUserApi}`
 
 //* CATEGORY API
 const getCategoriesApi: string = `${baseCategoryApi}`;
@@ -47,12 +46,11 @@ export {
   baseCategoryApi,
   baseOrderApi,
   baseUserApi,
-  baseUserAddressApi,
   basePaymentApi,
   baseBalanceApi,
 
-  getUserAddressApi,
-  getUserInfoApi,
+  getUserAddressListApi,
+  getUserByUserIdApi,
 
   getCategoriesApi,
   getPopularDishesApi,

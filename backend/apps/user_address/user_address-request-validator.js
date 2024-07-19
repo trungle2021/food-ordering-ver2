@@ -17,18 +17,6 @@ const updateUserAddressRequestSchema = Joi.object({
   is_default_address: Joi.boolean().required()
 })
 
-const getUserAddressRequestSchema = Joi.object({
-  addressId: Joi.string().required()
-})
-
-const deleteUserAddressRequestSchema = Joi.object({
-  addressId: Joi.string().required()
-})
-
-const getUserAddressesByUserIDRequestSchema = Joi.object({
-  userId: Joi.string().required()
-})
-
 module.exports = {
   createUserAddressRequestSchema,
   updateUserAddressRequestSchema,

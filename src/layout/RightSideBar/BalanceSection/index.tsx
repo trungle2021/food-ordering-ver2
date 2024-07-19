@@ -6,8 +6,7 @@ import { getBalance } from "~/features/Balance/balanceAction";
 import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal";
 export const BalanceSection = () => {
     const dispatch = useDispatch()
-    const auth = useSelector((state: any) => state.auth)
-    const userId = auth?.user?._id
+    const userId = useSelector((state: any) => state.user?.user?._id)
     const balance = useSelector((state: any) => state.balance)
     const amount = balance.amount
     const [openTopUpModal, setOpenTopUpModal] = useState(false)

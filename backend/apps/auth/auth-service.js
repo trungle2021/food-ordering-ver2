@@ -7,6 +7,7 @@ const JWTService = require('../../utils/jwt/jwt-service')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 const AppError = require('../../utils/error/app-error')
 const RefreshToken = require('../refresh_token/refresh-token-model')
+const User = require('../user/user-model')
 
 const tokenOptions = {
   accessToken: { expiresIn: accessTokenExpired },
@@ -31,13 +32,12 @@ const register = async (userData) => {
   return {
     accessToken,
     refreshToken,
-    user: { ...rest }
+    userId: _id
   }
 }
 
 const login = async (emailInput, passwordInput) => {
-  const user = await UserService.getUser({ email: emailInput })
-  console.log("USER LOGIN", user)
+  const user = await User.find({ email: emailInput })
   if (!user) { throw new AppError(`Cannot found user with email ${emailInput}`, 404) }
 
   const passwordIsValid = await user.comparePassword(
@@ -59,7 +59,7 @@ const login = async (emailInput, passwordInput) => {
   return {
     accessToken,
     refreshToken,
-    user: { ...rest }
+    userId: _id
   }
 }
 
@@ -68,7 +68,7 @@ const logout = async (userId) => {
 }
 
 const renewAccessToken = async (userId) => {
-  const user = await UserService.getUser({ _id: userId })
+  const user = await User.find({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 400)
   }

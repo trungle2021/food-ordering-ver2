@@ -6,6 +6,7 @@ import { SetStateAction, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Alert } from "@mui/material";
 import { registerUser } from "../authAction";
+import { getUserByUserId } from "~/features/User/userAction";
 
 export const Register = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ export const Register = () => {
     dispatch<any>(registerUser(formData))
       .then((result: any) => {
         if (result.payload.status === "success") {
+            dispatch<any>(getUserByUserId(result.payload.data.userId));
           history.push('/dashboard');
         } else {
           setErrorMessage(result.payload.message)

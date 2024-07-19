@@ -9,6 +9,7 @@ import { Alert, Box, FormControl, InputLabel, MenuItem, Select } from "@mui/mate
 import { loginUser } from "../authAction";
 import { updateBalance } from "~/features/Balance/balanceSlice";
 import { getBalance } from "~/features/Balance/balanceAction";
+import { getUserByUserId } from "~/features/User/userAction";
 
 export const Login = () => {
   const history = useHistory();
@@ -21,6 +22,7 @@ export const Login = () => {
       dispatch<any>(loginUser(values))
         .then((result: any) => {
           if (result.payload.status === "success") {
+            dispatch<any>(getUserByUserId(result.payload.data.userId));
             history.push('/dashboard');
           } else {
             setErrorMessage(result.payload.message)

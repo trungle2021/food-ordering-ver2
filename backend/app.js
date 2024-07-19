@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // router
 // app.use(SwaggerRouter)
-app.use(jwtFilterHandler)
+// app.use(jwtFilterHandler)
 app.use('/api/v1', apiRouter)
 
 // Handle Unhandle middleware

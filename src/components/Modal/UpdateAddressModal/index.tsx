@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { CheckBoxField } from '~/components/FormControls/CheckBoxField';
 import { InputField } from '~/components/FormControls/InputField'
-import { updateAddressAsync } from '~/features/Address/addressAction';
-import { AddressResponse } from '~/interface/address/addressResponse';
+import { updateAddress } from '~/features/User/userAction';
+import { AddressResponse } from '~/interface/user/addressResponse';
 
 type UpdateAddressModalProps = {
     userAddress: AddressResponse | null,
@@ -43,7 +43,7 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, userAddress, onGoB
     }, [userAddress, reset]);
 
     const onSubmit = (data: any) => {
-        dispatch<any>(updateAddressAsync(data)).then((response:any) => {
+        dispatch<any>(updateAddress(data)).then((response:any) => {
             console.log(response)
         })
     }

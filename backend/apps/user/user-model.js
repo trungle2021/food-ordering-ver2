@@ -11,9 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: [true, 'Password is required'],
-    minlength: [5, 'Password must be at least 5 characters'],
-    maxlength: [15, 'Password must be at most 15 characters']
+    require: [true, 'Password is required']
   },
   phone: {
     type: String,
@@ -34,8 +32,26 @@ const userSchema = new mongoose.Schema({
   },
   user_address: [
     {
-      type: ObjectId,
-      ref: 'UserAddress'
+      _id: {
+        type: ObjectId,
+        auto: true
+      },
+      address: {
+        type: String,
+        required: [true, 'Address is required']
+      },
+      recipient: {
+        type: String,
+        required: [true, 'Recipient is required']
+      },
+      phone: {
+        type: String,
+        required: [true, 'Phone is required']
+      },
+      is_default_address: {
+        type: Boolean,
+        default: false
+      }
     }
   ],
   created_at: {

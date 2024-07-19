@@ -9,7 +9,7 @@ const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 const CartService = require('../cart/cart-service')
 const UserService = require('../user/user-service')
-const AddressService = require('../user_address/user-address-service')
+
 const getOrders = async (queryString) => {
   const features = new ApiFeatures(Order.find(), queryString)
     .filter()
@@ -190,17 +190,21 @@ const convertDateStringToDateObject = (orderDate) => {
 }
 
 const createOrder = async (payload) => {
-  const { userId, addressId } = payload
+  //! NEED TO CHECK IF ADDRESS BELONGS TO USER
+//   const { addressId } = payload
+  const { userId } = payload
   const session = await connection.startSession()
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 404)
   }
-  const address = await AddressService.getAddress({ _id: addressId })
 
-  if (!address) {
-    throw new AppError('Address not found', 404)
-  }
+  //! NEED TO CHECK IF ADDRESS BELONGS TO USER
+  //   const address = await AddressService.getAddress({ _id: addressId })
+
+  //   if (!address) {
+  //     throw new AppError('Address not found', 404)
+  //   }
   const cart = await CartService.getCart({ user: userId })
   if (!cart) {
     throw new AppError('Cart not found', 404)
@@ -219,8 +223,9 @@ const createOrder = async (payload) => {
       user: userId,
       order_details: [...orderItems],
       order_total: orderTotal,
-      order_date: Date.now(),
-      address: address._id
+      order_date: Date.now()
+      //! NEED TO CHECK IF ADDRESS BELONGS TO USER
+    //   address: address._id
     }
     const orderCreated = await Order.create([order], { session })
     const orderId = orderCreated[0]._id

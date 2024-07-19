@@ -1,10 +1,10 @@
 import { Breakpoint, Dialog, DialogActions, DialogTitle, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup } from '@mui/material'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateAddressInState } from '~/features/Auth/authSlice';
 import UserService from "~/services/user/userService"
 import { UpdateAddressModal } from '../UpdateAddressModal';
-import { AddressResponse } from '~/interface/address/addressResponse';
+import { AddressResponse } from '~/interface/user/addressResponse';
+import { updateAddressInState } from '~/features/User/userSlice';
 
 type UserAddressModalProps = {
     open: boolean,
@@ -34,7 +34,7 @@ const sortAddressListByDefaultAddress = (addressList: any) => {
 export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddressModalProps) => {
 
     const dispatch = useDispatch()
-    const userId = useSelector((state: any) => state.auth?.user?._id)
+    const userId = useSelector((state: any) => state.user?._id)
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
 
     const [addressList, setAddressList] = useState<AddressResponse[]>([])

@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 
 export const useCartItem = (item: CartItemProps) => {
-    const auth = useSelector((state:any) => state.auth)
-    const userId = auth?.user._id
+    const userId = useSelector((state:any) => state.user?._id)
     const [disabled, setDisabled] = useState(false)
     const [quantity, setQuantity] = useState(item.quantity);
     const [amount, setAmount] = useState(item.amount);

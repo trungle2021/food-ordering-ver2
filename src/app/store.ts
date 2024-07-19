@@ -1,10 +1,11 @@
 import { AnyAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice";
+import userReducer from "../features/User/userSlice";
 import searchDishesReducer from "../features/Dish/SearchDish/searchDishesSlice";
 import balanceReducer from '../features/Balance/balanceSlice';
 import cartReducer from '../features/Cart/cartSlice';
 import orderReducer from '../features/Order/orderSlice';
-import addressReducer from '../features/Address/addressSlice';
+import addressReducer from '../features/User/userSlice';
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -12,6 +13,7 @@ import storage from "redux-persist/lib/storage";
 
 const combinedReducers = combineReducers({
   auth: authReducer,
+  user: userReducer,
   searchDishes: searchDishesReducer,
   balance: balanceReducer,
   cart: cartReducer,
@@ -22,7 +24,7 @@ const combinedReducers = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["auth","user"],
 };
 
 const rootReducer = (state: any, action: AnyAction) => {

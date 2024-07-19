@@ -9,12 +9,12 @@ import styles from './styles.module.css'
 import { Dropdown } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
-import UserService from "~/services/user/userService"
 import { Button } from "@mui/material"
 import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
 import { AddAddressModal } from "~/components/Modal/AddAddressModal"
 import { UserAddressModal } from "~/components/Modal/UserAddressModal"
+import { getUserByUserId } from "~/features/User/userAction"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -33,14 +33,15 @@ export const Checkout = () => {
     const dispatch = useDispatch()
 
     const cart = useSelector((state: any) => state.cart)
-    const userId = useSelector((state: any) => state.auth?.user?._id)
-    const balance = useSelector((state: any) => state.balance)
+    const user = useSelector((state: any) => state.user)
+    const userId = user?.user._id
 
+    const balance = useSelector((state: any) => state.balance)
+    const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address === true)
     const amount = balance.amount
 
 
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
-    const [defaultAddress, setDefaultAddress] = useState<any>({})
 
     const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
@@ -63,15 +64,7 @@ export const Checkout = () => {
     }, [dispatch])
 
     useEffect(() => {
-        const getUserInfo = async () => {
-            const response = await UserService.getUserInfo(userId)
-                if(response.data.user_address.length > 0){
-                    const defaultAddress = response?.data?.user_address[0]
-                    setDefaultAddress(defaultAddress)
-                }
-                return
-        }
-        getUserInfo()
+        dispatch<any>(getUserByUserId(userId))
     }, [userId])
 
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
@@ -121,8 +114,6 @@ export const Checkout = () => {
     const onError = (error: any) => {
         console.log("ERROR:::", error);
     }
-
-
 
     return (
         <>

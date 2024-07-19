@@ -4,8 +4,7 @@ import { toast } from "react-toastify"
 import { addItem, updateItem } from "~/features/Cart/cartAction"
 
 export const useAddToCart = () => {
-    const auth = useSelector((state:any) => state.auth)
-    const userId = auth?.user?._id
+    const userId = useSelector((state:any) => state.user?._id)
     const cart = useSelector((state: any) => state.cart)
     const dispatch = useDispatch()
 

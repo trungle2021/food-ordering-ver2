@@ -1,5 +1,5 @@
-interface AddressFormValues {
-    userId: string
+interface UpdateAddressFormValues {
+    addressId: string;
     recipient: string;
     phone: string;
     address: string;
