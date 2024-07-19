@@ -20,8 +20,8 @@ export const BalanceSection = () => {
     }
 
     useEffect(() => {
-        dispatch<any>(getBalance(userId))
-    }, [dispatch])
+       if(userId) dispatch<any>(getBalance(userId))
+    }, [userId, dispatch])
   return (
     <>
     <PaymentTopUpModal open={openTopUpModal} onClose={handleCloseTopUpModal} />

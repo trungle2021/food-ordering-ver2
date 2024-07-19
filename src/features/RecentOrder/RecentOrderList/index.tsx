@@ -21,22 +21,21 @@ function getHighestPriceItem(orderDetailsArray: Array<OrderDetail>): BaseDish | 
 }
 
 export const RecentOrderList: React.FC = () => {
-    const [recentOrders, setRecentOrders] = useState<Order[]>([]);
     const userId = useSelector((state: any) => state.user?.user?._id);
     const limit = 4
-    const getRecentOrders = async () => {
+    const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+    const getRecentOrders = async (userId: string, limit: number) => {
         try {
             const response = await OrderService.fetchRecentOrderList(userId, limit);
             setRecentOrders(response.data);
         } catch (error) {
             console.log(error);
         }
-
     };
 
     useEffect(() => {
-        getRecentOrders();
-    }, []);
+        if(userId) getRecentOrders(userId, limit);
+    }, [userId]);
 
     const recentOrdersItem = recentOrders.map((order: Order) => {
         let orderDetailsList = order.order_details

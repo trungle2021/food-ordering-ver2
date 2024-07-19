@@ -51,21 +51,16 @@ export const Checkout = () => {
     });
 
     useEffect(() => {
-        dispatch<any>(getBalance(userId))
-    }, [dispatch])
-
-
-    useEffect(() => {
-        dispatch<any>(getCart(userId)).then((result: any) => {
-            if (result.payload.items.length === 0) {
-                history.push('/dashboard');
-            }
-        })
-    }, [dispatch])
-
-    useEffect(() => {
-        dispatch<any>(getUserByUserId(userId))
-    }, [userId])
+        if(userId) {
+            dispatch<any>(getBalance(userId))
+            dispatch<any>(getCart(userId)).then((result: any) => {
+                if (result.payload.items.length === 0) {
+                    history.push('/dashboard');
+                }
+            })
+            dispatch<any>(getUserByUserId(userId))
+        }
+    }, [userId,dispatch])
 
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
@@ -133,55 +128,7 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>}
--
 
-                                        {/* <Dialog maxWidth='xs' fullWidth onClose={handleCloseUserAddress} open={openUserAddressModal}>
-                                            <DialogTitle sx={{ fontSize: '2rem' }}>My Address</DialogTitle>
-                                            <FormControl>
-                                                <RadioGroup
-                                                    aria-labelledby="demo-controlled-radio-buttons-group"
-                                                    name="controlled-radio-buttons-group"
-                                                    value={radioAddressId}
-                                                    onChange={handleRadioChange}
-                                                >
-                                                    <List>
-                                                        {addressList?.length > 0 && addressList.map((address: any) => (
-                                                            <ListItem key={address._id} sx={{ padding: '30px' }}>
-                                                                <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', }}>
-                                                                    <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start' }}>
-                                                                        <FormControlLabel value={address._id} control={<Radio />} label="" />
-                                                                        <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', gap: '5px' }}>
-                                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <div style={{ display: 'flex', fontSize: '1.4rem', alignItems: 'center' }}>
-                                                                                    <div style={{ borderRight: '.5px solid rgba(0, 0, 0, .26)', padding: '0 4px' }}>{address.recipient}</div>
-                                                                                    <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem', lineHeight: '2.7rem', padding: '0 4px' }}>{address.phone}</div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
-
-                                                                        </div>
-                                                                    </div>
-                                                                    <div style={{
-                                                                        background: 'none',
-                                                                        border: 0,
-                                                                        color: '#08f',
-                                                                        outline: 'none',
-                                                                        fontSize: '1.3rem',
-                                                                        padding: '4px',
-                                                                        whiteSpace: 'nowrap',
-                                                                        cursor: 'pointer'
-                                                                    }}>Update</div>
-                                                                </div>
-                                                            </ListItem>
-                                                        ))}
-                                                    </List>
-                                                </RadioGroup>
-                                            </FormControl>
-                                            <DialogActions sx={{ display: 'flex', gap: '10px', margin: '10px 24px' }}>
-                                                <button style={{ padding: '10px' }} onClick={handleCloseUserAddress}>Cancel</button>
-                                                <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
-                                            </DialogActions>
-                                        </Dialog> */}
                                     </div>
                                 </div>
                                 <div className={styles['address-description']}>

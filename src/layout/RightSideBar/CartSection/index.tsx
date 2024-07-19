@@ -13,8 +13,8 @@ export const CartSection = () => {
     const userId = useSelector((state: any) => state.user?.user?._id);
     const history = useHistory() 
     useEffect(() => {
-        dispatch<any>(getCart(userId))
-    }, [dispatch])
+        if(userId) dispatch<any>(getCart(userId))
+    }, [userId,dispatch])
 
     const handleCheckoutAction = () => {
         if(cart.items.length === 0){

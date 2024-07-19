@@ -5,6 +5,7 @@ import UserService from "~/services/user/userService"
 import { UpdateAddressModal } from '../UpdateAddressModal';
 import { AddressResponse } from '~/interface/user/addressResponse';
 import { updateAddressInState } from '~/features/User/userSlice';
+import { updateAddress } from '~/features/User/userAction';
 
 type UserAddressModalProps = {
     open: boolean,
@@ -34,12 +35,13 @@ const sortAddressListByDefaultAddress = (addressList: any) => {
 export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddressModalProps) => {
 
     const dispatch = useDispatch()
-    const userId = useSelector((state: any) => state.user?._id)
+    const userId = useSelector((state: any) => state.user?.user?._id)
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
 
     const [addressList, setAddressList] = useState<AddressResponse[]>([])
     const [address, setAddress] = useState<AddressResponse | null>(null);
     useEffect(() => {
+        console.log('open', open)
         if (userId && open) {
             UserService.getUserAddressList(userId).then((response) => {
                 // sort with default address first
@@ -67,10 +69,17 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit }: UserAddres
         if(address){
             const addressId = address._id
             // call API to set default address
-            dispatch<any>(updateAddressInState({ userId, addressId })).then((response: any) => {
-                if (response.payload) {
-                    onSubmit(response.payload)
-                }
+            const addressDetail = {
+                addressId: addressId,
+                phone: address.phone,
+                address: address.address,
+                recipient: address.recipient,
+                is_default_address: true
+            }
+            dispatch<any>(updateAddress({userId, addressDetail})).then((result:any)=>{
+                console.log('update address success', result)
+                // update address in state
+                // dispatch<any>(updateAddressInState({ userId, addressId }))
             })
         }
         

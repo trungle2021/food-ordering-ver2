@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { logoutUser } from "~/features/Auth/authAction";
@@ -14,6 +14,7 @@ import { LogoutIcon } from "../UI/Icon";
 export const Navbar = ({ items }: { items: any }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const userId = useSelector((state: any) => state.user?.user?._id);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); // State to control the dialog's open state
 
   const handleLogout = () => {
@@ -21,7 +22,7 @@ export const Navbar = ({ items }: { items: any }) => {
   };
 
   const handleLogoutConfirmed = async () => {
-    await dispatch<any>(logoutUser());
+    await dispatch<any>(logoutUser(userId));
     await dispatch({type: "USER_LOGOUT",})
     history.push('/login');
   };

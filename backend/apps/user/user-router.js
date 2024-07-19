@@ -17,8 +17,11 @@ router.route('/:userId')
   .get(validateRequest(getUserRequestSchema, [PARAMS]), getUser)
   .put(validateRequest(updateUserRequestSchema, [PARAMS, BODY]), updateUser)
 
+router.route('/:userId/addresses')
+.get(validateRequest(getAddressListByUserIDRequestSchema, [PARAMS]), getAddressList)
+
+
 router.route('/:userId/addresses/:addressId?')
-  .get(validateRequest(getAddressListByUserIDRequestSchema, [PARAMS]), getAddressList)
   .get(validateRequest(getAddressByIdRequestSchema, [PARAMS]), getAddressById)
   .post(validateRequest(createAddressRequestSchema, [PARAMS, BODY]), createAddress)
   .put(validateRequest(updateAddressRequestSchema, [PARAMS, BODY]), updateAddress)

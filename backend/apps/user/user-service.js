@@ -120,7 +120,17 @@ const updateAddress = async (userId, payload) => {
     await handleIfUserWantToChangeDefaultAddress(user, isDefaultAddress)
 
     // Step 2: Update the address specified by filter with the new data
-    user.user_address.id(payload._id).set(payload)
+    if(user.user_address){
+      const address = user.user_address.id(payload.addressId)
+      if(address){
+        address.set(payload)
+      }else{
+        throw new AppError('Address not found', 404)
+      }
+    }else{
+      throw new AppError('Set address default failed', 404)
+    }
+    
     await user.save()
     return user
   } catch (error) {

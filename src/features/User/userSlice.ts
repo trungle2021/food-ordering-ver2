@@ -41,7 +41,7 @@ export const userSlice = createSlice({
             state.isLoading = true;
         })
         builder.addCase(getUserByUserId.fulfilled, (state, action) => {
-            state.user = action.payload.data.user;
+            state.user = action.payload.data;
             state.isLoading = false;
         })
         builder.addCase(getUserByUserId.rejected, (state) => {

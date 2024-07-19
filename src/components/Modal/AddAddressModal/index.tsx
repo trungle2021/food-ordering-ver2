@@ -25,7 +25,7 @@ type AddAddressFormValues = {
 
 export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressModalProps) => {
     const dispatch = useDispatch()
-    const user = useSelector((state: any) => state.user.user._id)
+    const user = useSelector((state: any) => state.user.user)
     const userHasDefaultAddress = user?.user_address.length > 0 
     const userId = user?._id
     const name = user?.name
@@ -61,7 +61,7 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
             }
             dispatch<any>(updateAddressInState(result))
             handleOnClose()
-                return toast.success("Address Added Successfully")
+            return toast.success("Address Added Successfully")
 
         })
     }

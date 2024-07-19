@@ -22,8 +22,10 @@ export const Login = () => {
       dispatch<any>(loginUser(values))
         .then((result: any) => {
           if (result.payload.status === "success") {
-            dispatch<any>(getUserByUserId(result.payload.data.userId));
-            history.push('/dashboard');
+            console.log(result.payload)
+            dispatch<any>(getUserByUserId(result.payload.data.userId)).then((result: any) => {
+              history.push('/dashboard');
+            });
           } else {
             setErrorMessage(result.payload.message)
           }

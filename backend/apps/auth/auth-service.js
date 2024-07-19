@@ -37,8 +37,10 @@ const register = async (userData) => {
 }
 
 const login = async (emailInput, passwordInput) => {
-  const user = await User.find({ email: emailInput })
+  const user = await User.findOne({ email: emailInput })
   if (!user) { throw new AppError(`Cannot found user with email ${emailInput}`, 404) }
+
+  console.log(user)
 
   const passwordIsValid = await user.comparePassword(
     passwordInput,
@@ -68,7 +70,7 @@ const logout = async (userId) => {
 }
 
 const renewAccessToken = async (userId) => {
-  const user = await User.find({ _id: userId })
+  const user = await User.findOne({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 400)
   }

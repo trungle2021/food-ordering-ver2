@@ -7,6 +7,7 @@ import {
 } from "./authAction";
 
 interface AuthState {
+  userId: string
   accessToken: string;
   refreshToken: string;
   isLoading: boolean;
@@ -23,6 +24,7 @@ const initialState: AuthState = {
   error: "",
   isLoggedIn: false,
   isRefreshingToken: null,
+  userId: ""
 };
 
 export const authSlice = createSlice({
@@ -37,6 +39,7 @@ export const authSlice = createSlice({
           state.isLoading = false;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
+          state.userId = action.payload.data.userId;
           state.message = "Login success";
           state.isLoggedIn = true;
       })
@@ -52,6 +55,7 @@ export const authSlice = createSlice({
           state.isLoading = false;
           state.accessToken = action.payload.data.accessToken;
           state.refreshToken = action.payload.data.refreshToken;
+          state.userId = action.payload.data.userId;
           state.message = "Register success";
           state.isLoggedIn = true;
       })
@@ -68,7 +72,7 @@ export const authSlice = createSlice({
           state.accessToken = "";
           state.refreshToken = "";
           state.isLoading = false;
-          state.message = "";
+          state.message = "Logged out successfully";
           state.isLoggedIn = false;
       })
       .addCase(logoutUser.rejected, (state, action: PayloadAction<any>) => {
