@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import CartState from "~/interface/cart/CartState";
 import { addItem, getCart, removeItem, updateItem } from "./cartAction";
 
-const initialState : CartState= {
+const initialState: CartState = {
     items: [],
     totalItems: 0,
     totalPrice: 0,
@@ -11,55 +11,61 @@ const initialState : CartState= {
 }
 
 const cartSlice = createSlice({
-   initialState,
-   reducers: {},
-   extraReducers: (builder) => {
-       builder.addCase(getCart.pending, (state, action) => {
-              state.isLoading = true;
-       });
-       builder.addCase(getCart.fulfilled, (state, action) => {
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(getCart.pending, (state, action) => {
+            state.isLoading = true;
+        })
+            .addCase(getCart.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
                 state.totalPrice = action.payload.total;
-       });
-       builder.addCase(getCart.rejected, (state, action) => {
+            })
+            .addCase(getCart.rejected, (state, action: any) => {
                 state.isLoading = false;
-                state.error = action.error.message ||  "Something went wrong";
-       });
-       builder.addCase(addItem.pending, (state, action) => {
+                state.error = action.payload || "Something went wrong";
+            })
+            .addCase(addItem.pending, (state, action) => {
                 state.isLoading = true;
-       });
-       builder.addCase(addItem.fulfilled, (state, action) => {
+            })
+            .addCase(addItem.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
                 state.totalPrice = action.payload.total;
-       });
-       builder.addCase(addItem.rejected, (state, action) => {
+            })
+            .addCase(addItem.rejected, (state, action: any) => {
                 state.isLoading = false;
-                state.error = action.error.message || "Something went wrong";
-       });
-       builder.addCase(updateItem.pending, (state, action) => {
+                state.error = action.payload || "Something went wrong";
+            })
+            .addCase(updateItem.pending, (state, action) => {
                 state.isLoading = true;
-       });
-       builder.addCase(updateItem.fulfilled, (state, action) => {
+            })
+            .addCase(updateItem.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
                 state.totalPrice = action.payload.total;
-       });
-       builder.addCase(updateItem.rejected, (state, action) => {
+            })
+            .addCase(updateItem.rejected, (state, action: any) => {
                 state.isLoading = false;
-                state.error = action.error.message || "Something went wrong";
-       }
-    );
-       builder.addCase(removeItem.pending, (state, action) => {});
-       builder.addCase(removeItem.fulfilled, (state, action) => {});
-       builder.addCase(removeItem.rejected, (state, action) => {});
-   }, 
-   name: "cart"
+                state.error = action.payload || "Something went wrong";
+            }
+            )
+            .addCase(removeItem.pending, (state, action) => {
+
+            })
+            .addCase(removeItem.fulfilled, (state, action) => {
+
+            })
+            .addCase(removeItem.rejected, (state, action: any) => {
+
+            })
+    },
+    name: "cart"
 })
 
-const {reducer} = cartSlice
+const { reducer } = cartSlice
 export default reducer

@@ -1,21 +1,22 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, RadioGroup } from '@mui/material'
+import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormGroup } from '@mui/material'
 import { useForm } from 'react-hook-form';
-import addAddressValidator from './addAddressValidator';
+import createAddressValidator from './createAddressValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { InputField } from '~/components/FormControls/InputField';
 import { CheckBoxField } from '~/components/FormControls/CheckBoxField';
 import { createAddress } from '~/features/User/userAction';
-import { updateAddressInState } from '~/features/User/userSlice';
+import { AddressResponse } from '~/interface/user/addressResponse';
 
-type AddAddressModalProps = {
-    open: boolean
+type CreateAddressModalProps = {
+    open: boolean,
+    onSubmitCreateAddress: (address: AddressResponse) => void,
     onClose: () => void,
     maxWidth?: false | Breakpoint | undefined;
 }
 
-type AddAddressFormValues = {
+type CreateAddressFormValues = {
     recipient: string,
     phone: string,
     address: string,
@@ -23,23 +24,23 @@ type AddAddressFormValues = {
 }
 
 
-export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressModalProps) => {
+export const CreateAddressModal = ({ open, onClose, maxWidth = 'sm', onSubmitCreateAddress }: CreateAddressModalProps) => {
     const dispatch = useDispatch()
     const user = useSelector((state: any) => state.user.user)
-    const userHasDefaultAddress = user?.user_address.length > 0 
+    const userAddressIsEmpty = user.user_address.length === 0
     const userId = user?._id
     const name = user?.name
 
-    const initialFormValues: AddAddressFormValues = {
+    const initialFormValues: CreateAddressFormValues = {
         recipient: name,
         phone: '',
         address: '',
         is_default_address: true,
     };
 
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, reset, control } = useForm({
         defaultValues: initialFormValues,
-        resolver: yupResolver(addAddressValidator),
+        resolver: yupResolver(createAddressValidator),
         mode: 'onChange',
 
     })
@@ -50,19 +51,28 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
     }
 
     const onSubmit = (formData: any) => {
+        const addressDetail = {
+            recipient: formData.recipient,
+            phone: formData.phone,
+            address: formData.address,
+            is_default_address: formData.is_default_address
+        }
         const payload = {
-            ...formData,
-            userId
+            userId,
+            addressDetail
         }
         dispatch<any>(createAddress(payload)).then((result: any) => {
-            if(result.error){
+            if(result.meta.requestStatus === 'rejected'){
                 handleOnClose()
                 return toast.error("Add Address Failed")
+            }else{
+                handleOnClose()
+                reset()
+                const user = result.payload.data
+                const addressCreated = user.user_address[user.user_address.length - 1]
+                onSubmitCreateAddress(addressCreated)
+                return toast.success("Address Added Successfully")
             }
-            dispatch<any>(updateAddressInState(result))
-            handleOnClose()
-            return toast.success("Address Added Successfully")
-
         })
     }
 
@@ -70,7 +80,7 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
         <>
             <Dialog fullWidth maxWidth={maxWidth} open={open} onClose={handleOnClose}>
                 <form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
-                    <DialogTitle>Add New Address</DialogTitle>
+                    <DialogTitle sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>Add New Address</DialogTitle>
                     <DialogContent>
                         <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', padding: '10px' }}>
                             <InputField
@@ -96,13 +106,14 @@ export const AddAddressModal = ({ open, onClose, maxWidth = 'sm' }: AddAddressMo
                             <CheckBoxField
                                 label="Set as default address"
                                 name="is_default_address"
-                                checked={userHasDefaultAddress}
+                                checked={userAddressIsEmpty}
+                                disabled={userAddressIsEmpty}
                                 control={control}
                             />
                         </FormGroup>
 
                     </DialogContent>
-                    <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px' }}>
+                    <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
                         <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Add</button>
                     </DialogActions>

@@ -3,14 +3,14 @@ import { searchDishes } from "./searchDishesAction";
 
 interface SearchDishState {
     data: any,
-    loading: boolean,
-    error: string | null
+    isLoading: boolean,
+    error: string
 }
 
 const initialState: SearchDishState = {
     data: null,
-    loading: false,
-    error: null
+    isLoading: false,
+    error: ""
 }
 
 export const searchDishSlice = createSlice({
@@ -23,14 +23,14 @@ export const searchDishSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(searchDishes.pending, (state, action) => {
+                state.isLoading = true
                 state.data = []
-                state.loading = true
             })
             .addCase(searchDishes.fulfilled, (state, action) => {
+                state.isLoading = false
                 state.data = action.payload
-                state.loading = false
-            }).addCase(searchDishes.rejected, (state, action) => {
-                state.loading = false;
+            }).addCase(searchDishes.rejected, (state, action:any) => {
+                state.error = action.payload
             })
     }, //
     name: "searchDish"

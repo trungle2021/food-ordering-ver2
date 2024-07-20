@@ -5,14 +5,22 @@ export const getUserByUserId = createAsyncThunk('auth/getUserByUserId', async (u
     try {
         return await UserService.getUserByUserId(userId);
     } catch (err: any) {
-        return thunkAPI.rejectWithValue(err);
+        return thunkAPI.rejectWithValue("Fetch user failed");
     }
 })
 
-export const createAddress = createAsyncThunk('user/createAddress', async ({ userId, addressDetail }: {userId:string, addressDetail: CreateAddressFormValues}) => {
-    return await UserService.createAddress(userId, addressDetail)
+export const createAddress = createAsyncThunk('user/createAddress', async ({ userId, addressDetail }: {userId:string, addressDetail: CreateAddressFormValues}, thunkAPI) => {
+    try {
+        return await UserService.createAddress(userId, addressDetail);
+    } catch (err: any) {
+        return thunkAPI.rejectWithValue("Create address failed");
+    }
 })
 
-export const updateAddress = createAsyncThunk('user/updateAddress', async ({ userId, addressDetail }: {userId:string, addressDetail: UpdateAddressFormValues} ) => {
-    return await UserService.updateAddress(userId, addressDetail)
+export const updateAddress = createAsyncThunk('user/updateAddress', async ({ userId, addressDetail }: {userId:string, addressDetail: UpdateAddressFormValues}, thunkAPI ) => {
+    try {
+        return await UserService.updateAddress(userId, addressDetail);
+    } catch (err: any) {
+        return thunkAPI.rejectWithValue("Update address failed");
+    }
 })

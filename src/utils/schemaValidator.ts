@@ -14,6 +14,7 @@ export const passwordConfirmValidator = yup.string()
     .required("Confirm Password is required");
 
 export const nameValidator = yup.string()
+    .matches(/^[\u00C0-\u1EFFA-Za-z\s]+$/, 'Name must contain letters and spaces only, no special characters or numbers')
     .required('Name is required');
 
 export const phoneValidator = yup.string()
@@ -27,9 +28,11 @@ export const paymentMethodValidator = yup.string()
 
 export const recipientValidator = yup.string()
     .required('Recipient is required')
+    .matches(/^[\u00C0-\u1EFFA-Za-z\s]+$/, 'Name must contain letters and spaces only, no special characters or numbers');
 
 export const addressValidator = yup.string()
-    .required('Address is required')
+    .matches(/^[\u00C0-\u1EFFA-Za-z0-9,\s]+$/, 'Address must contain letters and spaces only, no special characters or numbers')
+    .required('Address is required');
 
 export const isDefaultAddressValidator = yup.boolean()
 

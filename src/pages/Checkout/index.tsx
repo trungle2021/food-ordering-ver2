@@ -12,9 +12,9 @@ import { PAYMENT_METHOD } from "~/utils/static"
 import { Button } from "@mui/material"
 import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
-import { AddAddressModal } from "~/components/Modal/AddAddressModal"
 import { UserAddressModal } from "~/components/Modal/UserAddressModal"
 import { getUserByUserId } from "~/features/User/userAction"
+import { CreateAddressModal } from "~/components/Modal/CreateAddressModal"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -34,10 +34,13 @@ export const Checkout = () => {
 
     const cart = useSelector((state: any) => state.cart)
     const user = useSelector((state: any) => state.user)
-    const userId = user?.user._id
+    const userId = user?.user?._id
+    // const [defaultAddress, setDefaultAddress] = useState<any>(() => {
+    //     return defaultAddress
+    // })
+    const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
 
     const balance = useSelector((state: any) => state.balance)
-    const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address === true)
     const amount = balance.amount
 
 
@@ -45,7 +48,7 @@ export const Checkout = () => {
 
     const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
     const [openTopUpModal, setOpenTopUpModal] = useState(false)
-    const [openAddAddressModal, setOpenAddAddressModal] = useState(false)
+    const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
@@ -75,12 +78,12 @@ export const Checkout = () => {
         console.log(userAddress)
     }
 
-    const handleOpenAddAddress = () => {
-        setOpenAddAddressModal(true)
+    const handleOpenCreateAddress = () => {
+        setOpenCreateAddressModal(true)
     }
 
-    const handleCloseAddAddressModal = () => {
-        setOpenAddAddressModal(false)
+    const handleCloseCreateAddressModal = () => {
+        setOpenCreateAddressModal(false)
     }
 
     const handleOpenTopUpModal = () => {
@@ -113,8 +116,8 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={() => setOpenUserAddressModal(true)} onClose={handleCloseUserAddressModal} onSubmit={handleOnChangeUserAddress} />
-            <AddAddressModal maxWidth='sm' open={openAddAddressModal} onClose={handleCloseAddAddressModal} />
+            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={() => setOpenUserAddressModal(true)} onClose={handleCloseUserAddressModal} />
+            <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
                 <h1>Order Details</h1>
@@ -127,7 +130,7 @@ export const Checkout = () => {
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
-                                        {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenAddAddress}>Add Address</Button>}
+                                        {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenCreateAddress}>Add Address</Button>}
 
                                     </div>
                                 </div>

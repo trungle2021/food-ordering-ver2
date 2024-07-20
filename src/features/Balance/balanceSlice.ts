@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TransactionProps } from "~/interface/transaction/transaction";
 import { getBalance, topUp } from "./balanceAction";
 
@@ -8,7 +8,7 @@ interface BalanceState {
     isLoading: boolean;
     error: string
 }
-const initialState: BalanceState= {
+const initialState: BalanceState = {
     amount: 0,
     transactions: [],
     isLoading: false,
@@ -17,7 +17,7 @@ const initialState: BalanceState= {
 
 export const balanceSlice = createSlice({
     initialState,
-    reducers:{
+    reducers: {
         updateBalance: (state, action) => {
             console.log(action)
             state.amount = action.payload;
@@ -26,36 +26,30 @@ export const balanceSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getBalance.pending, (state, action) => {
             state.isLoading = true;
-        });
-        builder.addCase(getBalance.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.amount = action.payload.data.amount;
-        });
-        builder.addCase(getBalance.rejected, (state, action) => {
-            console.log("getBalance rejected action", action)
-
-            state.isLoading = false;
-            state.error = "Something went wrong";
-        });
-
-
-        builder.addCase(topUp.pending, (state, action) => {
-            state.isLoading = true;
-        });
-        builder.addCase(topUp.fulfilled, (state, action) =>{
-            console.log("action", action)
-            state.isLoading = true;
-            state.amount = action.payload.data.current_balance;
-        });
-        builder.addCase(topUp.rejected, (state, action) =>{
-            console.log("topup rejected action", action)
-            state.isLoading = false;
-            state.error = "Top up failed";
-        });
+        })
+            .addCase(getBalance.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.amount = action.payload.data.amount;
+            })
+            .addCase(getBalance.rejected, (state, action: any) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(topUp.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(topUp.fulfilled, (state, action) => {
+                state.isLoading = true;
+                state.amount = action.payload.data.current_balance;
+            })
+            .addCase(topUp.rejected, (state, action: any) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
     },
     name: "balance"
 })
 
 export const { updateBalance } = balanceSlice.actions;
-const {reducer} = balanceSlice;
+const { reducer } = balanceSlice;
 export default reducer

@@ -14,15 +14,13 @@ const getUserAddressList = (userId: string) => {
 const createAddress = async (userId: string, addressDetail: CreateAddressFormValues) => {
     const url = `${getUserAddressListApi}`.replace(':userId', userId)
 
-    const response = await axios.post(url, addressDetail)
-    return response.data
+    return await axios.post(url, addressDetail)
 }
 
 const updateAddress = async (userId: string, addressDetail: UpdateAddressFormValues) => {
     const url = `${getUserAddressListApi}`.replace(':userId', userId)
 
-    const response = await axios.put(url, addressDetail)
-    return response.data
+    return await axios.put(url, addressDetail)
 }
 
 

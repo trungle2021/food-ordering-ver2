@@ -77,7 +77,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
         <>
             <Dialog fullWidth maxWidth={maxWidth} open={open} onClose={handleOnClose}>
                 <form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
-                    <DialogTitle sx={{ fontSize: '2rem' }}>Top Up</DialogTitle>
+                    <DialogTitle sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>Top Up</DialogTitle>
                     <DialogContent>
                         <div style={{ padding: '20px 0' }}>
                             <FormControl fullWidth error={Boolean(errors?.paymentMethodId)}>
@@ -131,7 +131,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
                                 /></div>
                         </div>
                     </DialogContent>
-                    <DialogActions sx={{ display: 'flex', gap: '10px', margin: '10px 24px' }}>
+                    <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
                         <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Confirm</button>
                     </DialogActions>

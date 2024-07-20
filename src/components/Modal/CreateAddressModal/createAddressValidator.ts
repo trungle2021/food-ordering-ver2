@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { addressValidator, isDefaultAddressValidator, numberValidator, paymentMethodValidator, phoneValidator, recipientValidator } from "~/utils/schemaValidator";
+import { addressValidator, isDefaultAddressValidator, phoneValidator, recipientValidator } from "~/utils/schemaValidator";
 
 const schema = yup.object().shape({
     recipient: recipientValidator,

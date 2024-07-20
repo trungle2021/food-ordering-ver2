@@ -27,38 +27,49 @@ const initialState: UserState = {
 export const userSlice = createSlice({
     initialState,
     reducers: {
-        updateAddressInState: (state, action) => {
-            const newAddress = action.payload
-            if (state.user && state.user.user_address.length > 0) {
-                const currentUserAddressList = [...state.user.user_address];
-                state.user.user_address = [...currentUserAddressList, newAddress];
-                console.log(state.user.user_address);
-            }
+        // add new address to user_address
+        addAddress: (state, action) => {
+            state.user?.user_address.push(action.payload);
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(getUserByUserId.pending, (state) => {
+        builder
+        .addCase(getUserByUserId.pending, (state) => {
             state.isLoading = true;
         })
-        builder.addCase(getUserByUserId.fulfilled, (state, action) => {
+        .addCase(getUserByUserId.fulfilled, (state, action) => {
             state.user = action.payload.data;
             state.isLoading = false;
         })
-        builder.addCase(getUserByUserId.rejected, (state) => {
+        .addCase(getUserByUserId.rejected, (state) => {
             state.error = "Failed to get user information"
         })
 
-        builder.addCase(createAddress.pending, (state) => { })
-        builder.addCase(createAddress.fulfilled, (state) => { })
-        builder.addCase(createAddress.rejected, (state) => { })
+        .addCase(createAddress.pending, (state) => { 
+            state.isLoading = true;
+        })
+        .addCase(createAddress.fulfilled, (state, action:any) => {
+            state.user = action.payload.data
+            state.isLoading = false;
 
-        builder.addCase(updateAddress.pending, (state) => { })
-        builder.addCase(updateAddress.fulfilled, (state) => { })
-        builder.addCase(updateAddress.rejected, (state) => { })
+         })
+        .addCase(createAddress.rejected, (state, action:any) => { 
+            state.error = action.payload
+        })
 
+        .addCase(updateAddress.pending, (state) => { 
+            state.isLoading = true;
+        })
+        .addCase(updateAddress.fulfilled, (state, action: any) => { 
+            state.isLoading = false;
+            state.user = action.payload.data
+        })
+        .addCase(updateAddress.rejected, (state, action:any) => { 
+            state.error = action.payload;
+        })
     },
     name: "user",
 });
 const { reducer, actions } = userSlice;
-export const { updateAddressInState } = actions;
+export const { addAddress } = actions;
 export default reducer;
