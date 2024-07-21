@@ -30,21 +30,22 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     const dispatch = useDispatch()
     const user = useSelector((state: any) => state.user.user)
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
+    const [addressDetailUpdate, setAddressDetailUpdate] = useState<AddressResponse | null>(null);
     const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
     const [radioChanged, setRadioChanged] = useState(false)
     const userId = user?._id
     const addressList = user.user_address
 
-    const [address, setAddress] = useState<AddressResponse | null>(()=>{
+    const [address, setAddress] = useState<AddressResponse | null>(() => {
         const sortedAddressList = sortAddressListByDefaultAddress(addressList)
         const defaultAddress = sortedAddressList[0]
         return defaultAddress
     });
-  
+
     useEffect(() => {
         // This will set radioChanged to false every time the component mounts
         setRadioChanged(false);
-      }, []); 
+    }, []);
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRadioChanged(true)
@@ -58,7 +59,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
 
 
     const handleConfirmAddressChange = () => {
-        
+
         if (radioChanged && address) {
             const addressId = address._id
             // call API to set default address
@@ -67,7 +68,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                 phone: address.phone,
                 address: address.address,
                 recipient: address.recipient,
-                is_default_address: true
+                is_default_address: address.is_default_address
             }
             dispatch<any>(updateAddress({ userId, addressDetail })).then((result: any) => {
                 if (result.meta.requestStatus === 'fulfilled') {
@@ -75,13 +76,10 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                 } else if (result.meta.requestStatus === 'rejected') {
                     toast.error('Update address failed')
                 }
-                onClose()
-                return
             })
-        }else{
-            onClose()
-            return
         }
+        onClose()
+        return
 
     }
 
@@ -99,9 +97,9 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     const handleOpenUpdateAddressModal = (addressId: string) => {
         const selectedAddress = addressList.find((address: AddressResponse) => address._id === addressId);
         if (selectedAddress) {
-            setAddress(selectedAddress);
+            setAddressDetailUpdate(selectedAddress);
         }
-        onClose()
+        handleCloseUserAddress()
         setOpenUpdateAddressModal(true)
     }
 
@@ -112,7 +110,13 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     return (
         <>
             <CreateAddressModal open={openCreateAddressModal} onClose={() => setOpenCreateAddressModal(false)} onSubmitCreateAddress={handleSubmitCreateAddress} />
-            <UpdateAddressModal userAddress={address} maxWidth='xs' open={openUpdateAddressModal} onClose={handleCloseUpdateAddressModal} onGoBack={handleGoBackUpateAddressModal} />
+            <UpdateAddressModal
+                addressDetailUpdate={addressDetailUpdate}
+                maxWidth='xs'
+                open={openUpdateAddressModal}
+                onClose={handleCloseUpdateAddressModal}
+                onGoBack={handleGoBackUpateAddressModal}
+                />
             <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress}>
                 <DialogTitle sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>My Address</DialogTitle>
                 <DialogContent sx={{ padding: '10px' }}>

@@ -15,6 +15,7 @@ import { getBalance } from "~/features/Balance/balanceAction"
 import { UserAddressModal } from "~/components/Modal/UserAddressModal"
 import { getUserByUserId } from "~/features/User/userAction"
 import { CreateAddressModal } from "~/components/Modal/CreateAddressModal"
+import { useParams } from "react-router-dom"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -30,8 +31,18 @@ const initialFormValues: CheckoutFormValues = {
 export const Checkout = () => {
 
     const history = useHistory()
-    const dispatch = useDispatch()
+    const {orderId} = useParams()
 
+    useEffect(() => {
+        console.log(orderId === 'undefined')
+        if(!orderId) {
+            history.push('/dashboard')
+        }   
+    },[orderId])
+ 
+
+    const dispatch = useDispatch()
+    
     const cart = useSelector((state: any) => state.cart)
     const user = useSelector((state: any) => state.user)
     const userId = user?.user?._id
@@ -54,7 +65,7 @@ export const Checkout = () => {
     });
 
     useEffect(() => {
-        if(userId) {
+        if (userId) {
             dispatch<any>(getBalance(userId))
             dispatch<any>(getCart(userId)).then((result: any) => {
                 if (result.payload.items.length === 0) {
@@ -63,7 +74,7 @@ export const Checkout = () => {
             })
             dispatch<any>(getUserByUserId(userId))
         }
-    }, [userId,dispatch])
+    }, [userId, dispatch])
 
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;
@@ -130,8 +141,17 @@ export const Checkout = () => {
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
-                                        {defaultAddress.address ? <Button onClick={handleOpenUserAddress}>Change</Button> : <Button onClick={handleOpenCreateAddress}>Add Address</Button>}
-
+                                        {defaultAddress.address ? <button
+                                            className={`${styles["address-button"]} ${styles["button-change"]}`}
+                                            onClick={handleOpenUserAddress}
+                                        >
+                                            Change
+                                        </button> : <button
+                                            className={`${styles["address-button"]} ${styles["button-change"]}`}
+                                            onClick={handleOpenCreateAddress}
+                                        >
+                                            Add Address
+                                        </button>}
                                     </div>
                                 </div>
                                 <div className={styles['address-description']}>

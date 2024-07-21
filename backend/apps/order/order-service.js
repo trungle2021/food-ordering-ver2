@@ -190,30 +190,31 @@ const convertDateStringToDateObject = (orderDate) => {
 }
 
 const createOrder = async (payload) => {
-  //! NEED TO CHECK IF ADDRESS BELONGS TO USER
-//   const { addressId } = payload
+  const { addressId } = payload
   const { userId } = payload
   const session = await connection.startSession()
+
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 404)
   }
 
-  //! NEED TO CHECK IF ADDRESS BELONGS TO USER
-  //   const address = await AddressService.getAddress({ _id: addressId })
+  const address = user.addresss.find((address) => address._id.toString() === addressId)
+  if(!address){
+    throw new AppError('Address does not exists', 404)
+  }
 
-  //   if (!address) {
-  //     throw new AppError('Address not found', 404)
-  //   }
   const cart = await CartService.getCart({ user: userId })
   if (!cart) {
     throw new AppError('Cart not found', 404)
   }
-  const orderItems = cart?.items
 
-  if (orderItems.length === 0) {
+  if (cart.items.length === 0) {
     throw new AppError('Cart is empty', 409)
   }
+  const orderItems = {...cart.items }
+
+  
   try {
     session.startTransaction()
     const orderTotal = orderItems.reduce((total, item) => {
@@ -221,11 +222,10 @@ const createOrder = async (payload) => {
     }, 0)
     const order = {
       user: userId,
-      order_details: [...orderItems],
+      order_details: orderItems,
       order_total: orderTotal,
-      order_date: Date.now()
-      //! NEED TO CHECK IF ADDRESS BELONGS TO USER
-    //   address: address._id
+      order_date: Date.now(),
+      address
     }
     const orderCreated = await Order.create([order], { session })
     const orderId = orderCreated[0]._id
@@ -234,7 +234,7 @@ const createOrder = async (payload) => {
     return orderCreated
   } catch (error) {
     await session.abortTransaction()
-    throw new AppError(error.message, error.statusCode)
+    throw new AppError(error.message, 500)
   } finally {
     await session.endSession()
   }

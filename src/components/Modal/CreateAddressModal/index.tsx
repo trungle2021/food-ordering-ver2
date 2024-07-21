@@ -11,7 +11,7 @@ import { AddressResponse } from '~/interface/user/addressResponse';
 
 type CreateAddressModalProps = {
     open: boolean,
-    onSubmitCreateAddress: (address: AddressResponse) => void,
+    onSubmitCreateAddress?: (address: AddressResponse) => void,
     onClose: () => void,
     maxWidth?: false | Breakpoint | undefined;
 }
@@ -70,8 +70,10 @@ export const CreateAddressModal = ({ open, onClose, maxWidth = 'sm', onSubmitCre
                 reset()
                 const user = result.payload.data
                 const addressCreated = user.user_address[user.user_address.length - 1]
-                onSubmitCreateAddress(addressCreated)
-                return toast.success("Address Added Successfully")
+                if(onSubmitCreateAddress){
+                    onSubmitCreateAddress(addressCreated)
+                    return toast.success("Address Added Successfully")
+                }
             }
         })
     }

@@ -8,31 +8,33 @@ const {
   getOrderHistory,
   getOrder,
   getOrders,
-  checkoutOrder,
+  createOrder,
   deleteAll
 } = require('../order/order-controller')
-// const validateRequest = require('../../utils/joi/validate-request-schema')
+const validateRequest = require('../../utils/joi/validate-request-schema')
+const { createOrderRequestSchema, cancelOrderRequestSchema, confirmOrderRequestSchema, getRecentOrdersRequestSchema, completeOrderRequestSchema, getOrderHistoryRequestSchema, getOrderRequestSchema } = require('./order-request-validator')
+const { BODY, PARAMS } = require('../../constant/request-types')
 
 router.route('/recent-orders/users/:userId')
-  .get(getRecentOrders)
+  .get(validateRequest(getRecentOrdersRequestSchema, [PARAMS]), getRecentOrders)
 
 router.route('/confirm')
-  .post(confirmOrder)
+  .post(validateRequest(confirmOrderRequestSchema, [BODY]), confirmOrder)
 
 router.route('/complete')
-  .post(completeOrder)
+  .post(validateRequest(completeOrderRequestSchema, [BODY]), completeOrder)
 
 router.route('/cancel')
-  .post(cancelOrder)
+  .post(validateRequest(cancelOrderRequestSchema, [BODY]), cancelOrder)
 
 router.route('/check-out')
-  .post(checkoutOrder)
+  .post(validateRequest(createOrderRequestSchema, [BODY]),createOrder)
 
 router.route('/history/users/:userId')
-  .get(getOrderHistory)
+  .get(validateRequest(getOrderHistoryRequestSchema, [PARAMS]), getOrderHistory)
 
 router.route('/:orderId')
-  .get(getOrder)
+  .get(validateRequest(getOrderRequestSchema, [PARAMS]), getOrder)
 
 router.route('/')
   .get(getOrders)

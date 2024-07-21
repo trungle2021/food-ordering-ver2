@@ -12,7 +12,7 @@ import updateAddressValidator from './updateAddressValidator';
 import { add } from 'date-fns';
 
 type UpdateAddressModalProps = {
-    userAddress: AddressResponse | null,
+    addressDetailUpdate: AddressResponse | null,
     open: boolean
     onClose: () => void,
     maxWidth?: false | Breakpoint | undefined;
@@ -21,7 +21,7 @@ type UpdateAddressModalProps = {
 
 
 
-export const UpdateAddressModal = ({ open, onClose, maxWidth, userAddress, onGoBack }: UpdateAddressModalProps) => {
+export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdate, onGoBack }: UpdateAddressModalProps) => {
 
     const dispatch = useDispatch()
     const userId = useSelector((state: any) => state.user.user._id)
@@ -38,16 +38,16 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, userAddress, onGoB
     })
 
     useEffect(() => {
-        if (userAddress) {
-            setAddress(userAddress)
+        if (addressDetailUpdate) {
+            setAddress(addressDetailUpdate)
             reset({
-                recipient: userAddress.recipient,
-                phone: userAddress.phone,
-                address: userAddress.address,
-                is_default_address: userAddress.is_default_address
+                recipient: addressDetailUpdate.recipient,
+                phone: addressDetailUpdate.phone,
+                address: addressDetailUpdate.address,
+                is_default_address: addressDetailUpdate.is_default_address
             });
         }
-    }, [userAddress, reset]);
+    }, [addressDetailUpdate, reset]);
 
     const onSubmit = (data: any) => {
         if(address){
@@ -65,7 +65,7 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, userAddress, onGoB
                      toast.success("Update Address Successfully")
                 }
                 onClose()
-                onGoBack()
+                // onGoBack()
                 return
             })
         }

@@ -16,9 +16,8 @@ const getOrderDetail = async (id) => {
   return orderdetail
 }
 
-const createOrderDetails = async (orderId, orderItems, options) => {
-  const { isValid, invalidDish } = await DishService.validateDishesById(orderItems)
-  if (isValid) {
+const createOrderDetails = async (orderId, orderItems, session) => {
+  if(!session) throw new AppError('Session is required', 500)
     const orderDetailModified = orderItems.map(item => {
       return {
         order: orderId,
@@ -27,16 +26,7 @@ const createOrderDetails = async (orderId, orderItems, options) => {
         price: item.price
       }
     })
-
-    if (options) {
-      return await OrderDetail.insertMany(orderDetailModified, options)
-    }
-
-    return await OrderDetail.insertMany(orderDetailModified)
-  } else {
-    console.error('Invalid dish object', invalidDish)
-    throw new AppError('Invalid dish object encountered.', 404)
-  }
+    return await OrderDetail.insertMany(orderDetailModified, session)
 }
 
 const createOrderDetail = async (orderdetail, options) => {

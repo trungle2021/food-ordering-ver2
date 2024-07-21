@@ -21,6 +21,8 @@ export const OrderHistory = () => {
     let content = null
     const queryParams = useQuery()
     const history = useHistory()
+    const user = useSelector((state: any) => state.user.user)
+    const userId = user._id
     const dispatch = useDispatch()
     const orderState = useSelector((state: any) => state.order)
     const [search, setSearch] = useState('')
@@ -42,18 +44,18 @@ export const OrderHistory = () => {
 
 
     useEffect(() => {
-        dispatch<any>(getOrderHistory({ filter, page: 1, limit: 10 }))
-    }, [dispatch])
+       if(userId) dispatch<any>(getOrderHistory({userId, filter, page: 1, limit: 10 }))
+    }, [userId,dispatch])
 
     const handlePageChange = (event: any, newPageChange: number) => {
-        dispatch<any>(getOrderHistory({ filter, page: newPageChange, limit: 10 }))
+        if(userId) dispatch<any>(getOrderHistory({userId, filter, page: newPageChange, limit: 10 }))
     }
 
     const updateAndApplyFilter = (queryParams: URLSearchParams) => {
         const updatedFilter = queryParams.toString();
         setFilter(updatedFilter);
         history.push({ search: updatedFilter });
-        dispatch<any>(getOrderHistory({ filter: updatedFilter, page: 1, limit: 10 }));
+        if (userId) dispatch<any>(getOrderHistory({ userId, filter: updatedFilter, page: 1, limit: 10 }));
     }
 
     const handleDateRangeChange = (range: DateRange | null) => {
@@ -99,7 +101,7 @@ export const OrderHistory = () => {
 
 
     const handleOnSubmitSearchDishByName = (dishName: string) => {
-        if(dishName.trim() === search.trim()){
+        if (dishName.trim() === search.trim()) {
             return
         }
         if (dishName.trim() === '') {

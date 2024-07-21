@@ -2,6 +2,7 @@ import styles from "./styles.module.css";
 import { LocationIcon } from "~/components/UI/Icon";
 
 export const AddressSection = () => {
+  // const 
   return (
     <div className={`${styles["address-container"]}`}>
       <h4 className='title-section'>Your Address</h4>
@@ -19,17 +20,6 @@ export const AddressSection = () => {
         >
           Change
         </button>
-      </div>
-      <input
-        className={styles["address-container__input"]}
-        type="text"
-        name="address_note"
-        id=""
-        placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. sed do eiusmod tempor incididunt. "
-      />
-      <div className={styles["address-container-action"]}>
-        <button className={`${styles["address-button"]}`}>Add Details</button>
-        <button className={`${styles["address-button"]}`}>Add Note</button>
       </div>
     </div>
   );

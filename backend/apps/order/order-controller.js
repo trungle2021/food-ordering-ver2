@@ -66,7 +66,7 @@ const deleteAll = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const checkoutOrder = catchAsyncHandler(async (req, res, next) => {
+const createOrder = catchAsyncHandler(async (req, res, next) => {
   const orderCreated = await OrderService.createOrder(req.body)
   res.status(200).json({
     status: 'success',
@@ -102,7 +102,7 @@ module.exports = {
   getRecentOrders,
   getOrder,
   getOrderHistory,
-  checkoutOrder,
+  createOrder,
   cancelOrder,
   confirmOrder,
   completeOrder,
