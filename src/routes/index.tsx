@@ -22,16 +22,12 @@ function Routes() {
       <PrivateRoute path={PATH.BILL} component={Bills} />
       <PrivateRoute path={PATH.SETTING} component={Settings} />
       <PrivateRoute
-        path={`${PATH.CHECKOUT}/:orderId`}
-        render={(props) => {
-          console.log(props);
-          const { orderId } = useParams();
-          if (!orderId) {
-            return <Redirect to="/dashboard" />;
-          }
-          return <Checkout {...props} orderId={orderId} />;
-        }}
-      />
+        path={`${PATH.CHECKOUT}/:orderId?`}
+        exact
+        component={Checkout}
+        requiredParams={['orderId']} 
+        routeIfNotMatch={PATH.DASHBOARD}
+        />
     </Switch>
   );
 }
