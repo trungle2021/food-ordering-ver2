@@ -9,13 +9,13 @@ export const getOrderHistory = createAsyncThunk("order/getOrderHistory", async (
     }
 })
 
-export const getOrder = createAsyncThunk("order/getOrder", async ({ orderId }: { orderId: string }, thunkApi) => {
-    try {
-        return await OrderService.getOrder(orderId);
-    } catch (error) {
-        return thunkApi.rejectWithValue("Get order information failed")
-    }
-})
+// export const getOrder = createAsyncThunk("order/getOrder", async (orderId: string, thunkApi) => {
+//     try {
+//         return await OrderService.getOrder(orderId);
+//     } catch (error) {
+//         return thunkApi.rejectWithValue("Get order information failed")
+//     }
+// })
 
 export const checkOut = createAsyncThunk("order/checkOut", async (payload, thunkApi) => {
     try {

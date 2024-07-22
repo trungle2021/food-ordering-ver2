@@ -4,19 +4,17 @@ import { useHistory } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { LocationIcon } from "~/components/UI/Icon"
 import CartItemProps from "~/interface/cart/CartItem"
-import { getCart } from "~/features/Cart/cartAction"
 import styles from './styles.module.css'
 import { Dropdown } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
-import { Button } from "@mui/material"
 import { PaymentTopUpModal } from "~/components/Modal/PaymentTopUpModal"
 import { getBalance } from "~/features/Balance/balanceAction"
 import { UserAddressModal } from "~/components/Modal/UserAddressModal"
 import { getUserByUserId } from "~/features/User/userAction"
 import { CreateAddressModal } from "~/components/Modal/CreateAddressModal"
 import { useParams } from "react-router-dom"
-import { getOrder } from "../Order/orderAction"
+import OrderService from "~/services/order/orderSerivce"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -29,27 +27,18 @@ const initialFormValues: CheckoutFormValues = {
 }
 
 
+
 export const Checkout = () => {
 
     const history = useHistory()
     const {orderId} = useParams()
-
-    useEffect(() => {
-        console.log(orderId === 'undefined')
-        if(!orderId) {
-            history.push('/dashboard')
-        }   
-    },[orderId])
- 
-
     const dispatch = useDispatch()
     
+    const [order, setOrder] = useState({});
     const cart = useSelector((state: any) => state.cart)
     const user = useSelector((state: any) => state.user)
     const userId = user?.user?._id
-    // const [defaultAddress, setDefaultAddress] = useState<any>(() => {
-    //     return defaultAddress
-    // })
+    
     const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
 
     const [shippingAddress, setShippingAddress] = useState<any>(defaultAddress)
@@ -65,18 +54,17 @@ export const Checkout = () => {
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
-
     useEffect(() => {
-        if (userId) {
-            dispatch<any>(getBalance(userId))
-            dispatch<any>(getOrder(userId)).then((result: any) => {
-                if (result.payload.items.length === 0) {
-                    history.push('/dashboard');
-                }
-            })
-            dispatch<any>(getUserByUserId(userId))
+        const getOrder = async(orderId: string) => {
+            const order = await OrderService.getOrder(orderId)
+            setOrder(order)
         }
-    }, [userId, dispatch])
+        if (userId && orderId) {
+            dispatch<any>(getBalance(userId))
+            getOrder(orderId)
+            // dispatch<any>(getUserByUserId(userId))
+        }
+    }, [orderId, userId, dispatch])
 
     const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
         const content = (event.target as HTMLElement).innerText;

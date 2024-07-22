@@ -8,6 +8,7 @@ import CartItemProps from "~/interface/cart/CartItem";
 import { useHistory } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { checkOut } from "~/features/Order/orderAction";
+import OrderService from "~/services/order/orderSerivce";
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
@@ -17,19 +18,20 @@ export const CartSection = () => {
         if(userId) dispatch<any>(getCart(userId))
     }, [userId,dispatch])
 
-    const handleCheckoutAction = () => {
+    const handleCheckoutAction = async () => {
         if(cart.items.length === 0){
             toast.error("Cart is empty")
             return;
         }
         // call api checkout items in cart here
-        dispatch<any>(checkOut()).then((result:any) => {
-            if(result.meta.requestStatus === 'fulfilled'){
-                history.push('/checkout/123')
-            }else if(result.meta.requestStatus === 'rejected'){
-                toast.error("Checkout failed")
-            }
-        })
+        const response = await OrderService.checkOut()
+        if(response.status === "success"){
+            const orderId = response.data._id
+            history.push(`/checkout/${orderId}`)
+        }else {
+            toast.error("Checkout failed")
+        }
+        
     }
 
 

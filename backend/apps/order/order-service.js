@@ -24,7 +24,7 @@ const getOrders = async (queryString) => {
 }
 
 const getOrder = async (filter) => {
-  return await Order.findOne(filter)
+  return await Order.findOne(filter).populate('order_details').exec()
 }
 
 const getOrderHistory = async (userId, queryString) => {
@@ -232,16 +232,20 @@ const createOrder = async (userId) => {
       order_date: Date.now(),
       shipping_address: JSON.stringify(address)
     }
-    const orderCreated = await Order.create([order], { session })
+    const result = await Order.create([order], { session })
+    const orderCreated = result[0]
+
     if (!orderCreated) {
-      throw new AppError('Order cannot be created', 500)
+      throw new AppError('Failed to create order', 500)
     }
     if (orderCreated.shipping_address) {
       orderCreated.shipping_address = JSON.parse(orderCreated.shipping_address)
     }
 
-    const orderId = orderCreated[0]._id
-    await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
+    const orderId = orderCreated._id
+    const itemIdList = await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
+    orderCreated.order_details = [...itemIdList]
+    await orderCreated.save()
     await session.commitTransaction()
     return orderCreated
   } catch (error) {

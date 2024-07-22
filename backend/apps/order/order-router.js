@@ -8,7 +8,7 @@ const {
   getOrderHistory,
   getOrder,
   getOrders,
-  createOrder,
+  checkOut,
   deleteAll
 } = require('../order/order-controller')
 const validateRequest = require('../../utils/joi/validate-request-schema')
@@ -28,7 +28,7 @@ router.route('/cancel')
   .post(validateRequest(cancelOrderRequestSchema, [BODY]), cancelOrder)
 
 router.route('/check-out')
-  .post(createOrder)
+  .post(checkOut)
 
 router.route('/history/users/:userId')
   .get(validateRequest(getOrderHistoryRequestSchema, [PARAMS]), getOrderHistory)

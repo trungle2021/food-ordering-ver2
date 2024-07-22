@@ -22,10 +22,13 @@ const createOrderDetails = async (orderId, orderItems, session) => {
       order: orderId,
       dish: item.dish._id,
       quantity: item.quantity,
-      price: item.price
+      price: item.dish.price
     }
   })
-  return await OrderDetail.insertMany(orderDetailModified, session)
+  const itemsInserted = await OrderDetail.insertMany(orderDetailModified, session)
+  const itemIdList = itemsInserted.map(item => item._id)
+  console.log("Items ID: ", itemIdList)
+  return itemIdList
 }
 
 const createOrderDetail = async (orderdetail, options) => {

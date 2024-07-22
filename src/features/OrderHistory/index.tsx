@@ -168,9 +168,10 @@ export const OrderHistory = () => {
                                     <div className={styles['order-item__details']}>
                                         <span className={styles['order-item__details--name']}>{orderDetail.dish.name}</span>
                                         <span>Quantity: x{orderDetail.quantity}</span>
+                                        <span>Price: {orderDetail.price}</span>
                                     </div>
                                 </div>
-                                <span className={styles['order-item--price']}><span className="dollar">$</span>{orderDetail.price}</span>
+                                <span className={styles['order-item--price']}><span className="dollar">$</span>{orderDetail.price * orderDetail.quantity}</span>
                             </div>
                         ))}
                     </div>
