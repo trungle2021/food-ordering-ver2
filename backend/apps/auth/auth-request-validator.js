@@ -14,10 +14,6 @@ const registerRequestSchema = Joi.object({
   user_address: Joi.object().optional()
 })
 
-const logoutRequestSchema = Joi.object({
-  userId: Joi.string().required()
-})
-
 const refreshTokenRequestSchema = Joi.object({
   userId: Joi.string().required(),
   token: Joi.string().required()
@@ -26,6 +22,5 @@ const refreshTokenRequestSchema = Joi.object({
 module.exports = {
   loginRequestSchema,
   registerRequestSchema,
-  logoutRequestSchema,
   refreshTokenRequestSchema
 }

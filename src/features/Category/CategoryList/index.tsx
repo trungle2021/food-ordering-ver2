@@ -11,7 +11,7 @@ export const CategoryList: React.FC = () => {
   const getCategories = async () => {
     try {
       const itemLimit = 6;
-      const response = await CategoryService.fetchCategoryList(itemLimit);
+      const response = await CategoryService.getCategoryList(itemLimit);
       setCategories(response.data);
     } catch (err) {
       console.log(err);

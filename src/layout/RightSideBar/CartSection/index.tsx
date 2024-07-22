@@ -7,6 +7,7 @@ import { CartItem } from "~/components/CartItem";
 import CartItemProps from "~/interface/cart/CartItem";
 import { useHistory } from 'react-router-dom';
 import { toast } from "react-toastify";
+import { checkOut } from "~/features/Order/orderAction";
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
@@ -22,7 +23,13 @@ export const CartSection = () => {
             return;
         }
         // call api checkout items in cart here
-        history.push('/checkout')
+        dispatch<any>(checkOut()).then((result:any) => {
+            if(result.meta.requestStatus === 'fulfilled'){
+                history.push('/checkout/123')
+            }else if(result.meta.requestStatus === 'rejected'){
+                toast.error("Checkout failed")
+            }
+        })
     }
 
 

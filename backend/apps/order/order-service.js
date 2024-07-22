@@ -189,19 +189,22 @@ const convertDateStringToDateObject = (orderDate) => {
   return orderDate
 }
 
-const createOrder = async (payload) => {
-  const { addressId } = payload
-  const { userId } = payload
+const createOrder = async (userId) => {
   const session = await connection.startSession()
+  let address = null
 
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
     throw new AppError('User not found', 404)
   }
 
-  const address = user.addresss.find((address) => address._id.toString() === addressId)
-  if(!address){
-    throw new AppError('Address does not exists', 404)
+  if (user.user_address.length > 0) {
+    const userAddressList = user.user_address.toObject()
+    address = userAddressList.find((address) => address.is_default_address === true)
+    if (!address) {
+      // pick the first address if no default address
+      address = user.addresss[0]
+    }
   }
 
   const cart = await CartService.getCart({ user: userId })
@@ -212,22 +215,31 @@ const createOrder = async (payload) => {
   if (cart.items.length === 0) {
     throw new AppError('Cart is empty', 409)
   }
-  const orderItems = {...cart.items }
+  const orderItems = [...cart.items]
 
-  
   try {
     session.startTransaction()
+    console.log('orderItems', orderItems)
     const orderTotal = orderItems.reduce((total, item) => {
-      return total + (item.price * item.quantity)
+      return total + (item.dish.price * item.quantity)
     }, 0)
+
+    console.log('orderTotal', orderTotal)
     const order = {
       user: userId,
       order_details: orderItems,
-      order_total: orderTotal,
+      order_total: orderTotal.toFixed(2),
       order_date: Date.now(),
-      address
+      shipping_address: JSON.stringify(address)
     }
     const orderCreated = await Order.create([order], { session })
+    if (!orderCreated) {
+      throw new AppError('Order cannot be created', 500)
+    }
+    if (orderCreated.shipping_address) {
+      orderCreated.shipping_address = JSON.parse(orderCreated.shipping_address)
+    }
+
     const orderId = orderCreated[0]._id
     await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
     await session.commitTransaction()

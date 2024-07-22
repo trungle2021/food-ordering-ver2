@@ -33,7 +33,7 @@ const login = catchAsyncHandler(async (req, res, next) => {
 })
 
 const logout = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
+  const userId = req.userId
   await RefreshTokenService.deleteRefreshTokenByUserId(userId)
   res.status(200).json({
     status: 'success',

@@ -14,8 +14,8 @@ const register = (registerUserFormData: RegisterPayload): Promise<any> => {
   return axios.post(registerApi, registerUserFormData);
 }
 
-const logout = (userId: string): Promise<any> => {
-  return axios.post(`${logoutApi}/${userId}`);
+const logout = (): Promise<any> => {
+  return axios.post(`${logoutApi}`);
 }
 
 

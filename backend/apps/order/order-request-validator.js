@@ -1,10 +1,10 @@
 const Joi = require('joi')
 const paymentMethods = require('../../constant/payment-method')
 
-const createOrderRequestSchema = Joi.object({
-  userId: Joi.string().required(),
-  addressId: Joi.string().required()
-})
+// const createOrderRequestSchema = Joi.object({
+//   userId: Joi.string().required(),
+//   addressId: Joi.string().required()
+// })
 
 const cancelOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
@@ -37,7 +37,7 @@ const getOrderRequestSchema = Joi.object({
 })
 
 module.exports = {
-  createOrderRequestSchema,
+//   createOrderRequestSchema,
   confirmOrderRequestSchema,
   cancelOrderRequestSchema,
   getRecentOrdersRequestSchema,

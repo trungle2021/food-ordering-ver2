@@ -67,7 +67,14 @@ const deleteAll = catchAsyncHandler(async (req, res, next) => {
 })
 
 const createOrder = catchAsyncHandler(async (req, res, next) => {
-  const orderCreated = await OrderService.createOrder(req.body)
+  const userId = req.userId
+  if (!userId) {
+    return res.status(401).json({
+      status: 'fail',
+      message: 'Unauthorized'
+    })
+  }
+  const orderCreated = await OrderService.createOrder(userId)
   res.status(200).json({
     status: 'success',
     data: orderCreated

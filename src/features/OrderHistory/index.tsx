@@ -37,10 +37,10 @@ export const OrderHistory = () => {
     const [filter, setFilter] = useState(queryParams.toString())
     const [orderStatus, setOrderStatus] = useState('Order Status')
 
-    const orderHistory = orderState.orders
+    const orderHistory = orderState.orderHistories
     const isLoading = orderState.isLoading
     const error = orderState.error
-    const totalPages = orderState.totalPages
+    const totalPage = orderState.totalPage
 
 
     useEffect(() => {
@@ -190,7 +190,7 @@ export const OrderHistory = () => {
                 </div>
             ))}
             <Box display="flex" justifyContent="flex-end" paddingY={4}>
-                <Pagination count={totalPages} color="primary" onChange={handlePageChange} />
+                <Pagination count={totalPage} color="primary" onChange={handlePageChange} />
             </Box>
         </>
     }

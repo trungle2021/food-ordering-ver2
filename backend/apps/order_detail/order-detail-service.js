@@ -1,5 +1,4 @@
 const OrderDetail = require('./order-detail-model')
-const DishService = require('../dish/dish-service')
 const AppError = require('../../utils/error/app-error')
 
 const getOrderDetails = async (filter) => {
@@ -17,16 +16,16 @@ const getOrderDetail = async (id) => {
 }
 
 const createOrderDetails = async (orderId, orderItems, session) => {
-  if(!session) throw new AppError('Session is required', 500)
-    const orderDetailModified = orderItems.map(item => {
-      return {
-        order: orderId,
-        dish: item.dish_id,
-        quantity: item.quantity,
-        price: item.price
-      }
-    })
-    return await OrderDetail.insertMany(orderDetailModified, session)
+  if (!session) throw new AppError('Session is required', 500)
+  const orderDetailModified = orderItems.map(item => {
+    return {
+      order: orderId,
+      dish: item.dish._id,
+      quantity: item.quantity,
+      price: item.price
+    }
+  })
+  return await OrderDetail.insertMany(orderDetailModified, session)
 }
 
 const createOrderDetail = async (orderdetail, options) => {

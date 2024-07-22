@@ -26,7 +26,7 @@ export const RecentOrderList: React.FC = () => {
     const [recentOrders, setRecentOrders] = useState<Order[]>([]);
     const getRecentOrders = async (userId: string, limit: number) => {
         try {
-            const response = await OrderService.fetchRecentOrderList(userId, limit);
+            const response = await OrderService.getRecentOrderList(userId, limit);
             setRecentOrders(response.data);
         } catch (error) {
             console.log(error);

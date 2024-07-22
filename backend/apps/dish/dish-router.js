@@ -26,7 +26,7 @@ router.route('/popular-dishes')
 router.route('/bulk')
   .post(createDishes)
 
-router.route('/search').get(validateRequest(searchDishesByFullTextSearchRequestSchema, QUERY), searchDishesByFullTextSearch)
+router.route('/search').get(validateRequest(searchDishesByFullTextSearchRequestSchema, [QUERY]), searchDishesByFullTextSearch)
 
 router.route('/:dishId')
   .get(validateRequest(getDishRequestSchema, [PARAMS]), getDish)

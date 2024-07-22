@@ -5,16 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { logoutUser } from "~/features/Auth/authAction";
-import styles from "./styles.module.css";
 import { LogoutIcon } from "../UI/Icon";
-
-
-
+import styles from "./styles.module.css";
 
 export const Navbar = ({ items }: { items: any }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userId = useSelector((state: any) => state.user?.user?._id);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); // State to control the dialog's open state
 
   const handleLogout = () => {
@@ -22,7 +18,7 @@ export const Navbar = ({ items }: { items: any }) => {
   };
 
   const handleLogoutConfirmed = async () => {
-    await dispatch<any>(logoutUser(userId));
+    await dispatch<any>(logoutUser());
     await dispatch({type: "USER_LOGOUT",})
     history.push('/login');
   };
@@ -55,7 +51,6 @@ export const Navbar = ({ items }: { items: any }) => {
         </li>
       </ul>
 
-      {/* Logout Dialog */}
       <Dialog open={logoutDialogOpen} onClose={handleLogoutCancelled} fullWidth maxWidth='md' >
         <DialogTitle>Confirm Logout</DialogTitle>
         <DialogContent>
@@ -70,7 +65,6 @@ export const Navbar = ({ items }: { items: any }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </nav>
   );
 };

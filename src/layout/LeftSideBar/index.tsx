@@ -15,18 +15,12 @@ export default function LeftSideBar({ className }: LeftSideBarProps) {
       label: "Dashboard",
       icon: <DashBoardIcon/>,
     },
-    {
-      url: `${PATH.FOOD_ORDER}`,
-      label: "Food Order",
-      icon: <FoodOrderIcon/>,
-    },
     { url: `${PATH.FAVORITE}`, label: "Favorite", icon: <FavoriteIcon/> },
     {
       url: `${PATH.ORDER_HISTORY}`,
       label: "Order History",
       icon: <OrderHistoryIcon/>,
     },
-    { url: `${PATH.BILL}`, label: "Bills", icon: <BillIcon/> },
     { url: `${PATH.SETTING}`, label: "Setting", icon: <SettingIcon/> },
   ];
 

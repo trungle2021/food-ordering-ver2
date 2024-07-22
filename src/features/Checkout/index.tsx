@@ -16,6 +16,7 @@ import { UserAddressModal } from "~/components/Modal/UserAddressModal"
 import { getUserByUserId } from "~/features/User/userAction"
 import { CreateAddressModal } from "~/components/Modal/CreateAddressModal"
 import { useParams } from "react-router-dom"
+import { getOrder } from "../Order/orderAction"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -51,6 +52,7 @@ export const Checkout = () => {
     // })
     const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
 
+    const [shippingAddress, setShippingAddress] = useState<any>(defaultAddress)
     const balance = useSelector((state: any) => state.balance)
     const amount = balance.amount
 
@@ -67,7 +69,7 @@ export const Checkout = () => {
     useEffect(() => {
         if (userId) {
             dispatch<any>(getBalance(userId))
-            dispatch<any>(getCart(userId)).then((result: any) => {
+            dispatch<any>(getOrder(userId)).then((result: any) => {
                 if (result.payload.items.length === 0) {
                     history.push('/dashboard');
                 }

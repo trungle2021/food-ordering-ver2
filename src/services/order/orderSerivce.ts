@@ -1,23 +1,28 @@
 import axios from "~/lib/axios";
 import { getRecentOrdersByUserIdApi, getOrderHistoryByUserIdApi, baseOrderApi } from "~/utils/api";
 
-const fetchRecentOrderList = (userId:string, limit: number): Promise<any> => {
+const getRecentOrderList = (userId:string, limit: number): Promise<any> => {
     return axios.get(`${getRecentOrdersByUserIdApi}/${userId}?limit=${limit}`);
 };
 
-const fetchOrderHistory = (userId:string, filter: string | undefined, page: number, limit: number): Promise<any> => {
+const getOrderHistory = (userId:string, filter: string | undefined, page: number, limit: number): Promise<any> => {
     const queryFilter = filter ? `${filter}&` : ''
     return axios.get(`${getOrderHistoryByUserIdApi}/${userId}?${queryFilter}page=${page}&limit=${limit}`);
 }
 
-const fetchOrder = (orderId:string) : Promise<any> => {
+const getOrder = (orderId:string) : Promise<any> => {
     return axios.get(`${baseOrderApi}/${orderId}`);
 }
 
+const checkOut = () : Promise<any> => {
+    return axios.post(`${baseOrderApi}/check-out`);
+}
+
 export const OrderService = {
-    fetchRecentOrderList,
-    fetchOrderHistory,
-    fetchOrder
+    getRecentOrderList,
+    getOrderHistory,
+    getOrder,
+    checkOut
 };
 
 export default OrderService;

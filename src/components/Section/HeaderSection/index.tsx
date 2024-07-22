@@ -25,7 +25,7 @@ export const HeaderSection = () => {
 
   const loadSuggestion = async (limit: number) => {
 
-    const response: any = await DishService.fetchPopularDishes(limit);
+    const response: any = await DishService.getPopularDishes(limit);
     setProductNameSuggestion(response.data.map(((item: { dish: { name: any; }; }) => item.dish.name)));
   };
 
