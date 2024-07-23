@@ -10,6 +10,6 @@ export enum PATH {
   FAVORITE = "/favorite",
   ORDER_HISTORY = "/order-history",
   BILL = "/bill",
-  SETTING = "/setting",
+  USER_PROFILE = "/user-profile",
   CHECKOUT = '/checkout'
 }

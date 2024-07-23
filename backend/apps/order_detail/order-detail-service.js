@@ -3,7 +3,6 @@ const AppError = require('../../utils/error/app-error')
 
 const getOrderDetails = async (filter) => {
   return await OrderDetail.find(filter)
-    // .populate({ path: 'order' })
     .populate({ path: 'dish', select: 'name' })
 }
 

@@ -21,7 +21,7 @@ export default function LeftSideBar({ className }: LeftSideBarProps) {
       label: "Order History",
       icon: <OrderHistoryIcon/>,
     },
-    { url: `${PATH.SETTING}`, label: "Setting", icon: <SettingIcon/> },
+    { url: `${PATH.USER_PROFILE}`, label: "User Profile", icon: <SettingIcon/> },
   ];
 
   return (
