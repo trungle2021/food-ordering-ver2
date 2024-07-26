@@ -9,17 +9,17 @@ export const getCart = createAsyncThunk("cart/getCart", async (userId: string, {
     }
 });
 
-export const addItem = createAsyncThunk("cart/addItem", async ({ userId, dishId, quantity }: { userId: string; dishId: string; quantity: number }, { rejectWithValue }) => {
+export const addItem = createAsyncThunk("cart/addItem", async ({ dishId, quantity }: {  dishId: string; quantity: number }, { rejectWithValue }) => {
     try {
-        return await CartService.addItem({ userId, dishId, quantity });
+        return await CartService.addItem({ dishId, quantity });
     } catch (error) {
         return rejectWithValue("Failed to add item to cart");
     }
 });
 
-export const updateItem = createAsyncThunk("cart/updateItem", async ({ userId, dishId, updateQuantity }: { userId: string; dishId: string; updateQuantity: number }, { rejectWithValue }) => {
+export const updateItem = createAsyncThunk("cart/updateItem", async ({ dishId, updateQuantity }: {dishId: string; updateQuantity: number }, { rejectWithValue }) => {
     try {
-        return await CartService.updateItem({ userId, dishId, updateQuantity });
+        return await CartService.updateItem({ dishId, updateQuantity });
     } catch (error) {
         return rejectWithValue("Failed to update item in cart");
     }

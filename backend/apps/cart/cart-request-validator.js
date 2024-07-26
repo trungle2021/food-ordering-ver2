@@ -4,12 +4,10 @@ const getCartByUserIdSchemaValidator = Joi.object({
   userId: Joi.string().required()
 })
 const addItemSchemaValidator = Joi.object({
-  userId: Joi.string().required(),
   dishId: Joi.string().required(),
   quantity: Joi.number().required()
 })
 const updateItemSchemaValidator = Joi.object({
-  userId: Joi.string().required(),
   dishId: Joi.string().required(),
   updateQuantity: Joi.number().required()
 })

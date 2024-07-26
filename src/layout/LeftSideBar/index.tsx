@@ -2,7 +2,7 @@ import { PATH } from "~/routes/routes.constant";
 import styles from "./styles.module.css";
 import { Logo } from "~/components/UI/Logo";
 import { Navbar } from "~/components/NavBar";
-import { BillIcon, DashBoardIcon, FavoriteIcon, FoodOrderIcon, OrderHistoryIcon, SettingIcon } from "~/components/UI/Icon";
+import { BillIcon, DashBoardIcon, FavoriteIcon, FoodOrderIcon, OrderDiscussionIcon, OrderHistoryIcon, SettingIcon } from "~/components/UI/Icon";
 interface LeftSideBarProps {
   className?: string;
 }
@@ -15,6 +15,7 @@ export default function LeftSideBar({ className }: LeftSideBarProps) {
       label: "Dashboard",
       icon: <DashBoardIcon/>,
     },
+    { url: `${PATH.DISHES}`, label: "Dishes", icon: <BillIcon/> },
     { url: `${PATH.FAVORITE}`, label: "Favorite", icon: <FavoriteIcon/> },
     {
       url: `${PATH.ORDER_HISTORY}`,

@@ -3,7 +3,7 @@ const Order = require('./order-model')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
 const { processPayment } = require('../payment/payment-service')
-const { PROCESSING, COMPLETED, SHIPPING } = require('../../constant/order-status')
+const { PROCESSING, COMPLETED, SHIPPING, PENDING } = require('../../constant/order-status')
 const { PAID } = require('../../constant/payment-status')
 const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
@@ -189,9 +189,16 @@ const convertDateStringToDateObject = (orderDate) => {
   return orderDate
 }
 
-const createOrder = async (userId) => {
+const checkOut = async (userId) => {
   const session = await connection.startSession()
+
   let address = null
+
+  const pendingOrder = await Order.findOne({ user: userId, order_status: PENDING })
+
+  if (pendingOrder) {
+    return pendingOrder
+  }
 
   const user = await UserService.getUser({ _id: userId })
   if (!user) {
@@ -345,7 +352,7 @@ module.exports = {
   getOrder,
   getOrderHistory,
   getRecentOrders,
-  createOrder,
+  checkOut,
   confirmOrder,
   completeOrder,
   cancelOrder,

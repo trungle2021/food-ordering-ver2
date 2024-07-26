@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import { addItem, updateItem } from "~/features/Cart/cartAction"
 
-export const useAddToCart = () => {
+export const useAddItemToCart = () => {
     const userId = useSelector((state:any) => state.user?._id)
     const cart = useSelector((state: any) => state.cart)
     const dispatch = useDispatch()

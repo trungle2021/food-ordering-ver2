@@ -8,6 +8,7 @@ export enum PATH {
   RESET_PASSWORD = "/reset-password",
   FOOD_ORDER = "/food-order",
   FAVORITE = "/favorite",
+  DISHES = "/dishes",
   ORDER_HISTORY = "/order-history",
   BILL = "/bill",
   USER_PROFILE = "/user-profile",

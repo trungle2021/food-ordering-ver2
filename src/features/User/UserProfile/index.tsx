@@ -32,7 +32,7 @@ export const UserProfile = () => {
         <>
             <HeaderPage pageName="User Profile" />
             <form onSubmit={handleSubmit(onSubmit, onError)}>
-                <Grid container rowSpacing={5} sx={{ padding: '0 30px' }} >
+                <Grid container rowSpacing={5} sx={{ padding: '0 300px' }} >
                     {/* PHOTO PROFILE */}
                     <Grid item xs={12}>
                         <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
@@ -51,21 +51,19 @@ export const UserProfile = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Grid container spacing={2} rowSpacing={4}>
-                            <Grid item xs={12} sm={6}>
                                 <InputField label='Full Name' name='name' type="text" control={control} />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <InputField label='Email' name='email' type="text" control={control} />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <InputField label='Address' name='address' type="text" control={control} />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <InputField label='Phone' name='phone' type="text" control={control} />
                             </Grid>
-                        </Grid>
-                    </Grid>
+
+                   
                     <Grid item xs={12}>
                         <Grid container justifyContent="flex-end">
                             <button type='button' style={{ padding: '20px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Save</button>

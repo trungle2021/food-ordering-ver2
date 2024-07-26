@@ -5,8 +5,7 @@ import { updateItem } from "~/features/Cart/cartAction";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";
 
-export const useCartItem = (item: CartItemProps) => {
-    const userId = useSelector((state:any) => state.user.user._id)
+export const useModifyQuantityCartItem = (item: CartItemProps) => {
     const [disabled, setDisabled] = useState(false)
     const [quantity, setQuantity] = useState(item.quantity);
     const [amount, setAmount] = useState(item.amount);
@@ -33,7 +32,6 @@ export const useCartItem = (item: CartItemProps) => {
             return
         }
        const payload = {
-            userId,
             dishId: item.dish._id,
             updateQuantity
        }
@@ -48,7 +46,6 @@ export const useCartItem = (item: CartItemProps) => {
        switch (action) {
             case 'increment':
                 const incrementPayload = {
-                    userId,
                     dishId,
                     updateQuantity: quantity + 1
                 }
@@ -65,7 +62,6 @@ export const useCartItem = (item: CartItemProps) => {
             case 'decrement':
                 setDisabled(!disabled);
                 const decrementPayload = {
-                    userId,
                     dishId,
                     updateQuantity: quantity - 1
                 }

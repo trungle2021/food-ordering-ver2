@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import CategoryItem from "../CategoryItem";
 import CategoryService from "../../../services/category/categoryService";
 import Category from "../../../interface/category/category";
-import styles from "./styles.module.css";
 import { Grid } from "@mui/material";
 
-export const CategoryList: React.FC = () => {
+export const CategoryList = ({limit}: {limit: number}) => {
   const [categories, setCategories] = useState([]);
 
   const getCategories = async () => {
     try {
-      const itemLimit = 6;
-      const response = await CategoryService.getCategoryList(itemLimit);
+      const response = await CategoryService.getCategoryList(limit);
       setCategories(response.data);
     } catch (err) {
       console.log(err);

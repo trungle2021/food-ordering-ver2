@@ -74,7 +74,7 @@ const checkOut = catchAsyncHandler(async (req, res, next) => {
       message: 'Unauthorized'
     })
   }
-  const orderCreated = await OrderService.createOrder(userId)
+  const orderCreated = await OrderService.checkOut(userId)
   res.status(200).json({
     status: 'success',
     data: orderCreated

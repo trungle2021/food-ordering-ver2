@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 import CartItemProps from '~/interface/cart/CartItem';
-import { useCartItem } from '~/hooks/useCartItem';
+import { useModifyQuantityCartItem } from '~/hooks/useModifyQuantityCartItem';
 
 
 export const CartItem = ({item, imageSize}: {item : CartItemProps, imageSize: string}) => {
@@ -11,7 +11,7 @@ export const CartItem = ({item, imageSize}: {item : CartItemProps, imageSize: st
         handleQuantityChange,
         submitQuantityChange,
         handleClickModifyQuantity
-    } = useCartItem(item)
+    } = useModifyQuantityCartItem(item)
 
     const imageClass = imageSize === 'small' ? 'image--small' : 'image--normal';
 

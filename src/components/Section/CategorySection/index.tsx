@@ -1,12 +1,12 @@
 import { CategoryList } from "~/features/Category/CategoryList";
 import { Section } from "../index";
 
-export const CategorySection = () => {
+export const CategorySection = ({limit}: {limit: number}) => {
   return (
     <Section
       sectionName="Categories"
       viewAllLink="/categories"
-      content={<CategoryList />}
+      content={<CategoryList limit={limit} />}
     />
   );
 };
