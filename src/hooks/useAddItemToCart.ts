@@ -1,7 +1,7 @@
 import { unwrapResult } from "@reduxjs/toolkit"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
-import { addItem, updateItem } from "~/features/Cart/cartAction"
+import { addItem, updateItem } from "~/store/cart/cartAction"
 
 export const useAddItemToCart = () => {
     const userId = useSelector((state:any) => state.user?._id)

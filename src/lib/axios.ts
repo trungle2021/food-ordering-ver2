@@ -5,8 +5,8 @@ import axios, {
     InternalAxiosRequestConfig,
 } from "axios";
 import axiosRetry from "axios-retry";
-import { store } from "~/app/store";
-import { getNewAccessToken, logoutUser } from '~/features/Auth/authAction';
+import { store } from "~/store/store";
+import { getNewAccessToken, logoutUser } from '~/store/auth/authAction';
 import { origin } from "~/utils/api";
 
 const instance: AxiosInstance = axios.create({

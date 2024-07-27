@@ -16,7 +16,7 @@ const getUserByUserIdApi: string = `${baseUserApi}`
 const getCategoriesApi: string = `${baseCategoryApi}`;
 
 //* DISH API
-const getPopularDishesApi: string = `${baseDishApi}/popular-dishes`;
+const getPopularDishApi: string = `${baseDishApi}/popular-dishes`;
 const getDishesByNameApi: string = `${baseDishApi}/search`;
 
 //* ORDER API
@@ -53,7 +53,7 @@ export {
   getUserByUserIdApi,
 
   getCategoriesApi,
-  getPopularDishesApi,
+  getPopularDishApi,
   getDishesByNameApi,
   getRecentOrdersByUserIdApi,
   getOrderHistoryByUserIdApi,

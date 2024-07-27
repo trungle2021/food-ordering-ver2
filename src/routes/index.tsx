@@ -1,12 +1,12 @@
 import { PATH } from "./routes.constant";
-import { Favorites } from "~/features/Favorites";
-import { OrderHistory } from "~/features/Order/OrderHistory";
-import { Dashboard } from "~/features/Dashboard";
+import { Favorites } from "~/pages/Favorites";
+import { OrderHistory } from "~/pages/OrderHistory";
+import { Dashboard } from "~/pages/Dashboard";
 import { Switch } from 'react-router-dom';
 import { PrivateRoute } from "./PrivateRoute";
-import { UserProfile } from "~/features/User/UserProfile";
-import { Checkout } from "~/features/Order/Checkout";
-import { DishPage } from "~/features/Dish/DishPage";
+import { UserProfile } from "~/pages/UserProfile";
+import { Checkout } from "~/pages/Checkout";
+import { DishPage } from "~/pages/AllProductPage";
 
 
 function Routes() {
