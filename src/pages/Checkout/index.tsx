@@ -56,7 +56,6 @@ export const Checkout = () => {
     useEffect(() => {
         const getOrder = async(orderId: string) => {
             const response = await OrderService.getOrder(orderId)
-            console.log("Set Order")
             setOrder(response.data)
         }
         if (userId && orderId) {
@@ -69,8 +68,6 @@ export const Checkout = () => {
 
     // HANDLE USER_ADDRESS_MODAL
     const handleOpenUserAddress = async () => {
-        // event.preventDefault()
-        // event.stopPropagation()
         setOpenUserAddressModal(true)
     }
 
@@ -78,9 +75,12 @@ export const Checkout = () => {
         setOpenUserAddressModal(false)
     }
 
-    const handleOnChangeUserAddress = (userAddress: any) => {
-        console.log(userAddress)
+    const handleShippingAddressChange = (orderInfo: any) => {
+        console.log("Shipping Address Changed")
+        const { addressId } = orderInfo
+        console.log("AddressId: ", addressId)
     }
+
 
     // HANDLE CREATE_ADDRESS_MODAL
     const handleOpenCreateAddress = () => {
@@ -107,7 +107,7 @@ export const Checkout = () => {
         setPaymentMethod(content || '')
     }
 
-   
+ 
 
     const onSubmit = (data: any) => {
         const modifiedData = {
@@ -124,7 +124,7 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={handleOpenUserAddress}  onClose={handleCloseUserAddressModal} />
+            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={handleOpenUserAddress}  onClose={handleCloseUserAddressModal} onShippingAddressChange={handleShippingAddressChange} />
             <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>

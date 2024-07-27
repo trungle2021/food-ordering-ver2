@@ -344,6 +344,10 @@ const getRecentOrders = async (userId, queryString) => {
 const cancelOrder = async (orderCancel) => {
 }
 
+const updateOrder = async (filter, payload) => {
+  return await Order.findOneAndUpdate(filter, payload, { new: false })
+}
+
 const deleteOrder = async (filter) => {
   await Order.deleteOne(filter)
 }
@@ -359,6 +363,7 @@ module.exports = {
   getOrderHistory,
   getRecentOrders,
   checkOut,
+  updateOrder,
   confirmOrder,
   completeOrder,
   cancelOrder,

@@ -9,7 +9,8 @@ const {
   getOrder,
   getOrders,
   checkOut,
-  deleteAll
+  deleteAll,
+  updateOrder
 } = require('../order/order-controller')
 const validateRequest = require('../../utils/joi/validate-request-schema')
 const { cancelOrderRequestSchema, confirmOrderRequestSchema, getRecentOrdersRequestSchema, completeOrderRequestSchema, getOrderHistoryRequestSchema, getOrderRequestSchema } = require('./order-request-validator')
@@ -38,6 +39,7 @@ router.route('/:orderId')
 
 router.route('/')
   .get(getOrders)
+  .put(updateOrder)
   .delete(deleteAll)
 
 module.exports = router

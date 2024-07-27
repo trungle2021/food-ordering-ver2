@@ -104,12 +104,28 @@ const cancelOrder = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
+const updateOrder = catchAsyncHandler(async (req, res, next) => {
+  const { orderId } = req.body
+  const filter = {
+    _id: orderId
+  }
+  const payload = {
+    ...req.body
+  }
+  const updatedOrder = await OrderService.updateOrder(filter, payload)
+  return res.status(200).json({
+    status: 'success',
+    data: updatedOrder
+  })
+})
+
 module.exports = {
   getOrders,
   getRecentOrders,
   getOrder,
   getOrderHistory,
   checkOut,
+  updateOrder,
   cancelOrder,
   confirmOrder,
   completeOrder,

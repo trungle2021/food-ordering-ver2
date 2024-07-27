@@ -34,7 +34,9 @@ const orderSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload || "Something went wrong";
             });
-        }
+    }
+
+
 })
 
 const { reducer } = orderSlice;

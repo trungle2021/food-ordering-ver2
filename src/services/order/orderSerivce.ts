@@ -18,10 +18,15 @@ const checkOut = () : Promise<any> => {
     return axios.post(`${baseOrderApi}/check-out`);
 }
 
+const updateOrder = (userId: string, orderInfo: any) : Promise<any> => {
+    return axios.put(`${baseOrderApi}`, { userId, orderInfo });
+}
+
 export const OrderService = {
     getRecentOrderList,
     getOrderHistory,
     getOrder,
+    updateOrder,
     checkOut
 };
 

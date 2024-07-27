@@ -1,17 +1,17 @@
 import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup } from '@mui/material'
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import UserService from "~/services/user/userService"
 import { UpdateAddressModal } from '../UpdateAddressModal';
 import { AddressResponse } from '~/interface/user/addressResponse';
-import { updateAddress } from '~/store/user/userAction';
 import { toast } from 'react-toastify';
 import { CreateAddressModal } from '../CreateAddressModal';
+import OrderService from '~/services/order/orderSerivce';
 
 type UserAddressModalProps = {
     open: boolean,
-    onOpen: () => void
+    onOpen: () => void,
     onClose: () => void,
+    onShippingAddressChange: (orderInfo: any) => void
     maxWidth?: false | Breakpoint | undefined;
 }
 
@@ -25,7 +25,7 @@ const sortAddressListByDefaultAddress = (addressList: any) => {
     })
 }
 
-export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProps) => {
+export const UserAddressModal = ({ open, onClose, onOpen, onShippingAddressChange }: UserAddressModalProps) => {
 
     const dispatch = useDispatch()
     const user = useSelector((state: any) => state.user.user)
@@ -33,6 +33,8 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     const [addressDetailUpdate, setAddressDetailUpdate] = useState<AddressResponse | null>(null);
     const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
     const [radioChanged, setRadioChanged] = useState(false)
+    const [radioAddressId, setRadioAddressId] = useState<string | null>(null)
+
     const userId = user?._id
     const addressList = user.user_address
 
@@ -42,45 +44,56 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
         return defaultAddress
     });
 
-    console.log(address)
     useEffect(() => {
         // This will set radioChanged to false every time the component mounts
         setRadioChanged(false);
     }, []);
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
-        setRadioChanged(true)
         const addressId = (event.target as HTMLInputElement).value;
-        const selectedAddress = addressList.find((address: AddressResponse) => address._id === addressId);
-        if (selectedAddress) {
-            setAddress(selectedAddress);
-        }
+        setRadioChanged(true)
+        setRadioAddressId(addressId)
+
     };
 
 
 
-    const handleConfirmAddressChange = (event: React.SyntheticEvent) => {
+    const handleConfirmAddressChange = async (event: React.SyntheticEvent) => {
 
-        if (radioChanged && address) {
-            const addressId = address._id
-            // call API to set default address
-            const addressDetail = {
-                addressId: addressId,
-                phone: address.phone,
-                address: address.address,
-                recipient: address.recipient,
-                is_default_address: true
+        if (radioChanged && radioAddressId) {
+            const selectedAddress = addressList.find((address: AddressResponse) => address._id === radioAddressId);
+            if (selectedAddress) {
+                setAddress(selectedAddress);
             }
-            dispatch<any>(updateAddress({ userId, addressDetail })).then((result: any) => {
-                if (result.meta.requestStatus === 'fulfilled') {
-                    toast.success('Update address successfully')
-                } else if (result.meta.requestStatus === 'rejected') {
-                    toast.error('Update address failed')
+            // call API to set default address
+            // const addressDetail = {
+            //     addressId: radioAddressId,
+            //     phone: selectedAddress.phone,
+            //     address: selectedAddress.address,
+            //     recipient: selectedAddress.recipient,
+            //     is_default_address: true
+            // }
+
+            const orderInfo = {
+                addressId: radioAddressId
+            }
+            try {
+                const response = await OrderService.updateOrder(userId, orderInfo);
+                if(response.status === 'success') {
+                    const addressId = response?.data?._id
+                    const orderInfo = {
+                        addressId
+                    }
+                    onShippingAddressChange(orderInfo)
+                    toast.success('Update order successfully')
+                    onClose()
+                }else{
+                    toast.error('Update order failed')
                 }
-            })
+            } catch (error) {
+                console.error("Failed to update order:", error);
+            }
         }
-        onClose()
         return
 
     }
@@ -95,7 +108,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     }
 
     const handleCloseUserAddress = () => {
-    //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
+        //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
         onClose()
     }
 
@@ -121,7 +134,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                 open={openUpdateAddressModal}
                 onClose={handleCloseUpdateAddressModal}
                 onGoBack={handleGoBackUpateAddressModal}
-                />
+            />
             <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress}>
                 <DialogTitle sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>My Address</DialogTitle>
                 <DialogContent sx={{ padding: '10px' }}>
@@ -129,7 +142,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                         <RadioGroup
                             aria-labelledby="demo-controlled-radio-buttons-group"
                             name="controlled-radio-buttons-group"
-                            value={address?._id || ''}
+                            value={radioAddressId}
                             onChange={handleRadioChange}
                         >
                             <List>
@@ -150,19 +163,19 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
 
                                                 </div>
                                             </div>
-                                            <button 
-                                            type='button'
-                                            style={{
-                                                background: 'none',
-                                                border: 0,
-                                                color: '#08f',
-                                                outline: 'none',
-                                                fontSize: '1.3rem',
-                                                padding: '4px',
-                                                whiteSpace: 'nowrap',
-                                                cursor: 'pointer'
-                                            }} 
-                                            onClick={() => handleOpenUpdateAddressModal(address?._id)}>Update</button>
+                                            <button
+                                                type='button'
+                                                style={{
+                                                    background: 'none',
+                                                    border: 0,
+                                                    color: '#08f',
+                                                    outline: 'none',
+                                                    fontSize: '1.3rem',
+                                                    padding: '4px',
+                                                    whiteSpace: 'nowrap',
+                                                    cursor: 'pointer'
+                                                }}
+                                                onClick={() => handleOpenUpdateAddressModal(address?._id)}>Update</button>
                                         </div>
                                     </ListItem>
                                 ))}
