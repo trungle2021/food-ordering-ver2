@@ -17,6 +17,7 @@ export const AddressSection = () => {
           </span>
         </div>
         <button
+          type="button"
           className={`${styles["address-button"]} ${styles["button-change"]}`}
         >
           Change

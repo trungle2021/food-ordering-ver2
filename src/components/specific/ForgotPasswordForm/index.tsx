@@ -37,7 +37,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
           type="text"
           control={control}
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="button" variant="contained" color="primary">
           Continue
         </Button>
         <div className="form__redirectLink-container">

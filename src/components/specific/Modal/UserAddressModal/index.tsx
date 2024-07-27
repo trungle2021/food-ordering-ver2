@@ -1,5 +1,5 @@
 import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup } from '@mui/material'
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserService from "~/services/user/userService"
 import { UpdateAddressModal } from '../UpdateAddressModal';
@@ -42,12 +42,14 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
         return defaultAddress
     });
 
+    console.log(address)
     useEffect(() => {
         // This will set radioChanged to false every time the component mounts
         setRadioChanged(false);
     }, []);
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
         setRadioChanged(true)
         const addressId = (event.target as HTMLInputElement).value;
         const selectedAddress = addressList.find((address: AddressResponse) => address._id === addressId);
@@ -58,7 +60,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
 
 
 
-    const handleConfirmAddressChange = () => {
+    const handleConfirmAddressChange = (event: React.SyntheticEvent) => {
 
         if (radioChanged && address) {
             const addressId = address._id
@@ -68,7 +70,7 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                 phone: address.phone,
                 address: address.address,
                 recipient: address.recipient,
-                is_default_address: address.is_default_address
+                is_default_address: true
             }
             dispatch<any>(updateAddress({ userId, addressDetail })).then((result: any) => {
                 if (result.meta.requestStatus === 'fulfilled') {
@@ -88,11 +90,14 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
     }
 
     const handleCloseUpdateAddressModal = () => {
-        onClose
+        onClose()
         setOpenUpdateAddressModal(false)
     }
 
-    const handleCloseUserAddress = () => onClose()
+    const handleCloseUserAddress = () => {
+    //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
+        onClose()
+    }
 
     const handleOpenUpdateAddressModal = (addressId: string) => {
         const selectedAddress = addressList.find((address: AddressResponse) => address._id === addressId);
@@ -145,7 +150,9 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
 
                                                 </div>
                                             </div>
-                                            <div style={{
+                                            <button 
+                                            type='button'
+                                            style={{
                                                 background: 'none',
                                                 border: 0,
                                                 color: '#08f',
@@ -154,7 +161,8 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                                                 padding: '4px',
                                                 whiteSpace: 'nowrap',
                                                 cursor: 'pointer'
-                                            }} onClick={() => handleOpenUpdateAddressModal(address?._id)}>Update</div>
+                                            }} 
+                                            onClick={() => handleOpenUpdateAddressModal(address?._id)}>Update</button>
                                         </div>
                                     </ListItem>
                                 ))}
@@ -162,13 +170,13 @@ export const UserAddressModal = ({ open, onClose, onOpen }: UserAddressModalProp
                         </RadioGroup>
                     </FormControl>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <button onClick={() => setOpenCreateAddressModal(true)} style={{ fontSize: '1rem', padding: '5px' }}> + Add new address</button>
+                        <button type='button' onClick={() => setOpenCreateAddressModal(true)} style={{ fontSize: '1rem', padding: '5px' }}> + Add new address</button>
                     </div>
                 </DialogContent>
 
                 <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
-                    <button style={{ padding: '10px' }} onClick={handleCloseUserAddress}>Cancel</button>
-                    <button style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} type="submit" onClick={handleConfirmAddressChange}>Confirm</button>
+                    <button type='button' style={{ padding: '10px' }} onClick={handleCloseUserAddress}>Cancel</button>
+                    <button type="button" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }} onClick={handleConfirmAddressChange}>Confirm</button>
                 </DialogActions>
             </Dialog>
         </>

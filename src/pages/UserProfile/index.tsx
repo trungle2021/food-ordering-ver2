@@ -45,7 +45,7 @@ export const UserProfile = () => {
                                 />
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                     <InputField sx={{ display: 'none' }} inputRef={avatarInputRef} hidden type="file" name='avatar' control={control} accept="image/*" />
-                                    <button onClick={handleClickChangePhoto} style={{ padding: '10px' }}>Change photo</button>
+                                    <button type="button" onClick={handleClickChangePhoto} style={{ padding: '10px' }}>Change photo</button>
                                 </div>
                             </div>
                         </div>

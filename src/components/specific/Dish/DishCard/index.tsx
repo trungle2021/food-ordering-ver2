@@ -52,7 +52,7 @@ export const DishCard = ({
                             />
                         </div>
                     </div>
-                    <button className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => handleAddButton(_id)}>
+                    <button type="button" className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => handleAddButton(_id)}>
                         +
                     </button>
                 </div>

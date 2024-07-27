@@ -59,8 +59,8 @@ export const Navbar = ({ items }: { items: any }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleLogoutCancelled}>Cancel</Button>
-          <Button onClick={handleLogoutConfirmed} autoFocus>
+          <Button type="button" onClick={handleLogoutCancelled}>Cancel</Button>
+          <Button type="button" onClick={handleLogoutConfirmed} autoFocus>
             Logout
           </Button>
         </DialogActions>

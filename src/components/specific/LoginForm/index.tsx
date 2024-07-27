@@ -71,7 +71,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
             /> */}
             <Link to="/forgot-password">Forgot password ?</Link>
           </div>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="button" variant="contained" color="primary">
             Sign in
           </Button>
           <div className="form__redirectLink-container">

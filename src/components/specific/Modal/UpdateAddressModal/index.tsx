@@ -1,14 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Breakpoint, Dialog, DialogActions, DialogContent, DialogProps, DialogTitle, FormControl, InputLabel } from '@mui/material'
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { AddressResponse } from '~/interface/user/addressResponse';
 import updateAddressValidator from './updateAddressValidator';
-import { updateAddress } from '~/store/User/userAction';
 import { InputField } from '~/components/common/FormControls/InputField';
 import { CheckBoxField } from '~/components/common/FormControls/CheckBoxField';
+import { updateAddress } from '~/store/user/userAction';
 
 
 type UpdateAddressModalProps = {
@@ -58,7 +58,7 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdat
                 address: data.address,
                 is_default_address: data.is_default_address
             }
-            dispatch<any>(updateAddress({userId, addressDetail})).then((response: any) => {
+            dispatch<any>(updateAddress({userId,addressDetail})).then((response: any) => {
                 if (response.meta.requestStatus === 'rejected') {
                      toast.error("Update Address Failed")
                 }else if(response.meta.requestStatus === 'fulfilled'){
@@ -68,7 +68,6 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdat
                 return
             })
         }
-        console.log("Address: ", address)
     }
 
     const onError = (errors: any) => {
@@ -80,9 +79,10 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdat
         onGoBack()
     }
 
-    const handleOnClose: DialogProps["onClose"] = (event, reason) => {
-        if (reason && reason === "backdropClick")
-            return;
+    const handleOnClose: DialogProps["onClose"] = (event: React.SyntheticEvent, reason) => {
+        if (reason && reason === "backdropClick") return;
+        event.preventDefault()
+        event.stopPropagation()
         onClose();
     }
 

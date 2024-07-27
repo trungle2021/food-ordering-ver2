@@ -13,7 +13,9 @@ import { UserAddressModal } from "~/components/specific/Modal/UserAddressModal"
 import { CreateAddressModal } from "~/components/specific/Modal/CreateAddressModal"
 import { HeaderPage } from "~/components/specific/HeaderPage"
 import { LocationIcon } from "~/components/common/UI/Icon"
-import { getBalance } from "~/store/Balance/balanceAction"
+import { getBalance } from "~/store/balance/balanceAction"
+import OrderProps from "~/interface/order/orderResponse"
+import OrderDetailProps from "~/interface/order/orderDetailResponse"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -33,8 +35,7 @@ export const Checkout = () => {
     const {orderId} = useParams()
     const dispatch = useDispatch()
     
-    const [order, setOrder] = useState({});
-    const cart = useSelector((state: any) => state.cart)
+    const [order, setOrder] = useState<OrderProps | null >(null);
     const user = useSelector((state: any) => state.user)
     const userId = user?.user?._id
     
@@ -54,8 +55,9 @@ export const Checkout = () => {
 
     useEffect(() => {
         const getOrder = async(orderId: string) => {
-            const order = await OrderService.getOrder(orderId)
-            setOrder(order)
+            const response = await OrderService.getOrder(orderId)
+            console.log("Set Order")
+            setOrder(response.data)
         }
         if (userId && orderId) {
             dispatch<any>(getBalance(userId))
@@ -63,19 +65,24 @@ export const Checkout = () => {
         }
     }, [orderId, userId, dispatch])
 
-    const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
-        const content = (event.target as HTMLElement).innerText;
-        setPaymentMethod(content || '')
+    
+
+    // HANDLE USER_ADDRESS_MODAL
+    const handleOpenUserAddress = async () => {
+        // event.preventDefault()
+        // event.stopPropagation()
+        setOpenUserAddressModal(true)
     }
 
-    const handleOpenUserAddress = async () => {
-        setOpenUserAddressModal(true)
+    const handleCloseUserAddressModal = () => {
+        setOpenUserAddressModal(false)
     }
 
     const handleOnChangeUserAddress = (userAddress: any) => {
         console.log(userAddress)
     }
 
+    // HANDLE CREATE_ADDRESS_MODAL
     const handleOpenCreateAddress = () => {
         setOpenCreateAddressModal(true)
     }
@@ -83,6 +90,8 @@ export const Checkout = () => {
     const handleCloseCreateAddressModal = () => {
         setOpenCreateAddressModal(false)
     }
+
+    // HANDLE TOP_UP_MODAL
 
     const handleOpenTopUpModal = () => {
         setOpenTopUpModal(true)
@@ -92,17 +101,18 @@ export const Checkout = () => {
         setOpenTopUpModal(false)
     }
 
-    const handleCloseUserAddressModal = () => {
-        setOpenUserAddressModal(false)
+    // HANLE PAYMENT METHOD CHANGE
+    const handlePaymentMethodChange = (eventKey: string | null, event: React.SyntheticEvent<unknown>) => {
+        const content = (event.target as HTMLElement).innerText;
+        setPaymentMethod(content || '')
     }
+
+   
 
     const onSubmit = (data: any) => {
         const modifiedData = {
             ...data,
             address: defaultAddress._id
-        }
-        if (cart.items.length > 0) {
-
         }
         console.log("data: ", modifiedData)
     }
@@ -114,7 +124,7 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={() => setOpenUserAddressModal(true)} onClose={handleCloseUserAddressModal} />
+            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={handleOpenUserAddress}  onClose={handleCloseUserAddressModal} />
             <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
@@ -129,11 +139,13 @@ export const Checkout = () => {
                                         <LocationIcon />
                                         <div>{defaultAddress.address}</div>
                                         {defaultAddress.address ? <button
+                                            type="button"
                                             className={`${styles["address-button"]} ${styles["button-change"]}`}
                                             onClick={handleOpenUserAddress}
                                         >
                                             Change
                                         </button> : <button
+                                            type="button"
                                             className={`${styles["address-button"]} ${styles["button-change"]}`}
                                             onClick={handleOpenCreateAddress}
                                         >
@@ -186,7 +198,7 @@ export const Checkout = () => {
 
                         <div className={styles['checkout-container__order-details']}>
                             <ul className={`${styles["cart-container__list"]}`}>
-                                {cart ? cart.items.map((item: CartItemProps) => {
+                                { order && order.order_details && order.order_details.length > 0 && order?.order_details.map((item: OrderDetailProps) => {
                                     return (
                                         <li key={item._id}>
                                             <div className={`${styles['cart-item-container']}`}>
@@ -197,23 +209,24 @@ export const Checkout = () => {
                                                         <span className={styles['xQuantity']}>x</span>
                                                         <input type='text' className={`${styles['dish-quantity']}`} defaultValue={item.quantity} />
                                                     </div>
+                                                    <span className={`${styles['dish-price']}`}><span className='dollar'>$</span> {item.price} </span>
                                                 </div>
-                                                <span className={`${styles['dish-price']}`}>+ <span className='dollar'>$</span> {item.amount} </span>
+                                                <span className={`${styles['dish-price']}`}>+ <span className='dollar'>$</span> {item.price * item.quantity} </span>
                                             </div>
                                         </li>
                                     );
-                                }) : "Cart is empty"}
+                                })}
                             </ul>
 
                             <hr className="line-thin" />
                             <div className={styles['checkout-container__total']}>
                                 <span className={styles['checkout-container__total-title']}>Total</span>
-                                <span className={styles['checkout-container__total-total-amount']}><span className='dollar'>$</span>{cart.totalPrice}</span>
+                                <span className={styles['checkout-container__total-total-amount']}><span className='dollar'>$</span>{order?.order_total}</span>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" className={styles['checkout-container-button-payment']}>Proceed To Payment</button>
+                    <button type="button" className={styles['checkout-container-button-payment']}>Proceed To Payment</button>
                 </form >
 
             </div >

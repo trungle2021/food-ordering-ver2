@@ -10,6 +10,8 @@ const baseBalanceApi: string = 'api/v1/balances'
 
 //* USER API
 const getUserAddressListApi: string = `${baseUserApi}/:userId/addresses`
+const createUserAddressApi: string = `${baseUserApi}/:userId/addresses`
+const updateUserAddressApi: string = `${baseUserApi}/:userId/addresses`
 const getUserByUserIdApi: string = `${baseUserApi}`
 
 //* CATEGORY API
@@ -51,6 +53,8 @@ export {
 
   getUserAddressListApi,
   getUserByUserIdApi,
+  createUserAddressApi,
+  updateUserAddressApi,
 
   getCategoriesApi,
   getPopularDishApi,

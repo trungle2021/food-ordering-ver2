@@ -184,8 +184,8 @@ export const OrderHistory = () => {
                             </div>
                         </div>
                         <div className={styles['order__actions']}>
-                            <button className={styles["order__actions--review-button"]}>Review</button>
-                            <button className={styles["order__actions--reorder-button"]}>Order Again</button>
+                            <button type="button" className={styles["order__actions--review-button"]}>Review</button>
+                            <button type="button" className={styles["order__actions--reorder-button"]}>Order Again</button>
                         </div>
                     </div>
                 </div>

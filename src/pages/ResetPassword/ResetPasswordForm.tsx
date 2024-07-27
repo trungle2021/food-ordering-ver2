@@ -28,7 +28,7 @@ export const ResetPasswordForm = () => {
     //   <Button
     //     className="form__submitBtn"
     //     variant="primary"
-    //     type="submit"
+    //     type="button"
     //   >
     //     Reset Password
     //   </Button>

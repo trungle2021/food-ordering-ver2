@@ -5,8 +5,8 @@ import CartItemProps from "~/interface/cart/CartItem";
 import { useHistory } from 'react-router-dom';
 import { toast } from "react-toastify";
 import OrderService from "~/services/order/orderSerivce";
-import { getCart } from "~/store/Cart/cartAction";
 import { CartItem } from "~/components/specific/CartItem";
+import { getCart } from "~/store/cart/cartAction";
 
 export const CartSection = () => {
     const dispatch = useDispatch();
@@ -86,6 +86,7 @@ export const CartSection = () => {
                     <ArrowRightIcon />
                 </button> */}
                 <button
+                    type="button"
                     className={styles["cart-container-action__button-checkout"]}
                     onClick={handleCheckoutAction}
                 >

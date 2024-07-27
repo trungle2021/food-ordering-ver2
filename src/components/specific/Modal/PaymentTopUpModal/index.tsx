@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import topUpSchemaValidator from '~/components/specific/Modal/PaymentTopUpModal/topUpValidator';
 import { InputField } from '~/components/common/FormControls/InputField'
-import { topUp } from '~/store/Balance/balanceAction'
+import { topUp } from '~/store/balance/balanceAction'
 
 type PaymentTopUpModalProps = {
     open: boolean
@@ -133,7 +133,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
                     </DialogContent>
                     <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
-                        <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Confirm</button>
+                        <button type="button" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Confirm</button>
                     </DialogActions>
                 </form>
             </Dialog>

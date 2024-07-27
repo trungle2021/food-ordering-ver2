@@ -23,11 +23,11 @@ const createUser = async (user) => {
 }
 
 const updateUser = async (userId, payload) => {
-//   if (payload.user_address) {
-//     //* ignore user_address field
-//     //* update will be handled by updateAddress
-//     delete payload.user_address
-//   }
+  if (payload.user_address) {
+    //* ignore user_address field
+    //* update will be handled by updateAddress
+    delete payload.user_address
+  }
   return await User.findByIdAndUpdate(userId, payload, { upsert: false, returnDocument: 'after' })
 }
 

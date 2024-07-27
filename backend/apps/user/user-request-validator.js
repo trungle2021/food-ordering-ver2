@@ -10,7 +10,6 @@ const updateUserRequestSchema = Joi.object({
 
 const createAddressRequestSchema = Joi.object({
   userId: Joi.string().required(),
-  addressId: Joi.string().optional(),
   address: Joi.string().required(),
   phone: Joi.string().min(10).max(15).required(),
   recipient: Joi.string().min(2).max(50).required(),
@@ -36,7 +35,7 @@ const deleteUserAddressRequestSchema = Joi.object({
   addressId: Joi.string().required()
 })
 
-const getAddressListByUserIDRequestSchema = Joi.object({
+const getAddressListByUserIdRequestSchema = Joi.object({
   userId: Joi.string().required()
 })
 
@@ -47,5 +46,5 @@ module.exports = {
   updateAddressRequestSchema,
   getAddressByIdRequestSchema,
   deleteUserAddressRequestSchema,
-  getAddressListByUserIDRequestSchema
+  getAddressListByUserIdRequestSchema
 }

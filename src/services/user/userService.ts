@@ -1,5 +1,5 @@
 import axios from "~/lib/axios";
-import { getUserAddressListApi, getUserByUserIdApi } from "~/utils/api";
+import { createUserAddressApi, getUserAddressListApi, getUserByUserIdApi, updateUserAddressApi } from "~/utils/api";
 
 
 const getUserByUserId = (userId: string) => {
@@ -12,14 +12,12 @@ const getUserAddressList = (userId: string) => {
 }
 
 const createAddress = async (userId: string, addressDetail: CreateAddressFormValues) => {
-    const url = `${getUserAddressListApi}`.replace(':userId', userId)
-
+    const url = `${createUserAddressApi}`.replace(':userId', userId)
     return await axios.post(url, addressDetail)
 }
 
 const updateAddress = async (userId: string, addressDetail: UpdateAddressFormValues) => {
-    const url = `${getUserAddressListApi}`.replace(':userId', userId)
-
+    const url = `${updateUserAddressApi}`.replace(':userId', userId)
     return await axios.put(url, addressDetail)
 }
 

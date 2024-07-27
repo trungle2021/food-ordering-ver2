@@ -26,8 +26,8 @@ export const CartItem = ({item, imageSize}: {item : CartItemProps, imageSize: st
                 </div>
             </div>
             <div className={`${styles['action-button']}`}>
-                <button className={`${styles['modify-quantity-btn']}`}  onClick={()=>handleClickModifyQuantity(item.dish._id,'decrement')}>-</button>
-                <button className={`${styles['modify-quantity-btn']}`} disabled={disabled} onClick={()=>handleClickModifyQuantity(item.dish._id,'increment')}>+</button>
+                <button type="button" className={`${styles['modify-quantity-btn']}`}  onClick={()=>handleClickModifyQuantity(item.dish._id,'decrement')}>-</button>
+                <button type="button" className={`${styles['modify-quantity-btn']}`} disabled={disabled} onClick={()=>handleClickModifyQuantity(item.dish._id,'increment')}>+</button>
             </div>
             
             <span className={`${styles['dish-price']}`}>+ <span className='dollar'>$</span> {amount} </span>

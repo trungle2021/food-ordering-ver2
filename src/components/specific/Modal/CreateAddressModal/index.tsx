@@ -5,9 +5,9 @@ import createAddressValidator from './createAddressValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { AddressResponse } from '~/interface/user/addressResponse';
-import { createAddress } from '~/store/User/userAction';
 import { InputField } from '~/components/common/FormControls/InputField';
 import { CheckBoxField } from '~/components/common/FormControls/CheckBoxField';
+import { createAddress } from '~/store/user/userAction';
 
 type CreateAddressModalProps = {
     open: boolean,
@@ -117,7 +117,7 @@ export const CreateAddressModal = ({ open, onClose, maxWidth = 'sm', onSubmitCre
                     </DialogContent>
                     <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
-                        <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Add</button>
+                        <button type="button" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Add</button>
                     </DialogActions>
                 </form>
             </Dialog>
