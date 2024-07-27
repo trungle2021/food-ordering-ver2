@@ -43,7 +43,6 @@ export const Checkout = () => {
     const balance = useSelector((state: any) => state.balance)
     const amount = balance.amount
 
-
     const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
 
     const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
@@ -52,6 +51,7 @@ export const Checkout = () => {
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
+
     useEffect(() => {
         const getOrder = async(orderId: string) => {
             const order = await OrderService.getOrder(orderId)

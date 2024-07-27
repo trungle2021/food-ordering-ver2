@@ -24,7 +24,13 @@ const getOrders = async (queryString) => {
 }
 
 const getOrder = async (filter) => {
-  return await Order.findOne(filter).populate('order_details').exec()
+  return await Order.findOne(filter).populate({
+    path: 'order_details',
+    populate: {
+      path: 'dish',
+      model: 'Dish'
+    }
+  }).exec()
 }
 
 const getOrderHistory = async (userId, queryString) => {
