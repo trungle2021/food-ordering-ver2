@@ -117,7 +117,7 @@ export const CreateAddressModal = ({ open, onClose, maxWidth = 'sm', onSubmitCre
                     </DialogContent>
                     <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
-                        <button type="button" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Add</button>
+                        <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Add</button>
                     </DialogActions>
                 </form>
             </Dialog>

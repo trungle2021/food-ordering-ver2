@@ -14,7 +14,7 @@ const updateBalance = async (filter, data) => {
   if (amount < 0) {
     throw new Error('Amount must be greater than 0')
   }
-  const result = await Balance.findOneAndUpdate(filter, data, { new: true })
+  const result = await Balance.findOneAndUpdate(filter, data, { returnDocument: 'after' })
   return result
 }
 

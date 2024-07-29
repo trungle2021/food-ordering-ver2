@@ -41,7 +41,6 @@ const paymentSource = [
 export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTopUpModalProps) => {
 
     const dispatch = useDispatch()
-    const balance = useSelector((state: any) => state.balance)
     const userId = useSelector((state: any) => state.user.user._id)
     const [errors, setErrors] = useState<any>({})
     const { handleSubmit, reset, control } = useForm({
@@ -55,6 +54,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
     const onError = (errors: any) => setErrors(errors)
 
     const onSubmit = (formData: any) => {
+        console.log("topup")
         const payload = {
             ...formData,
             userId,
@@ -133,7 +133,7 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
                     </DialogContent>
                     <DialogActions sx={{ display: 'flex', gap: '10px', padding: '10px 24px', borderTop: '1px solid rgba(0, 0, 0, .09)' }}>
                         <button type='button' style={{ padding: '10px' }} onClick={handleOnClose}>Cancel</button>
-                        <button type="button" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Confirm</button>
+                        <button type="submit" style={{ padding: '10px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Confirm</button>
                     </DialogActions>
                 </form>
             </Dialog>

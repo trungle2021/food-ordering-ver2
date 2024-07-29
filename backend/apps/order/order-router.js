@@ -13,7 +13,7 @@ const {
   updateOrder
 } = require('../order/order-controller')
 const validateRequest = require('../../utils/joi/validate-request-schema')
-const { cancelOrderRequestSchema, confirmOrderRequestSchema, getRecentOrdersRequestSchema, completeOrderRequestSchema, getOrderHistoryRequestSchema, getOrderRequestSchema } = require('./order-request-validator')
+const { updateOrderRequestSchema, cancelOrderRequestSchema, confirmOrderRequestSchema, getRecentOrdersRequestSchema, completeOrderRequestSchema, getOrderHistoryRequestSchema, getOrderRequestSchema } = require('./order-request-validator')
 const { BODY, PARAMS } = require('../../constant/request-types')
 
 router.route('/recent-orders/users/:userId')
@@ -36,10 +36,10 @@ router.route('/history/users/:userId')
 
 router.route('/:orderId')
   .get(validateRequest(getOrderRequestSchema, [PARAMS]), getOrder)
+  .put(validateRequest(updateOrderRequestSchema, [PARAMS, BODY]), updateOrder)
 
 router.route('/')
   .get(getOrders)
-  .put(updateOrder)
   .delete(deleteAll)
 
 module.exports = router

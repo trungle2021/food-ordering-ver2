@@ -7,6 +7,7 @@ const initialState: CartState = {
     totalItems: 0,
     totalPrice: 0,
     isLoading: false,
+    cartHasBeenUpdated: false,
     error: "",
 }
 
@@ -18,6 +19,7 @@ const cartSlice = createSlice({
             state.isLoading = true;
         })
             .addCase(getCart.fulfilled, (state, action) => {
+                // state.cartIsUpdated = false;
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
@@ -35,15 +37,16 @@ const cartSlice = createSlice({
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
                 state.totalPrice = action.payload.total;
+                state.cartHasBeenUpdated = true;
             })
             .addCase(addItem.rejected, (state, action: any) => {
-                state.isLoading = false;
                 state.error = action.payload || "Something went wrong";
             })
             .addCase(updateItem.pending, (state, action) => {
                 state.isLoading = true;
             })
             .addCase(updateItem.fulfilled, (state, action) => {
+                state.cartHasBeenUpdated = true;
                 state.isLoading = false;
                 state.items = action.payload.items;
                 state.totalItems = action.payload.items.length;
@@ -54,15 +57,6 @@ const cartSlice = createSlice({
                 state.error = action.payload || "Something went wrong";
             }
             )
-            .addCase(removeItem.pending, (state, action) => {
-
-            })
-            .addCase(removeItem.fulfilled, (state, action) => {
-
-            })
-            .addCase(removeItem.rejected, (state, action: any) => {
-
-            })
     },
     name: "cart"
 })

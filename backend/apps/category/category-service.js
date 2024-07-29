@@ -23,7 +23,7 @@ const createCategories = async (categories) => {
 }
 
 const updateCategory = async (filter, update) => {
-  return await Category.findOneAndUpdate(filter, update, { new: true })
+  return await Category.findOneAndUpdate(filter, update, { returnDocument: 'after' })
 }
 
 const deleteCategory = async (filter) => {

@@ -1,105 +1,71 @@
 import { Breakpoint, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, List, ListItem, Radio, RadioGroup } from '@mui/material'
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { UpdateAddressModal } from '../UpdateAddressModal';
 import { AddressResponse } from '~/interface/user/addressResponse';
-import { toast } from 'react-toastify';
 import { CreateAddressModal } from '../CreateAddressModal';
-import OrderService from '~/services/order/orderSerivce';
+
 
 type UserAddressModalProps = {
+    currentShippingAddressId: string,
     open: boolean,
     onOpen: () => void,
     onClose: () => void,
-    onShippingAddressChange: (orderInfo: any) => void
+    onSubmit: (orderInfo: any) => void
     maxWidth?: false | Breakpoint | undefined;
+
 }
 
-const sortAddressListByDefaultAddress = (addressList: any) => {
-    const cloneAddressList = [...addressList]
-    return cloneAddressList.sort((a: any, b: any) => {
-        if (a.is_default_address) {
-            return -1
-        }
-        return 1
-    })
-}
+const sortAddressListByCurrentShippingAddressId = (addressList: AddressResponse[], currentShippingAddressId: string): AddressResponse[] => {
+    if (addressList.length === 0) return addressList
+    return addressList.sort((a, b) => (a._id === currentShippingAddressId ? -1 : 1));
+};
 
-export const UserAddressModal = ({ open, onClose, onOpen, onShippingAddressChange }: UserAddressModalProps) => {
+export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, currentShippingAddressId }: UserAddressModalProps) => {
 
-    const dispatch = useDispatch()
     const user = useSelector((state: any) => state.user.user)
+
+
+    const [addressListSorted, setAddressListSorted] = useState<AddressResponse[]>([]);
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
     const [addressDetailUpdate, setAddressDetailUpdate] = useState<AddressResponse | null>(null);
     const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
     const [radioChanged, setRadioChanged] = useState(false)
+    // const [address, setAddress] = useState<AddressResponse | null>(null);
     const [radioAddressId, setRadioAddressId] = useState<string | null>(null)
 
-    const userId = user?._id
-    const addressList = user.user_address
-
-    const [address, setAddress] = useState<AddressResponse | null>(() => {
-        const sortedAddressList = sortAddressListByDefaultAddress(addressList)
-        const defaultAddress = sortedAddressList[0]
-        return defaultAddress
-    });
 
     useEffect(() => {
+        if (user && user.user_address.length > 0 && currentShippingAddressId !== '') {
+            let addressList = user.user_address
+            const cloneAddressList = [...addressList]
+            const sortedList = sortAddressListByCurrentShippingAddressId(cloneAddressList, currentShippingAddressId);
+            setAddressListSorted(sortedList);
+            if (sortedList.length > 0) {
+                const address = sortedList[0]
+                setRadioAddressId(address._id)
+            }
+        }
         // This will set radioChanged to false every time the component mounts
         setRadioChanged(false);
-    }, []);
+    }, [user, currentShippingAddressId]);
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const addressId = (event.target as HTMLInputElement).value;
         setRadioChanged(true)
         setRadioAddressId(addressId)
-
     };
 
 
-
-    const handleConfirmAddressChange = async (event: React.SyntheticEvent) => {
-
+    const handleConfirmAddressChange = async () => {
         if (radioChanged && radioAddressId) {
-            const selectedAddress = addressList.find((address: AddressResponse) => address._id === radioAddressId);
-            if (selectedAddress) {
-                setAddress(selectedAddress);
-            }
-            // call API to set default address
-            // const addressDetail = {
-            //     addressId: radioAddressId,
-            //     phone: selectedAddress.phone,
-            //     address: selectedAddress.address,
-            //     recipient: selectedAddress.recipient,
-            //     is_default_address: true
-            // }
-
-            const orderInfo = {
-                addressId: radioAddressId
-            }
-            try {
-                const response = await OrderService.updateOrder(userId, orderInfo);
-                if(response.status === 'success') {
-                    const addressId = response?.data?._id
-                    const orderInfo = {
-                        addressId
-                    }
-                    onShippingAddressChange(orderInfo)
-                    toast.success('Update order successfully')
-                    onClose()
-                }else{
-                    toast.error('Update order failed')
-                }
-            } catch (error) {
-                console.error("Failed to update order:", error);
-            }
+            onSubmit({ addressId: radioAddressId });
         }
-        return
-
-    }
+    };
 
     const handleSubmitCreateAddress = (address: AddressResponse) => {
-        setAddress(address)
+        console.log(address)
+        // setAddress(address)
     }
 
     const handleCloseUpdateAddressModal = () => {
@@ -108,12 +74,12 @@ export const UserAddressModal = ({ open, onClose, onOpen, onShippingAddressChang
     }
 
     const handleCloseUserAddress = () => {
-        //!  NEED TO RESET RADIO WHEN USER CLICK CANCEL   
+        setRadioAddressId(currentShippingAddressId)
         onClose()
     }
 
     const handleOpenUpdateAddressModal = (addressId: string) => {
-        const selectedAddress = addressList.find((address: AddressResponse) => address._id === addressId);
+        const selectedAddress = addressListSorted.find((address: AddressResponse) => address._id === addressId);
         if (selectedAddress) {
             setAddressDetailUpdate(selectedAddress);
         }
@@ -146,7 +112,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onShippingAddressChang
                             onChange={handleRadioChange}
                         >
                             <List>
-                                {addressList?.length > 0 && addressList.map((address: any) => (
+                                {addressListSorted?.length > 0 && addressListSorted.map((address: any) => (
                                     <ListItem key={address._id} sx={{ display: 'flex', padding: '10px' }}>
                                         <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start', }}>
                                             <div style={{ display: 'flex', width: '100%', alignItems: 'flex-start' }}>
@@ -159,7 +125,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onShippingAddressChang
                                                         </div>
                                                     </div>
                                                     <div style={{ color: 'rgba(0, 0, 0, .54)', fontSize: '1.3rem' }}>{address.address}</div>
-                                                    {address.isDefaultAddress && <div style={{ color: 'red', fontSize: '1rem', padding: '0 4px', border: '.5px solid red' }}>Default Address</div>}
+                                                    {address.is_default_address && <div style={{ color: 'red', fontSize: '1rem', padding: '0 4px', border: '.5px solid red' }}>Default Address</div>}
 
                                                 </div>
                                             </div>

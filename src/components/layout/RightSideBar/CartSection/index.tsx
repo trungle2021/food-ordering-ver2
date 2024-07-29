@@ -22,15 +22,21 @@ export const CartSection = () => {
             toast.error("Cart is empty")
             return;
         }
-        // call api checkout items in cart here
-        const response = await OrderService.checkOut()
-        if(response.status === "success"){
-            const orderId = response.data._id
-            history.push(`/checkout/${orderId}`)
-        }else {
-            toast.error("Checkout failed")
-        }
+
+        const payload = cart.cartHasBeenUpdated ? { cartHasBeenUpdated: cart.cartHasBeenUpdated } : {};
         
+        try {
+            const response = await OrderService.checkOut(payload);
+            if (response.status === "success") {
+                const orderId = response.data._id;
+                history.push(`/checkout/${orderId}`);
+            } else {
+                toast.error("Checkout failed");
+            }
+        } catch (error) {
+            toast.error("An error occurred during checkout");
+            console.error("Checkout error:", error);
+        }
     }
 
 

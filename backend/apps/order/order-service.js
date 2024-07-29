@@ -195,20 +195,50 @@ const convertDateStringToDateObject = (orderDate) => {
   return orderDate
 }
 
-const checkOut = async (userId) => {
+const calculateOrderTotal = async (orderItems) => {
+  return orderItems.reduce((total, item) => {
+    return total + (item.dish.price * item.quantity)
+  }, 0)
+}
+
+const checkOut = async (userId, orderDetailsHasBeenUpdated) => {
   const session = await connection.startSession()
 
   let address = null
-
-  const pendingOrder = await Order.findOne({ user: userId, order_status: PENDING })
-
-  if (pendingOrder) {
-    return pendingOrder
-  }
+  let orderTotal = 0
 
   const user = await UserService.getUser({ _id: userId })
+
   if (!user) {
     throw new AppError('User not found', 404)
+  }
+
+  const cart = await CartService.getCart({ user: userId })
+
+  if (!cart) {
+    throw new AppError('Cart not found', 404)
+  }
+
+  if (cart.items.length === 0) {
+    throw new AppError('Cart is empty', 409)
+  }
+
+  const orderItems = [...cart.items]
+  const pendingOrder = await Order.findOne({ user: userId, order_status: PENDING })
+  const userHasAPendingOrder = pendingOrder !== null
+
+  if (userHasAPendingOrder) {
+    if (orderDetailsHasBeenUpdated) {
+      orderTotal = await calculateOrderTotal(orderItems)
+      pendingOrder.order_total = orderTotal.toFixed(2)
+
+      const orderId = pendingOrder._id
+      const itemIdList = await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
+
+      pendingOrder.order_details = [...itemIdList]
+      await pendingOrder.save()
+    }
+    return pendingOrder
   }
 
   if (user.user_address.length > 0) {
@@ -220,24 +250,11 @@ const checkOut = async (userId) => {
     }
   }
 
-  const cart = await CartService.getCart({ user: userId })
-  if (!cart) {
-    throw new AppError('Cart not found', 404)
-  }
-
-  if (cart.items.length === 0) {
-    throw new AppError('Cart is empty', 409)
-  }
-  const orderItems = [...cart.items]
-
   try {
     session.startTransaction()
-    console.log('orderItems', orderItems)
-    const orderTotal = orderItems.reduce((total, item) => {
-      return total + (item.dish.price * item.quantity)
-    }, 0)
 
-    console.log('orderTotal', orderTotal)
+    orderTotal = await calculateOrderTotal(orderItems)
+
     const order = {
       user: userId,
       order_details: orderItems,
@@ -257,9 +274,13 @@ const checkOut = async (userId) => {
 
     const orderId = orderCreated._id
     const itemIdList = await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
+
     orderCreated.order_details = [...itemIdList]
+
     await orderCreated.save()
+
     await session.commitTransaction()
+
     return orderCreated
   } catch (error) {
     await session.abortTransaction()
@@ -345,7 +366,7 @@ const cancelOrder = async (orderCancel) => {
 }
 
 const updateOrder = async (filter, payload) => {
-  return await Order.findOneAndUpdate(filter, payload, { new: false })
+  return await Order.findOneAndUpdate(filter, payload, { returnDocument: 'after' })
 }
 
 const deleteOrder = async (filter) => {

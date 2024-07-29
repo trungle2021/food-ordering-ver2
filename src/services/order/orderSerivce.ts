@@ -14,12 +14,12 @@ const getOrder = (orderId:string) : Promise<any> => {
     return axios.get(`${baseOrderApi}/${orderId}`);
 }
 
-const checkOut = () : Promise<any> => {
-    return axios.post(`${baseOrderApi}/check-out`);
+const checkOut = (payload: any) : Promise<any> => {
+    return axios.post(`${baseOrderApi}/check-out`, payload);
 }
 
-const updateOrder = (userId: string, orderInfo: any) : Promise<any> => {
-    return axios.put(`${baseOrderApi}`, { userId, orderInfo });
+const updateOrder = (orderId: string, payload: any) : Promise<any> => {
+    return axios.put(`${baseOrderApi}/${orderId}`, payload);
 }
 
 export const OrderService = {

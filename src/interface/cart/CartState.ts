@@ -6,4 +6,5 @@ export default interface CartState {
   totalPrice: number;
   isLoading: boolean;
   error: string | null;
+  cartHasBeenUpdated: boolean;
   }

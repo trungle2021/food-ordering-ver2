@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
 import { useEffect, useState } from "react"
-import CartItemProps from "~/interface/cart/CartItem"
 import styles from './styles.module.css'
 import { Dropdown } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
@@ -16,6 +15,8 @@ import { LocationIcon } from "~/components/common/UI/Icon"
 import { getBalance } from "~/store/balance/balanceAction"
 import OrderProps from "~/interface/order/orderResponse"
 import OrderDetailProps from "~/interface/order/orderDetailResponse"
+import { toast } from "react-toastify"
+import { AddressResponse } from "~/interface/user/addressResponse"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -31,15 +32,15 @@ const initialFormValues: CheckoutFormValues = {
 
 export const Checkout = () => {
 
+    const { orderId } = useParams()
     const history = useHistory()
-    const {orderId} = useParams()
     const dispatch = useDispatch()
-    
-    const [order, setOrder] = useState<OrderProps | null >(null);
+
+    const [order, setOrder] = useState<OrderProps | null>(null);
     const user = useSelector((state: any) => state.user)
     const userId = user?.user?._id
-    
-    const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
+
+    const [shippingAddress, setShippingAddress] = useState<AddressResponse | null>(null)
 
     const balance = useSelector((state: any) => state.balance)
     const amount = balance.amount
@@ -53,18 +54,35 @@ export const Checkout = () => {
         defaultValues: initialFormValues,
     });
 
-    useEffect(() => {
-        const getOrder = async(orderId: string) => {
-            const response = await OrderService.getOrder(orderId)
-            setOrder(response.data)
+    const getOrder = async (orderId: string) => {
+        try {
+            const response = await OrderService.getOrder(orderId);
+            const order = response.data;
+            if (!order) {
+                history.push('/dashboard');
+                return;
+            }
+            setOrder(order);
+            const address = user?.user?.user_address.find((address: any) => address._id === order.shipping_address)
+            if (address) {
+                setShippingAddress(address)
+            } else {
+                const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
+                setShippingAddress(defaultAddress)
+            }
+        } catch (error) {
+            console.error("Failed to fetch order:", error);
+            history.push('/dashboard');
         }
+    };
+
+    useEffect(() => {
         if (userId && orderId) {
             dispatch<any>(getBalance(userId))
             getOrder(orderId)
         }
     }, [orderId, userId, dispatch])
 
-    
 
     // HANDLE USER_ADDRESS_MODAL
     const handleOpenUserAddress = async () => {
@@ -75,10 +93,19 @@ export const Checkout = () => {
         setOpenUserAddressModal(false)
     }
 
-    const handleShippingAddressChange = (orderInfo: any) => {
-        console.log("Shipping Address Changed")
-        const { addressId } = orderInfo
-        console.log("AddressId: ", addressId)
+    const handleShippingAddressChange = async (payload: any) => {
+        try {
+            const response = await OrderService.updateOrder(orderId, payload);
+            if (response.status === 'success' && response.data) {
+                toast.success('Update order successfully')
+                setShippingAddress(user?.user?.user_address.find((address: any) => address._id === payload.addressId))
+                setOpenUserAddressModal(false)
+            } else {
+                toast.error('Update order failed')
+            }
+        } catch (error) {
+            console.error("Failed to update order:", error);
+        }
     }
 
 
@@ -92,7 +119,6 @@ export const Checkout = () => {
     }
 
     // HANDLE TOP_UP_MODAL
-
     const handleOpenTopUpModal = () => {
         setOpenTopUpModal(true)
     }
@@ -107,14 +133,12 @@ export const Checkout = () => {
         setPaymentMethod(content || '')
     }
 
- 
-
     const onSubmit = (data: any) => {
-        const modifiedData = {
-            ...data,
-            address: defaultAddress._id
-        }
-        console.log("data: ", modifiedData)
+        // const modifiedData = {
+        //     ...data,
+        //     address: defaultAddress._id
+        // }
+        // console.log("data: ", modifiedData)
     }
 
     const onError = (error: any) => {
@@ -124,7 +148,14 @@ export const Checkout = () => {
     return (
         <>
             <PaymentTopUpModal maxWidth='sm' open={openTopUpModal} onClose={handleCloseTopUpModal} />
-            <UserAddressModal maxWidth='sm' open={openUserAddressModal} onOpen={handleOpenUserAddress}  onClose={handleCloseUserAddressModal} onShippingAddressChange={handleShippingAddressChange} />
+            <UserAddressModal
+                maxWidth='sm'
+                open={openUserAddressModal}
+                onOpen={handleOpenUserAddress}
+                onClose={handleCloseUserAddressModal}
+                onSubmit={handleShippingAddressChange}
+                currentShippingAddressId={order?.shipping_address ?? ''} />
+
             <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
@@ -137,9 +168,10 @@ export const Checkout = () => {
                                 <div className={styles['address-content']}>
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
-                                        <div>{defaultAddress.address}</div>
-                                        {defaultAddress.address ? <button
+                                        <div>{shippingAddress?.address}</div>
+                                        {shippingAddress?.address ? <button
                                             type="button"
+                                            style={{ padding: '5px 15px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}
                                             className={`${styles["address-button"]} ${styles["button-change"]}`}
                                             onClick={handleOpenUserAddress}
                                         >
@@ -198,7 +230,7 @@ export const Checkout = () => {
 
                         <div className={styles['checkout-container__order-details']}>
                             <ul className={`${styles["cart-container__list"]}`}>
-                                { order && order.order_details && order.order_details.length > 0 && order?.order_details.map((item: OrderDetailProps) => {
+                                {order && order.order_details && order.order_details.length > 0 && order?.order_details.map((item: OrderDetailProps) => {
                                     return (
                                         <li key={item._id}>
                                             <div className={`${styles['cart-item-container']}`}>

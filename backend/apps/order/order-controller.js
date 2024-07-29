@@ -68,13 +68,8 @@ const deleteAll = catchAsyncHandler(async (req, res, next) => {
 
 const checkOut = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
-  if (!userId) {
-    return res.status(401).json({
-      status: 'fail',
-      message: 'Unauthorized'
-    })
-  }
-  const orderCreated = await OrderService.checkOut(userId)
+  const { cartHasBeenUpdated } = req.body
+  const orderCreated = await OrderService.checkOut(userId, cartHasBeenUpdated)
   res.status(200).json({
     status: 'success',
     data: orderCreated
@@ -105,14 +100,24 @@ const cancelOrder = catchAsyncHandler(async (req, res, next) => {
 })
 
 const updateOrder = catchAsyncHandler(async (req, res, next) => {
-  const { orderId } = req.body
+  const { orderId } = req.params
+  const { addressId, cancelReason } = req.body
+
   const filter = {
     _id: orderId
   }
-  const payload = {
-    ...req.body
-  }
+
+  const payload = {}
+  if (addressId !== undefined) payload.shipping_address = addressId
+  if (cancelReason !== undefined) payload.cancel_reason = cancelReason
+
   const updatedOrder = await OrderService.updateOrder(filter, payload)
+  if (!updatedOrder) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Update Order Failed'
+    })
+  }
   return res.status(200).json({
     status: 'success',
     data: updatedOrder
