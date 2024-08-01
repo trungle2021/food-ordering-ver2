@@ -21,9 +21,7 @@ const instance: AxiosInstance = axios.create({
 // Exponential back-off retry delay between requests
 
 axiosRetry(instance, {
-
     retries: 3,
-
     retryDelay: axiosRetry.exponentialDelay,
 });
 
@@ -35,7 +33,6 @@ const onRequest = async (
     config: InternalAxiosRequestConfig
 ): Promise<InternalAxiosRequestConfig<any>> => {
     const state = store.getState()
-    const userId = state.user?.user?._id ?? "";
     const accessToken = state.auth.accessToken;
     if (accessToken) {
         config.headers.Authorization = "Bearer " + accessToken;
@@ -53,11 +50,15 @@ const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
 
 const onResponseError = async (error: any): Promise<AxiosError> => {
     const { config } = error;
+
+    // in-case user unauthorize
+    console.log("error", error);
+    console.log("config", config);
+    console.log("config retry: ", config._retry)
     if (error?.response?.status === 401 && !config?._retry) {
         //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
         config._retry = true
         const state = store.getState();
-        const userId = state.user?.user?._id ?? ""
         const refreshToken = state.auth.refreshToken
         console.log("Refreshing access token")
         refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({ token: refreshToken }))
@@ -72,7 +73,7 @@ const onResponseError = async (error: any): Promise<AxiosError> => {
         refreshingToken = null
 
         if (error?.response.data?.error === 'Refresh Token Expired') {
-            await store.dispatch(logoutUser(userId))
+            await store.dispatch(logoutUser())
         }
 
     }

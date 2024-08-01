@@ -54,14 +54,11 @@ export const PaymentTopUpModal = ({ open, onClose, maxWidth = 'sm' }: PaymentTop
     const onError = (errors: any) => setErrors(errors)
 
     const onSubmit = (formData: any) => {
-        console.log("topup")
         const payload = {
             ...formData,
             userId,
         }
         dispatch<any>(topUp(payload)).then((result: any) => {
-            console.log("Result.error: ", result.error)
-            console.log("Result: ", result)
             if (result.error) {
                 toast.error("Top up failed")
             } else {
