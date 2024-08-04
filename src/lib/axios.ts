@@ -46,17 +46,10 @@ const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
 let refreshTokenResult: any = null
 
 const onResponseError = async (error: any): Promise<AxiosError> => {
-    const { config } = error;
-
-    if (!config) {
-        return Promise.reject(error);
-    }
-
-    const responseStatusIs401Error = error?.response?.status === 401;
-    // const requestHasNotBeenRetriedYet = !config?._retry;
-
-    if (responseStatusIs401Error && !config?._retry) {
+   const originalRequest = error.config
+    if (error?.response?.status === 401 && !originalRequest._retry) {
         try {
+            originalRequest._retry = true;
             const state = store.getState();
             const localStorageRefreshToken = state.auth.refreshToken
 
@@ -65,23 +58,22 @@ const onResponseError = async (error: any): Promise<AxiosError> => {
             
             refreshTokenResult = null
 
-            const {accessToken, refreshToken } = response?.payload?.data;
+            const accessToken = response?.payload?.data?.accessToken
+            const refreshToken = response?.payload?.data?.refreshToken
             
             if (accessToken && refreshToken) {
                 store.dispatch(updateToken({ accessToken, refreshToken }))
-                config.headers.Authorization = "Bearer " + accessToken;
-                config._retry = true
-                return instance.request(config);
+                originalRequest.headers.Authorization = "Bearer " + accessToken;
+                return instance.request(originalRequest);
             }
-
-            if (response.payload.status === 'fail') {
-                await store.dispatch(logoutUser())
-                return Promise.reject(error?.response?.data); 
-            }
-           
         } catch (e) {
             return Promise.reject(e)
         }
+    }
+
+    if(error.response.status === 403 && error.response.data.message === 'Refresh token expired'){
+        store.dispatch(logoutUser())
+        return Promise.reject(error?.response?.data);
     }
     return Promise.reject(error?.response?.data);
 };

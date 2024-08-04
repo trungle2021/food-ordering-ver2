@@ -1,8 +1,8 @@
 import axios from "~/lib/axios";
 import { baseDishApi, getDishesByNameApi, getPopularDishApi } from "~/utils/api";
 
-const getDishes = (limit: number): Promise<any> => {
-    return axios.get(`${baseDishApi}?limit=${limit}`);
+const getDishes = (queryParams:string, limit: number): Promise<any> => {
+    return axios.get(`${baseDishApi}?${queryParams}&limit=${limit}`);
 }
 
 const getPopularDishes = (limit: number): Promise<any> => {

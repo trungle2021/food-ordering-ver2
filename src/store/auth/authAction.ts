@@ -45,7 +45,6 @@ export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', asyn
         console.log("Starting to get new access token, authAction");
         return await AuthService.getNewAccessToken(payload);
     } catch (err: any) {
-        console.log("Error getting new access token, authAction");
         return thunkAPI.rejectWithValue(err);
     }
 })

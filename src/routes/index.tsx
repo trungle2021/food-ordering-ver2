@@ -6,7 +6,7 @@ import { Switch } from 'react-router-dom';
 import { PrivateRoute } from "./PrivateRoute";
 import { UserProfile } from "~/pages/UserProfile";
 import { Checkout } from "~/pages/Checkout";
-import { DishPage } from "~/pages/AllProductPage";
+import { DishPage } from "~/pages/Dishes";
 
 
 function Routes() {

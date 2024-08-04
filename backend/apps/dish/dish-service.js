@@ -4,11 +4,17 @@ const ApiFeatures = require('../../utils/api-features/api-features')
 const { COMPLETED } = require('../../constant/order-status')
 
 const getDishes = async (queryString) => {
-  const features = new ApiFeatures(Dish.find({}), queryString)
+  const categoryName = queryString['category-name']
+  const modifiedQueryString = {...queryString}
+  delete modifiedQueryString['category-name']
+  if (categoryName) {
+    modifiedQueryString['category.name'] = categoryName
+  }
+  const features = new ApiFeatures(Dish.find({}), modifiedQueryString)
     .filter()
     .sort()
     .limitFields()
-    // .paginate()
+    .paginate()
   return await features.query.populate({ path: 'category', select: 'name' })
 }
 
@@ -30,7 +36,7 @@ const getPoplularDishes = async (queryString) => {
     path: 'dish'
   })
 
-  console.log('all', all)
+  // console.log('all', all)
 
   const result = await Order.aggregate([
     {
@@ -77,7 +83,6 @@ const getPoplularDishes = async (queryString) => {
     }
   ])
 
-  console.log('result', result)
 
   //   if (result.length === 0) {
   //     console.log('Popular dishes is empty')

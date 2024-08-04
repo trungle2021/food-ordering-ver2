@@ -5,6 +5,7 @@ import { CategorySection } from "~/components/common/Section/CategorySection";
 import { HeaderSection } from "~/components/common/Section/HeaderSection";
 import { PopularDishSection } from "~/components/common/Section/PopularDishSection";
 import { RecentOrderSection } from "~/components/common/Section/RecentOrderSection";
+import { DishCard } from "~/components/specific/Dish/DishCard";
 import { useResponsiveLimitItem } from "~/hooks/useResponsiveLimitItem";
 
 export const Dashboard = () => {
@@ -27,8 +28,8 @@ export const Dashboard = () => {
         dishes.data.length > 0 ?
           <Grid container spacing={2} rowSpacing={2}>
             {dishes.data.map((dish: any) => {
-              return (<Grid item xs={12} sm={6} md={4} lg={4} xl={3} key={dish._id}>
-                <Dish
+              return (<Grid item xs={12} sm={6} md={3} lg={4} xl={3} key={dish._id}>
+                <DishCard
                   _id={dish._id}
                   itemSold={0}
                   isActive={false}

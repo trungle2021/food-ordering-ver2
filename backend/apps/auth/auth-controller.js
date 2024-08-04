@@ -34,7 +34,7 @@ const login = catchAsyncHandler(async (req, res, next) => {
 
 const logout = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId
-  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
+  await RefreshTokenService.invalidateRefreshTokenByUserId(userId)
   res.status(200).json({
     status: 'success',
     message: 'Logout successfully'
@@ -43,7 +43,7 @@ const logout = catchAsyncHandler(async (req, res, next) => {
 
 const renewAccessToken = catchAsyncHandler(async (req, res, next) => {
   const { refreshToken } = req.body
-  const newAccessToken = await AuthService.renewAccessToken(refreshToken)
+  const {newAccessToken, newRefreshToken} = await AuthService.renewAccessToken(refreshToken)
   if (!newAccessToken) {
     return res.status(500).json({
       status: 'error',
@@ -54,7 +54,8 @@ const renewAccessToken = catchAsyncHandler(async (req, res, next) => {
   return res.status(200).json({
     status: 'success',
     data: {
-      accessToken: newAccessToken
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
     }
   })
 })

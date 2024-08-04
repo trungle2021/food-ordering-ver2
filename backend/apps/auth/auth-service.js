@@ -40,7 +40,6 @@ const login = async (emailInput, passwordInput) => {
   const user = await User.findOne({ email: emailInput })
   if (!user) { throw new AppError(`Cannot found user with email ${emailInput}`, 404) }
 
-  console.log(user)
 
   const passwordIsValid = await user.comparePassword(
     passwordInput,
@@ -51,6 +50,7 @@ const login = async (emailInput, passwordInput) => {
   const { password, ...rest } = user._doc
   const { _id } = rest
   const payload = { _id }
+  console.log(tokenOptions)
   const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
     payload,
     secretKey,
@@ -66,11 +66,12 @@ const login = async (emailInput, passwordInput) => {
 }
 
 const logout = async (userId) => {
-  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
+  await RefreshTokenService.invalidateRefreshTokenByUserId (userId)
 }
 
 const renewAccessToken = async (refreshToken) => {
   try {
+    console.log("Refresh Token", refreshToken)
     const decodePayload = await JWTService.verifyToken(refreshToken, secretKey)
     const userId = decodePayload._id
 
@@ -80,30 +81,31 @@ const renewAccessToken = async (refreshToken) => {
       throw new AppError('Refresh token not found', 403)
     }
 
-    await RefreshTokenService.invalidateRefreshTokenByUserId(userId, refreshToken)
+    await RefreshTokenService.invalidateRefreshTokenByUserId(userId)
 
     const payload = { _id: userId }
-    const { newAccessToken, newRefreshToken } = await generateAccessTokenAndRefreshToken(
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = await generateAccessTokenAndRefreshToken(
       payload,
       secretKey,
       tokenOptions
     )
+
     await RefreshTokenService.saveRefreshToken({ user: userId, token: newRefreshToken })
 
     return {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken
+      newAccessToken,
+      newRefreshToken
     }
   } catch (error) {
+    console.log("Error in renewAccessToken", error)
     if (error instanceof TokenExpiredError) {
-      throw new AppError('Token expired', 401)
+      throw new AppError('Refresh token expired', 403)
+    } else if (error instanceof NotBeforeError) {
+      throw new AppError('Refresh token is not valid yet', 401)
+    } else if (error instanceof JsonWebTokenError) {
+      throw new AppError('Invalid refresh token', 401)
     }
-    if (error instanceof NotBeforeError) {
-      throw new AppError('Token not yet valid', 401)
-    }
-    if (error instanceof JsonWebTokenError) {
-      throw new AppError('Jwt Malformed', 401)
-    }
+    throw error
   }
 }
 

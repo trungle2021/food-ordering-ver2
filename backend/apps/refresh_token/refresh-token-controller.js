@@ -11,15 +11,6 @@ const saveRefreshToken = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const deleteRefreshToken = catchAsyncHandler(async (req, res, next) => {
-  const { id } = req.params
-  await RefreshTokenService.deleteRefreshTokenByUserId(id)
-  return res.status(200).json({
-    status: 'success',
-    message: 'Delete Token Successfully'
-  })
-})
-
 module.exports = {
   saveRefreshToken,
   deleteRefreshToken

@@ -8,20 +8,12 @@ type CategoryProps = {
 
 const CategoryItem = ({ iconLink, name }: CategoryProps) => {
   return (
-    <div className={`${styles["category-item"]}`}>
+    <a href={`/dishes?category-name=${name}`}>
+      <div className={`${styles["category-item"]}`}>
       <img src={iconLink} />
       <span>{name}</span>
     </div>
-    // <Card>
-    //   <CardMedia 
-    //       component="img" // Specify the type of media (img, video, audio)
-    //       src={iconLink} // Source of the media content
-    //       alt="Media Image" // Alt text for accessibility
-    //   />
-    //   <CardContent>
-
-    //   </CardContent>
-    // </Card>
+    </a>
   );
 };
 
