@@ -79,13 +79,23 @@ color: rgba(0, 0, 0, .54);
     padding: 25px;
 }
 .order__actions--review-button{
-    background-color: var(--primary);
+    background-color: var(--green);
     color: var(--white);
+    padding: 10px;
 
 }
 .order__actions--reorder-button{
-
+    background-color: var(--primary);
+    padding: 10px;
+    color: var(--white);
 }
+
+.order__actions--complete-payment-button{
+    background-color: var(--orange);
+    padding: 10px;
+    color: var(--white);
+}
+
 
 .order-pagination{
     text-align: right;

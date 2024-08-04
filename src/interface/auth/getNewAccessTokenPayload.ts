@@ -1,3 +1,3 @@
 export interface GetNewAccessTokenPayload {
-    token: string;
+    refreshToken: string;
 }

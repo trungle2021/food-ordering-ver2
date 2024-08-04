@@ -42,12 +42,10 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (_, thunkAPI
 
 export const getNewAccessToken = createAsyncThunk('auth/getNewAccessToken', async (payload: GetNewAccessTokenPayload, thunkAPI) => {
     try {
-        const response = await AuthService.getNewAccessToken(payload);
-        const { accessToken } = response.data;
-        if (accessToken) {
-            return response;
-        }
+        console.log("Starting to get new access token, authAction");
+        return await AuthService.getNewAccessToken(payload);
     } catch (err: any) {
+        console.log("Error getting new access token, authAction");
         return thunkAPI.rejectWithValue(err);
     }
 })

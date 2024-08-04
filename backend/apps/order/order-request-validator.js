@@ -3,7 +3,7 @@ const paymentMethods = require('../../constant/payment-method')
 
 const cancelOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
-  reason: Joi.string().required()
+  cancelReasonId: Joi.string().required()
 })
 
 const confirmOrderRequestSchema = Joi.object({
@@ -33,8 +33,7 @@ const getOrderRequestSchema = Joi.object({
 
 const updateOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
-  addressId: Joi.string().required().optional(),
-  cancelReason: Joi.string().optional()
+  addressId: Joi.string().required().optional()
 })
 
 module.exports = {

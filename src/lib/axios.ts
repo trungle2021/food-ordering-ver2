@@ -8,6 +8,7 @@ import axiosRetry from "axios-retry";
 import { store } from "~/store/store";
 import { getNewAccessToken, logoutUser } from '~/store/auth/authAction';
 import { origin } from "~/utils/api";
+import { updateToken } from "~/store/auth/authSlice";
 
 const instance: AxiosInstance = axios.create({
     baseURL: origin,
@@ -17,17 +18,11 @@ const instance: AxiosInstance = axios.create({
     },
 });
 
-
-// Exponential back-off retry delay between requests
-
 axiosRetry(instance, {
     retries: 3,
+    retryCondition: axiosRetry.isNetworkOrIdempotentRequestError,
     retryDelay: axiosRetry.exponentialDelay,
 });
-
-
-let refreshingToken: any = null
-
 
 const onRequest = async (
     config: InternalAxiosRequestConfig
@@ -48,34 +43,45 @@ const onResponse = async (response: AxiosResponse): Promise<AxiosResponse> => {
     return response.data;
 };
 
+let refreshTokenResult: any = null
+
 const onResponseError = async (error: any): Promise<AxiosError> => {
     const { config } = error;
 
-    // in-case user unauthorize
-    console.log("error", error);
-    console.log("config", config);
-    console.log("config retry: ", config._retry)
-    if (error?.response?.status === 401 && !config?._retry) {
-        //dispatch to getNewAccessToken. After getting the new access token replace it into the header then re-send the request
-        config._retry = true
-        const state = store.getState();
-        const refreshToken = state.auth.refreshToken
-        console.log("Refreshing access token")
-        refreshingToken = refreshingToken ? refreshingToken : store.dispatch(getNewAccessToken({ token: refreshToken }))
-        const response = await refreshingToken
-        const accessToken = response.payload.data.accessToken;
-        console.log("Access Token: " + accessToken)
-        console.log(accessToken)
-        if (accessToken) {
-            config.headers.Authorization = "Bearer " + accessToken;
-            return instance.request(config);
-        }
-        refreshingToken = null
+    if (!config) {
+        return Promise.reject(error);
+    }
 
-        if (error?.response.data?.error === 'Refresh Token Expired') {
-            await store.dispatch(logoutUser())
-        }
+    const responseStatusIs401Error = error?.response?.status === 401;
+    // const requestHasNotBeenRetriedYet = !config?._retry;
 
+    if (responseStatusIs401Error && !config?._retry) {
+        try {
+            const state = store.getState();
+            const localStorageRefreshToken = state.auth.refreshToken
+
+            refreshTokenResult = refreshTokenResult ? refreshTokenResult : store.dispatch(getNewAccessToken({ refreshToken: localStorageRefreshToken }))
+            const response = await refreshTokenResult
+            
+            refreshTokenResult = null
+
+            const {accessToken, refreshToken } = response?.payload?.data;
+            
+            if (accessToken && refreshToken) {
+                store.dispatch(updateToken({ accessToken, refreshToken }))
+                config.headers.Authorization = "Bearer " + accessToken;
+                config._retry = true
+                return instance.request(config);
+            }
+
+            if (response.payload.status === 'fail') {
+                await store.dispatch(logoutUser())
+                return Promise.reject(error?.response?.data); 
+            }
+           
+        } catch (e) {
+            return Promise.reject(e)
+        }
     }
     return Promise.reject(error?.response?.data);
 };

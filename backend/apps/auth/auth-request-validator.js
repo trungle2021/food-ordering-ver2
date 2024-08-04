@@ -15,8 +15,7 @@ const registerRequestSchema = Joi.object({
 })
 
 const refreshTokenRequestSchema = Joi.object({
-  userId: Joi.string().required(),
-  token: Joi.string().required()
+  refreshToken: Joi.string().required()
 })
 
 module.exports = {

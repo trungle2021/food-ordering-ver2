@@ -6,8 +6,8 @@ const BalanceService = require('../balance/balance-service')
 const JWTService = require('../../utils/jwt/jwt-service')
 const RefreshTokenService = require('../refresh_token/refresh-token-service')
 const AppError = require('../../utils/error/app-error')
-const RefreshToken = require('../refresh_token/refresh-token-model')
 const User = require('../user/user-model')
+const { TokenExpiredError, NotBeforeError, JsonWebTokenError } = require('jsonwebtoken')
 
 const tokenOptions = {
   accessToken: { expiresIn: accessTokenExpired },
@@ -27,7 +27,7 @@ const register = async (userData) => {
     tokenOptions
   )
 
-  await saveRefreshTokenToDB(refreshToken, _id)
+  await RefreshTokenService.saveRefreshToken({ user: _id, token: refreshToken })
 
   return {
     accessToken,
@@ -56,7 +56,7 @@ const login = async (emailInput, passwordInput) => {
     secretKey,
     tokenOptions
   )
-  await saveRefreshTokenToDB(refreshToken, _id)
+  await RefreshTokenService.saveRefreshToken({ user: _id, token: refreshToken })
 
   return {
     accessToken,
@@ -69,17 +69,42 @@ const logout = async (userId) => {
   await RefreshTokenService.deleteRefreshTokenByUserId(userId)
 }
 
-const renewAccessToken = async (userId) => {
-  const user = await User.findOne({ _id: userId })
-  if (!user) {
-    throw new AppError('User not found', 400)
+const renewAccessToken = async (refreshToken) => {
+  try {
+    const decodePayload = await JWTService.verifyToken(refreshToken, secretKey)
+    const userId = decodePayload._id
+
+    const storedRefreshToken = await RefreshTokenService.findRefreshToken({ user: userId, token: refreshToken })
+
+    if (!storedRefreshToken) {
+      throw new AppError('Refresh token not found', 403)
+    }
+
+    await RefreshTokenService.invalidateRefreshTokenByUserId(userId, refreshToken)
+
+    const payload = { _id: userId }
+    const { newAccessToken, newRefreshToken } = await generateAccessTokenAndRefreshToken(
+      payload,
+      secretKey,
+      tokenOptions
+    )
+    await RefreshTokenService.saveRefreshToken({ user: userId, token: newRefreshToken })
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    }
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      throw new AppError('Token expired', 401)
+    }
+    if (error instanceof NotBeforeError) {
+      throw new AppError('Token not yet valid', 401)
+    }
+    if (error instanceof JsonWebTokenError) {
+      throw new AppError('Jwt Malformed', 401)
+    }
   }
-  const payload = { _id: userId }
-  return await JWTService.generateToken(
-    payload,
-    secretKey,
-    tokenOptions.accessToken
-  )
 }
 
 const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptions) => {
@@ -97,19 +122,6 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
     accessToken,
     refreshToken
   }
-}
-
-const saveRefreshTokenToDB = async (token, userId) => {
-  // check if user exists
-  const user = await UserService.getUser({ _id: userId })
-  if (!user) throw new AppError('User not found', 404)
-
-  // delete existing refresh token, if any
-  await RefreshTokenService.deleteRefreshTokenByUserId(userId)
-
-  // save new refresh token
-  const refreshTokenObject = new RefreshToken({ token, user: userId })
-  await RefreshTokenService.saveRefreshToken(refreshTokenObject)
 }
 
 module.exports = {

@@ -20,7 +20,19 @@ const getPoplularDishes = async (queryString) => {
   const page = queryString.page * 1 || 1
   const limit = queryString.limit * 1 || 10
   const skip = (page - 1) * limit
-  return await Order.aggregate([
+  const queryStringAll = {
+    page,
+    limit,
+    skip
+  }
+  const feature = new ApiFeatures(Dish.find({}), queryStringAll)
+  const all = await feature.query.populate({
+    path: 'dish'
+  })
+
+  console.log('all', all)
+
+  const result = await Order.aggregate([
     {
       $match: {
         order_status: COMPLETED
@@ -64,6 +76,22 @@ const getPoplularDishes = async (queryString) => {
       $limit: limit // Limit the result to 10 documents
     }
   ])
+
+  console.log('result', result)
+
+  //   if (result.length === 0) {
+  //     console.log('Popular dishes is empty')
+  //     const queryString = {
+  //       page,
+  //       limit,
+  //       skip
+  //     }
+  //     const feature = new ApiFeatures(Dish.find({}), queryString)
+  //     return await feature.query.populate({
+  //       path: 'dish'
+  //     })
+  //   }
+  return result
 }
 
 const searchDishesByFullTextSearch = async (value, limit) => {

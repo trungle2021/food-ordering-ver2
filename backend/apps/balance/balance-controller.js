@@ -13,7 +13,7 @@ const getBalanceByUserId = catchAsyncHandler(async (req, res) => {
 const createBalance = catchAsyncHandler(async (req, res) => {
   const { userId } = req.body
   const result = await BalanceService.createBalance({ user: userId })
-  return res.status(200).json({
+  return res.status(201).json({
     status: 'success',
     data: result
   })

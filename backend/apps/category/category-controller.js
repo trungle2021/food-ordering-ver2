@@ -35,7 +35,7 @@ const createCategories = catchAsyncHandler(async (req, res, next) => {
       data: null
     })
   }
-  return res.status(200).json({
+  return res.status(201).json({
     status: 'success',
     data: categories
   })

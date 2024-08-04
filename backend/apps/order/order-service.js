@@ -3,8 +3,8 @@ const Order = require('./order-model')
 const OrderDetailService = require('../order_detail/order-detail-service')
 const connection = require('../../db/connection')
 const { processPayment } = require('../payment/payment-service')
-const { PROCESSING, COMPLETED, SHIPPING, PENDING } = require('../../constant/order-status')
-const { PAID } = require('../../constant/payment-status')
+const { PROCESSING, COMPLETED, SHIPPING, PENDING, CANCELED } = require('../../constant/order-status')
+const { PAID, REFUNDED } = require('../../constant/payment-status')
 const ApiFeatures = require('../../utils/api-features/api-features')
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils')
 const CartService = require('../cart/cart-service')
@@ -235,7 +235,7 @@ const checkOut = async (userId, orderDetailsHasBeenUpdated) => {
       const orderId = pendingOrder._id
       const itemIdList = await OrderDetailService.createOrderDetails(orderId, orderItems, { session })
 
-      pendingOrder.order_details = [...itemIdList]
+      pendingOrder.order_details = itemIdList
       await pendingOrder.save()
     }
     return pendingOrder
@@ -362,7 +362,33 @@ const getRecentOrders = async (userId, queryString) => {
   return recentOrders
 }
 
-const cancelOrder = async (orderCancel) => {
+const cancelOrder = async (orderCancelPayload) => {
+  const { orderId, cancelReasonId } = orderCancelPayload
+
+  const order = await Order.findById(orderId)
+
+  if (!order) {
+    throw new AppError('Order not found', 404)
+  }
+
+  // {
+  //     admin cancel order logic here
+  // }
+
+  // this case used for user
+  if (order.order_status !== PENDING) {
+    throw new AppError('Order cannot be cancelled', 409)
+  }
+
+  order.order_status = CANCELED
+  order.payment_status = REFUNDED
+
+  // {
+  //     refund logic here
+  // }
+
+  order.cancel_reason = cancelReasonId
+  await order.save()
 }
 
 const updateOrder = async (filter, payload) => {

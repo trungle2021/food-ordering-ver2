@@ -53,8 +53,8 @@ const orderSchema = new mongoose.Schema({
     required: [true, 'Order Date is required']
   },
   cancel_reason: {
-    type: String,
-    default: null
+    type: ObjectId,
+    ref: 'CancelReason'
   },
   time_completed: {
     type: Date,

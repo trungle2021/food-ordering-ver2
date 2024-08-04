@@ -42,18 +42,8 @@ const logout = catchAsyncHandler(async (req, res, next) => {
 })
 
 const renewAccessToken = catchAsyncHandler(async (req, res, next) => {
-  const { userId, token } = req.body
-
-  const refreshToken = await RefreshTokenService.findRefreshToken(userId, token)
-  if (!refreshToken) {
-    return res.status(401).json({
-      status: 'fail',
-      error: 'Refresh Token Expired',
-      message: 'Token expired or not found'
-    })
-  }
-  const newAccessToken = await AuthService.renewAccessToken(userId)
-
+  const { refreshToken } = req.body
+  const newAccessToken = await AuthService.renewAccessToken(refreshToken)
   if (!newAccessToken) {
     return res.status(500).json({
       status: 'error',

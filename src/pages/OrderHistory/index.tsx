@@ -184,6 +184,8 @@ export const OrderHistory = () => {
                             </div>
                         </div>
                         <div className={styles['order__actions']}>
+                            
+                            { (order.order_status === 'pending' && order.payment_status === 'pending') && <button type="button" className={styles["order__actions--complete-payment-button"]}>Complete your payment</button>}
                             <button type="button" className={styles["order__actions--review-button"]}>Review</button>
                             <button type="button" className={styles["order__actions--reorder-button"]}>Order Again</button>
                         </div>

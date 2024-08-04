@@ -7,7 +7,8 @@ import {
 } from "./authAction";
 
 interface AuthState {
-  userId: string
+  userId: string;
+  status: string;
   accessToken: string;
   refreshToken: string;
   isLoading: boolean;
@@ -17,6 +18,7 @@ interface AuthState {
   isRefreshingToken: null | object;
 }
 const initialState: AuthState = {
+  status: "",
   accessToken: "",
   refreshToken: "",
   isLoading: false,
@@ -29,7 +31,12 @@ const initialState: AuthState = {
 
 export const authSlice = createSlice({
   initialState,
-  reducers: {},
+  reducers: {
+    updateToken: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -87,9 +94,14 @@ export const authSlice = createSlice({
           console.log("New access token: " + action.payload.data.accessToken);
           state.accessToken = action.payload.data.accessToken;
           state.isLoading = false;
-      });
+      })
+      .addCase(getNewAccessToken.rejected, (state, action:any) => {
+        state.status = action.payload.status;
+        state.message = action.payload.message;
+    });
   },
   name: "auth",
 });
 const { reducer, actions } = authSlice;
+export const { updateToken } = actions;
 export default reducer;

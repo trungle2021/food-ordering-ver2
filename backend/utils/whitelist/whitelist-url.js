@@ -1,5 +1,7 @@
 module.exports = [
   '/auth/login',
   '/auth/register',
-  '/auth/refresh-token'
+  '/auth/logout',
+  '/auth/refresh-token',
+  '/dishes/popular-dishes'
 ]
