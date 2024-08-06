@@ -23,7 +23,7 @@ export const DishPage = () => {
     const [open, setOpen] = useState(false);
     const [dishes, setDishes] = useState([]);
     const [categories, setCategories] = useState([])
-    const [valuePriceRange, setValuePriceRange] = useState<number[]>([20, 37]);
+    const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 100]);
 
     const searchDishes = useSelector((state: any) => state.searchDish)
     const searchDishesData = searchDishes.data
@@ -67,7 +67,7 @@ export const DishPage = () => {
                             <h1>Filter & Sort</h1>
                         </div>
                         <Divider />
-                        <Box sx={{ width: 250 }} role="presentation">
+                        <Box sx={{ width: 350}} role="presentation">
                             <Accordion disableGutters defaultExpanded>
                                 <AccordionSummary expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
@@ -110,16 +110,26 @@ export const DishPage = () => {
                                     </FormGroup>
                                 </AccordionDetails>
                             </Accordion>
-                            <Box sx={{padding: '16px'}}>
-                                <h2>Price</h2>
+
+                            <Accordion >
+                                <AccordionSummary expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1-content"
+                                    id="panel1-header">
+                                    <h2>Price</h2>
+                                </AccordionSummary>
+                                <AccordionDetails>
                                 <Slider
                                 sx={{padding: '46px 0'}}
-                                    getAriaLabel={() => 'Temperature range'}
+                                min={0}
+                                max={100}
+                                step={10}
                                     value={valuePriceRange}
                                     onChange={handlePriceRangeChange}
                                     valueLabelDisplay="on"
                                 />
-                            </Box>
+                                </AccordionDetails>
+                            </Accordion>
+                           
 
                         </Box>
                     </Drawer>
