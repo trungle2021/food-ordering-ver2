@@ -6,33 +6,10 @@ class ApiFeatures {
     this.queryString = queryString
   }
 
-  excludeFields (queryObject, fields = ['page', 'limit', 'fields', 'sort']) {
-    fields.forEach((field) => delete queryObject[field])
-    return queryObject
-  }
-
-  prepareQueryObject () {
-    let queryObject = { ...this.queryString }
-    queryObject = this.excludeFields(queryObject)
-    const queryString = JSON.stringify(queryObject)
-    return queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-  }
-
   filter () {
-    const queryStringReplaced = this.prepareQueryObject()
-    this.query = this.query.find(JSON.parse(queryStringReplaced))
+    const queryObject = this.prepareQueryObject()
+    this.query = this.query.find(queryObject)
     return this
-  }
-
-  async getPaginationInfo () {
-    const queryStringReplaced = this.prepareQueryObject()
-    const Model = this.query.model
-    const totalItems = await Model.countDocuments(JSON.parse(queryStringReplaced))
-    const limit =
-            (this.queryString.limit && Number(this.queryString.limit)) || 10
-    const totalPages = Math.ceil(totalItems / limit)
-
-    return { totalItems, totalPages }
   }
 
   sort () {
@@ -69,6 +46,19 @@ class ApiFeatures {
     this.query = this.query.skip(skip).limit(limit)
 
     return this
+  }
+
+  prepareQueryObject () {
+    let queryObject = { ...this.queryString }
+    queryObject = this.excludeFields(queryObject)
+    const queryString = JSON.stringify(queryObject)
+    const queryStringReplaced = queryString.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    return JSON.parse(queryStringReplaced)
+  }
+
+  excludeFields (queryObject, fields = ['page', 'limit', 'fields', 'sort']) {
+    fields.forEach((field) => delete queryObject[field])
+    return queryObject
   }
 }
 

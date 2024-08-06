@@ -40,7 +40,6 @@ const login = async (emailInput, passwordInput) => {
   const user = await User.findOne({ email: emailInput })
   if (!user) { throw new AppError(`Cannot found user with email ${emailInput}`, 404) }
 
-
   const passwordIsValid = await user.comparePassword(
     passwordInput,
     user.password
@@ -66,12 +65,12 @@ const login = async (emailInput, passwordInput) => {
 }
 
 const logout = async (userId) => {
-  await RefreshTokenService.invalidateRefreshTokenByUserId (userId)
+  await RefreshTokenService.invalidateRefreshTokenByUserId(userId)
 }
 
 const renewAccessToken = async (refreshToken) => {
   try {
-    console.log("Refresh Token", refreshToken)
+    console.log('Refresh Token', refreshToken)
     const decodePayload = await JWTService.verifyToken(refreshToken, secretKey)
     const userId = decodePayload._id
 
@@ -97,7 +96,7 @@ const renewAccessToken = async (refreshToken) => {
       newRefreshToken
     }
   } catch (error) {
-    console.log("Error in renewAccessToken", error)
+    console.log('Error in renewAccessToken', error)
     if (error instanceof TokenExpiredError) {
       throw new AppError('Refresh token expired', 403)
     } else if (error instanceof NotBeforeError) {

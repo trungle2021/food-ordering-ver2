@@ -38,10 +38,8 @@ const getOrderHistory = async (userId, queryString) => {
   const page = (queryString.page && Number(queryString.page)) || 1
   const pageSize = (queryString.limit && Number(queryString.limit)) || 10
   const skipNum = (page - 1) * pageSize
-  const modifiedQueryString = new ApiFeatures(null, queryString).prepareQueryObject()
-  const modifiedQueryObject = JSON.parse(modifiedQueryString)
-  const orderStatus = modifiedQueryObject.order_status
-  const orderDate = modifiedQueryObject.order_date
+  const orderStatus = queryString.order_status
+  const orderDate = queryString.order_date
   const dishName = queryString.dish_name
 
   const match = {

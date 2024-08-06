@@ -1,12 +1,11 @@
 import { SetStateAction, useEffect, useState } from "react";
-import styles from "./styles.module.css";
 import DishService from "~/services/dish/dishService";
 import { useDispatch } from "react-redux";
-import { SearchBar } from "../../SearchBar";
 import { searchDishes } from "~/store/dish/searchDishes/searchDishesAction";
 import { clearSearchData } from "~/store/dish/searchDishes/searchDishesSlice";
+import { SearchBar } from "~/components/common/SearchBar";
 
-export const HeaderSection = () => {
+export const SearchDish = () => {
 
   const [productNameSuggestion, setProductNameSuggestion] = useState([])
   const [searchFormValue, setSearchFormValue] = useState("");
@@ -56,10 +55,7 @@ export const HeaderSection = () => {
   }, [searchFormValue, suggestionBoxIsOpen])
 
   return (
-    <div className={`${styles["header-section"]}`}>
-      <span className={`${styles["header-title"]}`}>Hello, Trung Le</span>
       <SearchBar placeholder={`What do you want to eat today...`} dataSuggestion={productNameSuggestion} onSubmitSearchForm={handleSubmitSearchProduct} onOpenSuggestionBox={handleOpenSuggestionBox} />
-    </div>
   );
 };
 

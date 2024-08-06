@@ -1,0 +1,10 @@
+.filter-sort-container {
+    position: absolute;
+    width: 400px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    background-color: var(--white);
+    z-index: 1000;
+}

@@ -4,13 +4,13 @@ import { searchDishes } from "./searchDishesAction";
 interface SearchDishesState {
     data: any,
     isLoading: boolean,
-    error: string
+    message: string
 }
 
 const initialState: SearchDishesState = {
     data: null,
     isLoading: false,
-    error: ""
+    message: ""
 }
 
 export const searchDishesSlice = createSlice({
@@ -18,6 +18,8 @@ export const searchDishesSlice = createSlice({
     reducers: {
         clearSearchData: (state) => {
             state.data = null;
+            state.isLoading = false;
+            state.message = ""
         },
     },
     extraReducers: (builder) => {
@@ -29,8 +31,8 @@ export const searchDishesSlice = createSlice({
             .addCase(searchDishes.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.data = action.payload
-            }).addCase(searchDishes.rejected, (state, action:any) => {
-                state.error = action.payload
+            }).addCase(searchDishes.rejected, (state, action: any) => {
+                state.message = action.payload.message
             })
     }, //
     name: "searchDish"

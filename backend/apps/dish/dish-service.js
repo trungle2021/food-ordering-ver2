@@ -1,14 +1,25 @@
 const Dish = require('./dish-model')
 const Order = require('../order/order-model')
 const ApiFeatures = require('../../utils/api-features/api-features')
+const Category = require('../category/category-model')
 const { COMPLETED } = require('../../constant/order-status')
 
 const getDishes = async (queryString) => {
-  const categoryName = queryString['category-name']
-  const modifiedQueryString = {...queryString}
-  delete modifiedQueryString['category-name']
-  if (categoryName) {
-    modifiedQueryString['category.name'] = categoryName
+  const modifiedQueryString = { ...queryString }
+
+  if (queryString.category_name) {
+    const categoryName = queryString.category_name
+    delete modifiedQueryString.category_name
+
+    const category = await Category.findOne({ name: categoryName })
+
+    if (category) {
+      // Use the category _id to find dishes
+      modifiedQueryString.category = category._id
+    } else {
+      // If category not found, return an empty array
+      return []
+    }
   }
   const features = new ApiFeatures(Dish.find({}), modifiedQueryString)
     .filter()
@@ -26,15 +37,15 @@ const getPoplularDishes = async (queryString) => {
   const page = queryString.page * 1 || 1
   const limit = queryString.limit * 1 || 10
   const skip = (page - 1) * limit
-  const queryStringAll = {
-    page,
-    limit,
-    skip
-  }
-  const feature = new ApiFeatures(Dish.find({}), queryStringAll)
-  const all = await feature.query.populate({
-    path: 'dish'
-  })
+  //   const queryStringAll = {
+  //     page,
+  //     limit,
+  //     skip
+  //   }
+  //   //   const feature = new ApiFeatures(Dish.find({}), queryStringAll)
+  //   const all = await feature.query.populate({
+  //     path: 'dish'
+  //   })
 
   // console.log('all', all)
 
@@ -82,7 +93,6 @@ const getPoplularDishes = async (queryString) => {
       $limit: limit // Limit the result to 10 documents
     }
   ])
-
 
   //   if (result.length === 0) {
   //     console.log('Popular dishes is empty')
