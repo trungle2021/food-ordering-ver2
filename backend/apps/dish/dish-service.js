@@ -8,14 +8,15 @@ const getDishes = async (queryString) => {
   const modifiedQueryString = { ...queryString }
 
   if (queryString.category_name) {
-    const categoryName = queryString.category_name
+    const categoryNames = queryString.category_name.split(',')
     delete modifiedQueryString.category_name
 
-    const category = await Category.findOne({ name: categoryName })
+    const categories = await Category.find({ name: { $in: categoryNames } })
 
-    if (category) {
+    if (categories.length > 0) {
       // Use the category _id to find dishes
-      modifiedQueryString.category = category._id
+      const categoryIds = categories.map(category => category._id)
+      modifiedQueryString.category = { $in: categoryIds }
     } else {
       // If category not found, return an empty array
       return []

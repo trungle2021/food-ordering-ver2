@@ -8,7 +8,7 @@ type CategoryProps = {
 
 const CategoryItem = ({ iconLink, name }: CategoryProps) => {
   return (
-    <a href={`/dishes?category-name=${name}`}>
+    <a href={`/dishes?category_name=${name}`}>
       <div className={`${styles["category-item"]}`}>
       <img src={iconLink} />
       <span>{name}</span>

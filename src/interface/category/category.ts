@@ -1,5 +1,5 @@
 export default interface CategoryProps {
   _id: string;
-  image: string;
+  image?: string;
   name: string;
 }
