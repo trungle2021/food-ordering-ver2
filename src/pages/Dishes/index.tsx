@@ -40,6 +40,10 @@ export const DishPage = () => {
 
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
+    useEffect(() => {
+        setDefautlCheckedCategories()
+    })
+
     const getDishes = async () => {
         const response = await DishService.getDishes(queryParams.toString(), dishLimit);
         setDishes(response.data);
@@ -63,9 +67,7 @@ export const DishPage = () => {
         }
     }
 
-    useEffect(() => {
-        setDefautlCheckedCategories()
-    })
+   
 
     useEffect(() => {
         getDishes();
@@ -111,6 +113,21 @@ export const DishPage = () => {
         setCheckedCategories(dataChanged);
     }
 
+    const handleClickSortBy = (sortBy: String) => () => {
+        if (sortBy) {
+            if (sortBy === 'price_asc') {
+                queryParams.set('sort_by', 'price_desc')
+            } else if (sortBy === 'price_desc') {
+                queryParams.set('sort_by', 'price_asc')
+            } else {
+                queryParams.delete('sort_by')
+            }
+        } else {
+            queryParams.set('sort_by', 'price_asc')
+        }
+        history.push({ search: queryParams.toString() });
+    }
+
 
     return (
         <div style={{ padding: '50px' }}>
@@ -148,10 +165,10 @@ export const DishPage = () => {
                                         variant="contained"
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
-                                        <Button>Price (lowest - highest)</Button>
-                                        <Button>Newest</Button>
-                                        <Button>Best Seller</Button>
-                                        <Button>Price (highest - lowest)</Button>
+                                        <Button onClick={handleClickSortBy('price_asc')}>Price (lowest - highest)</Button>
+                                        <Button onClick={handleClickSortBy('created_at')}>Newest</Button>
+                                        <Button onClick={handleClickSortBy('order_count')}>Best Seller</Button>
+                                        <Button onClick={handleClickSortBy('price_desc')}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
                             </AccordionDetails>
