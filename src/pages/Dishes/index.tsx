@@ -29,6 +29,7 @@ export const DishPage = () => {
     const history = useHistory()
     const [open, setOpen] = useState(false);
     const [dishes, setDishes] = useState([]);
+    const [applyingFilter, setApplyingFilter] = useState({})
     const [categories, setCategories] = useState<CategoryProps[]>([])
     const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 100]);
     const [checkedCategories, setCheckedCategories] = useState<CheckedCategoriesProps>({})
@@ -67,7 +68,7 @@ export const DishPage = () => {
         }
     }
 
-   
+
 
     useEffect(() => {
         getDishes();
@@ -114,17 +115,29 @@ export const DishPage = () => {
     }
 
     const handleClickSortBy = (sortBy: String) => () => {
-        if (sortBy) {
-            if (sortBy === 'price_asc') {
-                queryParams.set('sort_by', 'price_desc')
-            } else if (sortBy === 'price_desc') {
+        console.log(sortBy)
+        switch (sortBy) {
+            case 'price_asc':
                 queryParams.set('sort_by', 'price_asc')
-            } else {
-                queryParams.delete('sort_by')
-            }
-        } else {
-            queryParams.set('sort_by', 'price_asc')
+                break;
+            case 'price_desc':
+                queryParams.set('sort_by', 'price_desc')
+                break;
+            case 'newest':
+                queryParams.set('sort_by', 'newest')
+                break;
+            case 'best_seller':
+                queryParams.set('sort_by', 'best_seller')
+                break;
+            default:
+                sortBy = 'price_asc'
+                queryParams.set('sort_by', 'price_asc')
         }
+        const currentFilter = {
+            ...applyingFilter,
+            'sort_by': sortBy
+        }
+        setApplyingFilter(currentFilter)
         history.push({ search: queryParams.toString() });
     }
 
@@ -139,6 +152,18 @@ export const DishPage = () => {
                         <h1>Filter & Sort</h1>
                     </div>
                     <Divider />
+                    <div style={{ textAlign: 'center' }}>
+                        <h2>Applying Filter</h2>
+                        <div>
+                            {
+                                Object.values(applyingFilter).map((filter, index) => {
+                                    return <span key={index}>{String(filter)}</span>
+                                })
+                            }
+                        </div>
+                    </div>
+                    <Divider />
+
                     <Box sx={{ width: 350 }} role="presentation">
                         <Accordion disableGutters defaultExpanded>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}
@@ -166,8 +191,8 @@ export const DishPage = () => {
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
                                         <Button onClick={handleClickSortBy('price_asc')}>Price (lowest - highest)</Button>
-                                        <Button onClick={handleClickSortBy('created_at')}>Newest</Button>
-                                        <Button onClick={handleClickSortBy('order_count')}>Best Seller</Button>
+                                        <Button onClick={handleClickSortBy('newest')}>Newest</Button>
+                                        <Button onClick={handleClickSortBy('best_seller')}>Best Seller</Button>
                                         <Button onClick={handleClickSortBy('price_desc')}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
