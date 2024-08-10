@@ -23,23 +23,9 @@ interface CheckedCategoriesProps {
     [key: string]: boolean
 }
 
-const filterSortBy = {
-    price_asc: {
-        display_name: 'price ascending',
-        filter_name: "price_asc"
-    },
-    price_desc: {
-        display_name: "price descending",
-        filter_name: "price_desc"
-    },
-    newest: {
-        display_name: "newest",
-        filter_name: "newest"
-    },
-    best_seller: {
-        display_name: "best seller",
-        filter_name: "best_seller"
-    }
+interface ApplyingFilter {
+    sort_by?: string; // Optional because it might not always be present
+    // Add other filters if needed
 }
 
 
@@ -49,7 +35,7 @@ export const DishPage = () => {
     const history = useHistory()
     const [open, setOpen] = useState(false);
     const [dishes, setDishes] = useState([]);
-    const [applyingFilter, setApplyingFilter] = useState({})
+    const [applyingFilter, setApplyingFilter] = useState<ApplyingFilter>({})
     const [categories, setCategories] = useState<CategoryProps[]>([])
     const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 100]);
     const [checkedCategories, setCheckedCategories] = useState<CheckedCategoriesProps>({})
@@ -65,7 +51,9 @@ export const DishPage = () => {
         if (queryParams.has('category_name')) {
             setDefautlCheckedCategories()
         }
-    },[queryParams])
+        if (queryParams.has('sort_by')) {
+        }
+    }, [queryParams])
 
     useEffect(() => {
         getDishes();
@@ -78,24 +66,20 @@ export const DishPage = () => {
     };
 
     const setDefautlCheckedCategories = () => {
-            const categoryNames = queryParams.get('category_name')?.split(',')
-            if (categories.length > 0 && categoryNames) {
-                categories.forEach((category: CategoryProps) => {
-                    let categoryId = category._id
-                    let categoryName = category.name
-                    if (categoryNames?.includes(categoryName)) {
-                        checkedCategories[categoryId] = true
-                    } else {
-                        checkedCategories[categoryId] = false
-                    }
-                })
-                setCheckedCategories(checkedCategories)
-            }
+        const categoryNames = queryParams.get('category_name')?.split(',')
+        if (categories.length > 0 && categoryNames) {
+            categories.forEach((category: CategoryProps) => {
+                let categoryId = category._id
+                let categoryName = category.name
+                if (categoryNames?.includes(categoryName)) {
+                    checkedCategories[categoryId] = true
+                } else {
+                    checkedCategories[categoryId] = false
+                }
+            })
+            setCheckedCategories(checkedCategories)
+        }
     }
-
-
-
-   
 
     const toggleFilterAction = (newOpen: boolean) => async () => {
         if (newOpen && categories.length == 0) {
@@ -204,9 +188,18 @@ export const DishPage = () => {
         history.push({ search: queryParams.toString() });
     }
 
-    const handleClearFilter = (filterName: string) => (event: SyntheticEvent) => {
-        console.log("Filter Name: ", filterName)
-        // delete applyingFilter.filterName
+    const handleClearSortByFilter = (filterName: string) => (event: SyntheticEvent) => {
+        if (applyingFilter && applyingFilter.sort_by && applyingFilter.sort_by.includes(filterName)) {
+            let sortByQueryParam = queryParams.get('sort_by')
+            console.log("queryParam", sortByQueryParam)
+            let newStringQueryParam = queryParamArray.filter((param: string) => param!== filterName).join(',')
+            console.log("newStringQueryParam", newStringQueryParam)
+            setApplyingFilter({
+                sort_by: newStringQueryParam
+            });
+            queryParams.set('sort_by', newStringQueryParam)
+        }
+
     }
 
 
@@ -228,7 +221,7 @@ export const DishPage = () => {
                                     const filterArray = filter.split(',')
                                     return filterArray.map((filterName: string, index: number) => {
                                         return <button key={index} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                            <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearFilter(filterName)}>x</span>
+                                            <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearSortByFilter(filterName)}>x</span>
                                             {filterName}
                                         </button>
                                     })
