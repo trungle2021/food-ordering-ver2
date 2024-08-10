@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Checkbox, Divider, Drawer, FormControlLabel, FormGroup, Grid, Slider } from '@mui/material'
 import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { DishCard } from '~/components/specific/Dish/DishCard';
 import { HeaderPage } from '~/components/specific/HeaderPage';
@@ -182,6 +182,11 @@ export const DishPage = () => {
         history.push({ search: queryParams.toString() });
     }
 
+    const handleClearFilter = (filterName: string) => (event: SyntheticEvent) => {
+        console.log("Filter Name: ", filterName)
+        delete applyingFilter.filterName
+    }
+
 
     return (
         <div style={{ padding: '50px' }}>
@@ -195,19 +200,15 @@ export const DishPage = () => {
                     <Divider />
                     <div style={{ textAlign: 'center' }}>
                         <h2>Applying Filter</h2>
-                        <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
-                            <div>
-                                <div style={{position: 'absolute', color: 'var(--black)', top: 0}}>x</div>
-                                <button style={{padding: '5px', backgroundColor: 'var(--primary)', color:'var(--white)'}}> filterNam</button>
-                            </div>
-                            
-                           
-
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                             {
                                 Object.values(applyingFilter).map((filter: any) => {
                                     const filterArray = filter.split(',')
                                     return filterArray.map((filterName: string, index: number) => {
-                                        return <button style={{padding: '5px', backgroundColor: 'var(--primary)', color:'var(--white)'}} key={index}>{filterName}</button>
+                                        return <button key={index} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                            <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearFilter(filterName)}>x</span>
+                                            {filterName}
+                                        </button>
                                     })
                                 })
                             }
