@@ -1,25 +1,45 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Checkbox, Divider, Drawer, FormControlLabel, FormGroup, Grid, Slider } from '@mui/material'
-import { Box } from '@mui/system';
 import { SyntheticEvent, useEffect, useState } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Divider, Drawer, FormGroup, Grid, Slider } from '@mui/material';
+import { Box } from '@mui/system';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TuneIcon from '@mui/icons-material/Tune';
+
 import { DishCard } from '~/components/specific/Dish/DishCard';
 import { HeaderPage } from '~/components/specific/HeaderPage';
 import { SearchDish } from '~/components/specific/SearchDish';
+import { CategoryCheckBox } from '~/components/specific/Category/CategoryCheckBox';
 import useClearSearchData from '~/hooks/useClearSearchData';
 import { useQuery } from '~/hooks/useQuery';
 import { useResponsiveLimitItem } from '~/hooks/useResponsiveLimitItem';
-import BaseDishProps from '~/interface/dish/baseDish';
 import DishService from '~/services/dish/dishService';
-import TuneIcon from '@mui/icons-material/Tune';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryService from '~/services/category/categoryService';
-import { CategoryCheckBox } from '~/components/specific/Category/CategoryCheckBox';
+import BaseDishProps from '~/interface/dish/baseDish';
 import CategoryProps from '~/interface/category/category';
-import { useHistory } from 'react-router-dom';
 
 
 interface CheckedCategoriesProps {
     [key: string]: boolean
+}
+
+const filterSortBy = {
+    price_asc: {
+        display_name: 'price ascending',
+        filter_name: "price_asc"
+    },
+    price_desc: {
+        display_name: "price descending",
+        filter_name: "price_desc"
+    },
+    newest: {
+        display_name: "newest",
+        filter_name: "newest"
+    },
+    best_seller: {
+        display_name: "best seller",
+        filter_name: "best_seller"
+    }
 }
 
 
@@ -42,8 +62,15 @@ export const DishPage = () => {
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
     useEffect(() => {
-        setDefautlCheckedCategories()
-    })
+        if (queryParams.has('category_name')) {
+            setDefautlCheckedCategories()
+        }
+    },[queryParams])
+
+    useEffect(() => {
+        getDishes();
+
+    }, [queryParams, dishLimit]);
 
     const getDishes = async () => {
         const response = await DishService.getDishes(queryParams.toString(), dishLimit);
@@ -51,7 +78,6 @@ export const DishPage = () => {
     };
 
     const setDefautlCheckedCategories = () => {
-        if (queryParams.has('category_name')) {
             const categoryNames = queryParams.get('category_name')?.split(',')
             if (categories.length > 0 && categoryNames) {
                 categories.forEach((category: CategoryProps) => {
@@ -65,15 +91,11 @@ export const DishPage = () => {
                 })
                 setCheckedCategories(checkedCategories)
             }
-        }
     }
 
 
 
-    useEffect(() => {
-        getDishes();
-
-    }, [queryParams, dishLimit]);
+   
 
     const toggleFilterAction = (newOpen: boolean) => async () => {
         if (newOpen && categories.length == 0) {
@@ -184,7 +206,7 @@ export const DishPage = () => {
 
     const handleClearFilter = (filterName: string) => (event: SyntheticEvent) => {
         console.log("Filter Name: ", filterName)
-        delete applyingFilter.filterName
+        // delete applyingFilter.filterName
     }
 
 
@@ -316,3 +338,5 @@ export const DishPage = () => {
         </div>
     )
 }
+
+
