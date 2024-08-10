@@ -114,28 +114,69 @@ export const DishPage = () => {
         setCheckedCategories(dataChanged);
     }
 
-    const handleClickSortBy = (sortBy: String) => () => {
-        console.log(sortBy)
-        switch (sortBy) {
-            case 'price_asc':
-                queryParams.set('sort_by', 'price_asc')
-                break;
-            case 'price_desc':
-                queryParams.set('sort_by', 'price_desc')
-                break;
-            case 'newest':
-                queryParams.set('sort_by', 'newest')
-                break;
-            case 'best_seller':
-                queryParams.set('sort_by', 'best_seller')
-                break;
-            default:
-                sortBy = 'price_asc'
-                queryParams.set('sort_by', 'price_asc')
+    const handleClickSortBy = (sortBy: string) => () => {
+        let newSortByParamString = ''
+        let sortByParamString = queryParams.get('sort_by')?.toString()
+
+        if (!sortByParamString) {
+            newSortByParamString = sortBy
+            queryParams.set('sort_by', sortBy)
+        } else if (sortByParamString.includes(sortBy)) {
+            newSortByParamString = sortByParamString
+        } else {
+            switch (sortBy) {
+                case 'price_asc':
+                    if (sortByParamString?.includes('price_desc')) {
+                        // if sortByParam contain 'price_desc', replace 'price_desc' by 'price_asc'
+                        newSortByParamString = sortByParamString?.replace('price_desc', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    } else {
+                        // if sortByParamString not contains 'price_desc', concat 'price_asc' to sortByParamString
+                        // if sortByParamString contains 'price_asc', break
+                        newSortByParamString = sortByParamString?.concat(',', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    }
+                    break;
+                case 'price_desc':
+                    if (sortByParamString?.includes('price_asc')) {
+                        // if sortByParam contain 'price_desc', replace 'price_desc' by 'price_asc'
+                        newSortByParamString = sortByParamString?.replace('price_asc', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    } else {
+                        // if sortByParamString not contains 'price_desc', concat 'price_asc' to sortByParamString
+                        // if sortByParamString contains 'price_asc', break
+                        newSortByParamString = sortByParamString?.concat(',', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    }
+                    break;
+                case 'newest':
+                    if (sortByParamString.includes('price') && sortByParamString.includes('best_seller')) {
+                        newSortByParamString = sortByParamString?.replace('best_seller', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                        break;
+                    } else {
+                        newSortByParamString = sortByParamString?.concat(',', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    }
+                    break;
+                case 'best_seller':
+                    if (sortByParamString.includes('price') && sortByParamString.includes('newest')) {
+                        newSortByParamString = sortByParamString?.replace('newest', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                        break;
+                    } else {
+                        newSortByParamString = sortByParamString?.concat(',', sortBy)
+                        queryParams.set('sort_by', newSortByParamString)
+                    }
+                    break;
+                default:
+                    sortBy = 'price_asc'
+                    queryParams.set('sort_by', 'price_asc')
+            }
         }
         const currentFilter = {
             ...applyingFilter,
-            'sort_by': sortBy
+            'sort_by': newSortByParamString
         }
         setApplyingFilter(currentFilter)
         history.push({ search: queryParams.toString() });
@@ -154,10 +195,14 @@ export const DishPage = () => {
                     <Divider />
                     <div style={{ textAlign: 'center' }}>
                         <h2>Applying Filter</h2>
-                        <div>
+                        <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
                             {
-                                Object.values(applyingFilter).map((filter, index) => {
-                                    return <span key={index}>{String(filter)}</span>
+                                Object.values(applyingFilter).map((filter: any) => {
+                                    const filterArray = filter.split(',')
+                                    return filterArray.map((filter: string, index: number) => {
+                                        
+                                        return <button style={{padding: '5px', backgroundColor: 'var(--primary)', color:'var(--white)'}} key={index}>{filterName}</button>
+                                    })
                                 })
                             }
                         </div>
