@@ -196,11 +196,17 @@ export const DishPage = () => {
                     <div style={{ textAlign: 'center' }}>
                         <h2>Applying Filter</h2>
                         <div style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
+                            <div>
+                                <div style={{position: 'absolute', color: 'var(--black)', top: 0}}>x</div>
+                                <button style={{padding: '5px', backgroundColor: 'var(--primary)', color:'var(--white)'}}> filterNam</button>
+                            </div>
+                            
+                           
+
                             {
                                 Object.values(applyingFilter).map((filter: any) => {
                                     const filterArray = filter.split(',')
-                                    return filterArray.map((filter: string, index: number) => {
-                                        
+                                    return filterArray.map((filterName: string, index: number) => {
                                         return <button style={{padding: '5px', backgroundColor: 'var(--primary)', color:'var(--white)'}} key={index}>{filterName}</button>
                                     })
                                 })
