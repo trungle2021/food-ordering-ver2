@@ -95,112 +95,126 @@ export const DishPage = () => {
         setValuePriceRange(newValue as number[]);
     };
 
+    
+
     const handleCategoryCheckBoxChange = (dataChanged: CheckedCategoriesProps, categoryIdChanged: string) => {
         const isChecked = dataChanged[categoryIdChanged];
-        const category = categories.find((category) => category._id === categoryIdChanged)
+        const category = categories.find((category) => category._id === categoryIdChanged);
         const existingCategoriesQueryParam = queryParams.get('category_name');
-
+    
+        let updatedCategoryNames: string[] = [];
+    
         if (existingCategoriesQueryParam) {
-            let categoryNames = existingCategoriesQueryParam.split(',')
+            updatedCategoryNames = existingCategoriesQueryParam.split(',');
+    
             if (isChecked) {
-                categoryNames.push(category?.name as string)
-                queryParams.set('category_name', categoryNames.join(','))
-            } else {
-                categoryNames = categoryNames.filter((categoryName) => categoryName !== category?.name)
-                if (categoryNames.length === 0) {
-                    queryParams.delete('category_name')
-                } else {
-                    queryParams.set('category_name', categoryNames.join(','))
+                // Add the new category name if it's not already in the list
+                if (!updatedCategoryNames.includes(category?.name as string)) {
+                    updatedCategoryNames.push(category?.name as string);
                 }
+            } else {
+                // Remove the category name from the list
+                updatedCategoryNames = updatedCategoryNames.filter((categoryName) => categoryName !== category?.name);
+            }
+    
+            // Update queryParams
+            if (updatedCategoryNames.length === 0) {
+                queryParams.delete('category_name');
+            } else {
+                queryParams.set('category_name', updatedCategoryNames.join(','));
             }
         } else {
-            queryParams.set('category_name', category?.name as string)
+            // Add the category name if it was not previously set
+            updatedCategoryNames.push(category?.name as string)
+            queryParams.set('category_name', category?.name as string);
         }
+    
+        // Update applyingFilter state
+        const updatedFilter = {
+            ...applyingFilter,
+            category_name: updatedCategoryNames.join(','),
+        };
+        setApplyingFilter(updatedFilter);
+    
+        // Push updated queryParams to the URL
         history.push({ search: queryParams.toString() });
-        setCheckedCategories(dataChanged);
-    }
+    };
+    
 
-    const handleClickSortBy = (sortBy: string) => () => {
-        let newSortByParamString = ''
-        let sortByParamString = queryParams.get('sort_by')?.toString()
+    const handleClickSortBy = (filter: { sort_by: string }) => () => {
+        const { sort_by } = filter;
+        let newSortByParamString = '';
+        const sortByParamString = queryParams.get('sort_by')?.toString();
 
         if (!sortByParamString) {
-            newSortByParamString = sortBy
-            queryParams.set('sort_by', sortBy)
-        } else if (sortByParamString.includes(sortBy)) {
-            newSortByParamString = sortByParamString
+            newSortByParamString = sort_by;
+        } else if (sortByParamString.includes(sort_by)) {
+            newSortByParamString = sortByParamString;
         } else {
-            switch (sortBy) {
+            switch (sort_by) {
                 case 'price_asc':
-                    if (sortByParamString?.includes('price_desc')) {
-                        // if sortByParam contain 'price_desc', replace 'price_desc' by 'price_asc'
-                        newSortByParamString = sortByParamString?.replace('price_desc', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                    if (sortByParamString.includes('price_desc')) {
+                        newSortByParamString = sortByParamString.replace('price_desc', sort_by);
                     } else {
-                        // if sortByParamString not contains 'price_desc', concat 'price_asc' to sortByParamString
-                        // if sortByParamString contains 'price_asc', break
-                        newSortByParamString = sortByParamString?.concat(',', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                        newSortByParamString = sortByParamString.concat(',', sort_by);
                     }
                     break;
                 case 'price_desc':
-                    if (sortByParamString?.includes('price_asc')) {
-                        // if sortByParam contain 'price_desc', replace 'price_desc' by 'price_asc'
-                        newSortByParamString = sortByParamString?.replace('price_asc', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                    if (sortByParamString.includes('price_asc')) {
+                        newSortByParamString = sortByParamString.replace('price_asc', sort_by);
                     } else {
-                        // if sortByParamString not contains 'price_desc', concat 'price_asc' to sortByParamString
-                        // if sortByParamString contains 'price_asc', break
-                        newSortByParamString = sortByParamString?.concat(',', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                        newSortByParamString = sortByParamString.concat(',', sort_by);
                     }
                     break;
                 case 'newest':
                     if (sortByParamString.includes('price') && sortByParamString.includes('best_seller')) {
-                        newSortByParamString = sortByParamString?.replace('best_seller', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
-                        break;
+                        newSortByParamString = sortByParamString.replace('best_seller', sort_by);
                     } else {
-                        newSortByParamString = sortByParamString?.concat(',', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                        newSortByParamString = sortByParamString.concat(',', sort_by);
                     }
                     break;
                 case 'best_seller':
                     if (sortByParamString.includes('price') && sortByParamString.includes('newest')) {
-                        newSortByParamString = sortByParamString?.replace('newest', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
-                        break;
+                        newSortByParamString = sortByParamString.replace('newest', sort_by);
                     } else {
-                        newSortByParamString = sortByParamString?.concat(',', sortBy)
-                        queryParams.set('sort_by', newSortByParamString)
+                        newSortByParamString = sortByParamString.concat(',', sort_by);
                     }
                     break;
                 default:
-                    sortBy = 'price_asc'
-                    queryParams.set('sort_by', 'price_asc')
+                    newSortByParamString = 'price_asc';
             }
         }
+
+        queryParams.set('sort_by', newSortByParamString);
+
         const currentFilter = {
             ...applyingFilter,
             'sort_by': newSortByParamString
-        }
-        setApplyingFilter(currentFilter)
+        };
+        setApplyingFilter(currentFilter);
         history.push({ search: queryParams.toString() });
-    }
+    };
 
-    const handleClearSortByFilter = (filterName: string) => (event: SyntheticEvent) => {
-        if (applyingFilter && applyingFilter.sort_by && applyingFilter.sort_by.includes(filterName)) {
-            let sortByQueryParam = queryParams.get('sort_by')
-            console.log("queryParam", sortByQueryParam)
-            let newStringQueryParam = queryParamArray.filter((param: string) => param!== filterName).join(',')
-            console.log("newStringQueryParam", newStringQueryParam)
-            setApplyingFilter({
-                sort_by: newStringQueryParam
-            });
-            queryParams.set('sort_by', newStringQueryParam)
-        }
 
-    }
+    const handleClearSortByFilter = (key: string, value: string) => (event: SyntheticEvent) => {
+        // Your logic to handle clearing the filter by key and value
+        // console.log("Filter Key: ", key);
+        // console.log("Filter Value: ", value);
+    
+        // // Example of updating applyingFilter and queryParams
+        // const updatedFilter = { ...applyingFilter };
+        // delete updatedFilter[key];
+        // setApplyingFilter(updatedFilter);
+    
+        // // Example: You need to adjust queryParams accordingly based on key and value
+        // if (key === 'sort_by') {
+        //     queryParams.delete('sort_by');
+        // } else if (key === 'category_name') {
+        //     // Update logic specific to category_name if needed
+        // }
+    
+        // history.push({ search: queryParams.toString() });
+    };
 
 
     return (
@@ -217,14 +231,29 @@ export const DishPage = () => {
                         <h2>Applying Filter</h2>
                         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                             {
-                                Object.values(applyingFilter).map((filter: any) => {
-                                    const filterArray = filter.split(',')
-                                    return filterArray.map((filterName: string, index: number) => {
-                                        return <button key={index} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                            <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearSortByFilter(filterName)}>x</span>
+                                // Object.values(applyingFilter).map((filter: any) => {
+                                //     const filterArray = filter.split(',')
+                                //     return filterArray.map((filterName: string, index: number) => {
+                                //         return <button key={index} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                //             <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearSortByFilter(filterName)}>x</span>
+                                //             {filterName}
+                                //         </button>
+                                //     })
+                                // })
+
+                                Object.entries(applyingFilter).map(([key, value]: [string, string]) => {
+                                    const filterArray = value.split(',');
+                                    return filterArray.map((filterName: string, index: number) => (
+                                        <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                            <span 
+                                                style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
+                                                onClick={handleClearSortByFilter(key, value)}
+                                            >
+                                                x
+                                            </span>
                                             {filterName}
                                         </button>
-                                    })
+                                    ));
                                 })
                             }
                         </div>
@@ -257,10 +286,10 @@ export const DishPage = () => {
                                         variant="contained"
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
-                                        <Button onClick={handleClickSortBy('price_asc')}>Price (lowest - highest)</Button>
-                                        <Button onClick={handleClickSortBy('newest')}>Newest</Button>
-                                        <Button onClick={handleClickSortBy('best_seller')}>Best Seller</Button>
-                                        <Button onClick={handleClickSortBy('price_desc')}>Price (highest - lowest)</Button>
+                                        <Button onClick={handleClickSortBy({sort_by:'price_asc'})}>Price (lowest - highest)</Button>
+                                        <Button onClick={handleClickSortBy({sort_by:'newest'})}>Newest</Button>
+                                        <Button onClick={handleClickSortBy({sort_by:'best_seller'})}>Best Seller</Button>
+                                        <Button onClick={handleClickSortBy({sort_by:'price_desc'})}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
                             </AccordionDetails>
