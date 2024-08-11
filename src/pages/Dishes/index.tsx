@@ -24,8 +24,8 @@ interface CheckedCategoriesProps {
 }
 
 interface ApplyingFilter {
-    sort_by?: string; // Optional because it might not always be present
-    // Add other filters if needed
+    category_name?: string;
+    sort_by?: string; 
 }
 
 
@@ -95,18 +95,18 @@ export const DishPage = () => {
         setValuePriceRange(newValue as number[]);
     };
 
-    
+
 
     const handleCategoryCheckBoxChange = (dataChanged: CheckedCategoriesProps, categoryIdChanged: string) => {
         const isChecked = dataChanged[categoryIdChanged];
         const category = categories.find((category) => category._id === categoryIdChanged);
         const existingCategoriesQueryParam = queryParams.get('category_name');
-    
+
         let updatedCategoryNames: string[] = [];
-    
+
         if (existingCategoriesQueryParam) {
             updatedCategoryNames = existingCategoriesQueryParam.split(',');
-    
+
             if (isChecked) {
                 // Add the new category name if it's not already in the list
                 if (!updatedCategoryNames.includes(category?.name as string)) {
@@ -116,7 +116,7 @@ export const DishPage = () => {
                 // Remove the category name from the list
                 updatedCategoryNames = updatedCategoryNames.filter((categoryName) => categoryName !== category?.name);
             }
-    
+
             // Update queryParams
             if (updatedCategoryNames.length === 0) {
                 queryParams.delete('category_name');
@@ -128,18 +128,18 @@ export const DishPage = () => {
             updatedCategoryNames.push(category?.name as string)
             queryParams.set('category_name', category?.name as string);
         }
-    
+
         // Update applyingFilter state
         const updatedFilter = {
             ...applyingFilter,
             category_name: updatedCategoryNames.join(','),
         };
         setApplyingFilter(updatedFilter);
-    
+
         // Push updated queryParams to the URL
         history.push({ search: queryParams.toString() });
     };
-    
+
 
     const handleClickSortBy = (filter: { sort_by: string }) => () => {
         const { sort_by } = filter;
@@ -196,24 +196,41 @@ export const DishPage = () => {
     };
 
 
-    const handleClearSortByFilter = (key: string, value: string) => (event: SyntheticEvent) => {
+    const handleClearFilter = (key: string, value: string) => (event: SyntheticEvent) => {
         // Your logic to handle clearing the filter by key and value
-        // console.log("Filter Key: ", key);
-        // console.log("Filter Value: ", value);
-    
-        // // Example of updating applyingFilter and queryParams
-        // const updatedFilter = { ...applyingFilter };
-        // delete updatedFilter[key];
-        // setApplyingFilter(updatedFilter);
-    
-        // // Example: You need to adjust queryParams accordingly based on key and value
-        // if (key === 'sort_by') {
-        //     queryParams.delete('sort_by');
-        // } else if (key === 'category_name') {
-        //     // Update logic specific to category_name if needed
-        // }
-    
-        // history.push({ search: queryParams.toString() });
+        console.log("Filter Key: ", key);
+        console.log("Filter Value: ", value);
+
+        const cloneAppLyingFilter = { ...applyingFilter };
+        let updatedFilterString: string = ''
+       switch(key){
+        case 'price_range':
+            // updatedFilter.price_range = undefined;
+            break;
+        case 'category_name':
+            if(cloneAppLyingFilter.category_name){
+                updatedFilterString = cloneAppLyingFilter.category_name.split(',').filter((filter:string) => filter !== value).join(',')
+                if(updatedFilterString){
+                    cloneAppLyingFilter.category_name = updatedFilterString
+                    queryParams.set('category_name', updatedFilterString)
+                }else{
+                    delete cloneAppLyingFilter.category_name
+                    queryParams.delete('category_name')
+                }
+            }
+            break;
+        case'sort_by':
+        if(cloneAppLyingFilter.sort_by){
+            updatedFilterString = cloneAppLyingFilter.sort_by.split(',').filter((filter:string) => filter !== value).join(',')
+            cloneAppLyingFilter.sort_by = updatedFilterString
+         }
+            break;
+        default:
+            break;
+       }
+       console.log("CloneApplyingFilter", cloneAppLyingFilter)
+        setApplyingFilter(cloneAppLyingFilter);
+        history.push({ search: queryParams.toString() });
     };
 
 
@@ -245,9 +262,9 @@ export const DishPage = () => {
                                     const filterArray = value.split(',');
                                     return filterArray.map((filterName: string, index: number) => (
                                         <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                            <span 
+                                            <span
                                                 style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
-                                                onClick={handleClearSortByFilter(key, value)}
+                                                onClick={handleClearFilter(key, filterName)}
                                             >
                                                 x
                                             </span>
@@ -286,10 +303,10 @@ export const DishPage = () => {
                                         variant="contained"
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
-                                        <Button onClick={handleClickSortBy({sort_by:'price_asc'})}>Price (lowest - highest)</Button>
-                                        <Button onClick={handleClickSortBy({sort_by:'newest'})}>Newest</Button>
-                                        <Button onClick={handleClickSortBy({sort_by:'best_seller'})}>Best Seller</Button>
-                                        <Button onClick={handleClickSortBy({sort_by:'price_desc'})}>Price (highest - lowest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort_by: 'price_asc' })}>Price (lowest - highest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort_by: 'newest' })}>Newest</Button>
+                                        <Button onClick={handleClickSortBy({ sort_by: 'best_seller' })}>Best Seller</Button>
+                                        <Button onClick={handleClickSortBy({ sort_by: 'price_desc' })}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
                             </AccordionDetails>
