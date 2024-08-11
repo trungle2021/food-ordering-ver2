@@ -101,7 +101,7 @@ export const DishPage = () => {
         const isChecked = dataChanged[categoryIdChanged];
         const category = categories.find((category) => category._id === categoryIdChanged);
         const existingCategoriesQueryParam = queryParams.get('category_name');
-
+        let updatedFilter: ApplyingFilter = {}
         let updatedCategoryNames: string[] = [];
 
         if (existingCategoriesQueryParam) {
@@ -116,24 +116,29 @@ export const DishPage = () => {
                 // Remove the category name from the list
                 updatedCategoryNames = updatedCategoryNames.filter((categoryName) => categoryName !== category?.name);
             }
-
-            // Update queryParams
-            if (updatedCategoryNames.length === 0) {
-                queryParams.delete('category_name');
-            } else {
-                queryParams.set('category_name', updatedCategoryNames.join(','));
-            }
         } else {
             // Add the category name if it was not previously set
             updatedCategoryNames.push(category?.name as string)
             queryParams.set('category_name', category?.name as string);
         }
 
+        // Update queryParams
+        if (updatedCategoryNames.length === 0) {
+            queryParams.delete('category_name');
+            updatedFilter = {
+                ...applyingFilter,
+            };
+            delete updatedFilter.category_name
+        } else {
+            queryParams.set('category_name', updatedCategoryNames.join(','));
+            updatedFilter = {
+                ...applyingFilter,
+                category_name: updatedCategoryNames.join(','),
+            };
+        }
+
+        console.log("updatedFilter", updatedFilter)
         // Update applyingFilter state
-        const updatedFilter = {
-            ...applyingFilter,
-            category_name: updatedCategoryNames.join(','),
-        };
         setApplyingFilter(updatedFilter);
 
         // Push updated queryParams to the URL
@@ -214,8 +219,8 @@ export const DishPage = () => {
                         cloneAppLyingFilter.category_name = updatedFilterString
                         queryParams.set('category_name', updatedFilterString)
                     } else {
-                        delete cloneAppLyingFilter.category_name
                         queryParams.delete('category_name')
+                        delete cloneAppLyingFilter.category_name
                     }
                 }
                 break;
@@ -223,6 +228,9 @@ export const DishPage = () => {
                 if (cloneAppLyingFilter.sort_by) {
                     updatedFilterString = cloneAppLyingFilter.sort_by.split(',').filter((filter: string) => filter !== value).join(',')
                     cloneAppLyingFilter.sort_by = updatedFilterString
+                }else{
+                    queryParams.delete('sort_by')
+                    delete cloneAppLyingFilter.category_name
                 }
                 break;
             default:
@@ -254,7 +262,7 @@ export const DishPage = () => {
                                             Object.entries(applyingFilter).map(([key, value]: [string, string]) => {
                                                 const filterArray = value.split(',');
                                                 return filterArray.map((filterName: string, index: number) => (
-                                                    <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                                    <button key={key} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
                                                         <span
                                                             style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
                                                             onClick={handleClearFilter(key, filterName)}
