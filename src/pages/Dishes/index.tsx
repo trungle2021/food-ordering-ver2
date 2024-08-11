@@ -25,7 +25,7 @@ interface CheckedCategoriesProps {
 
 interface ApplyingFilter {
     category_name?: string;
-    sort_by?: string; 
+    sort_by?: string;
 }
 
 
@@ -203,32 +203,32 @@ export const DishPage = () => {
 
         const cloneAppLyingFilter = { ...applyingFilter };
         let updatedFilterString: string = ''
-       switch(key){
-        case 'price_range':
-            // updatedFilter.price_range = undefined;
-            break;
-        case 'category_name':
-            if(cloneAppLyingFilter.category_name){
-                updatedFilterString = cloneAppLyingFilter.category_name.split(',').filter((filter:string) => filter !== value).join(',')
-                if(updatedFilterString){
-                    cloneAppLyingFilter.category_name = updatedFilterString
-                    queryParams.set('category_name', updatedFilterString)
-                }else{
-                    delete cloneAppLyingFilter.category_name
-                    queryParams.delete('category_name')
+        switch (key) {
+            case 'price_range':
+                // updatedFilter.price_range = undefined;
+                break;
+            case 'category_name':
+                if (cloneAppLyingFilter.category_name) {
+                    updatedFilterString = cloneAppLyingFilter.category_name.split(',').filter((filter: string) => filter !== value).join(',')
+                    if (updatedFilterString) {
+                        cloneAppLyingFilter.category_name = updatedFilterString
+                        queryParams.set('category_name', updatedFilterString)
+                    } else {
+                        delete cloneAppLyingFilter.category_name
+                        queryParams.delete('category_name')
+                    }
                 }
-            }
-            break;
-        case'sort_by':
-        if(cloneAppLyingFilter.sort_by){
-            updatedFilterString = cloneAppLyingFilter.sort_by.split(',').filter((filter:string) => filter !== value).join(',')
-            cloneAppLyingFilter.sort_by = updatedFilterString
-         }
-            break;
-        default:
-            break;
-       }
-       console.log("CloneApplyingFilter", cloneAppLyingFilter)
+                break;
+            case 'sort_by':
+                if (cloneAppLyingFilter.sort_by) {
+                    updatedFilterString = cloneAppLyingFilter.sort_by.split(',').filter((filter: string) => filter !== value).join(',')
+                    cloneAppLyingFilter.sort_by = updatedFilterString
+                }
+                break;
+            default:
+                break;
+        }
+        console.log("CloneApplyingFilter", cloneAppLyingFilter)
         setApplyingFilter(cloneAppLyingFilter);
         history.push({ search: queryParams.toString() });
     };
@@ -239,41 +239,36 @@ export const DishPage = () => {
             <HeaderPage pageName="Dishes" />
             <div style={{ display: 'flex', justifyContent: 'space-between', }}>
                 <SearchDish />
-                <Drawer anchor='right' open={open} onClose={toggleFilterAction(false)}>
+                <Drawer sx={{ width: '350px' }} anchor='right' open={open} onClose={toggleFilterAction(false)}>
                     <div style={{ textAlign: 'center', padding: '10px' }}>
                         <h1>Filter & Sort</h1>
                     </div>
                     <Divider />
                     <div style={{ textAlign: 'center' }}>
-                        <h2>Applying Filter</h2>
-                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                            {
-                                // Object.values(applyingFilter).map((filter: any) => {
-                                //     const filterArray = filter.split(',')
-                                //     return filterArray.map((filterName: string, index: number) => {
-                                //         return <button key={index} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                //             <span style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }} onClick={handleClearSortByFilter(filterName)}>x</span>
-                                //             {filterName}
-                                //         </button>
-                                //     })
-                                // })
-
-                                Object.entries(applyingFilter).map(([key, value]: [string, string]) => {
-                                    const filterArray = value.split(',');
-                                    return filterArray.map((filterName: string, index: number) => (
-                                        <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                            <span
-                                                style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
-                                                onClick={handleClearFilter(key, filterName)}
-                                            >
-                                                x
-                                            </span>
-                                            {filterName}
-                                        </button>
-                                    ));
-                                })
-                            }
-                        </div>
+                        {(applyingFilter.category_name || applyingFilter.sort_by) &&
+                            (
+                                <>
+                                    <h2>Applying Filter</h2>
+                                    <div style={{ display: 'flex', width: '350px', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                        {
+                                            Object.entries(applyingFilter).map(([key, value]: [string, string]) => {
+                                                const filterArray = value.split(',');
+                                                return filterArray.map((filterName: string, index: number) => (
+                                                    <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                                        <span
+                                                            style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
+                                                            onClick={handleClearFilter(key, filterName)}
+                                                        >
+                                                            x
+                                                        </span>
+                                                        {filterName}
+                                                    </button>
+                                                ));
+                                            })
+                                        }
+                                    </div>
+                                </>
+                            )}
                     </div>
                     <Divider />
 
