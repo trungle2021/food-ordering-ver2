@@ -8,7 +8,7 @@ const getDishes = async (queryString) => {
   const modifiedQueryString = { ...queryString }
 
   if (queryString.category_name) {
-    const categoryNames = queryString.category_name.split(',')
+    const categoryNames = queryString.category_name
     delete modifiedQueryString.category_name
 
     const categories = await Category.find({ name: { $in: categoryNames } })

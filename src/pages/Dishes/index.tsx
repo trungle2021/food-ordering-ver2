@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Divider, Drawer, FormGroup, Grid, Slider } from '@mui/material';
 import { Box } from '@mui/system';
 import { useSelector } from 'react-redux';
@@ -17,6 +17,8 @@ import DishService from '~/services/dish/dishService';
 import CategoryService from '~/services/category/categoryService';
 import BaseDishProps from '~/interface/dish/baseDish';
 import CategoryProps from '~/interface/category/category';
+import { set } from 'date-fns';
+import { debounce } from '~/utils/debounce';
 
 
 interface CheckedCategoriesProps {
@@ -24,8 +26,9 @@ interface CheckedCategoriesProps {
 }
 
 interface ApplyingFilter {
-    category_name?: string;
-    sort_by?: string;
+    category_name?: string[];
+    sort?: string[];
+    price?: string[];
 }
 
 
@@ -37,7 +40,7 @@ export const DishPage = () => {
     const [dishes, setDishes] = useState([]);
     const [applyingFilter, setApplyingFilter] = useState<ApplyingFilter>({})
     const [categories, setCategories] = useState<CategoryProps[]>([])
-    const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 100]);
+    const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 50]);
     const [checkedCategories, setCheckedCategories] = useState<CheckedCategoriesProps>({})
 
     const searchDishes = useSelector((state: any) => state.searchDish)
@@ -48,8 +51,9 @@ export const DishPage = () => {
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
     useEffect(() => {
+
         setDefaultFilter()
-    }, [queryParams])
+    })
 
     useEffect(() => {
         getDishes();
@@ -62,26 +66,70 @@ export const DishPage = () => {
     };
 
     const setDefaultFilter = () => {
-        const paramsObject = Object.fromEntries(queryParams.entries())
-        setDefautlCheckedCategories(paramsObject)
+        if (queryParams.has('category_name')) {
+            setDefautlCheckedCategories()
+        }
+
+        if (queryParams.has('sort')) {
+            setDefaultSortBy()
+        }
+
+        if (queryParams.has('price[gte]') && queryParams.has('price[lte]')) {
+            setDefaultPriceRange()
+        }
     }
 
-    const setDefautlCheckedCategories = (paramsObject: ApplyingFilter) => {
-        if(paramsObject && paramsObject.category_name){
-            const categoryNames = paramsObject.category_name.split(',')
-            if (categories.length > 0 && categoryNames.length > 0) {
-                categories.forEach((category: CategoryProps) => {
-                    let categoryId = category._id
-                    let categoryName = category.name
-                    if (categoryNames?.includes(categoryName)) {
-                        checkedCategories[categoryId] = true
-                    } else {
-                        checkedCategories[categoryId] = false
-                    }
-                })
-                setCheckedCategories(checkedCategories)
-            }
+    const setDefautlCheckedCategories = () => {
+        const categoryNames = queryParams.getAll('category_name')
+        if (categories.length > 0 && categoryNames?.length > 0) {
+            categories.forEach((category: CategoryProps) => {
+                let categoryId = category._id
+                let categoryName = category.name
+                if (categoryNames.includes(categoryName)) {
+                    checkedCategories[categoryId] = true
+                } else {
+                    checkedCategories[categoryId] = false
+                }
+            })
+            setCheckedCategories(checkedCategories)
+            updateApplyingFilter()
         }
+    }
+
+    const setDefaultSortBy = () => {
+        const sortByParams = queryParams.getAll('sort')
+        if (sortByParams.length > 0) {
+            updateApplyingFilter()
+        }
+    }
+
+    const setDefaultPriceRange = () => {
+        const priceFrom = queryParams.get('price[gte]');
+        const priceTo = queryParams.get('price[lte]');
+        if (priceFrom && priceTo) {
+            updateApplyingFilter()
+        }
+    }
+
+    const updateApplyingFilter = () => {
+        const updatedCategoryNames = queryParams.getAll('category_name');
+        const updatedSortByParams = queryParams.getAll('sort');
+        const priceFrom = queryParams.get('price[gte]');
+        const priceTo = queryParams.get('price[lte]');
+        const updatedFilter: ApplyingFilter = {};
+
+        if (updatedCategoryNames.length > 0) {
+            updatedFilter.category_name = updatedCategoryNames
+        }
+
+        if (updatedSortByParams.length > 0) {
+            updatedFilter.sort = updatedSortByParams
+        }
+
+        if (priceFrom && priceTo) {
+            updatedFilter.price = [`Price: ${priceFrom}$ - ${priceTo}$`]
+        }
+        setApplyingFilter(updatedFilter);
     }
 
     const toggleFilterAction = (newOpen: boolean) => async () => {
@@ -94,246 +142,120 @@ export const DishPage = () => {
         setOpen(newOpen)
     }
 
+
     const handlePriceRangeChange = (event: Event, newValue: number | number[]) => {
         setValuePriceRange(newValue as number[]);
     };
 
+    const handlePriceRangeChangeCommited = (event: React.SyntheticEvent | Event, newValue: number | number[]) => {
+        if (Array.isArray(newValue)) {
+            queryParams.delete('price[gte]')
+            queryParams.delete('price[lte]')
+            queryParams.append('price[gte]', newValue[0].toString())
+            queryParams.append('price[lte]', newValue[1].toString())
+            history.push({ search: queryParams.toString() });
+            updateApplyingFilter()
 
+        }
+    }
 
-    // const handleCategoryCheckBoxChange = (dataChanged: CheckedCategoriesProps, categoryIdChanged: string) => {
-    //     const isChecked = dataChanged[categoryIdChanged];
-    //     const category = categories.find((category) => category._id === categoryIdChanged);
-    //     const existingCategoriesQueryParam = queryParams.get('category_name');
-    //     let updatedFilter: ApplyingFilter = {}
-    //     let updatedCategoryNames: string[] = [];
-
-    //     if (existingCategoriesQueryParam) {
-    //         updatedCategoryNames = existingCategoriesQueryParam.split(',');
-
-    //         if (isChecked) {
-    //             // Add the new category name if it's not already in the list
-    //             if (!updatedCategoryNames.includes(category?.name as string)) {
-    //                 updatedCategoryNames.push(category?.name as string);
-    //             }
-    //         } else {
-    //             // Remove the category name from the list
-    //             updatedCategoryNames = updatedCategoryNames.filter((categoryName) => categoryName !== category?.name);
-    //         }
-    //     } else {
-    //         // Add the category name if it was not previously set
-    //         updatedCategoryNames.push(category?.name as string)
-    //         queryParams.set('category_name', category?.name as string);
-    //     }
-
-    //     // Update queryParams
-    //     if (updatedCategoryNames.length === 0) {
-    //         queryParams.delete('category_name');
-    //         updatedFilter = {
-    //             ...applyingFilter,
-    //         };
-    //         delete updatedFilter.category_name
-    //     } else {
-    //         queryParams.set('category_name', updatedCategoryNames.join(','));
-    //         updatedFilter = {
-    //             ...applyingFilter,
-    //             category_name: updatedCategoryNames.join(','),
-    //         };
-    //     }
-
-    //     console.log("updatedFilter", updatedFilter)
-    //     // Update applyingFilter state
-    //     setApplyingFilter(updatedFilter);
-
-    //     // Push updated queryParams to the URL
-    //     history.push({ search: queryParams.toString() });
-    // };
     const handleCategoryCheckBoxChange = (dataChanged: CheckedCategoriesProps, categoryIdChanged: string) => {
         const isChecked = dataChanged[categoryIdChanged];
         const category = categories.find((category) => category._id === categoryIdChanged);
-        const existingCategories = queryParams.getAll('category_name');
-        let updatedFilter: ApplyingFilter = {};
-    
+        let cloneApplyingFilter: ApplyingFilter = { ...applyingFilter };
+
         if (isChecked) {
-            // Add the new category name if it's not already in the list
-            if (!existingCategories.includes(category?.name as string)) {
-                queryParams.append('category_name', category?.name as string);
-            }
+            console.log("is checked");
+            queryParams.append('category_name', category?.name as string);
         } else {
-            // Remove the category name from the list
+            console.log("unchecked");
+
+            const updatedCategories = queryParams.getAll('category_name').filter((filter) => filter !== category?.name);
+
             queryParams.delete('category_name');
-            existingCategories.filter((categoryName) => categoryName !== category?.name).forEach((name) => {
-                queryParams.append('category_name', name);
-            });
+
+            if (updatedCategories.length === 0) {
+                delete cloneApplyingFilter.category_name;
+                setCheckedCategories({});
+            } else {
+                cloneApplyingFilter.category_name = updatedCategories;
+            }
+
+            updatedCategories.forEach((name) => queryParams.append('category_name', name));
         }
-    
-        // Update filter
-        const updatedCategoryNames = queryParams.getAll('category_name');
-        if (updatedCategoryNames.length === 0) {
-            delete applyingFilter.category_name;
-        } else {
-            updatedFilter = {
-                ...applyingFilter,
-                category_name: updatedCategoryNames.join(','),
-            };
-        }
-    
-        console.log("updatedFilter", updatedFilter);
-        setApplyingFilter(updatedFilter);
-    
-        // Push updated queryParams to the URL
+        setApplyingFilter(cloneApplyingFilter);
+
         history.push({ search: queryParams.toString() });
     };
-    
 
-
-    // const handleClickSortBy = (filter: { sort_by: string }) => () => {
-    //     const { sort_by } = filter;
-    //     let newSortByParamString = '';
-    //     const sortByParamString = queryParams.get('sort_by')?.toString();
-
-    //     if (!sortByParamString) {
-    //         newSortByParamString = sort_by;
-    //     } else if (sortByParamString.includes(sort_by)) {
-    //         newSortByParamString = sortByParamString;
-    //     } else {
-    //         switch (sort_by) {
-    //             case 'price_asc':
-    //                 if (sortByParamString.includes('price_desc')) {
-    //                     newSortByParamString = sortByParamString.replace('price_desc', sort_by);
-    //                 } else {
-    //                     newSortByParamString = sortByParamString.concat(',', sort_by);
-    //                 }
-    //                 break;
-    //             case 'price_desc':
-    //                 if (sortByParamString.includes('price_asc')) {
-    //                     newSortByParamString = sortByParamString.replace('price_asc', sort_by);
-    //                 } else {
-    //                     newSortByParamString = sortByParamString.concat(',', sort_by);
-    //                 }
-    //                 break;
-    //             case 'newest':
-    //                 if (sortByParamString.includes('price') && sortByParamString.includes('best_seller')) {
-    //                     newSortByParamString = sortByParamString.replace('best_seller', sort_by);
-    //                 } else {
-    //                     newSortByParamString = sortByParamString.concat(',', sort_by);
-    //                 }
-    //                 break;
-    //             case 'best_seller':
-    //                 if (sortByParamString.includes('price') && sortByParamString.includes('newest')) {
-    //                     newSortByParamString = sortByParamString.replace('newest', sort_by);
-    //                 } else {
-    //                     newSortByParamString = sortByParamString.concat(',', sort_by);
-    //                 }
-    //                 break;
-    //             default:
-    //                 newSortByParamString = 'price_asc';
-    //         }
-    //     }
-
-    //     queryParams.set('sort_by', newSortByParamString);
-
-    //     const currentFilter = {
-    //         ...applyingFilter,
-    //         'sort_by': newSortByParamString
-    //     };
-    //     setApplyingFilter(currentFilter);
-    //     history.push({ search: queryParams.toString() });
-    // };
-
-    const handleClickSortBy = (filter: { sort_by: string }) => () => {
-        const { sort_by } = filter;
-        const sortByParams = queryParams.getAll('sort_by');
+    const handleClickSortBy = (filter: { sort: string }) => () => {
+        const { sort } = filter;
+        const sortByParams = queryParams.getAll('sort')
         let newSortByParams = new Set(sortByParams);
-    
-        if (sortByParams.includes(sort_by)) {
-            newSortByParams.delete(sort_by);
-        } else {
-            newSortByParams.add(sort_by);
+
+        if (sortByParams.includes('Price-Ascending') && sort === 'Price-Descending') {
+            newSortByParams.delete('Price-Ascending')
+        } else if (sortByParams.includes('Price-Descending') && sort === 'Price-Ascending') {
+            newSortByParams.delete('Price-Descending')
         }
-    
-        queryParams.delete('sort_by');
-        newSortByParams.forEach((param) => queryParams.append('sort_by', param));
-    
-        const currentFilter = {
-            ...applyingFilter,
-            sort_by: Array.from(newSortByParams).join(','),
-        };
-        setApplyingFilter(currentFilter);
+        newSortByParams.add(sort);
+        queryParams.delete('sort');
+        Array(...newSortByParams).forEach((param) => queryParams.append('sort', param));
+        updateApplyingFilter()
         history.push({ search: queryParams.toString() });
     };
-    
-
-
-    // const handleClearFilter = (key: string, value: string) => (event: SyntheticEvent) => {
-    //     // Your logic to handle clearing the filter by key and value
-    //     console.log("Filter Key: ", key);
-    //     console.log("Filter Value: ", value);
-
-    //     const cloneAppLyingFilter = { ...applyingFilter };
-    //     let updatedFilterString: string = ''
-    //     switch (key) {
-    //         case 'price_range':
-    //             // updatedFilter.price_range = undefined;
-    //             break;
-    //         case 'category_name':
-    //             if (cloneAppLyingFilter.category_name) {
-    //                 updatedFilterString = cloneAppLyingFilter.category_name.split(',').filter((filter: string) => filter !== value).join(',')
-    //                 if (updatedFilterString) {
-    //                     cloneAppLyingFilter.category_name = updatedFilterString
-    //                     queryParams.set('category_name', updatedFilterString)
-    //                 } else {
-    //                     queryParams.delete('category_name')
-    //                     delete cloneAppLyingFilter.category_name
-    //                 }
-    //             }
-    //             break;
-    //         case 'sort_by':
-    //             if (cloneAppLyingFilter.sort_by) {
-    //                 updatedFilterString = cloneAppLyingFilter.sort_by.split(',').filter((filter: string) => filter !== value).join(',')
-    //                 cloneAppLyingFilter.sort_by = updatedFilterString
-    //             }else{
-    //                 queryParams.delete('sort_by')
-    //                 delete cloneAppLyingFilter.category_name
-    //             }
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    //     console.log("CloneApplyingFilter", cloneAppLyingFilter)
-    //     setApplyingFilter(cloneAppLyingFilter);
-    //     history.push({ search: queryParams.toString() });
-    // };
 
     const handleClearFilter = (key: string, value: string) => (event: SyntheticEvent) => {
         console.log("Filter Key: ", key);
         console.log("Filter Value: ", value);
-    
+
         const cloneApplyingFilter = { ...applyingFilter };
-        if (key === 'category_name') {
-            const updatedCategories = queryParams.getAll('category_name').filter((filter) => filter !== value);
-            queryParams.delete('category_name');
-            updatedCategories.forEach((category) => queryParams.append('category_name', category));
-            if (updatedCategories.length === 0) {
-                delete cloneApplyingFilter.category_name;
-            } else {
-                cloneApplyingFilter.category_name = updatedCategories.join(',');
-            }
-        } else if (key === 'sort_by') {
-            const updatedSortBy = queryParams.getAll('sort_by').filter((filter) => filter !== value);
-            queryParams.delete('sort_by');
-            updatedSortBy.forEach((sort) => queryParams.append('sort_by', sort));
-            if (updatedSortBy.length === 0) {
-                delete cloneApplyingFilter.sort_by;
-            } else {
-                cloneApplyingFilter.sort_by = updatedSortBy.join(',');
-            }
+
+        switch (key) {
+            case 'category_name':
+                const updatedCategories = queryParams.getAll('category_name').filter((filter) => filter !== value);
+                queryParams.delete('category_name');
+                updatedCategories.forEach((category) => queryParams.append('category_name', category));
+                if (updatedCategories.length === 0) {
+                    delete cloneApplyingFilter.category_name;
+                    setCheckedCategories({});
+                } else {
+                    cloneApplyingFilter.category_name = updatedCategories;
+                }
+                break;
+
+            case 'sort':
+                const updatedSortBy = queryParams.getAll('sort').filter((filter) => filter !== value);
+                queryParams.delete('sort');
+                updatedSortBy.forEach((sort) => queryParams.append('sort', sort));
+                if (updatedSortBy.length === 0) {
+                    delete cloneApplyingFilter.sort;
+                } else {
+                    cloneApplyingFilter.sort = updatedSortBy;
+                }
+                break;
+            case 'price':
+                queryParams.delete('price[gte]');
+                queryParams.delete('price[lte]');
+                delete cloneApplyingFilter.price;
+                break;
+            default:
+                break;
         }
-    
-        console.log("CloneApplyingFilter", cloneApplyingFilter);
         setApplyingFilter(cloneApplyingFilter);
         history.push({ search: queryParams.toString() });
     };
-    
+
+    const handleResetFilter = () => {
+        queryParams.delete('category_name');
+        queryParams.delete('sort');
+        queryParams.delete('price[gte]');
+        queryParams.delete('price[lte]');
+        setCheckedCategories({});
+        setApplyingFilter({});
+        setValuePriceRange([0, 100]);
+        history.push({ search: queryParams.toString() });
+    }
 
 
     return (
@@ -346,20 +268,19 @@ export const DishPage = () => {
                         <h1>Filter & Sort</h1>
                     </div>
                     <Divider />
-                    <div style={{ textAlign: 'center' }}>
-                        {(applyingFilter.category_name || applyingFilter.sort_by) &&
+                    <div style={{ textAlign: 'center', position: 'relative' }}>
+                        {(applyingFilter.category_name || applyingFilter.sort ||  applyingFilter.price) &&
                             (
-                                <>
-                                    <h2>Applying Filter</h2>
+                                <div style={{ padding: '10px 0' }}>
+                                    <h2 style={{ paddingBottom: '10px' }}>Applying Filter </h2>
+                                    <button style={{ position: 'absolute', top: '10px', right: '5px', backgroundColor: 'grey', color: 'var(--white)', padding: '0 10px', fontSize: '1.2rem' }} onClick={handleResetFilter}>Reset</button>
                                     <div style={{ display: 'flex', width: '350px', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
                                         {
-                                            Object.entries(applyingFilter).map(([key, value]: [string, string]) => {
-                                                const filterArray = value.split(',');
-                                                return filterArray.map((filterName: string, index: number) => (
-                                                    <button key={`${key}-${index}`} style={{ position: 'relative', padding: '5px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                            Object.entries(applyingFilter).map(([key, value]: [string, string[]]) => {
+                                                return value.map((filterName: string, index: number) => (
+                                                    <button onClick={handleClearFilter(key, filterName)} key={`${key}-${index}`} style={{ position: 'relative', padding: '5px 30px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
                                                         <span
-                                                            style={{ position: 'absolute', color: 'var(--black)', top: -10, right: 0, backgroundColor: 'var(--white)', border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
-                                                            onClick={handleClearFilter(key, filterName)}
+                                                            style={{ width: '15px', position: 'absolute', zIndex: '10', color: 'var(--black)', top: -5, right: 0, border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
                                                         >
                                                             x
                                                         </span>
@@ -369,7 +290,7 @@ export const DishPage = () => {
                                             })
                                         }
                                     </div>
-                                </>
+                                </div>
                             )}
                     </div>
                     <Divider />
@@ -400,10 +321,9 @@ export const DishPage = () => {
                                         variant="contained"
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
-                                        <Button onClick={handleClickSortBy({ sort_by: 'price_asc' })}>Price (lowest - highest)</Button>
-                                        <Button onClick={handleClickSortBy({ sort_by: 'newest' })}>Newest</Button>
-                                        <Button onClick={handleClickSortBy({ sort_by: 'best_seller' })}>Best Seller</Button>
-                                        <Button onClick={handleClickSortBy({ sort_by: 'price_desc' })}>Price (highest - lowest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'Price-Ascending' })}>Price (lowest - highest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'Newest' })}>Newest</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'Price-Descending' })}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
                             </AccordionDetails>
@@ -419,16 +339,15 @@ export const DishPage = () => {
                                 <Slider
                                     sx={{ padding: '46px 0' }}
                                     min={0}
-                                    max={100}
-                                    step={10}
+                                    max={50}
+                                    step={5}
                                     value={valuePriceRange}
                                     onChange={handlePriceRangeChange}
+                                    onChangeCommitted={handlePriceRangeChangeCommited}
                                     valueLabelDisplay="on"
                                 />
                             </AccordionDetails>
                         </Accordion>
-
-
                     </Box>
                 </Drawer>
                 <button onClick={toggleFilterAction(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px' }}>Filter & Sort <TuneIcon /> </button>
@@ -467,12 +386,8 @@ export const DishPage = () => {
                                 />
                             </Grid>
                         ))}
-
-
                 </Grid>
             </div>
         </div>
     )
 }
-
-

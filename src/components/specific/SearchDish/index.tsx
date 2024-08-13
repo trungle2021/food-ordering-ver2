@@ -14,7 +14,11 @@ export const SearchDish = () => {
 
   const handleSubmitSearchProduct = (formData: any) => {
     const { keyword } = formData
-    console.log(keyword)
+    if(keyword.includes("&")){
+        const modifiedKeyword = keyword.replace(/&/g, '%26');
+        setSearchFormValue(modifiedKeyword)
+        return
+    }
     setSearchFormValue(keyword)
   }
 

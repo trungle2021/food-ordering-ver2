@@ -15,7 +15,11 @@ class ApiFeatures {
   sort () {
     let sortBy
     if (this.queryString.sort) {
-      sortBy = this.queryString.sort.split(',').join(' ')
+      if (typeof this.queryString.sort === 'string') {
+        sortBy = this.queryString.sort
+      } else {
+        sortBy = this.queryString.sort.join(' ')
+      }
     } else {
       sortBy = 'created_at'
     }
