@@ -4,15 +4,16 @@ import { PATH } from "~/routes/routes.constant";
 import {
     Avatar,
     NotificationIcon,
-    OrderDiscussionIcon,
+    CartIcon,
     SettingBlackIcon,
 } from "~/components/common/UI/Icon";
+import { CartDetailsIcon } from "~/components/specific/CartDetailsIcon";
 
 export const UserSection = () => {
     return (
         <div className={styles["user-container"]}>
             <div className={styles["user-container__function"]}>
-                <OrderDiscussionIcon />
+                <CartDetailsIcon />
                 <NotificationIcon />
                 <Link to={PATH.USER_PROFILE}>
                     <SettingBlackIcon />

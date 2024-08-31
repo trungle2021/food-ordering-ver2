@@ -1,0 +1,18 @@
+.cart-icon-container{
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    padding: 3px;
+    right: 0;
+    bottom: 1px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
