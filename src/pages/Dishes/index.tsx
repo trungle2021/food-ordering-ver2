@@ -51,14 +51,21 @@ export const DishPage = () => {
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
     useEffect(() => {
-
         setDefaultFilter()
     })
 
     useEffect(() => {
+       getCategoryList();
         getDishes();
 
     }, [queryParams, dishLimit]);
+
+    const getCategoryList = async () => {
+        const response = await CategoryService.getCategoryList()
+        if (response.data && response.data.length > 0) {
+            setCategories(response.data)
+        }
+    }
 
     const getDishes = async () => {
         const response = await DishService.getDishes(queryParams.toString(), dishLimit);
@@ -66,6 +73,7 @@ export const DishPage = () => {
     };
 
     const setDefaultFilter = () => {
+       
         if (queryParams.has('category_name')) {
             setDefautlCheckedCategories()
         }
@@ -133,12 +141,6 @@ export const DishPage = () => {
     }
 
     const toggleFilterAction = (newOpen: boolean) => async () => {
-        if (newOpen && categories.length == 0) {
-            const response = await CategoryService.getCategoryList()
-            if (response.data && response.data.length > 0) {
-                setCategories(response.data)
-            }
-        }
         setOpen(newOpen)
     }
 
@@ -261,34 +263,9 @@ export const DishPage = () => {
     return (
         <div style={{ padding: '50px' }}>
             <HeaderPage pageName="Dishes" />
-            <div style={{ display: 'flex', justifyContent: 'space-between', }}>
-                <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between',  }}>
                 <SearchDish />
-                <div style={{ textAlign: 'center', position: 'relative' }}>
-                        {
-                            (
-                                <div style={{ padding: '10px 0' }}>
-                                    <div style={{ display: 'flex', width: '350px', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                        {
-                                            Object.entries(applyingFilter).map(([key, value]: [string, string[]]) => {
-                                                return value.map((filterName: string, index: number) => (
-                                                    <button onClick={handleClearFilter(key, filterName)} key={`${key}-${index}`} style={{ position: 'relative', padding: '5px 30px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
-                                                        <span
-                                                            style={{ width: '15px', position: 'absolute', zIndex: '10', color: 'var(--black)', top: -5, right: 0, border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
-                                                        >
-                                                            x
-                                                        </span>
-                                                        {filterName}
-                                                    </button>
-                                                ));
-                                            })
-                                        }
-                                    </div>
-                                </div>
-                            )}
-                    </div>
-
-                </div>
+               
                 <Drawer sx={{ width: '350px' }} anchor='right' open={open} onClose={toggleFilterAction(false)}>
                     <div style={{ textAlign: 'center', padding: '10px' }}>
                         <h1>Filter & Sort</h1>
@@ -378,6 +355,31 @@ export const DishPage = () => {
                 </Drawer>
                 <button onClick={toggleFilterAction(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px' }}>Filter & Sort <TuneIcon /> </button>
             </div>
+            <div style={{display: 'flex'}}>
+                    <div style={{ textAlign: 'center', position: 'relative' }}>
+                            {
+                                (
+                                    <div style={{ padding: '10px 0' }}>
+                                        <div style={{ display: 'flex', width: '350px', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
+                                            {
+                                                Object.entries(applyingFilter).map(([key, value]: [string, string[]]) => {
+                                                    return value.map((filterName: string, index: number) => (
+                                                        <button onClick={handleClearFilter(key, filterName)} key={`${key}-${index}`} style={{ position: 'relative', padding: '5px 30px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>
+                                                            <span
+                                                                style={{ width: '15px', position: 'absolute', zIndex: '10', color: 'var(--black)', top: -5, right: 0, border: 'none', borderRadius: '100%', fontSize: '1.5rem' }}
+                                                            >
+                                                                x
+                                                            </span>
+                                                            {filterName}
+                                                        </button>
+                                                    ));
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                )}
+                    </div>
+                </div>
 
             <div style={{ marginTop: '50px' }}>
                 <Grid container spacing={5}>

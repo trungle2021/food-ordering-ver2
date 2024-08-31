@@ -34,6 +34,10 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
         handleSubmit(onSubmit, onError)();
     };
 
+    const debouncedHandleInputChange = debounce((event: any, newValue: any) => {
+        handleInputChange(event, newValue);
+    }, 3000);
+
 
     const onSubmit = (formData: SearchFormValues) => {
         onSubmitSearchForm(formData);
@@ -44,15 +48,13 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
     };
 
     return (
-        <form className={`${styles["form-search"]}`} onSubmit={(e) => {
-            e.preventDefault();
-        }}>
+        <form className={`${styles["form-search"]}`}>
             <Autocomplete
                 freeSolo
                 id="free-solo-2-demo"
                 options={dataSuggestion ? dataSuggestion : []}
                 onOpen={onOpenSuggestionBox ? onOpenSuggestionBox : () => { }}
-                onInputChange={debounce(handleInputChange, 500)}
+                onInputChange={debouncedHandleInputChange}
                 renderInput={(params) => (
                     <InputField
                         name="keyword"
