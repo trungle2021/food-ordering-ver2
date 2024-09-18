@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./styles.module.css";
 import { useEffect, useState } from "react";
-import { getBalance } from "~/store/Balance/balanceAction";
 import { PaymentTopUpModal } from "~/components/specific/Modal/PaymentTopUpModal";
 import { TopUp, Transfer } from "~/components/common/UI/Icon";
+import { getBalance } from "~/store/balance/balanceAction";
 
 
 export const BalanceSection = () => {

@@ -22,9 +22,11 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
 
     const popularDishList = popularDishes.map((item: any) => {
 
-        const { _id, image, discount, name, price, isFavorite } = item.dish;
+        const { _id, image, discount, name, price } = item.dish
+        const favorite_info = item.favorite_info
+        console.log("favoriteInfo", favorite_info);
 
-        const itemSold = item.count;
+        const itemSold = item.totalQuantity;
 
         return (
             <Grid key={_id} item xs={12} sm={6} md={4} lg={4} xl={3}>
@@ -35,10 +37,11 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
                     discount={discount}
                     name={name}
                     price={price}
-                    isFavorite={isFavorite}
-                    isActive={false}
-                    description={""}
-                    category={""}
+                    favorite_info={favorite_info}
+                    ratingPoint={4}
+                    // isActive={false}
+                    // description={""}
+                    // category={""}
                 />
             </Grid>
         );

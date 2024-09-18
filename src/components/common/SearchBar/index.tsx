@@ -34,10 +34,6 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
         handleSubmit(onSubmit, onError)();
     };
 
-    const debouncedHandleInputChange = debounce((event: any, newValue: any) => {
-        handleInputChange(event, newValue);
-    }, 3000);
-
 
     const onSubmit = (formData: SearchFormValues) => {
         onSubmitSearchForm(formData);
@@ -54,7 +50,7 @@ export const SearchBar = ({ placeholder, onSubmitSearchForm, onOpenSuggestionBox
                 id="free-solo-2-demo"
                 options={dataSuggestion ? dataSuggestion : []}
                 onOpen={onOpenSuggestionBox ? onOpenSuggestionBox : () => { }}
-                onInputChange={debouncedHandleInputChange}
+                onInputChange={debounce(handleInputChange, 500)}
                 renderInput={(params) => (
                     <InputField
                         name="keyword"

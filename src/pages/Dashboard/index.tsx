@@ -2,7 +2,6 @@
 import styles from "./styles.module.css";
 
 import { Grid } from "@mui/material";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { CategorySection } from "~/components/common/Section/CategorySection";
 import { PopularDishSection } from "~/components/common/Section/PopularDishSection";
@@ -11,6 +10,7 @@ import { DishCard } from "~/components/specific/Dish/DishCard";
 import { SearchDish } from "~/components/specific/SearchDish";
 import useClearSearchData from "~/hooks/useClearSearchData";
 import { useResponsiveLimitItem } from "~/hooks/useResponsiveLimitItem";
+import FavoriteInfo from '../../interface/favorite/favorite';
 
 export const Dashboard = () => {
     const dishes = useSelector((state: any) => state.searchDish)
@@ -35,7 +35,7 @@ export const Dashboard = () => {
                 :
                 dishes.data.length > 0 ?
                     <Grid container spacing={2} rowSpacing={2}>
-                        {dishes.data.map((dish: any) => {
+                        {dishes.data.map(({dish, favoriteInfo}:any) => {
                             return (<Grid item xs={12} sm={6} md={3} lg={4} xl={3} key={dish._id}>
                                 <DishCard
                                     _id={dish._id}
@@ -44,7 +44,8 @@ export const Dashboard = () => {
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}
-                                    description={""}
+                                    description={dish.description}
+                                    favoriteInfo={favoriteInfo}
                                     image={dish.image}
                                     category={""} />
                             </Grid>)

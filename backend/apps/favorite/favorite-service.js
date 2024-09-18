@@ -5,10 +5,10 @@ const getFavorites = async (queryString) => {
 }
 
 const getFavorite = async (filter) => {
-  return await Favorite.findOne(filter)
+  return await Favorite.find(filter)
 }
 
-const createFavorite = async (payload) => {
+const createFavoriteDish = async (payload) => {
   return await Favorite.create(payload)
 }
 
@@ -16,9 +16,14 @@ const deleteFavorite = async (filter) => {
   return await Favorite.deleteOne(filter)
 }
 
+const deleteAllFavorite = async () => {
+  return await Favorite.deleteMany({})
+}
+
 module.exports = {
   getFavorites,
   getFavorite,
-  createFavorite,
-  deleteFavorite
+  createFavoriteDish,
+  deleteFavorite,
+  deleteAllFavorite
 }

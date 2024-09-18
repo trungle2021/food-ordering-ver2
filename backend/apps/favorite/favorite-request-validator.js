@@ -8,7 +8,8 @@ const getFavoriteByUserIdRequestSchema = Joi.object({
   userId: Joi.string().required()
 })
 
-const createFavoriteRequestSchema = Joi.object({
+const upsertFavoriteRequestSchema = Joi.object({
+  favoriteId: Joi.string().optional(),
   userId: Joi.string().required(),
   dishId: Joi.string().required()
 })
@@ -16,5 +17,5 @@ const createFavoriteRequestSchema = Joi.object({
 module.exports = {
   deleteFavoriteRequestSchema,
   getFavoriteByUserIdRequestSchema,
-  createFavoriteRequestSchema
+  upsertFavoriteRequestSchema
 }

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {
-  getPoplularDishes,
+  getPopularDishes,
   searchDishesByFullTextSearch,
   createDishes,
   getDish,
@@ -21,7 +21,7 @@ const {
 const { PARAMS, BODY, QUERY } = require('../../constant/request-types')
 
 router.route('/popular-dishes')
-  .get(getPoplularDishes)
+  .get(getPopularDishes)
 
 router.route('/bulk')
   .post(createDishes)

@@ -25,13 +25,13 @@ const getFavoriteByUserId = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const createFavorite = catchAsyncHandler(async (req, res, next) => {
+const createFavoriteDish = catchAsyncHandler(async (req, res, next) => {
   const { userId, dishId } = req.body
   const payload = {
     user: userId,
     dish: dishId
   }
-  const favorite = await FavoriteService.createFavorite(payload)
+  const favorite = await FavoriteService.createFavoriteDish(payload)
   return res.status(200).json({
     status: 'success',
     data: favorite
@@ -51,10 +51,23 @@ const deleteFavorite = catchAsyncHandler(async (req, res, next) => {
     data: favorite
   })
 })
+const deleteAllFavorite = catchAsyncHandler(async (req, res, next) => {
+  const favorite = await FavoriteService.deleteAllFavorite()
+  if (!favorite) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Remove favorite failed'
+    })
+  }
+  return res.status(200).json({
+    status: 'success'
+  })
+})
 
 module.exports = {
   getFavorites,
   getFavoriteByUserId,
-  createFavorite,
-  deleteFavorite
+  createFavoriteDish,
+  deleteFavorite,
+  deleteAllFavorite
 }

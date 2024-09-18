@@ -17,8 +17,6 @@ import DishService from '~/services/dish/dishService';
 import CategoryService from '~/services/category/categoryService';
 import BaseDishProps from '~/interface/dish/baseDish';
 import CategoryProps from '~/interface/category/category';
-import { set } from 'date-fns';
-import { debounce } from '~/utils/debounce';
 
 
 interface CheckedCategoriesProps {
@@ -47,7 +45,7 @@ export const DishPage = () => {
     const searchDishesData = searchDishes.data
     const queryParams = useQuery()
     const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
-
+    const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 8 : isLg ? 10 : isXl ? 12 : 4
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
     useEffect(() => {
@@ -55,13 +53,13 @@ export const DishPage = () => {
     })
 
     useEffect(() => {
-       getCategoryList();
+        getCategoryList();
         getDishes();
 
     }, [queryParams, dishLimit]);
 
     const getCategoryList = async () => {
-        const response = await CategoryService.getCategoryList()
+        const response = await CategoryService.getCategoryList(categoryLimit)
         if (response.data && response.data.length > 0) {
             setCategories(response.data)
         }
@@ -390,12 +388,11 @@ export const DishPage = () => {
                                 _id={dish._id}
                                 image={dish.image}
                                 itemSold={0}
-                                isActive={false}
+                                ratingPoint={3}
                                 discount={0}
                                 name={dish.name}
                                 price={dish.price}
-                                description={dish.description}
-                                category={dish.category}
+                                favorite_info={}
                             />
                         </Grid>
                     )) :
@@ -405,12 +402,11 @@ export const DishPage = () => {
                                     _id={dish._id}
                                     image={dish.image}
                                     itemSold={0}
-                                    isActive={false}
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}
-                                    description={dish.description}
-                                    category={dish.category}
+                                    ratingPoint={3}
+                                    favorite_info={}
                                 />
                             </Grid>
                         ))}

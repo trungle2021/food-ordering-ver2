@@ -4,7 +4,8 @@ const DishService = require('./dish-service')
 
 const getDishes = catchAsyncHandler(async (req, res) => {
   const queryString = req.query
-  const dishes = await DishService.getDishes(queryString)
+  const userId = req.userId
+  const dishes = await DishService.getDishes(userId, queryString)
   return res.status(200).json({
     status: 'success',
     data: dishes
@@ -12,6 +13,7 @@ const getDishes = catchAsyncHandler(async (req, res) => {
 })
 
 const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
+  const userId = req.userId
   let queryString = req.query
   const { keyword, limit } = queryString
   if (!keyword) {
@@ -42,7 +44,7 @@ const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
     })
   }
 
-  const dishes = await DishService.searchDishesByFullTextSearch(queryString.keyword, queryString.limit)
+  const dishes = await DishService.searchDishesByFullTextSearch(queryString.keyword, queryString.limit, userId)
   // ! Need to validate request body
 
   console.log('dishes', dishes)
@@ -69,9 +71,10 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
   })
 })
 
-const getPoplularDishes = catchAsyncHandler(async (req, res, next) => {
+const getPopularDishes = catchAsyncHandler(async (req, res, next) => {
   const queryString = { ...req.query }
-  const result = await DishService.getPoplularDishes(queryString)
+  const userId = req.userId
+  const result = await DishService.getPopularDishes(userId, queryString)
   return res.status(200).json({
     status: 'success',
     data: result
@@ -93,7 +96,7 @@ module.exports = {
   getDishes,
   searchDishesByFullTextSearch,
   getDish,
-  getPoplularDishes,
+  getPopularDishes,
   createDishes,
   createDish,
   updateDish,
