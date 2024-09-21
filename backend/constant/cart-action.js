@@ -1,4 +1,4 @@
 module.exports = {
   INCREMENT: 'increment',
-  DECREMENT: 'decrement'
-}
+  DECREMENT: 'decrement',
+};

@@ -1,4 +1,4 @@
-const requestTypes = require("../../constant/request-types");
+const requestTypes = require('../../constant/request-types');
 
 function isRequestTypeValid(type) {
   // Get all keys from the requestTypes object

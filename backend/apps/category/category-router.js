@@ -1,32 +1,33 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const {
   getCategory,
   deleteCategory,
   updateCategory,
   createCategories,
   getCategories,
-  createCategory
-} = require('../category/category-controller')
-const validateRequest = require('../../utils/joi/validate-request-schema')
+  createCategory,
+} = require('../category/category-controller');
+const validateRequest = require('../../utils/joi/validate-request-schema');
 const {
   getCategoryRequestSchema,
   deleteCategoryRequestSchema,
   updateCategoryRequestSchema,
-  createCategoryRequestSchema
-} = require('./category-request-validator')
-const { PARAMS, BODY } = require('../../constant/request-types')
+  createCategoryRequestSchema,
+} = require('./category-request-validator');
+const { PARAMS, BODY } = require('../../constant/request-types');
 
-router.route('/:categoryId')
+router
+  .route('/:categoryId')
   .get(validateRequest(getCategoryRequestSchema, [PARAMS]), getCategory)
-  .delete(validateRequest(deleteCategoryRequestSchema, [PARAMS]), deleteCategory)
+  .delete(validateRequest(deleteCategoryRequestSchema, [PARAMS]), deleteCategory);
 
-router.route('/bulk')
-  .post(createCategories)
+router.route('/bulk').post(createCategories);
 
-router.route('/')
+router
+  .route('/')
   .get(getCategories)
   .post(validateRequest(createCategoryRequestSchema, [BODY]), createCategory)
-  .put(validateRequest(updateCategoryRequestSchema, [BODY]), updateCategory)
+  .put(validateRequest(updateCategoryRequestSchema, [BODY]), updateCategory);
 
-module.exports = router
+module.exports = router;

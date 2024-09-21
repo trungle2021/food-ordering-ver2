@@ -3,5 +3,5 @@ module.exports = {
   PROCESSING: 'processing',
   SHIPPING: 'shipping',
   COMPLETED: 'completed',
-  CANCELED: 'canceled'
-}
+  CANCELED: 'canceled',
+};

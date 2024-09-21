@@ -1,4 +1,4 @@
-const { isRequestTypeValid } = require('../request/request-features')
+const { isRequestTypeValid } = require('../request/request-features');
 
 const validateRequest = (schema, types) => {
   /*
@@ -7,32 +7,32 @@ const validateRequest = (schema, types) => {
     for example req.body, req.params, req.query
     */
   return (req, res, next) => {
-    let mergedRequestData = {}
+    let mergedRequestData = {};
     for (const type of types) {
       if (!isRequestTypeValid(type)) {
         return res.status(500).json({
           status: 'error',
-          error: 'Invalid request type'
-        })
+          error: 'Invalid request type',
+        });
       }
 
-      const requestData = req[type]
-      mergedRequestData = { ...mergedRequestData, ...requestData }
+      const requestData = req[type];
+      mergedRequestData = { ...mergedRequestData, ...requestData };
     }
 
-    const { error } = schema.validate(mergedRequestData, { abortEarly: false })
+    const { error } = schema.validate(mergedRequestData, { abortEarly: false });
 
     if (error) {
-      const errorMessages = error.details.map((detail) => detail.message)
+      const errorMessages = error.details.map((detail) => detail.message);
 
       return res.status(400).json({
         status: 'fail',
         errorCount: errorMessages.length,
-        message: errorMessages
-      })
+        message: errorMessages,
+      });
     }
-    next()
-  }
-}
+    next();
+  };
+};
 
-module.exports = validateRequest
+module.exports = validateRequest;

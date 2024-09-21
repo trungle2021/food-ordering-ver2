@@ -23,8 +23,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
     const popularDishList = popularDishes.map((item: any) => {
 
         const { _id, image, discount, name, price } = item.dish
-        const favorite_info = item.favorite_info
-        console.log("favoriteInfo", favorite_info);
+        const favoriteInfo = item.favorite_info
 
         const itemSold = item.totalQuantity;
 
@@ -37,7 +36,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
                     discount={discount}
                     name={name}
                     price={price}
-                    favorite_info={favorite_info}
+                    favorite_info={favoriteInfo}
                     ratingPoint={4}
                     // isActive={false}
                     // description={""}

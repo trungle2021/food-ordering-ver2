@@ -1,23 +1,23 @@
-const CancelReason = require('./cancel-reason-model')
+const CancelReason = require('./cancel-reason-model');
 
 const createCancelReason = async (reason) => {
-  return await CancelReason.create(reason)
-}
+  return await CancelReason.create(reason);
+};
 const getCancelReasonById = async (id) => {
-  return await CancelReason.findById(id)
-}
+  return await CancelReason.findById(id);
+};
 const updateCancelReason = async (id, data) => {
-  return await CancelReason.findByIdAndUpdate(id, data, { new: true })
-}
+  return await CancelReason.findByIdAndUpdate(id, data, { new: true });
+};
 const deleteCancelReason = async (id) => {
-  return await CancelReason.findByIdAndDelete(id)
-}
+  return await CancelReason.findByIdAndDelete(id);
+};
 
 const CancelReasonService = {
   createCancelReason,
   getCancelReasonById,
   updateCancelReason,
-  deleteCancelReason
-}
+  deleteCancelReason,
+};
 
-module.exports = CancelReasonService
+module.exports = CancelReasonService;

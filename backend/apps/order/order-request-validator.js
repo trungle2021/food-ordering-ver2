@@ -1,40 +1,40 @@
-const Joi = require('joi')
-const paymentMethods = require('../../constant/payment-method')
+const Joi = require('joi');
+const paymentMethods = require('../../constant/payment-method');
 
 const cancelOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
-  cancelReasonId: Joi.string().required()
-})
+  cancelReasonId: Joi.string().required(),
+});
 
 const confirmOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
   paymentInfo: Joi.object({
-    paymentMethod: Joi.string().valid(
-      ...Object.values(paymentMethods)
-    ).required()
-  })
-})
+    paymentMethod: Joi.string()
+      .valid(...Object.values(paymentMethods))
+      .required(),
+  }),
+});
 
 const getRecentOrdersRequestSchema = Joi.object({
-  userId: Joi.string().required()
-})
+  userId: Joi.string().required(),
+});
 
 const completeOrderRequestSchema = Joi.object({
-  orderId: Joi.string().required()
-})
+  orderId: Joi.string().required(),
+});
 
 const getOrderHistoryRequestSchema = Joi.object({
-  userId: Joi.string().required()
-})
+  userId: Joi.string().required(),
+});
 
 const getOrderRequestSchema = Joi.object({
-  orderId: Joi.string().required()
-})
+  orderId: Joi.string().required(),
+});
 
 const updateOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
-  addressId: Joi.string().required().optional()
-})
+  addressId: Joi.string().required().optional(),
+});
 
 module.exports = {
   updateOrderRequestSchema,
@@ -43,5 +43,5 @@ module.exports = {
   getRecentOrdersRequestSchema,
   completeOrderRequestSchema,
   getOrderHistoryRequestSchema,
-  getOrderRequestSchema
-}
+  getOrderRequestSchema,
+};

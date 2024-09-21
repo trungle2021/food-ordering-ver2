@@ -1,5 +1,5 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const {
   getUser,
   updateUser,
@@ -7,26 +7,34 @@ const {
   getAddressById,
   createAddress,
   updateAddress,
-  getUsers
-} = require('./../user/user-controller')
-const validateRequest = require('../../utils/joi/validate-request-schema')
-const { PARAMS, BODY } = require('../../constant/request-types')
-const { getUserRequestSchema, updateUserRequestSchema, getAddressByIdRequestSchema, getAddressListByUserIdRequestSchema, updateAddressRequestSchema, createAddressRequestSchema } = require('./user-request-validator')
+  getUsers,
+} = require('./../user/user-controller');
+const validateRequest = require('../../utils/joi/validate-request-schema');
+const { PARAMS, BODY } = require('../../constant/request-types');
+const {
+  getUserRequestSchema,
+  updateUserRequestSchema,
+  getAddressByIdRequestSchema,
+  getAddressListByUserIdRequestSchema,
+  updateAddressRequestSchema,
+  createAddressRequestSchema,
+} = require('./user-request-validator');
 
-router.route('/:userId')
+router
+  .route('/:userId')
   .get(validateRequest(getUserRequestSchema, [PARAMS]), getUser)
-  .put(validateRequest(updateUserRequestSchema, [PARAMS, BODY]), updateUser)
+  .put(validateRequest(updateUserRequestSchema, [PARAMS, BODY]), updateUser);
 
-router.route('/:userId/addresses')
-.post(validateRequest(createAddressRequestSchema, [PARAMS, BODY]), createAddress)
-.put(validateRequest(updateAddressRequestSchema, [PARAMS, BODY]), updateAddress)
-.get(validateRequest(getAddressListByUserIdRequestSchema, [PARAMS]), getAddressList)
+router
+  .route('/:userId/addresses')
+  .post(validateRequest(createAddressRequestSchema, [PARAMS, BODY]), createAddress)
+  .put(validateRequest(updateAddressRequestSchema, [PARAMS, BODY]), updateAddress)
+  .get(validateRequest(getAddressListByUserIdRequestSchema, [PARAMS]), getAddressList);
 
+router
+  .route('/:userId/addresses/:addressId')
+  .get(validateRequest(getAddressByIdRequestSchema, [PARAMS]), getAddressById);
 
-router.route('/:userId/addresses/:addressId')
-  .get(validateRequest(getAddressByIdRequestSchema, [PARAMS]), getAddressById)
+router.route('/').get(getUsers);
 
-router.route('/')
-  .get(getUsers)
-
-module.exports = router
+module.exports = router;

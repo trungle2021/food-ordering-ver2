@@ -1,4 +1,4 @@
 module.exports = {
   DEPOSIT: 'deposit',
-  WITHDRAW: 'withdraw'
-}
+  WITHDRAW: 'withdraw',
+};

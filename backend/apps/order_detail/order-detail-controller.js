@@ -1,45 +1,45 @@
-const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
+const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler');
 
-const OrderDetailService = require('./order-detail-service')
+const OrderDetailService = require('./order-detail-service');
 
 const getOrderDetails = catchAsyncHandler(async (req, res) => {
-  const orderdetails = await OrderDetailService.getOrderDetails({})
+  const orderdetails = await OrderDetailService.getOrderDetails({});
   return res.status(200).json({
     status: 'success',
-    data: orderdetails
-  })
-})
+    data: orderdetails,
+  });
+});
 
 const getOrderDetail = catchAsyncHandler(async (req, res, next) => {
   // ! Need to validate request body
 
-  const { order_detail_id: orderDetailId } = req.params
-  const orderdetail = await OrderDetailService.getOrderDetail(orderDetailId)
+  const { order_detail_id: orderDetailId } = req.params;
+  const orderdetail = await OrderDetailService.getOrderDetail(orderDetailId);
   if (!orderdetail) {
     return res.status(404).json({
       status: 'fail',
-      data: null
-    })
+      data: null,
+    });
   }
   return res.status(200).json({
     status: 'success',
-    data: orderdetail
-  })
-})
+    data: orderdetail,
+  });
+});
 
 const createOrderDetails = catchAsyncHandler(async (req, res, next) => {
   // ! Need to validate request body
 
-  const listOrderDetails = req.body
-  const orderdetails = await OrderDetailService.createOrderDetails(listOrderDetails)
+  const listOrderDetails = req.body;
+  const orderdetails = await OrderDetailService.createOrderDetails(listOrderDetails);
   return res.status(200).json({
     status: 'success',
-    data: orderdetails
-  })
-})
-const createOrderDetail = catchAsyncHandler(async (req, res, next) => {})
-const updateOrderDetail = catchAsyncHandler(async (req, res, next) => {})
-const deleteOrderDetail = catchAsyncHandler(async (req, res, next) => {})
+    data: orderdetails,
+  });
+});
+const createOrderDetail = catchAsyncHandler(async (req, res, next) => {});
+const updateOrderDetail = catchAsyncHandler(async (req, res, next) => {});
+const deleteOrderDetail = catchAsyncHandler(async (req, res, next) => {});
 
 module.exports = {
   getOrderDetails,
@@ -47,5 +47,5 @@ module.exports = {
   createOrderDetails,
   createOrderDetail,
   updateOrderDetail,
-  deleteOrderDetail
-}
+  deleteOrderDetail,
+};

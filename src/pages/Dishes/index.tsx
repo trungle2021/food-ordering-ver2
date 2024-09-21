@@ -392,7 +392,11 @@ export const DishPage = () => {
                                 discount={0}
                                 name={dish.name}
                                 price={dish.price}
-                                favorite_info={}
+                                favoriteInfo={{
+                                    _id: '', // Replace with actual ID if available
+                                    user: '', // Replace with actual user ID
+                                    dish: dish._id // Assuming dish has an _id property
+                                }}
                             />
                         </Grid>
                     )) :
@@ -406,7 +410,11 @@ export const DishPage = () => {
                                     name={dish.name}
                                     price={dish.price}
                                     ratingPoint={3}
-                                    favorite_info={}
+                                    favoriteInfo={{
+                                        _id: '', // Replace with actual ID if available
+                                        user: '', // Replace with actual user ID
+                                        dish: dish._id // Assuming dish has an _id property
+                                    }}
                                 />
                             </Grid>
                         ))}

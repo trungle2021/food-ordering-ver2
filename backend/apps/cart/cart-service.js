@@ -1,21 +1,21 @@
-const AppError = require('../../utils/error/app-error')
-const DishService = require('../dish/dish-service')
-const UserService = require('../user/user-service')
-const StockService = require('../stock/stock-service')
-const Cart = require('./cart-model')
-const { INCREMENT, DECREMENT } = require('../../constant/cart-action')
-const { moneyFormatter } = require('../../utils/formater/money-formatter')
+const AppError = require('../../utils/error/app-error');
+const DishService = require('../dish/dish-service');
+const UserService = require('../user/user-service');
+const StockService = require('../stock/stock-service');
+const Cart = require('./cart-model');
+const { INCREMENT, DECREMENT } = require('../../constant/cart-action');
+const { moneyFormatter } = require('../../utils/formater/money-formatter');
 
 const getCarts = async () => {
-  return await Cart.find({}).populate({ path: 'category', select: 'name' })
-}
+  return await Cart.find({}).populate({ path: 'category', select: 'name' });
+};
 
 const getCart = async (filter) => {
   return await Cart.findOne(filter).populate({
     path: 'items.dish',
-    select: 'name price image is_active'
-  })
-}
+    select: 'name price image is_active',
+  });
+};
 
 const addItem = async (userId, dishId, quantity) => {
   const [user, dish, cart] = await Promise.all([
@@ -23,194 +23,166 @@ const addItem = async (userId, dishId, quantity) => {
     DishService.getDish({ _id: dishId }),
     Cart.findOne({ user: userId }).populate({
       path: 'items.dish',
-      select: 'name price image is_active'
-    })
-  ])
+      select: 'name price image is_active',
+    }),
+  ]);
 
   if (!user) {
-    throw new AppError('User not exists', 404)
+    throw new AppError('User not exists', 404);
   }
 
   if (!dish) {
-    throw new AppError('Dish not exists', 404)
+    throw new AppError('Dish not exists', 404);
   }
 
   const newItem = {
     dish,
     quantity,
-    amount: moneyFormatter(dish.price * quantity)
-  }
+    amount: moneyFormatter(dish.price * quantity),
+  };
 
   if (!cart) {
     // If the cart does not exist, create a new cart.
-    const items = [newItem]
+    const items = [newItem];
     const cartInfo = {
       user: userId,
       items,
-      total: newItem.amount
-    }
+      total: newItem.amount,
+    };
 
-    const newCart = await Cart.create(cartInfo)
+    const newCart = await Cart.create(cartInfo);
     return await Cart.findById(newCart._id).populate({
       path: 'items.dish',
-      select: 'name price image is_active'
-    })
+      select: 'name price image is_active',
+    });
   }
 
   // If the newItem already exists in the items listconst itemIndex = cart.items.findIndex(item => item.dish === newItem.dish);
-  const { item: itemExistsInCart } = findItemInCart(cart, dish._id.toString())
+  const { item: itemExistsInCart } = findItemInCart(cart, dish._id.toString());
   if (!itemExistsInCart) {
     // If the item does not exist, add a new item to the items list.
-    const isStockEnough = await StockService.checkStock(dish._id, 1)
+    const isStockEnough = await StockService.checkStock(dish._id, 1);
     if (!isStockEnough) {
-      throw new AppError('Item has reached the maximum quantity limit', 409)
+      throw new AppError('Item has reached the maximum quantity limit', 409);
     }
-    const updatedItems = [...cart.items, newItem]
-    cart.items = updatedItems
-    cart.total = moneyFormatter(cart.total + newItem.amount)
-    cart.updated_at = Date.now()
+    const updatedItems = [...cart.items, newItem];
+    cart.items = updatedItems;
+    cart.total = moneyFormatter(cart.total + newItem.amount);
+    cart.updated_at = Date.now();
   } else {
     // If the item already exists, update the quantity of the existing item.
-    const isStockEnough = await StockService.checkStock(dish._id, quantity)
+    const isStockEnough = await StockService.checkStock(dish._id, quantity);
     if (!isStockEnough) {
-      throw new AppError('Item has reached the maximum quantity limit', 409)
+      throw new AppError('Item has reached the maximum quantity limit', 409);
     }
-    const updateAmount = dish.price * quantity
-    cart.total = moneyFormatter(cart.total + updateAmount)
-    itemExistsInCart.quantity += newItem.quantity
-    itemExistsInCart.amount = moneyFormatter(
-      itemExistsInCart.amount + newItem.amount
-    )
-    cart.updated_at = Date.now()
+    const updateAmount = dish.price * quantity;
+    cart.total = moneyFormatter(cart.total + updateAmount);
+    itemExistsInCart.quantity += newItem.quantity;
+    itemExistsInCart.amount = moneyFormatter(itemExistsInCart.amount + newItem.amount);
+    cart.updated_at = Date.now();
   }
-  return await cart.save()
-}
+  return await cart.save();
+};
 
 const updateItem = async (userId, dishId, updateQuantity) => {
   if (updateQuantity < 0) {
-    throw new AppError('Not enough quantity in cart', 409)
+    throw new AppError('Not enough quantity in cart', 409);
   }
 
-  const user = UserService.getUser({ _id: userId })
+  const user = UserService.getUser({ _id: userId });
   if (!user) {
-    throw new AppError('User not exists', 404)
+    throw new AppError('User not exists', 404);
   }
 
-  const dish = await DishService.getDish({ _id: dishId })
+  const dish = await DishService.getDish({ _id: dishId });
 
   if (!dish) {
-    throw new AppError('Dish not exists', 404)
+    throw new AppError('Dish not exists', 404);
   }
 
   const cart = await Cart.findOne({ user: userId }).populate({
     path: 'items.dish',
-    select: 'name price image is_active'
-  })
+    select: 'name price image is_active',
+  });
 
   if (!cart) {
-    throw new AppError('Cart not found', 404)
+    throw new AppError('Cart not found', 404);
   }
-  const { itemIndex, item: itemExistsInCart } = findItemInCart(
-    cart,
-    dish._id.toString()
-  )
+  const { itemIndex, item: itemExistsInCart } = findItemInCart(cart, dish._id.toString());
 
   if (!itemExistsInCart) {
-    throw new AppError('Item not exists in the cart', 409)
+    throw new AppError('Item not exists in the cart', 409);
   }
 
-  const action =
-    updateQuantity > itemExistsInCart.quantity ? INCREMENT : DECREMENT
+  const action = updateQuantity > itemExistsInCart.quantity ? INCREMENT : DECREMENT;
   switch (action) {
     case INCREMENT:
-      return await incrementCountAndUpdate(
-        cart,
-        itemIndex,
-        dish,
-        updateQuantity
-      )
+      return await incrementCountAndUpdate(cart, itemIndex, dish, updateQuantity);
     case DECREMENT:
-      return await decrementCountAndUpdate(
-        cart,
-        itemIndex,
-        dish,
-        updateQuantity
-      )
+      return await decrementCountAndUpdate(cart, itemIndex, dish, updateQuantity);
     default:
-      throw new AppError('Invalid action', 400)
+      throw new AppError('Invalid action', 400);
   }
-}
+};
 
-const incrementCountAndUpdate = async (
-  cart,
-  itemIndex,
-  dish,
-  updateQuantity
-) => {
-  const itemExistsInCart = cart.items[itemIndex]
-  const isStockEnough = await StockService.checkStock(dish._id, updateQuantity)
+const incrementCountAndUpdate = async (cart, itemIndex, dish, updateQuantity) => {
+  const itemExistsInCart = cart.items[itemIndex];
+  const isStockEnough = await StockService.checkStock(dish._id, updateQuantity);
   if (!isStockEnough) {
-    throw new AppError('Item has reached the maximum quantity limit', 409)
+    throw new AppError('Item has reached the maximum quantity limit', 409);
   }
 
-  const updateAmount = dish.price * updateQuantity
-  const currentAmount = itemExistsInCart.amount
-  cart.total = moneyFormatter(cart.total + (updateAmount - currentAmount))
-  itemExistsInCart.quantity = updateQuantity
-  itemExistsInCart.amount = moneyFormatter(updateAmount)
-  return await cart.save()
-}
+  const updateAmount = dish.price * updateQuantity;
+  const currentAmount = itemExistsInCart.amount;
+  cart.total = moneyFormatter(cart.total + (updateAmount - currentAmount));
+  itemExistsInCart.quantity = updateQuantity;
+  itemExistsInCart.amount = moneyFormatter(updateAmount);
+  return await cart.save();
+};
 
-const decrementCountAndUpdate = async (
-  cart,
-  itemIndex,
-  dish,
-  updateQuantity
-) => {
-  const itemExistsInCart = cart.items[itemIndex]
+const decrementCountAndUpdate = async (cart, itemIndex, dish, updateQuantity) => {
+  const itemExistsInCart = cart.items[itemIndex];
 
-  const updateAmount = dish.price * updateQuantity
-  const currentAmount = itemExistsInCart.amount
-  cart.total = moneyFormatter(cart.total - (currentAmount - updateAmount))
+  const updateAmount = dish.price * updateQuantity;
+  const currentAmount = itemExistsInCart.amount;
+  cart.total = moneyFormatter(cart.total - (currentAmount - updateAmount));
 
   if (updateQuantity === 0) {
-    cart.items.splice(itemIndex, 1)
+    cart.items.splice(itemIndex, 1);
   } else {
-    itemExistsInCart.quantity = updateQuantity
-    itemExistsInCart.amount = moneyFormatter(updateAmount)
+    itemExistsInCart.quantity = updateQuantity;
+    itemExistsInCart.amount = moneyFormatter(updateAmount);
   }
 
-  return await cart.save()
-}
+  return await cart.save();
+};
 
 const removeItem = async (userId, dishId) => {
   const cart = await Cart.findOne({ user: userId }).populate({
     path: 'items.dish',
-    select: 'name price image is_active'
-  })
+    select: 'name price image is_active',
+  });
   if (!cart) {
-    throw new AppError('Cart not exists', 404)
+    throw new AppError('Cart not exists', 404);
   }
-  const { itemIndex, item: itemExistsInCart } = findItemInCart(cart, dishId)
+  const { itemIndex, item: itemExistsInCart } = findItemInCart(cart, dishId);
   if (itemExistsInCart) {
-    cart.items.splice(itemIndex, 1)
-    cart.total = moneyFormatter(cart.total - itemExistsInCart.amount)
-    return await cart.save()
+    cart.items.splice(itemIndex, 1);
+    cart.total = moneyFormatter(cart.total - itemExistsInCart.amount);
+    return await cart.save();
   }
-}
+};
 
 const findItemInCart = (cart, dishId) => {
-  const itemIndex = cart.items.findIndex(
-    (item) => item.dish._id.toString() === dishId
-  )
-  const item = cart.items[itemIndex]
-  return { itemIndex, item }
-}
+  const itemIndex = cart.items.findIndex((item) => item.dish._id.toString() === dishId);
+  const item = cart.items[itemIndex];
+  return { itemIndex, item };
+};
 
 module.exports = {
   getCarts,
   getCart,
   addItem,
   updateItem,
-  removeItem
-}
+  removeItem,
+};

@@ -40,7 +40,7 @@ export const Dashboard = () => {
                                 <DishCard
                                     _id={dish._id}
                                     itemSold={0}
-                                    isActive={false}
+                                    // isActive={false}
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}

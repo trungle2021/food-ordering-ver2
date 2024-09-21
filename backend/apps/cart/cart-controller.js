@@ -1,62 +1,62 @@
-const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
-const CartService = require('./cart-service')
+const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler');
+const CartService = require('./cart-service');
 
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  const cart = await CartService.getCart({ user: userId })
+  const { userId } = req.params;
+  const cart = await CartService.getCart({ user: userId });
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
-      message: 'Cart not found'
-    })
+      message: 'Cart not found',
+    });
   }
   return res.status(200).json({
     status: 'success',
-    data: cart
-  })
-})
+    data: cart,
+  });
+});
 
 const addItem = catchAsyncHandler(async (req, res, next) => {
-  const userId = req.userId
-  const { dishId, quantity } = req.body
-  const cart = await CartService.addItem(userId, dishId, quantity)
+  const userId = req.userId;
+  const { dishId, quantity } = req.body;
+  const cart = await CartService.addItem(userId, dishId, quantity);
   return res.status(200).json({
     status: 'success',
-    data: cart
-  })
-})
+    data: cart,
+  });
+});
 const updateItem = catchAsyncHandler(async (req, res, next) => {
-  const userId = req.userId
-  const { dishId, updateQuantity } = req.body
+  const userId = req.userId;
+  const { dishId, updateQuantity } = req.body;
 
-  const updatedCart = await CartService.updateItem(userId, dishId, updateQuantity)
+  const updatedCart = await CartService.updateItem(userId, dishId, updateQuantity);
   return res.status(200).json({
     status: 'success',
-    data: updatedCart
-  })
-})
+    data: updatedCart,
+  });
+});
 const removeItem = catchAsyncHandler(async (req, res, next) => {
-  const { userId, dishId } = req.params
-  const updatedCart = await CartService.removeItem(userId, dishId)
+  const { userId, dishId } = req.params;
+  const updatedCart = await CartService.removeItem(userId, dishId);
   return res.status(200).json({
     status: 'success',
-    data: updatedCart
-  })
-})
+    data: updatedCart,
+  });
+});
 
 const findItem = catchAsyncHandler(async (req, res, next) => {
-  const { itemId } = req.params
-  const item = await CartService.findItem(itemId)
+  const { itemId } = req.params;
+  const item = await CartService.findItem(itemId);
   return res.status(200).json({
     status: 'success',
-    data: item
-  })
-})
+    data: item,
+  });
+});
 
 module.exports = {
   getCartByUserId,
   addItem,
   updateItem,
   removeItem,
-  findItem
-}
+  findItem,
+};

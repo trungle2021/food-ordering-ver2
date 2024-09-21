@@ -1,75 +1,77 @@
-const mongoose = require('mongoose')
-const orderStatus = require('../../constant/order-status')
-const paymentStatus = require('../../constant/payment-status')
-const paymentMethod = require('../../constant/payment-method')
-const ObjectId = mongoose.Schema.Types.ObjectId
+const mongoose = require('mongoose');
+const orderStatus = require('../../constant/order-status');
+const paymentStatus = require('../../constant/payment-status');
+const paymentMethod = require('../../constant/payment-method');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const orderSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
-    ref: 'User'
+    ref: 'User',
   },
-  order_details: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'OrderDetail'
-  }],
+  order_details: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'OrderDetail',
+    },
+  ],
   order_total: {
     type: Number,
     default: 0,
     required: [true, 'Order Total is required'],
-    min: 0
+    min: 0,
   },
   order_status: {
     type: String,
     enum: Object.values(orderStatus),
     require: [true, 'Order Status is required'],
-    default: orderStatus.PENDING
+    default: orderStatus.PENDING,
   },
   payment_status: {
     type: String,
     enum: Object.values(paymentStatus),
     require: [true, 'Payment Status is required'],
-    default: paymentStatus.PENDING
+    default: paymentStatus.PENDING,
   },
   payment_method: {
     type: String,
     validate: {
       validator: (value) => {
         if (value === null) {
-          return true
+          return true;
         }
-        return Object.values(paymentMethod).includes(value)
+        return Object.values(paymentMethod).includes(value);
       },
-      message: 'Invalid Payment Method'
+      message: 'Invalid Payment Method',
     },
-    default: null
+    default: null,
   },
   shipping_address: {
     type: String,
-    require: [true, 'Shipping Address is required']
+    require: [true, 'Shipping Address is required'],
   },
   order_date: {
     type: Date,
-    required: [true, 'Order Date is required']
+    required: [true, 'Order Date is required'],
   },
   cancel_reason: {
     type: ObjectId,
-    ref: 'CancelReason'
+    ref: 'CancelReason',
   },
   time_completed: {
     type: Date,
-    default: null
+    default: null,
   },
   created_at: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   updated_at: {
     type: Date,
-    default: null
-  }
-})
+    default: null,
+  },
+});
 
-const Order = mongoose.model('Order', orderSchema)
+const Order = mongoose.model('Order', orderSchema);
 
-module.exports = Order
+module.exports = Order;

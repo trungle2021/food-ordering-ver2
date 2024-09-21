@@ -1,24 +1,24 @@
-const { ObjectId } = require('mongodb')
-const mongoose = require('mongoose')
+const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
 
 const balanceSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
     required: true,
-    ref: 'User'
+    ref: 'User',
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
   },
   created_at: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   updated_at: {
-    type: Date
-  }
-})
+    type: Date,
+  },
+});
 
-const Balance = mongoose.model('Balance', balanceSchema)
-module.exports = Balance
+const Balance = mongoose.model('Balance', balanceSchema);
+module.exports = Balance;

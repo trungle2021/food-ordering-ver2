@@ -1,104 +1,104 @@
-const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler')
+const catchAsyncHandler = require('../../utils/catch-async/catch-async-handler');
 
-const UserService = require('./user-service')
+const UserService = require('./user-service');
 
 const getUsers = catchAsyncHandler(async (req, res) => {
-  const users = await UserService.getUsers()
+  const users = await UserService.getUsers();
   return res.status(200).json({
     status: 'success',
-    data: users
-  })
-})
+    data: users,
+  });
+});
 
 const getUser = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  const user = await UserService.getUser({ _id: userId })
+  const { userId } = req.params;
+  const user = await UserService.getUser({ _id: userId });
   if (!user) {
     return res.status(404).json({
       status: 'fail',
-      data: null
-    })
+      data: null,
+    });
   }
   return res.status(200).json({
     status: 'success',
-    data: user
-  })
-})
+    data: user,
+  });
+});
 
 const updateUser = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  const updatedUser = await UserService.updateUser(userId, req.body)
+  const { userId } = req.params;
+  const updatedUser = await UserService.updateUser(userId, req.body);
   return res.status(200).json({
     status: 'success',
-    data: updatedUser
-  })
-})
+    data: updatedUser,
+  });
+});
 
 const deleteUser = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  await UserService.deleteUser({ _id: userId })
+  const { userId } = req.params;
+  await UserService.deleteUser({ _id: userId });
   return res.status(200).json({
     status: 'success',
-    message: 'Delete User Successfully'
-  })
-})
+    message: 'Delete User Successfully',
+  });
+});
 
 const getAddressList = catchAsyncHandler(async (req, res) => {
-  const { userId } = req.params
-  const userAddresses = await UserService.getAddressList(userId)
+  const { userId } = req.params;
+  const userAddresses = await UserService.getAddressList(userId);
   return res.status(200).json({
     status: 'success',
-    data: userAddresses
-  })
-})
+    data: userAddresses,
+  });
+});
 
 const getAddressById = catchAsyncHandler(async (req, res, next) => {
-  const { userId, addressId } = req.params
-  const userAddress = await UserService.getAddressById(userId, addressId)
+  const { userId, addressId } = req.params;
+  const userAddress = await UserService.getAddressById(userId, addressId);
 
   if (!userAddress) {
     return res.status(404).json({
       status: 'fail',
-      message: 'Cannot found address'
-    })
+      message: 'Cannot found address',
+    });
   }
   return res.status(200).json({
     status: 'success',
-    data: userAddress
-  })
-})
+    data: userAddress,
+  });
+});
 
 const createAddress = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
-  const address = await UserService.createAddress(userId, req.body)
+  const { userId } = req.params;
+  const address = await UserService.createAddress(userId, req.body);
   return res.status(200).json({
     status: 'success',
-    data: address
-  })
-})
+    data: address,
+  });
+});
 
 const updateAddress = catchAsyncHandler(async (req, res, next) => {
-  const { userId } = req.params
+  const { userId } = req.params;
   const payload = {
     ...req.body,
-    updated_at: Date.now()
-  }
+    updated_at: Date.now(),
+  };
 
-  const user = await UserService.updateAddress(userId, payload)
+  const user = await UserService.updateAddress(userId, payload);
   return res.status(200).json({
     status: 'success',
-    data: user
-  })
-})
+    data: user,
+  });
+});
 
 const deleteAddress = catchAsyncHandler(async (req, res, next) => {
-  const { userId, addressId } = req.param
-  await UserService.deleteAddress(userId, addressId)
+  const { userId, addressId } = req.param;
+  await UserService.deleteAddress(userId, addressId);
   return res.status(200).json({
     status: 'success',
-    message: 'Delete User Address Successfully'
-  })
-})
+    message: 'Delete User Address Successfully',
+  });
+});
 
 module.exports = {
   getUsers,
@@ -109,5 +109,5 @@ module.exports = {
   getAddressById,
   createAddress,
   updateAddress,
-  deleteAddress
-}
+  deleteAddress,
+};

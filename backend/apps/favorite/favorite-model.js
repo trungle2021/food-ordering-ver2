@@ -1,24 +1,24 @@
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Schema.Types.ObjectId
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const favoriteSchema = new mongoose.Schema({
   user: {
     type: ObjectId,
-    ref: 'User'
+    ref: 'User',
   },
   dish: {
     type: ObjectId,
-    ref: 'Dish'
+    ref: 'Dish',
   },
   created_at: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   updated_at: {
-    type: Date
-  }
-})
+    type: Date,
+  },
+});
 
-const Favorite = mongoose.model('Favorite', favoriteSchema)
+const Favorite = mongoose.model('Favorite', favoriteSchema);
 
-module.exports = Favorite
+module.exports = Favorite;

@@ -1,5 +1,5 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const {
   getPopularDishes,
   searchDishesByFullTextSearch,
@@ -8,33 +8,38 @@ const {
   deleteDish,
   updateDish,
   getDishes,
-  createDish
-} = require('../dish/dish-controller')
-const validateRequest = require('../../utils/joi/validate-request-schema')
+  createDish,
+} = require('../dish/dish-controller');
+const validateRequest = require('../../utils/joi/validate-request-schema');
 const {
   searchDishesByFullTextSearchRequestSchema,
   getDishRequestSchema,
   deleteDishRequestSchema,
   updateDishRequestSchema,
-  createDishRequestSchema
-} = require('./dish-request-validator')
-const { PARAMS, BODY, QUERY } = require('../../constant/request-types')
+  createDishRequestSchema,
+} = require('./dish-request-validator');
+const { PARAMS, BODY, QUERY } = require('../../constant/request-types');
 
-router.route('/popular-dishes')
-  .get(getPopularDishes)
+router.route('/popular-dishes').get(getPopularDishes);
 
-router.route('/bulk')
-  .post(createDishes)
+router.route('/bulk').post(createDishes);
 
-router.route('/search').get(validateRequest(searchDishesByFullTextSearchRequestSchema, [QUERY]), searchDishesByFullTextSearch)
+router
+  .route('/search')
+  .get(
+    validateRequest(searchDishesByFullTextSearchRequestSchema, [QUERY]),
+    searchDishesByFullTextSearch
+  );
 
-router.route('/:dishId')
+router
+  .route('/:dishId')
   .get(validateRequest(getDishRequestSchema, [PARAMS]), getDish)
-  .delete(validateRequest(deleteDishRequestSchema, [PARAMS]), deleteDish)
+  .delete(validateRequest(deleteDishRequestSchema, [PARAMS]), deleteDish);
 
-router.route('/')
+router
+  .route('/')
   .get(getDishes)
   .post(validateRequest(createDishRequestSchema, [BODY]), createDish)
-  .put(validateRequest(updateDishRequestSchema, [BODY]), updateDish)
+  .put(validateRequest(updateDishRequestSchema, [BODY]), updateDish);
 
-module.exports = router
+module.exports = router;
