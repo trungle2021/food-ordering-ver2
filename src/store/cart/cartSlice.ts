@@ -8,6 +8,7 @@ const initialState: CartState = {
     totalPrice: 0,
     isLoading: false,
     cartHasBeenUpdated: false,
+    isFetched: false,
     error: "",
 }
 
@@ -38,6 +39,7 @@ const cartSlice = createSlice({
                 state.totalItems = action.payload.items.length;
                 state.totalPrice = action.payload.total;
                 state.cartHasBeenUpdated = true;
+                state.isFetched = true;
             })
             .addCase(addItem.rejected, (state, action: any) => {
                 state.error = action.payload || "Something went wrong";

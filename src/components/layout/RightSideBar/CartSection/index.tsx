@@ -14,8 +14,20 @@ export const CartSection = () => {
     const userId = useSelector((state: any) => state.user?.user?._id);
     const history = useHistory() 
     useEffect(() => {
-        if(userId) dispatch<any>(getCart(userId))
-    }, [userId,dispatch])
+		const fetchCart = async () => {
+      console.log("cart is fetched CartSection: ", cart.isFetched)
+
+			if (userId && !cart.isFetched) {
+				try {
+					dispatch<any>(getCart(userId));
+				} catch (error) {
+					console.error('Error fetching cart:', error);
+				}
+			}
+		};
+		fetchCart();
+	}, [userId, cart.isFetched, dispatch]);
+
 
     const handleCheckoutAction = async () => {
         if(cart.items.length === 0){

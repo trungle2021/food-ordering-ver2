@@ -7,9 +7,7 @@
     "start": "nodemon server.js",
     "start:prod": "SET NODE_ENV=production & nodemon server.js",
     "debug:prod": "SET NODE_ENV=production & ndb nodemon server.js",
-    "debug": "ndb nodemon server.js",
-    "lint": "eslint . --ext .js,.ts",
-    "lint:fix": "eslint . --ext .js,.ts --fix"
+    "debug": "ndb nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -38,15 +36,6 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.6.0",
     "@typescript-eslint/parser": "^8.6.0",
-    "eslint": "^8.57.1",
-    "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-filenames": "^1.3.2",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-n": "^16.3.1",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-promise": "^6.1.1",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.3.3"
