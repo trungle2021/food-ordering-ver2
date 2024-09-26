@@ -6,7 +6,6 @@ import axios, {
 } from "axios";
 import axiosRetry from "axios-retry";
 import { store } from "~/store/store";
-import { getNewAccessToken, logoutUser } from '~/store/auth/authAction';
 import { origin } from "~/utils/api";
 import { updateToken } from "~/store/auth/authSlice";
 

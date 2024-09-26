@@ -1,32 +1,40 @@
-import axios from "~/lib/axios";
-import { createUserAddressApi, getUserAddressListApi, getUserByUserIdApi, updateUserAddressApi } from "~/utils/api";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { AddressResponse } from '~/interface/user/addressResponse';
+import { BaseUser } from '~/interface/user/baseUser';
+import { baseUserApi } from '~/utils/api';
 
+const userApi = createApi({
+    reducerPath: 'userApi',
+    baseQuery: fetchBaseQuery({ baseUrl: baseUserApi }), // Adjust base URL as necessary
+    endpoints: (builder) => ({
+        getUserByUserId: builder.query<BaseUser, string>({
+            query: (userId) => `/${userId}`,
+        }),
+        getUserAddressList: builder.query<AddressResponse[], string>({
+            query: (userId) => `${userId}/addresses`,
+        }),
+        createAddress: builder.mutation<void, { userId: string; addressDetail: CreateAddressFormValues }>({
+            query: ({ userId, addressDetail }) => ({
+                url: `/${userId}/addresses`,
+                method: 'POST',
+                body: addressDetail,
+            }),
+        }),
+        updateAddress: builder.mutation<void, { userId: string; addressDetail: UpdateAddressFormValues }>({
+            query: ({ userId, addressDetail }) => ({
+                url: `/${userId}/addresses`,
+                method: 'PUT',
+                body: addressDetail,
+            }),
+        }),
+    }),
+});
 
-const getUserByUserId = (userId: string) => {
-    return axios.get(`${getUserByUserIdApi}/${userId}`)
-}
+export const {
+    useGetUserByUserIdQuery,
+    useGetUserAddressListQuery,
+    useCreateAddressMutation,
+    useUpdateAddressMutation,
+} = userApi;
 
-const getUserAddressList = (userId: string) => {
-    const url = `${getUserAddressListApi}`.replace(':userId', userId)
-    return axios.get(url)
-}
-
-const createAddress = async (userId: string, addressDetail: CreateAddressFormValues) => {
-    const url = `${createUserAddressApi}`.replace(':userId', userId)
-    return await axios.post(url, addressDetail)
-}
-
-const updateAddress = async (userId: string, addressDetail: UpdateAddressFormValues) => {
-    const url = `${updateUserAddressApi}`.replace(':userId', userId)
-    return await axios.put(url, addressDetail)
-}
-
-
-export const UserService = {
-    getUserByUserId,
-    getUserAddressList,
-    createAddress,
-    updateAddress
-};
-
-export default UserService;
+export default userApi;

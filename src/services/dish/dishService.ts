@@ -1,5 +1,5 @@
-import axios from "~/lib/axios";
-import { baseDishApi, getDishesByNameApi, getPopularDishApi } from "~/utils/api";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseDishApi } from "~/utils/api";
 
 const mapSortParam = (param: string): string => {
     switch (param) {
@@ -20,25 +20,37 @@ const replaceSortParams = (queryParams: string): string => {
     });
 };
 
+const dishApi = createApi({
+  reducerPath: 'dishApi',
+  baseQuery: fetchBaseQuery({ baseUrl: baseDishApi }),
+  endpoints: (builder) => ({
+    getDishes: builder.query<any, { queryParams: string; limit: number }>({
+      query: ({ queryParams, limit }) => {
+        const modifiedQueryParams = replaceSortParams(queryParams);
+        return {
+          url: `?${modifiedQueryParams}&limit=${limit}`,
+          method: 'GET',
+        };
+      },
+    }),
+    getPopularDishes: builder.query<any, { limit: number }>({
+      query: ({ limit }) => ({
+        url: `/popular-dishes?limit=${limit}`,
+        method: 'GET',
+      }),
+    }),
+    searchDishes: builder.query<any, { keyword: string; limit: number }>({
+      query: ({ keyword, limit }) => ({
+        url: `/search?keyword=${keyword}&limit=${limit}`,
+        method: 'GET',
+      }),
+    }),
+  }),
+});
 
-const getDishes = (queryParams:string, limit: number): Promise<any> => {
-    const modifiedQueryParams = replaceSortParams(queryParams);
-    
-    return axios.get(`${baseDishApi}?${modifiedQueryParams}&limit=${limit}`);
-}
-
-const getPopularDishes = (limit: number): Promise<any> => {
-    return axios.get(`${getPopularDishApi}?limit=${limit}`);
-};
-
-const searchDishes = (keyword: string, limit: number = 10): Promise<any> => {
-    return axios.get(`${getDishesByNameApi}?keyword=${keyword}&limit=${limit}`);
-}
-
-export const DishService = {
-    getDishes,
-    getPopularDishes,
-    searchDishes
-};
-
-export default DishService;
+export const {
+  useGetDishesQuery,
+  useGetPopularDishesQuery,
+  useSearchDishesQuery,
+} = dishApi;
+export default dishApi;

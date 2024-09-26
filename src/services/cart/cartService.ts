@@ -1,32 +1,37 @@
-import axios from "~/lib/axios";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { baseCartApi, getCartByUserIdApi } from "~/utils/api";
 
-const getCart = async(userId:string) => {
-    const response = await axios.get(`${getCartByUserIdApi}/${userId}`);
-    return response.data;
-};     
+const cartApi = createApi({
+  reducerPath: 'cartApi',
+  baseQuery: fetchBaseQuery({ baseUrl: baseCartApi }),
+  endpoints: (builder) => ({
+    getCart: builder.query<any, string>({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: 'GET',
+      }),
+    }),
+    addItem: builder.mutation<any, {dishId: string, quantity: number}>({
+      query: (payload) => ({
+        url: '',
+        method: 'POST',
+        body: payload,
+      }),
+    }),
+    updateItem: builder.mutation<any, {dishId: string, updateQuantity: number}>({
+      query: (payload) => ({
+        url: '',
+        method: 'PUT',
+        body: payload,
+      }),
+    }),
+    removeItem: builder.mutation<any, string>({
+      query: (dishId) => ({
+        url: `/${dishId}`,
+        method: 'DELETE',
+      }),
+    }),
+  }),
+});
 
-const addItem = async (payload: {dishId: string, quantity: number}) => {
-    const response = await axios.post(baseCartApi,payload)
-    return response.data;
-};
-
-
-const updateItem = async (payload: {dishId: string, updateQuantity: number}) => {
-    const response = await axios.put(baseCartApi, payload);
-    return response.data;
-};
-
-const removeItem = async (dishId: string) => {
-    const response = await axios.delete(`${baseCartApi}/${dishId}`);
-    return response.data;
-};
-
-const CartService = {
-    getCart,
-    addItem,
-    updateItem,
-    removeItem
-}
-
-export default CartService;
+export const { useGetCartQuery, useAddItemMutation, useUpdateItemMutation, useRemoveItemMutation } = cartApi;

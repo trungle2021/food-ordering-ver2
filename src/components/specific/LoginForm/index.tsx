@@ -9,35 +9,36 @@ import { useSelector } from "react-redux";
 import { InputField } from "~/components/common/FormControls/InputField";
 
 interface LoginFormProps {
-  onSubmitLoginForm: (formData: LoginFormValues) => void;
+  onSubmitLoginForm: (values: LoginPayload) => void;
+  isLoading: boolean;
 }
 
-type LoginFormValues = {
+type LoginPayload = {
   email: string;
   password: string;
   // rememberMe?: boolean;
 };
 
-const initialFormValues: LoginFormValues = {
+const initialFormValues: LoginPayload = {
   email: "",
   password: "",
   // rememberMe: false
 };
 
-export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm, isLoading }) => {
   const { status } = useSelector((state: any) => state.auth)
 
   const {
     handleSubmit,
     reset,
     control,
-  } = useForm<LoginFormValues>({
+  } = useForm<LoginPayload>({
     mode: "onTouched",
     defaultValues: initialFormValues,
     resolver: yupResolver(loginSchemaValidator),
   });
 
-  const onSubmit = (formData: LoginFormValues) => {
+  const onSubmit = (formData: LoginPayload) => {
     onSubmitLoginForm(formData);
     //if credentials not valid, still hold current data in input
     if (status === 'success') reset()
@@ -71,8 +72,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmitLoginForm }) => {
             /> */}
             <Link to="/forgot-password">Forgot password ?</Link>
           </div>
-          <Button type="submit" variant="contained" color="primary">
-            Sign in
+          <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
           <div className="form__redirectLink-container">
             <Link to="/register">Don't have an account ? Sign up </Link>
