@@ -5,21 +5,7 @@ const getFavorites = async (queryString) => {
 };
 
 const getFavorite = async (filter) => {
-  const favorites = await Favorite.find(filter).populate('dish');
-  return favorites.map(favorite => ({
-    _id: favorite.dish._id,
-    image: favorite.dish.image,
-    itemSold: favorite.dish.itemSold || 0,
-    ratingPoint: favorite.dish.ratingPoint || 3,
-    discount: favorite.dish.discount || 0,
-    name: favorite.dish.name,
-    price: favorite.dish.price,
-    favorite_info: {
-      _id: favorite._id,
-      user: favorite.user,
-      dish: favorite.dish._id
-    }
-  }));
+  return await Favorite.find(filter);
 };
 
 const createFavoriteDish = async (payload) => {

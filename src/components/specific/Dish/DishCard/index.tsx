@@ -5,7 +5,7 @@ import Heart from "~/components/common/UI/Heart";
 import Discount from "~/components/common/UI/Discount";
 import Rating from "~/components/common/UI/Rating";
 import { useState } from "react";
-import FavoriteService from '../../../../services/favorite/favoriteService';
+import { FavoriteService } from '../../../../services/favorite/favoriteService';
 import { useSelector } from "react-redux";
 import FavoriteInfo from "~/interface/favorite/favorite";
 
@@ -17,38 +17,22 @@ interface DishCardProps {
     discount: number;
     ratingPoint: number;
     itemSold: number;
-    favorite_info?: FavoriteInfo;
-    onRemove?: (dishId: string) => void;
+    favorite_info: FavoriteInfo;
 }
 
-export const DishCard = ({ 
-    _id: dishId, 
-    name, 
-    image, 
-    price, 
-    discount, 
-    ratingPoint, 
-    itemSold, 
-    favorite_info,
-    onRemove 
-  }: DishCardProps) => {
+export const DishCard = (props: DishCardProps) => {
+    const { _id: dishId, name, image, price, discount, ratingPoint, itemSold, favorite_info } = props;
     const userId = useSelector((state: any) => state.user?.user?._id)
-    const [favoriteId, setFavoriteId] = useState(favorite_info?._id ?? '');
-    const [isFavorite, setIsFavorite] = useState(!!favorite_info);
+    const [favoriteId, setFavoriteId] = useState(favorite_info?._id || '');
+    const [isFavorite, setIsFavorite] = useState(favorite_info ? true : false);
     const handleAddButton = useAddItemToCart();
-    const handleRemove = (dishId: string) => {
-        if (onRemove) {
-            onRemove(dishId);
-        }
-    };
-    
+
     const handleFavoriteClick = async () => {
         if (dishId && userId) {
             if (isFavorite) {
               // Remove favorite
               await FavoriteService.deleteFavoriteDish(favoriteId);
               setIsFavorite(false);
-              handleRemove(dishId)
               setFavoriteId('');
             } else {
               // Add favorite

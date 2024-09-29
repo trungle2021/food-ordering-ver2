@@ -11,15 +11,8 @@ const deleteFavoriteDish = async (favoriteId: string) => {
     return response.data;
 };
 
-const getFavoriteDishes = async (userId: string) => {
-    const response = await axios.get(`${baseFavoriteApi}/user/${userId}`);
-    return response.data;
-}
 
-const FavoriteService = {
+export const FavoriteService = {
     createFavoriteDish,
-    deleteFavoriteDish,
-    getFavoriteDishes
-};
-
-export default FavoriteService;
+    deleteFavoriteDish
+}
