@@ -1,18 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseBalanceApi } from '~/utils/api';
+import axios from '~/lib/axios'
+import { getBalanceApi } from '~/utils/api';
 
-const balanceApi = createApi({
-  reducerPath: 'balanceApi',
-  baseQuery: fetchBaseQuery({ baseUrl: baseBalanceApi }), // Adjust base URL as needed
-  endpoints: (builder) => ({
-    getBalanceByUserId: builder.query<any, string>({
-      query: (userId) => ({
-        url: `/users/${userId}`,
-        method: 'GET',
-      }),
-    }),
-  }),
-});
+const getBalanceByUserId = async (userId: string) => {
+    return await axios.get(`${getBalanceApi}/users/${userId}`);
+}
 
-export const { useGetBalanceByUserIdQuery } = balanceApi;
-export default balanceApi;
+const BalanceService = {
+    getBalanceByUserId
+}
+
+export default BalanceService

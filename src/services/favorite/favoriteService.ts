@@ -1,35 +1,25 @@
 import { baseFavoriteApi } from "~/utils/api";
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import axios from "~/lib/axios";
 
-const favoriteApi = createApi({
-  reducerPath: 'favoriteApi',
-  baseQuery: fetchBaseQuery({ baseUrl: baseFavoriteApi }),
-  endpoints: (builder) => ({
-    createFavoriteDish: builder.mutation<any, { dishId: string; userId: string }>({
-      query: ({ dishId, userId }) => ({
-        url: '/',
-        method: 'POST',
-        body: { dishId, userId },
-      }),
-    }),
-    deleteFavoriteDish: builder.mutation<any, string>({
-      query: (favoriteId) => ({
-        url: `/${favoriteId}`,
-        method: 'DELETE',
-      }),
-    }),
-    getFavoriteDishes: builder.query<any, string>({
-      query: (userId) => ({
-        url: `/user/${userId}`,
-        method: 'GET',
-      }),
-    }),
-  }),
-});
+const createFavoriteDish = async ({dishId, userId}: {dishId:string, userId: string}) => {
+    const response = await axios.post(`${baseFavoriteApi}`, {dishId, userId});
+    return response.data;
+};
 
-export const {
-  useCreateFavoriteDishMutation,
-  useDeleteFavoriteDishMutation,
-  useGetFavoriteDishesQuery,
-} = favoriteApi;
-export default favoriteApi;
+const deleteFavoriteDish = async (favoriteId: string) => {
+    const response = await axios.delete(`${baseFavoriteApi}/${favoriteId}`);
+    return response.data;
+};
+
+const getFavoriteDishes = async (userId: string) => {
+    const response = await axios.get(`${baseFavoriteApi}/user/${userId}`);
+    return response.data;
+}
+
+const FavoriteService = {
+    createFavoriteDish,
+    deleteFavoriteDish,
+    getFavoriteDishes
+};
+
+export default FavoriteService;

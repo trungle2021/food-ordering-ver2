@@ -1,20 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { basePaymentApi } from "~/utils/api";
-import TopUpProps from "~/interface/balance/topUp";
+import TopUpProps from "~/interface/balance/topUp"
+import axios from "~/lib/axios"
+import { topUpApi } from "~/utils/api"
 
-const paymentApi = createApi({
-  reducerPath: 'paymentApi',
-  baseQuery: fetchBaseQuery({ baseUrl: basePaymentApi }), // Adjust base URL as needed
-  endpoints: (builder) => ({
-    topUp: builder.mutation<any, TopUpProps>({
-      query: (payload) => ({
-        url: '/top-up',
-        method: 'POST',
-        body: payload,
-      }),
-    }),
-  }),
-});
+const topUp = (payload: TopUpProps) => {
+    return axios.post(`${topUpApi}`, payload)
+}
 
-export const { useTopUpMutation } = paymentApi;
-export default paymentApi;
+const PaymentService = {
+    topUp
+}
+
+export default PaymentService

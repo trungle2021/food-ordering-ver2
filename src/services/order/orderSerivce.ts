@@ -1,53 +1,33 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseOrderApi } from "~/utils/api";
+import axios from "~/lib/axios";
+import { getRecentOrdersByUserIdApi, getOrderHistoryByUserIdApi, baseOrderApi } from "~/utils/api";
 
-const orderApi = createApi({
-  reducerPath: 'orderApi',
-  baseQuery: fetchBaseQuery({ baseUrl: baseOrderApi }), // Adjust base URL as needed
-  endpoints: (builder) => ({
-    getRecentOrderList: builder.query<any, { userId: string; limit: number }>({
-      query: ({ userId, limit }) => ({
-        url: `/recent-orders/users/${userId}?limit=${limit}`,
-        method: 'GET',
-      }),
-    }),
-    getOrderHistory: builder.query<any, { userId: string; filter?: string; page: number; limit: number }>({
-      query: ({ userId, filter, page, limit }) => {
-        const queryFilter = filter ? `${filter}&` : '';
-        return {
-          url: `/history/users/${userId}?${queryFilter}page=${page}&limit=${limit}`,
-          method: 'GET',
-        };
-      },
-    }),
-    getOrder: builder.query<any, string>({
-      query: (orderId) => ({
-        url: `/${orderId}`,
-        method: 'GET',
-      }),
-    }),
-    checkOut: builder.mutation<any, any>({
-      query: (payload) => ({
-        url: `/check-out`,
-        method: 'POST',
-        body: payload,
-      }),
-    }),
-    updateOrder: builder.mutation<any, { orderId: string; payload: any }>({
-      query: ({ orderId, payload }) => ({
-        url: `/${orderId}`,
-        method: 'PUT',
-        body: payload,
-      }),
-    }),
-  }),
-});
+const getRecentOrderList = (userId:string, limit: number): Promise<any> => {
+    return axios.get(`${getRecentOrdersByUserIdApi}/${userId}?limit=${limit}`);
+};
 
-export const {
-  useGetRecentOrderListQuery,
-  useGetOrderHistoryQuery,
-  useGetOrderQuery,
-  useCheckOutMutation,
-  useUpdateOrderMutation,
-} = orderApi;
-export default orderApi;
+const getOrderHistory = (userId:string, filter: string | undefined, page: number, limit: number): Promise<any> => {
+    const queryFilter = filter ? `${filter}&` : ''
+    return axios.get(`${getOrderHistoryByUserIdApi}/${userId}?${queryFilter}page=${page}&limit=${limit}`);
+}
+
+const getOrder = (orderId:string) : Promise<any> => {
+    return axios.get(`${baseOrderApi}/${orderId}`);
+}
+
+const checkOut = (payload: any) : Promise<any> => {
+    return axios.post(`${baseOrderApi}/check-out`, payload);
+}
+
+const updateOrder = (orderId: string, payload: any) : Promise<any> => {
+    return axios.put(`${baseOrderApi}/${orderId}`, payload);
+}
+
+export const OrderService = {
+    getRecentOrderList,
+    getOrderHistory,
+    getOrder,
+    updateOrder,
+    checkOut
+};
+
+export default OrderService;

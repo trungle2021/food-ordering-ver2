@@ -1,20 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { baseCategoryApi } from '~/utils/api';
+import axios from "~/lib/axios";
+import { getCategoriesApi } from "~/utils/api";
 
-const categoryApi = createApi({
-  reducerPath: 'categoryApi',
-  baseQuery: fetchBaseQuery({ baseUrl: baseCategoryApi }),
-  endpoints: (builder) => ({
-    getCategoryList: builder.query<any, { limit?: number }>({
-      query: ({ limit }) => ({
-        url: `/`,
-        method: 'GET',
-        params: { limit },
-      }),
-    }),
-  }),
-});
+const getCategoryList = (limit?: number): Promise<any> => {
+  return axios.get(`${getCategoriesApi}?limit=${limit}`);
+};
 
-export const { useGetCategoryListQuery } = categoryApi;
-export default categoryApi;
+export const CategoryService = {
+  getCategoryList,
+};
 
+export default CategoryService;
