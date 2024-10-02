@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 const searchDishesByFullTextSearchRequestSchema = Joi.object({
   keyword: Joi.string().required(),
+  page: Joi.number().integer(),
   limit: Joi.number().integer(),
 });
 const getDishRequestSchema = Joi.object({

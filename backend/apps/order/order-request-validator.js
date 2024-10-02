@@ -25,6 +25,10 @@ const completeOrderRequestSchema = Joi.object({
 
 const getOrderHistoryRequestSchema = Joi.object({
   userId: Joi.string().required(),
+  page: Joi.number().integer(),
+  limit: Joi.number().integer(),
+  order_date: Joi.date(),
+  dish_name: Joi.string(),
 });
 
 const getOrderRequestSchema = Joi.object({

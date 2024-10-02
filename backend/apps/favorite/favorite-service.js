@@ -5,11 +5,29 @@ const getFavorites = async (queryString) => {
 };
 
 const getFavorite = async (filter) => {
-  return await Favorite.find(filter);
+  const favorites = await Favorite.find(filter).populate('dish');
+  return favorites.map(favorite => ({
+    _id: favorite.dish._id,
+    image: favorite.dish.image,
+    itemSold: favorite.dish.itemSold || 0,
+    ratingPoint: favorite.dish.ratingPoint || 3,
+    discount: favorite.dish.discount || 0,
+    name: favorite.dish.name,
+    price: favorite.dish.price,
+    favoriteInfo: {
+      _id: favorite._id,
+      user: favorite.user,
+      dish: favorite.dish._id
+    }
+  }));
 };
 
 const createFavoriteDish = async (payload) => {
-  return await Favorite.create(payload);
+  const existingFavorite = await Favorite.findOne(payload);
+  if (!existingFavorite) {
+    return await Favorite.create(payload);
+  }
+  return existingFavorite;
 };
 
 const deleteFavorite = async (filter) => {

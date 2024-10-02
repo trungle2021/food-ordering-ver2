@@ -39,18 +39,6 @@ class ApiFeatures {
     return this;
   }
 
-  paginate() {
-    if (this.queryString.page <= 0) {
-      throw new AppError('Page number must be greater or equal 1', 400);
-    }
-    const page = (this.queryString.page && Number(this.queryString.page)) || 1;
-    const limit = (this.queryString.limit && Number(this.queryString.limit)) || 10;
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
-
-    return this;
-  }
-
   prepareQueryObject() {
     let queryObject = { ...this.queryString };
     queryObject = this.excludeFields(queryObject);

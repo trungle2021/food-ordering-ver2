@@ -1,43 +1,115 @@
 const Dish = require('./dish-model');
 const Order = require('../order/order-model');
 const ApiFeatures = require('../../utils/api-features/api-features');
-const Category = require('../category/category-model');
 const { COMPLETED } = require('../../constant/order-status');
-const { ObjectId } = require('mongodb');
-const Favorite = require('../favorite/favorite-model');
+const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils');
+const paginateAggregate = require('../../utils/api-features/paginateAggregate');
 
 const getDishes = async (userId, queryString) => {
   const modifiedQueryString = { ...queryString };
+  const apiFeatures = new ApiFeatures(Dish.find(), modifiedQueryString);
+  const preparedQuery = apiFeatures.prepareQueryObject();
+  const aggregatePipeline = [
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    { $unwind: '$category' },
+    {
+      $match: {
+        ...preparedQuery,
+      },
+    },
+    {
+      $lookup: {
+        from: 'orderdetails',
+        localField: '_id',
+        foreignField: 'dish',
+        as: 'orderDetails',
+      },
+    },
+    {
+      $addFields: {
+        totalQuantity: { $sum: '$orderDetails.quantity' },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        price: 1,
+        image: 1,
+        is_active: 1,
+        discount: 1,
+        created_at: 1,
+        updated_at: 1,
+        category: {
+          name: 1,
+          description: 1,
+        },
+        totalQuantity: 1,
+      },
+    },
+  ];
 
-  if (queryString.category_name) {
-    const categories = await Category.find({ name: { $in: queryString.category_name } });
-    if (categories.length === 0) return [];
-
-    modifiedQueryString.category = { $in: categories.map((category) => category._id) };
-    delete modifiedQueryString.category_name;
+  if (userId) {
+    aggregatePipeline.push({
+      $lookup: {
+        from: 'favorites',
+        let: { dishId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$dish', '$$dishId'] },
+                  { $eq: ['$user', await convertToObjectId(userId)] },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'favoriteInfo',
+      },
+    });
+    aggregatePipeline.push({
+      $addFields: {
+        favoriteInfo: {
+          $cond: {
+            if: { $eq: [{ $size: '$favoriteInfo' }, 0] },
+            then: null,
+            else: { $arrayElemAt: ['$favoriteInfo', 0] },
+          },
+        },
+      },
+    });
   }
 
-  const dishFeatures = new ApiFeatures(Dish.find(), modifiedQueryString)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+  // Apply sorting
+  if (modifiedQueryString.sort) {
+    const sortOrder = apiFeatures.sort().query.options.sort;
+    aggregatePipeline.push({ $sort: sortOrder });
+  }
 
-  const dishQuery = dishFeatures.query.populate('category', 'name');
+  // Apply field limiting
+  if (modifiedQueryString.fields) {
+    const projection = apiFeatures.limitFields().query._fields;
+    aggregatePipeline.push({ $project: projection });
+  }
 
-  if (!userId) return await dishQuery;
-  const favoriteData = await Favorite.find({ user: userId }).select('dish');
-  const dishes = await dishQuery;
+  // Apply pagination
+  const page = parseInt(modifiedQueryString.page, 10) || 1; // Default to page 1
+  const limit = parseInt(modifiedQueryString.limit, 10) || 10; // Default to limit 10
 
-  const populatedDishes = dishes.map((dish) => {
-    const favoriteInfo = favoriteData.find((fav) => fav.dish.toString() === dish._id.toString());
-    return {
-      ...dish.toObject(),
-      favorite_info: favoriteInfo || null,
-    };
-  });
+  // Use the paginate function with the aggregate pipeline
+  const paginatedDishes = await paginateAggregate(Dish, aggregatePipeline, page, limit);
 
-  return populatedDishes;
+  return paginatedDishes; // Return the paginated result with metadata
 };
 
 const getDish = async (queryString) => {
@@ -45,9 +117,8 @@ const getDish = async (queryString) => {
 };
 
 const getPopularDishes = async (userId, queryString) => {
-  const page = queryString.page * 1 || 1;
-  const limit = queryString.limit * 1 || 10;
-  const skip = (page - 1) * limit;
+  const page = parseInt(queryString.page) || 1;
+  const limit = parseInt(queryString.limit) || 10;
 
   const pipeline = [
     {
@@ -63,24 +134,14 @@ const getPopularDishes = async (userId, queryString) => {
         as: 'order_detail',
       },
     },
-    {
-      $unwind: '$order_detail',
-    },
+    { $unwind: '$order_detail' },
     {
       $group: {
         _id: '$order_detail.dish',
         totalQuantity: { $sum: '$order_detail.quantity' },
       },
     },
-    {
-      $sort: { totalQuantity: -1 },
-    },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
-    },
+    { $sort: { totalQuantity: -1 } },
     {
       $lookup: {
         from: 'dishes',
@@ -89,9 +150,7 @@ const getPopularDishes = async (userId, queryString) => {
         as: 'dish',
       },
     },
-    {
-      $unwind: '$dish',
-    },
+    { $unwind: '$dish' },
     {
       $project: {
         _id: 0,
@@ -111,41 +170,86 @@ const getPopularDishes = async (userId, queryString) => {
             {
               $match: {
                 $expr: {
-                  $and: [{ $eq: ['$dish', '$$dishId'] }, { $eq: ['$user', new ObjectId(userId)] }],
+                  $and: [
+                    { $eq: ['$dish', '$$dishId'] },
+                    { $eq: ['$user', await convertToObjectId(userId)] },
+                  ],
                 },
               },
             },
           ],
-          as: 'favorite_info',
+          as: 'favoriteInfo',
         },
       },
       {
         $unwind: {
-          path: '$favorite_info',
-          preserveNullAndEmptyArrays: true, // Include dishes even if they are not in the favorite collection
+          path: '$favoriteInfo',
+          preserveNullAndEmptyArrays: true,
         },
       }
     );
   }
 
-  //   if (result.length === 0) {
-  //     console.log('Popular dishes is empty')
-  //     const queryString = {
-  //       page,
-  //       limit,
-  //       skip
-  //     }
-  //     const feature = new ApiFeatures(Dish.find({}), queryString)
-  //     return await feature.query.populate({
-  //       path: 'dish'
-  //     })
-  //   }
+  const paginatedResult = await paginateAggregate(Order, pipeline, page, limit);
 
-  const result = await Order.aggregate(pipeline);
-  return result;
+  if (paginatedResult.results.length === 0) {
+    console.log('Popular dishes is empty, fetching 5 random dishes');
+    const fallbackPipeline = [
+      { $sample: { size: 5 } },
+      {
+        $project: {
+          dish: '$$ROOT',
+          totalQuantity: 0,
+        },
+      },
+    ];
+
+    if (userId) {
+      fallbackPipeline.push(
+        {
+          $lookup: {
+            from: 'favorites',
+            let: { dishId: '$dish._id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$dish', '$$dishId'] },
+                      { $eq: ['$user', await convertToObjectId(userId)] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'favoriteInfo',
+          },
+        },
+        {
+          $unwind: {
+            path: '$favoriteInfo',
+            preserveNullAndEmptyArrays: true,
+          },
+        }
+      );
+    }
+
+    const fallbackResult = await Dish.aggregate(fallbackPipeline);
+    return {
+      data: fallbackResult,
+      pagination: {
+        totalDocs: fallbackResult.length,
+        limit: 5,
+        page: 1,
+        totalPages: 1,
+      },
+    };
+  }
+
+  return paginatedResult;
 };
 
-const searchDishesByFullTextSearch = async (value, limit, userId) => {
+const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId) => {
   const pipeline = [
     {
       $search: {
@@ -173,7 +277,24 @@ const searchDishesByFullTextSearch = async (value, limit, userId) => {
       },
     },
     {
-      $limit: limit * 1 || 10,
+      $lookup: {
+        from: 'orderdetails',
+        let: { dishId: '$_id' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$dish', '$$dishId'] }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: '$quantity' }
+            }
+          }
+        ],
+        as: 'orderDetails'
+      }
     },
     {
       $lookup: {
@@ -183,7 +304,10 @@ const searchDishesByFullTextSearch = async (value, limit, userId) => {
           {
             $match: {
               $expr: {
-                $and: [{ $eq: ['$dish', '$$dishId'] }, { $eq: ['$user', new ObjectId(userId)] }],
+                $and: [
+                  { $eq: ['$dish', '$$dishId'] },
+                  { $eq: ['$user', await convertToObjectId(userId)] },
+                ],
               },
             },
           },
@@ -199,22 +323,27 @@ const searchDishesByFullTextSearch = async (value, limit, userId) => {
     },
     {
       $project: {
-        dish: {
-          _id: '$_id',
-          is_active: '$is_active',
-          discount: '$discount',
-          created_at: '$created_at',
-          name: '$name',
-          price: '$price',
-          description: '$description',
-          image: '$image',
-          category: '$category',
-        },
+        _id: 1,
+        is_active: 1,
+        discount: 1,
+        created_at: 1,
+        name: 1,
+        price: 1,
+        description: 1,
+        image: 1,
+        category: 1,
         favoriteInfo: 1,
+        totalQuantity: {
+          $ifNull: [{ $arrayElemAt: ['$orderDetails.totalQuantity', 0] }, 0]
+        }
       },
-    },
+    }
   ];
-  return Dish.aggregate(pipeline);
+
+  // Use paginateAggregate instead of Dish.aggregate
+  const paginatedResult = await paginateAggregate(Dish, pipeline, page, limit);
+
+  return paginatedResult;
 };
 
 const createDishes = async (dishes) => {
@@ -225,8 +354,13 @@ const createDish = async (dish) => {
   return await Dish.create(dish);
 };
 
-const updateDish = async (dish) => {};
-const deleteDish = async (dish) => {};
+const updateDish = async (dishId, updates) => {
+  return await Dish.findByIdAndUpdate(dishId, updates, { new: true });
+};
+
+const deleteDish = async (dishId) => {
+  return await Dish.findByIdAndDelete(dishId);
+};
 
 const validateDishesById = async (orderItems) => {
   const dishIds = orderItems.map((item) => item.dish_id);

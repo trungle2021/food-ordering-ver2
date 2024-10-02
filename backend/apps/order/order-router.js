@@ -22,7 +22,7 @@ const {
   getOrderHistoryRequestSchema,
   getOrderRequestSchema,
 } = require('./order-request-validator');
-const { BODY, PARAMS } = require('../../constant/request-types');
+const { BODY, PARAMS, QUERY } = require('../../constant/request-types');
 
 router
   .route('/recent-orders/users/:userId')
@@ -38,7 +38,7 @@ router.route('/check-out').post(checkOut);
 
 router
   .route('/history/users/:userId')
-  .get(validateRequest(getOrderHistoryRequestSchema, [PARAMS]), getOrderHistory);
+  .get(validateRequest(getOrderHistoryRequestSchema, [PARAMS, QUERY]), getOrderHistory);
 
 router
   .route('/:orderId')

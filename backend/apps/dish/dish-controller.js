@@ -13,49 +13,46 @@ const getDishes = catchAsyncHandler(async (req, res) => {
 });
 
 const searchDishesByFullTextSearch = catchAsyncHandler(async (req, res) => {
-  const userId = req.userId;
-  let queryString = req.query;
-  const { keyword, limit } = queryString;
+  const { userId } = req;
+  const { keyword, page, limit, ...restQuery } = req.query;
+
   if (!keyword) {
     return res.status(400).json({
       status: 'fail',
       message: 'Missing "keyword" parameter in query string',
     });
   }
-  if (limit) {
-    const parsedLimit = parseInt(limit);
-    if (isNaN(parsedLimit)) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Invalid "limit" parameter in query string',
-      });
-    }
-    queryString = { ...queryString, limit: parsedLimit };
-  }
-  if (keyword.length === 1) {
-    delete queryString.keyword;
-    const regexPattern = '^' + keyword; // Prepend '^' to the search string to search product name start by keyword
-    queryString = { ...queryString, name: { $regex: regexPattern, $options: 'i' } };
-    // search by regex
-    const dishes = await DishService.getDishes(queryString);
-    return res.status(200).json({
-      status: 'success',
-      data: dishes,
+
+  const parsedQuery = {
+    ...restQuery,
+    page: page ? parseInt(page, 10) : 1,
+    limit: limit ? parseInt(limit, 10) : 10,
+  };
+
+  if (isNaN(parsedQuery.page) || isNaN(parsedQuery.limit)) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid "page" or "limit" parameter in query string',
     });
   }
 
+  if (keyword.length === 1) {
+    const regexPattern = `^${keyword}`;
+    const dishes = await DishService.getDishes({
+      ...parsedQuery,
+      name: { $regex: regexPattern, $options: 'i' },
+    });
+    return res.status(200).json({ status: 'success', data: dishes });
+  }
+
   const dishes = await DishService.searchDishesByFullTextSearch(
-    queryString.keyword,
-    queryString.limit,
+    keyword,
+    parsedQuery.page,
+    parsedQuery.limit,
     userId
   );
-  // ! Need to validate request body
 
-  console.log('dishes', dishes);
-  return res.status(200).json({
-    status: 'success',
-    data: dishes,
-  });
+  return res.status(200).json({ status: 'success', data: dishes });
 });
 
 const getDish = catchAsyncHandler(async (req, res, next) => {

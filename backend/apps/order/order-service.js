@@ -15,18 +15,17 @@ const ApiFeatures = require('../../utils/api-features/api-features');
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils');
 const CartService = require('../cart/cart-service');
 const UserService = require('../user/user-service');
+const Favorite = require('../favorite/favorite-model');
+const paginate = require('../../utils/api-features/paginate');
+const paginateAggregate = require('../../utils/api-features/paginateAggregate');
 
 const getOrders = async (queryString) => {
+  const { page = 1, limit = 10 } = queryString;
   const features = new ApiFeatures(Order.find(), queryString)
     .filter()
     .limitFields()
-    .sort()
-    .paginate();
-
-  //   const totalItem = await features.countItems()
-  const orders = await features.query;
-
-  return { orders };
+    .sort();
+  return await paginate(Order, features.query, parseInt(page, 10), parseInt(limit, 10));
 };
 
 const getOrder = async (filter) => {
@@ -42,151 +41,79 @@ const getOrder = async (filter) => {
 };
 
 const getOrderHistory = async (userId, queryString) => {
+  const { page = 1, limit = 10, order_status, order_date, dish_name } = queryString;
   const userIdConverted = await convertToObjectId(userId);
-  const page = (queryString.page && Number(queryString.page)) || 1;
-  const pageSize = (queryString.limit && Number(queryString.limit)) || 10;
-  const skipNum = (page - 1) * pageSize;
-  const orderStatus = queryString.order_status;
-  const orderDate = queryString.order_date;
-  const dishName = queryString.dish_name;
 
-  const match = {
-    $match: {
-      user: userIdConverted,
-    },
-  };
-
-  const lookupOrderDetail = {
-    $lookup: {
-      from: 'orderdetails',
-      localField: '_id',
-      foreignField: 'order',
-      as: 'order_details',
-    },
-  };
-
-  const unwindOrderDetail = {
-    $unwind: '$order_details',
-  };
-
-  const lookupDish = {
-    $lookup: {
-      from: 'dishes',
-      localField: 'order_details.dish',
-      foreignField: '_id',
-      as: 'order_details.dish',
-    },
-  };
-
-  const unwindDish = {
-    $unwind: '$order_details.dish',
-  };
-
-  const group = {
-    $group: {
-      _id: '$_id',
-      order_status: { $first: '$order_status' },
-      payment_status: { $first: '$payment_status' },
-      payment_method: { $first: '$payment_method' },
-      order_total: { $first: '$order_total' },
-      time_completed: { $first: '$time_completed' },
-      created_at: { $first: '$created_at' },
-      updated_at: { $first: '$updated_at' },
-      user: { $first: '$user' },
-      order_date: { $first: '$order_date' },
-      shipping_address: { $first: '$shipping_address' },
-      order_details: { $push: '$order_details' },
-      __v: { $first: '$__v' },
-    },
-  };
-
-  const project = {
-    $project: {
-      _id: 1,
-      user: 1,
-      order_status: 1,
-      order_total: 1,
-      payment_status: 1,
-      payment_method: 1,
-      order_date: 1,
-      order_details: {
-        dish: {
-          _id: 1,
-          name: 1,
-          image: 1,
-        },
-        quantity: 1,
-        price: 1,
+  const pipeline = [
+    { $match: { user: userIdConverted, ...(order_status && { order_status }) } },
+    {
+      $lookup: {
+        from: 'orderdetails',
+        localField: '_id',
+        foreignField: 'order',
+        as: 'order_details',
       },
-      shipping_address: 1,
-      time_completed: 1,
-      created_at: 1,
-      updated_at: 1,
     },
-  };
-
-  const sort = {
-    $sort: { order_date: -1 },
-  };
-
-  const skip = {
-    $skip: skipNum,
-  };
-
-  const limit = {
-    $limit: pageSize,
-  };
-
-  const count = {
-    $count: 'count',
-  };
-
-  const facet = {
-    $facet: {
-      totalCount: [count],
-      orders: [
-        project, // select field from dish object
-        sort,
-        skip,
-        limit,
-      ],
+    { $unwind: '$order_details' },
+    {
+      $lookup: {
+        from: 'dishes',
+        localField: 'order_details.dish',
+        foreignField: '_id',
+        as: 'order_details.dish',
+      },
     },
-  };
-
-  if (orderStatus) {
-    match.$match.order_status = orderStatus;
-  }
-
-  if (orderDate && typeof orderDate === 'object') {
-    const modifiedOrderDate = convertDateStringToDateObject(orderDate);
-    match.$match.order_date = modifiedOrderDate;
-  }
-
-  const getOrderHistoryPipeline = [
-    match,
-    lookupOrderDetail,
-    unwindOrderDetail,
-    lookupDish, // after lookup dish object become dish array
-    unwindDish, // convert dish array into dish object
-    group, // group and reassemble order details back into array
-    facet,
+    { $unwind: '$order_details.dish' },
+    {
+      $group: {
+        _id: '$_id',
+        order_status: { $first: '$order_status' },
+        payment_status: { $first: '$payment_status' },
+        payment_method: { $first: '$payment_method' },
+        order_total: { $first: '$order_total' },
+        time_completed: { $first: '$time_completed' },
+        created_at: { $first: '$created_at' },
+        updated_at: { $first: '$updated_at' },
+        user: { $first: '$user' },
+        order_date: { $first: '$order_date' },
+        shipping_address: { $first: '$shipping_address' },
+        order_details: { $push: '$order_details' },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        user: 1,
+        order_status: 1,
+        order_total: 1,
+        payment_status: 1,
+        payment_method: 1,
+        order_date: 1,
+        'order_details.dish._id': 1,
+        'order_details.dish.name': 1,
+        'order_details.dish.image': 1,
+        'order_details.quantity': 1,
+        'order_details.price': 1,
+        shipping_address: 1,
+        time_completed: 1,
+        created_at: 1,
+        updated_at: 1,
+      },
+    },
+    { $sort: { order_date: -1 } },
   ];
 
-  if (dishName) {
-    const matchDishByDishName = {
-      $match: {
-        'order_details.dish.name': { $regex: dishName, $options: 'i' },
-      },
-    };
-    facet.$facet.totalCount.splice(0, 0, matchDishByDishName);
-    facet.$facet.orders.splice(0, 0, matchDishByDishName);
+  if (order_date && typeof order_date === 'object') {
+    match.$match.order_date = convertDateStringToDateObject(order_date);
   }
 
-  const result = await Order.aggregate(getOrderHistoryPipeline);
-  const totalItems = result[0].totalCount[0]?.count || 0;
-  const totalPages = Math.ceil(totalItems / pageSize);
-  const orders = result[0].orders;
-  return { totalItems, totalPages, orders };
+  if (dish_name) {
+    pipeline.push({
+      $match: { 'order_details.dish.name': { $regex: dish_name, $options: 'i' } },
+    });
+  }
+
+  return await paginateAggregate(Order, pipeline, parseInt(page, 10), parseInt(limit, 10));
 };
 
 const convertDateStringToDateObject = (orderDate) => {
@@ -367,7 +294,38 @@ const getRecentOrders = async (userId, queryString) => {
       ],
     })
     .exec();
-  return recentOrders;
+
+  // after fetching the recent order , filter for favorite info
+  const recentOrdersWithFavorites = await Promise.all(
+    recentOrders.map(async (order) => {
+      const orderDetailsWithFavorites = await Promise.all(
+        order.order_details.map(async (detail) => {
+          const favoriteInfo = await Favorite.findOne({
+            user: userIdConverted,
+            dish: detail.dish._id,
+          });
+
+          // Update the dish object to include favoriteInfo
+          const updatedDish = {
+            ...detail.dish.toObject(),
+            favoriteInfo, // Add favoriteInfo to the dish object
+          };
+
+          return {
+            ...detail.toObject(),
+            dish: updatedDish, // Replace the dish in the detail with the updated dish
+          };
+        })
+      );
+
+      return {
+        ...order.toObject(),
+        order_details: orderDetailsWithFavorites,
+      };
+    })
+  );
+
+  return recentOrdersWithFavorites;
 };
 
 const cancelOrder = async (orderCancelPayload) => {
