@@ -1,42 +1,53 @@
 /*
-    * User click checkout:
-        ** get all item from current cart
-        ** check stock for each item
-        ** create new order
-            ? order_status: PENDING
-            ? payment_status: PENDING
+    * User clicks checkout:
+        ** Get all items from current cart
+        ** Check stock for each item
+        ** Create a temporary checkout session (not an order yet)
+            ? Store cart items, total, user info, etc.
 
-    * User not proceed and go back then re-click checkout:
-        **  If in order collection has any order with order_status = PENDING. If so return that order (bussiness logic is one user only has one order at a time)
-        **  if not -> back to User click checkout
+    * User reviews checkout:
+        ** If existing checkout session, load it
+        ** If not, create new checkout session
+        ** Allow user to modify shipping address, payment method, etc.
+        ** Update checkout session with any changes
 
-        ! CANCEL case:
-            * User cancel order:
-                ! User only able to cancel order when order_status current is PENDING
-                * send email to admin
-                ? order_status = CANCELED
-                ? cancel_reason =
-            * Admin cancel order:
-                ! Admin only able to cancel order when order_status current is PENDING, PROCESSING
-                * send email to user
-                ? order_status = CANCELED
+    * User proceeds to payment:
+        ** Process payment
+        ** If payment successful:
+            ? Create new order
+                ? order_status: PROCESSING
+                ? payment_status: PAID
+            ? Clear user's cart
+            ? Clear checkout session
+        ** If payment fails:
+            ? Notify user
+            ? Allow retry or return to checkout
 
-    * User proceed to payment:
-        ** Change order_status if payment success:
-                ? payment_status = PAID
-                ? order_status = PROCESSING
+    ! CANCEL case:
+        * User abandons checkout:
+            ? Checkout session expires after set time (e.g., 30 minutes)
+            ? No action needed on cart or inventory
 
-    * Admin prepare order then start to ship to user:
-        ? order_status: SHIPPING
+    * Admin prepares order then starts to ship to user:
+        ? Update order_status: SHIPPING
 
-        ! CANCEL case:
-            * Admin cancel order:
-                ! Admin only able to cancel order when order_status current is PENDING, PROCESSING
-                * send email to user
-                ? order_status = CANCELED
-                ? cancel_reason: ADMIN CANCEL
+    ! CANCEL case:
+        * Admin cancels order:
+            ! Admin only able to cancel order when order_status is PROCESSING or SHIPPING
+            * Send email to user
+            ? Update order_status: CANCELED
+            ? Set cancel_reason: ADMIN_CANCEL
 
-    * Finish Order:
-        ? order_status: COMPLETED
+    * Order delivered:
+        ? Update order_status: DELIVERED
 
+    * After delivery period or user confirms:
+        ? Update order_status: COMPLETED
+
+    * User requests refund/return:
+        ? Create return request
+        ? Admin reviews and processes return
+        ? If approved:
+            ? Update order_status: RETURNED
+            ? Process refund
 */

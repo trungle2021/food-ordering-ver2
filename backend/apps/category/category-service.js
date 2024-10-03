@@ -6,7 +6,6 @@ const getCategories = async (queryString) => {
     .filter()
     .limitFields()
     .sort()
-    .paginate();
   return await features.query;
 };
 

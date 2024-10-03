@@ -18,121 +18,9 @@ const UserService = require('../user/user-service');
 const Favorite = require('../favorite/favorite-model');
 const paginate = require('../../utils/api-features/paginate');
 const paginateAggregate = require('../../utils/api-features/paginateAggregate');
+const checkOutSessionService = require('./checkout-session-service');
 
-const getOrders = async (queryString) => {
-  const { page = 1, limit = 10 } = queryString;
-  const features = new ApiFeatures(Order.find(), queryString)
-    .filter()
-    .limitFields()
-    .sort();
-  return await paginate(Order, features.query, parseInt(page, 10), parseInt(limit, 10));
-};
-
-const getOrder = async (filter) => {
-  return await Order.findOne(filter)
-    .populate({
-      path: 'order_details',
-      populate: {
-        path: 'dish',
-        model: 'Dish',
-      },
-    })
-    .exec();
-};
-
-const getOrderHistory = async (userId, queryString) => {
-  const { page = 1, limit = 10, order_status, order_date, dish_name } = queryString;
-  const userIdConverted = await convertToObjectId(userId);
-
-  const pipeline = [
-    { $match: { user: userIdConverted, ...(order_status && { order_status }) } },
-    {
-      $lookup: {
-        from: 'orderdetails',
-        localField: '_id',
-        foreignField: 'order',
-        as: 'order_details',
-      },
-    },
-    { $unwind: '$order_details' },
-    {
-      $lookup: {
-        from: 'dishes',
-        localField: 'order_details.dish',
-        foreignField: '_id',
-        as: 'order_details.dish',
-      },
-    },
-    { $unwind: '$order_details.dish' },
-    {
-      $group: {
-        _id: '$_id',
-        order_status: { $first: '$order_status' },
-        payment_status: { $first: '$payment_status' },
-        payment_method: { $first: '$payment_method' },
-        order_total: { $first: '$order_total' },
-        time_completed: { $first: '$time_completed' },
-        created_at: { $first: '$created_at' },
-        updated_at: { $first: '$updated_at' },
-        user: { $first: '$user' },
-        order_date: { $first: '$order_date' },
-        shipping_address: { $first: '$shipping_address' },
-        order_details: { $push: '$order_details' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        user: 1,
-        order_status: 1,
-        order_total: 1,
-        payment_status: 1,
-        payment_method: 1,
-        order_date: 1,
-        'order_details.dish._id': 1,
-        'order_details.dish.name': 1,
-        'order_details.dish.image': 1,
-        'order_details.quantity': 1,
-        'order_details.price': 1,
-        shipping_address: 1,
-        time_completed: 1,
-        created_at: 1,
-        updated_at: 1,
-      },
-    },
-    { $sort: { order_date: -1 } },
-  ];
-
-  if (order_date && typeof order_date === 'object') {
-    match.$match.order_date = convertDateStringToDateObject(order_date);
-  }
-
-  if (dish_name) {
-    pipeline.push({
-      $match: { 'order_details.dish.name': { $regex: dish_name, $options: 'i' } },
-    });
-  }
-
-  return await paginateAggregate(Order, pipeline, parseInt(page, 10), parseInt(limit, 10));
-};
-
-const convertDateStringToDateObject = (orderDate) => {
-  for (const key in orderDate) {
-    if (Object.prototype.hasOwnProperty.call(orderDate, key)) {
-      orderDate[key] = new Date(orderDate[key]);
-      console.log('date', new Date(orderDate[key]));
-    }
-  }
-  return orderDate;
-};
-
-const calculateOrderTotal = async (orderItems) => {
-  return orderItems.reduce((total, item) => {
-    return total + item.dish.price * item.quantity;
-  }, 0);
-};
-
-const checkOut = async (userId, orderDetailsHasBeenUpdated) => {
+const checkOutOld = async (userId, orderDetailsHasBeenUpdated) => {
   const session = await connection.startSession();
 
   let address = null;
@@ -224,6 +112,30 @@ const checkOut = async (userId, orderDetailsHasBeenUpdated) => {
     await session.endSession();
   }
 };
+
+const checkOut = async(userId) =>{
+  const user = await UserService.getUser({ _id: userId });
+
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const cart = await CartService.getCart({ user: userId });
+
+  if (!cart) {
+    throw new AppError('Cart not found', 404);
+  }
+
+  if (cart.items.length === 0) {
+    throw new AppError('Cart is empty', 409);
+  }
+
+  const cartItems = [...cart.items];
+
+  const sessionId = await checkOutSessionService.createSession(userId, cartItems);
+
+  
+}
 
 const confirmOrder = async (orderConfirmInfo) => {
   let orderAfterPaid;
@@ -369,6 +281,120 @@ const deleteAll = async () => {
   await Order.deleteMany({});
   await OrderDetailService.deleteAll();
 };
+
+const getOrders = async (queryString) => {
+  const { page = 1, limit = 10 } = queryString;
+  const features = new ApiFeatures(Order.find(), queryString)
+    .filter()
+    .limitFields()
+    .sort();
+  return await paginate(Order, features.query, parseInt(page, 10), parseInt(limit, 10));
+};
+
+const getOrder = async (filter) => {
+  return await Order.findOne(filter)
+    .populate({
+      path: 'order_details',
+      populate: {
+        path: 'dish',
+        model: 'Dish',
+      },
+    })
+    .exec();
+};
+
+const getOrderHistory = async (userId, queryString) => {
+  const { page = 1, limit = 10, order_status, order_date, dish_name } = queryString;
+  const userIdConverted = await convertToObjectId(userId);
+
+  const pipeline = [
+    { $match: { user: userIdConverted, ...(order_status && { order_status }) } },
+    {
+      $lookup: {
+        from: 'orderdetails',
+        localField: '_id',
+        foreignField: 'order',
+        as: 'order_details',
+      },
+    },
+    { $unwind: '$order_details' },
+    {
+      $lookup: {
+        from: 'dishes',
+        localField: 'order_details.dish',
+        foreignField: '_id',
+        as: 'order_details.dish',
+      },
+    },
+    { $unwind: '$order_details.dish' },
+    {
+      $group: {
+        _id: '$_id',
+        order_status: { $first: '$order_status' },
+        payment_status: { $first: '$payment_status' },
+        payment_method: { $first: '$payment_method' },
+        order_total: { $first: '$order_total' },
+        time_completed: { $first: '$time_completed' },
+        created_at: { $first: '$created_at' },
+        updated_at: { $first: '$updated_at' },
+        user: { $first: '$user' },
+        order_date: { $first: '$order_date' },
+        shipping_address: { $first: '$shipping_address' },
+        order_details: { $push: '$order_details' },
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        user: 1,
+        order_status: 1,
+        order_total: 1,
+        payment_status: 1,
+        payment_method: 1,
+        order_date: 1,
+        'order_details.dish._id': 1,
+        'order_details.dish.name': 1,
+        'order_details.dish.image': 1,
+        'order_details.quantity': 1,
+        'order_details.price': 1,
+        shipping_address: 1,
+        time_completed: 1,
+        created_at: 1,
+        updated_at: 1,
+      },
+    },
+    { $sort: { order_date: -1 } },
+  ];
+
+  if (order_date && typeof order_date === 'object') {
+    match.$match.order_date = convertDateStringToDateObject(order_date);
+  }
+
+  if (dish_name) {
+    pipeline.push({
+      $match: { 'order_details.dish.name': { $regex: dish_name, $options: 'i' } },
+    });
+  }
+
+  return await paginateAggregate(Order, pipeline, parseInt(page, 10), parseInt(limit, 10));
+};
+
+const convertDateStringToDateObject = (orderDate) => {
+  for (const key in orderDate) {
+    if (Object.prototype.hasOwnProperty.call(orderDate, key)) {
+      orderDate[key] = new Date(orderDate[key]);
+      console.log('date', new Date(orderDate[key]));
+    }
+  }
+  return orderDate;
+};
+
+const calculateOrderTotal = async (orderItems) => {
+  return orderItems.reduce((total, item) => {
+    return total + item.dish.price * item.quantity;
+  }, 0);
+};
+
 
 module.exports = {
   getOrders,

@@ -131,14 +131,12 @@ const getPopularDishes = async (userId, queryString) => {
         from: 'orderdetails',
         localField: '_id',
         foreignField: 'order',
-        as: 'order_detail',
+        as: 'orderDetails',
       },
     },
-    { $unwind: '$order_detail' },
     {
-      $group: {
-        _id: '$order_detail.dish',
-        totalQuantity: { $sum: '$order_detail.quantity' },
+      $addFields: {
+        totalQuantity: { $sum: '$orderDetails.quantity' },
       },
     },
     { $sort: { totalQuantity: -1 } },
@@ -153,8 +151,19 @@ const getPopularDishes = async (userId, queryString) => {
     { $unwind: '$dish' },
     {
       $project: {
-        _id: 0,
-        dish: 1,
+        _id: 1,
+        name: 1,
+        description: 1,
+        price: 1,
+        image: 1,
+        is_active: 1,
+        discount: 1,
+        created_at: 1,
+        updated_at: 1,
+        category: {
+          name: 1,
+          description: 1,
+        },
         totalQuantity: 1,
       },
     },
@@ -195,7 +204,7 @@ const getPopularDishes = async (userId, queryString) => {
   if (paginatedResult.results.length === 0) {
     console.log('Popular dishes is empty, fetching 5 random dishes');
     const fallbackPipeline = [
-      { $sample: { size: 5 } },
+      { $sample: { size: limit } },
       {
         $project: {
           dish: '$$ROOT',
@@ -209,7 +218,7 @@ const getPopularDishes = async (userId, queryString) => {
         {
           $lookup: {
             from: 'favorites',
-            let: { dishId: '$dish._id' },
+            let: { dishId: '$_id' },
             pipeline: [
               {
                 $match: {
@@ -236,9 +245,9 @@ const getPopularDishes = async (userId, queryString) => {
 
     const fallbackResult = await Dish.aggregate(fallbackPipeline);
     return {
-      data: fallbackResult,
+      results: fallbackResult,
       pagination: {
-        totalDocs: fallbackResult.length,
+        totalCount: fallbackResult.length,
         limit: 5,
         page: 1,
         totalPages: 1,
