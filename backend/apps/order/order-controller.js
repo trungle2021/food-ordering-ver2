@@ -75,6 +75,15 @@ const checkOut = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
+const getCheckoutSession = catchAsyncHandler(async (req, res, next) => {
+  const { sessionId } = req.params;
+  const session = await OrderService.getCheckoutSession(sessionId);
+  return res.status(200).json({
+    status: 'success',
+    data: session,
+  });
+});
+
 const confirmOrder = catchAsyncHandler(async (req, res, next) => {
   const orderConfirmed = await OrderService.confirmOrder(req.body);
   if (orderConfirmed) {
@@ -129,6 +138,7 @@ module.exports = {
   getOrder,
   getOrderHistory,
   checkOut,
+  getCheckoutSession,
   updateOrder,
   cancelOrder,
   confirmOrder,

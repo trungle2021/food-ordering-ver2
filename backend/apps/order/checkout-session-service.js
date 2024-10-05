@@ -6,17 +6,19 @@ const redis = new Redis(); // Configure Redis connection as needed
 
 const SESSION_EXPIRY = 30 * 60; // 30 minutes in seconds
 
-function calculateTotal(cartItems) {
-  return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+function calculateOrderTotal(cartItems) {
+  return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 }
 
-async function createSession(userId, cartItems) {
+
+async function createSession(userId, cartItems, shipping_address) {
   const sessionId = uuidv4();
   const sessionData = {
-    userId,
-    cartItems,
-    total: calculateTotal(cartItems),
-    createdAt: Date.now(),
+    user: userId,
+    order_details: cartItems,
+    shipping_address,
+    order_total: calculateOrderTotal(cartItems),
+    order_date: Date.now(),
   };
 
   await redis.setex(

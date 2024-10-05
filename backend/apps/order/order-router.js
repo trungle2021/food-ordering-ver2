@@ -11,6 +11,7 @@ const {
   checkOut,
   deleteAll,
   updateOrder,
+  getCheckoutSession,
 } = require('../order/order-controller');
 const validateRequest = require('../../utils/joi/validate-request-schema');
 const {
@@ -21,6 +22,7 @@ const {
   completeOrderRequestSchema,
   getOrderHistoryRequestSchema,
   getOrderRequestSchema,
+  getCheckoutSessionRequestSchema,
 } = require('./order-request-validator');
 const { BODY, PARAMS, QUERY } = require('../../constant/request-types');
 
@@ -34,8 +36,9 @@ router.route('/complete').post(validateRequest(completeOrderRequestSchema, [BODY
 
 router.route('/cancel').post(validateRequest(cancelOrderRequestSchema, [BODY]), cancelOrder);
 
-router.route('/check-out').post(checkOut);
+router.route('/checkout').post(checkOut);
 
+router.route('/checkout-session/:sessionId').get(validateRequest(getCheckoutSessionRequestSchema, [PARAMS]), getCheckoutSession);
 router
   .route('/history/users/:userId')
   .get(validateRequest(getOrderHistoryRequestSchema, [PARAMS, QUERY]), getOrderHistory);

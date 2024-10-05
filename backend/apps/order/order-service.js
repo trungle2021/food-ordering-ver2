@@ -113,11 +113,28 @@ const checkOutOld = async (userId, orderDetailsHasBeenUpdated) => {
   }
 };
 
-const checkOut = async(userId) =>{
+const getCheckoutSession = async (sessionId) => {
+  const session = await checkOutSessionService.getSession(sessionId);
+  if (!session) {
+    throw new AppError('Checkout session not found', 404);
+  }
+  return session;
+}
+
+const checkOut = async (userId) => {
+  let shipping_address = null;
+
   const user = await UserService.getUser({ _id: userId });
 
   if (!user) {
     throw new AppError('User not found', 404);
+  }
+
+  if (user.user_address.length > 0) {
+    const userAddressList = user.user_address.toObject();
+    shipping_address = JSON.stringify(
+      userAddressList.find((address) => address.is_default_address) || userAddressList[0]
+    ); // Pick the first address if no default address
   }
 
   const cart = await CartService.getCart({ user: userId });
@@ -132,10 +149,9 @@ const checkOut = async(userId) =>{
 
   const cartItems = [...cart.items];
 
-  const sessionId = await checkOutSessionService.createSession(userId, cartItems);
-
-  
-}
+  const sessionId = await checkOutSessionService.createSession(userId, cartItems, shipping_address);
+  return {sessionId};
+};
 
 const confirmOrder = async (orderConfirmInfo) => {
   let orderAfterPaid;
@@ -284,10 +300,7 @@ const deleteAll = async () => {
 
 const getOrders = async (queryString) => {
   const { page = 1, limit = 10 } = queryString;
-  const features = new ApiFeatures(Order.find(), queryString)
-    .filter()
-    .limitFields()
-    .sort();
+  const features = new ApiFeatures(Order.find(), queryString).filter().limitFields().sort();
   return await paginate(Order, features.query, parseInt(page, 10), parseInt(limit, 10));
 };
 
@@ -395,7 +408,6 @@ const calculateOrderTotal = async (orderItems) => {
   }, 0);
 };
 
-
 module.exports = {
   getOrders,
   getOrder,
@@ -408,4 +420,5 @@ module.exports = {
   cancelOrder,
   deleteOrder,
   deleteAll,
+  getCheckoutSession,
 };
