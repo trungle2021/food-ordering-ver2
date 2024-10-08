@@ -67,7 +67,7 @@ export const DishPage = () => {
 
     const getDishes = async () => {
         const response = await DishService.getDishes(queryParams.toString(), dishLimit);
-        setDishes(response.data);
+        setDishes(response.data.results);
     };
 
     const setDefaultFilter = () => {

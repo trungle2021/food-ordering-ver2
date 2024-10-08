@@ -30,7 +30,7 @@ export const SearchDish = () => {
   const loadSuggestion = async (limit: number) => {
 
     const response: any = await DishService.getPopularDishes(limit);
-    setProductNameSuggestion(response.data.map(((item: { dish: { name: any; }; }) => item.dish.name)));
+    setProductNameSuggestion(response.data.results.map(((dish:any) => dish.name)));
   };
 
 
@@ -45,8 +45,9 @@ export const SearchDish = () => {
         const payload = { keyword: searchFormValue, limit: 10 }
         dispatch<any>(searchDishes(payload))
           .then((response: any) => {
-            setProductNameSuggestion(response.payload.map(((item: { name: any; }) => item.name)));
+            setProductNameSuggestion(response.payload.data.results.map(((dish:any) => dish.name)));
           }).catch((error: { message: SetStateAction<string> }) => {
+            console.log("error", error)
             console.log(error.message);
           });
       }

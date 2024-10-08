@@ -24,7 +24,7 @@ export const Favorites = () => {
         try {
           setIsLoading(true);
           const response = await FavoriteService.getFavoriteDishes(userId);
-          setFavoriteDishes(response);
+          setFavoriteDishes(response.data);
         } catch (error) {
           console.error("Error fetching favorite dishes:", error);
         } finally {

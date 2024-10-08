@@ -9,6 +9,11 @@ const getDishes = async (userId, queryString) => {
   const modifiedQueryString = { ...queryString };
   const apiFeatures = new ApiFeatures(Dish.find(), modifiedQueryString);
   const preparedQuery = apiFeatures.prepareQueryObject();
+  // Handle both single and multiple category names
+  let categoryNames = preparedQuery['category.name'];
+  if (categoryNames) {
+    categoryNames = Array.isArray(categoryNames) ? categoryNames : [categoryNames];
+  }
   const aggregatePipeline = [
     {
       $lookup: {
@@ -22,6 +27,7 @@ const getDishes = async (userId, queryString) => {
     {
       $match: {
         ...preparedQuery,
+        ...(categoryNames ? { 'category.name': { $in: categoryNames } } : {}),
       },
     },
     {
@@ -204,13 +210,8 @@ const getPopularDishes = async (userId, queryString) => {
   if (paginatedResult.results.length === 0) {
     console.log('Popular dishes is empty, fetching 5 random dishes');
     const fallbackPipeline = [
-      { $sample: { size: limit } },
-      {
-        $project: {
-          dish: '$$ROOT',
-          totalQuantity: 0,
-        },
-      },
+      { $sample: { size: 4 }},
+      { $addFields: { totalQuantity: 0 } }
     ];
 
     if (userId) {
@@ -235,9 +236,14 @@ const getPopularDishes = async (userId, queryString) => {
           },
         },
         {
-          $unwind: {
-            path: '$favoriteInfo',
-            preserveNullAndEmptyArrays: true,
+          $addFields: {
+            favoriteInfo: {
+              $cond: {
+                if: { $eq: [{ $size: '$favoriteInfo' }, 0] },
+                then: null,
+                else: { $arrayElemAt: ['$favoriteInfo', 0] },
+              },
+            },
           },
         }
       );

@@ -4,14 +4,14 @@ import OrderProps from "~/interface/order/orderResponse";
 
 
 interface OrderState {
-    orderHistories: OrderProps[],
+    data: OrderProps[],
     isLoading: boolean,
     totalPage: number,
     error: string
 }
 
 const initialState: OrderState = {
-    orderHistories: [],
+    data: [],
     isLoading: false,
     totalPage: 1,
     error: ''
@@ -27,8 +27,8 @@ const orderSlice = createSlice({
         })
             .addCase(getOrderHistory.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.orderHistories = action.payload.data.orders;
-                state.totalPage = action.payload.data.totalPages;
+                state.data = action.payload.data.results;
+                state.totalPage = action.payload.totalPages;
             })
             .addCase(getOrderHistory.rejected, (state, action: any) => {
                 state.isLoading = false;

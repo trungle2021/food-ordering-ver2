@@ -37,14 +37,16 @@ export const OrderHistory = () => {
     const [filter, setFilter] = useState(queryParams.toString())
     const [orderStatus, setOrderStatus] = useState('Order Status')
 
-    const orderHistory = orderState.orderHistories
+    const orderHistories = orderState.data
     const isLoading = orderState.isLoading
     const error = orderState.error
     const totalPage = orderState.totalPage
 
 
     useEffect(() => {
-       if(userId) dispatch<any>(getOrderHistory({userId, filter, page: 1, limit: 10 }))
+       if(userId){
+            dispatch<any>(getOrderHistory({userId, filter, page: 1, limit: 10 }))
+       }
     }, [userId,dispatch])
 
     const handlePageChange = (event: any, newPageChange: number) => {
@@ -145,7 +147,7 @@ export const OrderHistory = () => {
         content = <div>
             Something went wrong
         </div>
-    } else if (orderHistory.length === 0) {
+    } else if (orderHistories.length === 0) {
         content = <div style={{ textAlign: 'center' }}>
             {OrderHistoryFilter}
             <p style={{ paddingTop: '40px' }}>No data found.</p>
@@ -153,7 +155,7 @@ export const OrderHistory = () => {
     } else {
         content = <>
             {OrderHistoryFilter}
-            {orderHistory && orderHistory.map((order: any) => (
+            {orderHistories && orderHistories.map((order: any) => (
                 <div className={styles['order-container']} key={order._id}>
                     <div className={styles['order-container__header']}>
                         <div>Order Date: {convertUtcToLocal(order.order_date).toLocaleDateString()}</div>

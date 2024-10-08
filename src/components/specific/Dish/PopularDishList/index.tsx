@@ -23,7 +23,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
 
     const popularDishList = popularDishes.map((item: any) => {
 
-        const { _id, image, discount, name, price, } = item.dish
+        const { _id, image, discount, name, price, } = item
         const favoriteInfo = item.favoriteInfo
 
         const itemSold = item.totalQuantity;
@@ -45,7 +45,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
     });
     return (
         <Grid container spacing={2} rowSpacing={2}>
-            {/* {popularDishList} */}
+            {popularDishList}
         </Grid>
     );
 };

@@ -20,7 +20,7 @@ export const getOrderHistory = createAsyncThunk("order/getOrderHistory", async (
 
 export const checkOut = createAsyncThunk("order/checkOut", async (payload, thunkApi) => {
     try {
-        return await OrderService.checkOut();
+        return await OrderService.checkOut(payload);
     } catch (error) {
         return thunkApi.rejectWithValue("Checkout failed")
     }

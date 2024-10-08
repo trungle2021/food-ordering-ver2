@@ -11,8 +11,7 @@ export const searchDishes = createAsyncThunk(
     async (payload: SearchDishesPayload, thunkAPI) => {
         try {
             const { keyword, limit } = payload
-            const response = await DishService.searchDishes(keyword, limit);
-            return response.data;
+            return  await DishService.searchDishes(keyword, limit);
         } catch (err: any) {
             return thunkAPI.rejectWithValue(err);
         }
