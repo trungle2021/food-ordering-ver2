@@ -19,7 +19,6 @@ export const balanceSlice = createSlice({
     initialState,
     reducers: {
         updateBalance: (state, action) => {
-            console.log(action)
             state.amount = action.payload;
         }
     },

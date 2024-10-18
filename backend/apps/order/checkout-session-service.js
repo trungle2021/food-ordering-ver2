@@ -27,7 +27,7 @@ async function createSession(userId, cartItems, shipping_address) {
     JSON.stringify(sessionData)
   );
 
-  return sessionId;
+  return {sessionId, sessionData};
 }
 
 async function getSession(sessionId) {

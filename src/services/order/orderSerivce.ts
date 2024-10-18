@@ -14,8 +14,12 @@ const getOrder = (orderId:string) : Promise<any> => {
     return axios.get(`${baseOrderApi}/${orderId}`);
 }
 
+const getCheckoutSession = (sessionId: string): Promise<any> => {
+    return axios.get(`${baseOrderApi}/checkout/${sessionId}`);
+}
+
 const checkOut = (payload: any) : Promise<any> => {
-    return axios.post(`${baseOrderApi}/check-out`, payload);
+    return axios.post(`${baseOrderApi}/checkout`, payload);
 }
 
 const updateOrder = (orderId: string, payload: any) : Promise<any> => {
@@ -26,6 +30,7 @@ export const OrderService = {
     getRecentOrderList,
     getOrderHistory,
     getOrder,
+    getCheckoutSession,
     updateOrder,
     checkOut
 };

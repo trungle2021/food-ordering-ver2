@@ -91,7 +91,6 @@ export const authSlice = createSlice({
         // state.isRefreshingToken = true;
       })
       .addCase(getNewAccessToken.fulfilled, (state, action) => {
-          console.log("New access token: " + action.payload.data.accessToken);
           state.accessToken = action.payload.data.accessToken;
           state.isLoading = false;
       })

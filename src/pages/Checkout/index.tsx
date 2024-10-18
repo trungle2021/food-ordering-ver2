@@ -17,6 +17,7 @@ import OrderProps from "~/interface/order/orderResponse"
 import OrderDetailProps from "~/interface/order/orderDetailResponse"
 import { toast } from "react-toastify"
 import { AddressResponse } from "~/interface/user/addressResponse"
+import { useLocation } from "react-router-dom"
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -32,7 +33,10 @@ const initialFormValues: CheckoutFormValues = {
 
 export const Checkout = () => {
 
-    const { orderId } = useParams()
+    const location = useLocation();
+    const { sessionId } = useParams()
+
+    const {sessionData} = location.state || {}
     const history = useHistory()
     const dispatch = useDispatch()
 
@@ -54,9 +58,9 @@ export const Checkout = () => {
         defaultValues: initialFormValues,
     });
 
-    const getOrder = async (orderId: string) => {
+    const getCheckoutSession = async (sessionId: string) => {
         try {
-            const response = await OrderService.getOrder(orderId);
+            const response = await OrderService.getCheckoutSession(sessionId);
             const order = response.data;
             if (!order) {
                 history.push('/dashboard');
@@ -77,11 +81,11 @@ export const Checkout = () => {
     };
 
     useEffect(() => {
-        if (userId && orderId) {
+        if (userId && sessionId) {
             dispatch<any>(getBalance(userId))
-            getOrder(orderId)
+            getCheckoutSession(sessionId)
         }
-    }, [orderId, userId, dispatch])
+    }, [sessionId, userId, dispatch])
 
 
     // HANDLE USER_ADDRESS_MODAL

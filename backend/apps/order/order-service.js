@@ -149,8 +149,8 @@ const checkOut = async (userId) => {
 
   const cartItems = [...cart.items];
 
-  const sessionId = await checkOutSessionService.createSession(userId, cartItems, shipping_address);
-  return {sessionId};
+  const {sessionId, sessionData} = await checkOutSessionService.createSession(userId, cartItems, shipping_address);
+  return {sessionId, sessionData};
 };
 
 const confirmOrder = async (orderConfirmInfo) => {

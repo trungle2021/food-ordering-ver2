@@ -26,7 +26,6 @@ export const PrivateRoute = ({component: Component, path, requiredParams, routeI
         if(requiredParams) {
           for (const param of requiredParams) {
             if (!props.match.params[param]) {
-              console.log(`Missing required parameter: ${param}`);
               return <Redirect to={routeIfNotMatch} />;
             }
           }

@@ -13,7 +13,6 @@ export const RecentOrderList = ({ limit }: { limit: number }) => {
   const getRecentOrders = async (userId: string, limit: number) => {
     try {
       const response = await OrderService.getRecentOrderList(userId, limit);
-      console.log('response', response);
       setRecentOrderDishes(response.data);
     } catch (error) {
       console.log(error);

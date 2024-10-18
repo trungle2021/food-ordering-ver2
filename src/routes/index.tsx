@@ -18,9 +18,9 @@ function Routes() {
       <PrivateRoute path={PATH.ORDER_HISTORY} component={OrderHistory} />
       <PrivateRoute path={PATH.USER_PROFILE} component={UserProfile} />
       <PrivateRoute
-        path={`${PATH.CHECKOUT}/:orderId?`}
+        path={`${PATH.CHECKOUT}/:sessionId?`}
         component={Checkout}
-        requiredParams={['orderId']} 
+        requiredParams={['sessionId']} 
         routeIfNotMatch={PATH.DASHBOARD}
         />
     </Switch>

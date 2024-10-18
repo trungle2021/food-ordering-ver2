@@ -10,7 +10,6 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
     const getPopularDishes = async () => {
         try {
             const response = await DishService.getPopularDishes(limit);
-            console.log(response)
             setPopularDishes(response?.data?.results);
         } catch (err) {
             console.log(err);

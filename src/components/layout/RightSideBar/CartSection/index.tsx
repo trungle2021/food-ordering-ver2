@@ -26,10 +26,9 @@ export const CartSection = () => {
         const payload = cart.cartHasBeenUpdated ? { cartHasBeenUpdated: cart.cartHasBeenUpdated } : {};
         
         try {
-            const response = await OrderService.checkOut(payload);
-            if (response.status === "success") {
-                const orderId = response.data._id;
-                history.push(`/checkout/${orderId}`);
+            const {sessionId, sessionData} = await OrderService.checkOut(payload);
+            if (sessionId && sessionData) {
+                history.push(`/checkout/${sessionId}`, {sessionData});
             } else {
                 toast.error("Checkout failed");
             }

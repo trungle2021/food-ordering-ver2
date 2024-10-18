@@ -165,13 +165,9 @@ export const DishPage = () => {
         let cloneApplyingFilter: ApplyingFilter = { ...applyingFilter };
 
         if (isChecked) {
-            console.log("is checked");
             queryParams.append('category_name', category?.name as string);
         } else {
-            console.log("unchecked");
-
             const updatedCategories = queryParams.getAll('category_name').filter((filter) => filter !== category?.name);
-
             queryParams.delete('category_name');
 
             if (updatedCategories.length === 0) {
@@ -206,9 +202,6 @@ export const DishPage = () => {
     };
 
     const handleClearFilter = (key: string, value: string) => (event: SyntheticEvent) => {
-        console.log("Filter Key: ", key);
-        console.log("Filter Value: ", value);
-
         const cloneApplyingFilter = { ...applyingFilter };
 
         switch (key) {

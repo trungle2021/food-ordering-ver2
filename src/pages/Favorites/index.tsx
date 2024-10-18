@@ -14,7 +14,6 @@ export const Favorites = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleRemoveFavorite = (dishId: string) => {
-    console.log("dishId", dishId);
     setFavoriteDishes(prevDishes => prevDishes.filter(dish => dish._id !== dishId));
   };
 
