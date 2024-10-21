@@ -33,18 +33,16 @@ const initialFormValues: CheckoutFormValues = {
 
 export const Checkout = () => {
 
+    const dispatch = useDispatch()
     const location = useLocation();
+    const history = useHistory()
     const { sessionId } = useParams()
 
-    const {sessionData} = location.state || {}
-    const history = useHistory()
-    const dispatch = useDispatch()
-
     const [order, setOrder] = useState<OrderProps | null>(null);
+    const [shippingAddress, setShippingAddress] = useState<AddressResponse | null>(null)
+
     const user = useSelector((state: any) => state.user)
     const userId = user?.user?._id
-
-    const [shippingAddress, setShippingAddress] = useState<AddressResponse | null>(null)
 
     const balance = useSelector((state: any) => state.balance)
     const amount = balance.amount
@@ -58,34 +56,45 @@ export const Checkout = () => {
         defaultValues: initialFormValues,
     });
 
+    const setOrderAndAddress = (sessionData: any) => {
+        setOrder(sessionData);
+        const address = findAddress(sessionData.shipping_address) || findDefaultAddress()
+        setShippingAddress(address)
+    }
+
+    const findAddress = (addressId: string) => user?.user_address?.find((address: AddressResponse) => address._id === addressId);
+
+    const findDefaultAddress = () => user?.user_address?.find((address: AddressResponse) => address.is_default_address) || null;
+
     const getCheckoutSession = async (sessionId: string) => {
         try {
-            const response = await OrderService.getCheckoutSession(sessionId);
-            const order = response.data;
-            if (!order) {
+            const {sessionData} = await OrderService.getCheckoutSession(sessionId)
+            if (!sessionData) {
                 history.push('/dashboard');
                 return;
             }
-            setOrder(order);
-            const address = user?.user?.user_address.find((address: any) => address._id === order.shipping_address)
-            if (address) {
-                setShippingAddress(address)
-            } else {
-                const defaultAddress = user?.user?.user_address.find((address: any) => address.is_default_address) || {}
-                setShippingAddress(defaultAddress)
-            }
+            setOrderAndAddress(sessionData)
         } catch (error) {
             console.error("Failed to fetch order:", error);
+            toast.error("Failed to fetch order details");
             history.push('/dashboard');
         }
     };
 
+ 
     useEffect(() => {
-        if (userId && sessionId) {
-            dispatch<any>(getBalance(userId))
+        if (!userId) return;
+
+        const {sessionData} = location.state || {}
+
+        dispatch<any>(getBalance(userId))
+
+        if (sessionData){
+            setOrderAndAddress(sessionData)
+        }else if (sessionId){
             getCheckoutSession(sessionId)
         }
-    }, [sessionId, userId, dispatch])
+    }, [sessionId, userId, dispatch, location.state])
 
 
     // HANDLE USER_ADDRESS_MODAL
@@ -98,8 +107,9 @@ export const Checkout = () => {
     }
 
     const handleShippingAddressChange = async (payload: any) => {
+        if (!order) return;
         try {
-            const response = await OrderService.updateOrder(orderId, payload);
+            const response = await OrderService.updateOrder(order?._id, payload);
             if (response.status === 'success' && response.data) {
                 toast.success('Update order successfully')
                 setShippingAddress(user?.user?.user_address.find((address: any) => address._id === payload.addressId))
@@ -109,6 +119,7 @@ export const Checkout = () => {
             }
         } catch (error) {
             console.error("Failed to update order:", error);
+            toast.error('Failed to update order')
         }
     }
 
@@ -142,7 +153,7 @@ export const Checkout = () => {
         //     ...data,
         //     address: defaultAddress._id
         // }
-        // console.log("data: ", modifiedData)
+        console.log("data: ", data)
     }
 
     const onError = (error: any) => {
@@ -245,9 +256,9 @@ export const Checkout = () => {
                                                         <span className={styles['xQuantity']}>x</span>
                                                         <input type='text' className={`${styles['dish-quantity']}`} defaultValue={item.quantity} />
                                                     </div>
-                                                    <span className={`${styles['dish-price']}`}><span className='dollar'>$</span> {item.price} </span>
+                                                    <span className={`${styles['dish-price']}`}><span className='dollar'>$</span> {item.dish.price} </span>
                                                 </div>
-                                                <span className={`${styles['dish-price']}`}>+ <span className='dollar'>$</span> {item.price * item.quantity} </span>
+                                                <span className={`${styles['dish-price']}`}>+ <span className='dollar'>$</span> {item.amount} </span>
                                             </div>
                                         </li>
                                     );

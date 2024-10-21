@@ -8,6 +8,6 @@ export default interface OrderDetailProps {
     order: Order;
     dish: BaseDish;
     quantity: number;
-    price: number;
+    amount: number;
     favoriteInfo: FavoriteInfo;
 }

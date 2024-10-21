@@ -1,5 +1,6 @@
 const Dish = require('./dish-model');
 const Order = require('../order/order-model');
+const StockService = require('../stock/stock-service');
 const ApiFeatures = require('../../utils/api-features/api-features');
 const { COMPLETED } = require('../../constant/order-status');
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils');
@@ -366,7 +367,9 @@ const createDishes = async (dishes) => {
 };
 
 const createDish = async (dish) => {
-  return await Dish.create(dish);
+  const createdDish = await Dish.create(dish);
+  await StockService.upsertStock({ dishId: createdDish._id });
+  return createdDish;
 };
 
 const updateDish = async (dishId, updates) => {

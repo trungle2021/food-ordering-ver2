@@ -29,7 +29,10 @@ export const userSlice = createSlice({
     reducers: {
         // add new address to user_address
         addAddress: (state, action) => {
-            state.user?.user_address.push(action.payload);
+            if (state.user){
+                const userAddress = state.user.user_address
+                state.user.user_address = Array.isArray(userAddress) ? [...userAddress, action.payload] : [userAddress, action.payload];
+            }
         },
     },
     extraReducers: (builder) => {

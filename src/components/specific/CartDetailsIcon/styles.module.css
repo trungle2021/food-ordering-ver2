@@ -2,6 +2,22 @@
     position: relative;
 }
 
+.cart-details-container{
+    display: none;
+}
+
+.cart-icon-container:hover .cart-details-container{
+    display: block;
+    width: 200px;
+    height: auto;
+    background-color: var(--white) ;
+    position: absolute;
+    z-index: 999;
+    border: 1px solid var(--black);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
 .badge {
     position: absolute;
     padding: 3px;

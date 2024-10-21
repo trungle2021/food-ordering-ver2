@@ -41,12 +41,10 @@ export const DishCard = (props: DishCardProps) => {
                     src={image}
                     alt=""
                 />
-               {
-                itemSold &&  <div className="d-flex justify-between align-center">
-                <Rating ratingPoint={ratingPoint} size={20} />
-                    <span>{itemSold} Sold</span>
+                <div className={`${styles["dish-container__rating"]}`}>
+                    <Rating ratingPoint={ratingPoint} size={20} />
+                    {itemSold != undefined && itemSold > 0 && <span>{itemSold} Sold</span>}
                 </div>
-               }
                 <div className={`${styles["dish-container__body"]}`}>
                     <div className={`${styles["dish-container__info"]}`}>
                         <span className={`${styles["dish-container__info--food-name"]}`}>

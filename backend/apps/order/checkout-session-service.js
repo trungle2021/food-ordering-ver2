@@ -7,7 +7,7 @@ const redis = new Redis(); // Configure Redis connection as needed
 const SESSION_EXPIRY = 30 * 60; // 30 minutes in seconds
 
 function calculateOrderTotal(cartItems) {
-  return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  return cartItems.reduce((acc, item) => acc + item.amount, 0);
 }
 
 

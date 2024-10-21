@@ -1,5 +1,6 @@
 const AppError = require('../../utils/error/app-error');
 const Stock = require('./stock-model');
+const Dish = require('../dish/dish-model');
 const DishService = require('../dish/dish-service');
 
 const checkStock = async (dishId, updateQuantity) => {
@@ -19,29 +20,88 @@ const checkStock = async (dishId, updateQuantity) => {
   return true;
 };
 
-const createStock = async (payload) => {
-  const { dishId, quantity } = payload;
+const upsertStock = async ({ dishId, quantityUpdate }) => {
   // Check if the dish exists
   const dish = await DishService.getDish({ _id: dishId });
   if (!dish) {
     throw new AppError('Dish does not exist', 404);
   }
 
-  const existingStock = (await Stock.countDocuments({ dish: dishId })) > 0;
+  // Find the existing stock
+  const existingStock = await Stock.findOne({ dish: dishId });
+
   if (existingStock) {
-    throw new AppError('The stock for this dish is already existed', 409);
+    // Stock exists, update quantity based on the comparison
+    const currentQuantity = existingStock.quantity;
+    const newQuantity = quantityUpdate > currentQuantity
+      ? currentQuantity + quantityUpdate
+      : Math.max(currentQuantity - quantityUpdate, 0);
+
+    const updatedStock = await Stock.findOneAndUpdate(
+      { dish: dishId },
+      { $set: { quantity: newQuantity } },
+      { new: true, runValidators: true }
+    );
+
+    return updatedStock;
+  } else {
+    // Stock doesn't exist, create new one
+    const newStock = new Stock({ dish: dishId, quantity: quantityUpdate });
+    await newStock.save();
+    return newStock;
   }
+};
 
-  // Create a new stock entry
-  const stock = new Stock({ dish: dishId, quantity });
+const initializeStockForAllDishes = async () => {
+  try {
+    // Get all dishes
+    const allDishes = await Dish.find({});
 
-  // Save the stock entry to the database
-  await stock.save();
+    // Prepare stock entries for all dishes
+    const stockEntries = allDishes.map(dish => ({
+      dish: dish._id,
+      quantity: 10,
+    }));
 
-  return stock;
+    // Use bulkWrite for efficient upsert operation
+    const bulkOps = stockEntries.map(entry => ({
+      updateOne: {
+        filter: { dish: entry.dish },
+        update: { $set: { quantity: entry.quantity } },
+        upsert: true,
+      }
+    }));
+
+    const result = await Stock.bulkWrite(bulkOps);
+
+    return {
+      message: `Initialized or updated stock for ${allDishes.length} dishes`,
+      modifiedCount: result.modifiedCount,
+      upsertedCount: result.upsertedCount,
+    };
+  } catch (error) {
+    console.error('Error in initializeStockForAllDishes:', error);
+    throw new AppError('Failed to initialize stock for dishes', 500);
+  }
+};      
+
+const deleteAllStock = async () => {
+  try {
+    const result = await Stock.deleteMany({});
+
+    return {
+      message: `Deleted all stock entries`,
+      deletedCount: result.deletedCount,
+    };
+  } catch (error) {
+    console.error('Error in deleteAllStock:', error);
+    throw new AppError('Failed to delete all stock entries', 500);
+  }
 };
 
 module.exports = {
-  createStock,
   checkStock,
+  upsertStock,
+  initializeStockForAllDishes,
+  deleteAllStock,
 };

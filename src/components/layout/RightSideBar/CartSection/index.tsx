@@ -26,7 +26,8 @@ export const CartSection = () => {
         const payload = cart.cartHasBeenUpdated ? { cartHasBeenUpdated: cart.cartHasBeenUpdated } : {};
         
         try {
-            const {sessionId, sessionData} = await OrderService.checkOut(payload);
+            const response = await OrderService.checkOut(payload);
+            const {sessionId, sessionData} = response.data
             if (sessionId && sessionData) {
                 history.push(`/checkout/${sessionId}`, {sessionData});
             } else {

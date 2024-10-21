@@ -114,11 +114,11 @@ const checkOutOld = async (userId, orderDetailsHasBeenUpdated) => {
 };
 
 const getCheckoutSession = async (sessionId) => {
-  const session = await checkOutSessionService.getSession(sessionId);
-  if (!session) {
+  const sessionData = await checkOutSessionService.getSession(sessionId);
+  if (!sessionData) {
     throw new AppError('Checkout session not found', 404);
   }
-  return session;
+  return sessionData;
 }
 
 const checkOut = async (userId) => {

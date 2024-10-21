@@ -77,10 +77,10 @@ const checkOut = catchAsyncHandler(async (req, res, next) => {
 
 const getCheckoutSession = catchAsyncHandler(async (req, res, next) => {
   const { sessionId } = req.params;
-  const session = await OrderService.getCheckoutSession(sessionId);
+  const sessionData = await OrderService.getCheckoutSession(sessionId);
   return res.status(200).json({
     status: 'success',
-    data: session,
+    data: {sessionData},
   });
 });
 
