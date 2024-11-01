@@ -1,10 +1,11 @@
 import { CartIcon } from '~/components/common/UI/Icon'
 import styles from './styles.module.css'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 export const CartDetailsIcon = () => {
     const cart = useSelector((state:any) => state.cart)
-    console.log(cart);
+    const history = useHistory();
   return (
     <div className={styles['cart-icon-container']}>
         <CartIcon />
@@ -14,11 +15,18 @@ export const CartDetailsIcon = () => {
             <ul>
                 {cart.items.map((item:any) => (
                   <li key={item._id}>
-                      <span>{item.dish.name}</span>
-                      </li>
+                     <div className={styles['cart-item']}>
+                      <img src={item.dish.image} alt={item.dish.name} />
+                      <div>
+                        <span>{item.dish.name}</span>
+                        <span>{item.dish.price}</span>
+                      </div>
+                     </div>
+                  </li>
                 ))}
             </ul>
             <span>{cart.totalItems} items</span>
+           <button onClick={() => history.push('/cart')}>View Cart Detail</button>
         </div>
     </div>
   )

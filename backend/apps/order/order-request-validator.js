@@ -37,11 +37,17 @@ const getOrderRequestSchema = Joi.object({
 
 const updateOrderRequestSchema = Joi.object({
   orderId: Joi.string().required(),
+
   addressId: Joi.string().required().optional(),
 });
 
 const getCheckoutSessionRequestSchema = Joi.object({
   sessionId: Joi.string().required(),
+});
+
+const updateCheckoutSessionRequestSchema = Joi.object({
+  sessionId: Joi.string().required(),
+  addressId: Joi.string().required().optional(),
 });
 
 module.exports = {
@@ -53,4 +59,5 @@ module.exports = {
   getOrderHistoryRequestSchema,
   getOrderRequestSchema,
   getCheckoutSessionRequestSchema,
+  updateCheckoutSessionRequestSchema,
 };

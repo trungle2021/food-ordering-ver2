@@ -75,6 +75,16 @@ const checkOut = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
+const updateCheckoutSession = catchAsyncHandler(async (req, res, next) => {
+  const { sessionId } = req.params;
+  const payload = req.body;
+  const updatedSession = await OrderService.updateCheckoutSession(sessionId, payload);
+  return res.status(200).json({
+    status: 'success',
+    data: updatedSession,
+  });
+});
+
 const getCheckoutSession = catchAsyncHandler(async (req, res, next) => {
   const { sessionId } = req.params;
   const sessionData = await OrderService.getCheckoutSession(sessionId);
@@ -139,6 +149,7 @@ module.exports = {
   getOrderHistory,
   checkOut,
   getCheckoutSession,
+  updateCheckoutSession,
   updateOrder,
   cancelOrder,
   confirmOrder,

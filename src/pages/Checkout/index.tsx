@@ -58,13 +58,13 @@ export const Checkout = () => {
 
     const setOrderAndAddress = (sessionData: any) => {
         setOrder(sessionData);
-        const address = findAddress(sessionData.shipping_address) || findDefaultAddress()
+        const address = getAddress(sessionData) || getDefaultAddress()
         setShippingAddress(address)
     }
 
-    const findAddress = (addressId: string) => user?.user_address?.find((address: AddressResponse) => address._id === addressId);
+    const getAddress = (sessionData: any) => JSON.parse(sessionData.shipping_address);
 
-    const findDefaultAddress = () => user?.user_address?.find((address: AddressResponse) => address.is_default_address) || null;
+    const getDefaultAddress = () => user?.user_address?.find((address: AddressResponse) => address.is_default_address) || null;
 
     const getCheckoutSession = async (sessionId: string) => {
         try {
@@ -106,10 +106,11 @@ export const Checkout = () => {
         setOpenUserAddressModal(false)
     }
 
-    const handleShippingAddressChange = async (payload: any) => {
-        if (!order) return;
+    const handleShippingAddressChange = async (sessionId: any, payload: any) => {
+        if (!sessionId) return;
         try {
-            const response = await OrderService.updateOrder(order?._id, payload);
+            const response = await OrderService.updateCheckoutSession(sessionId, payload);
+            console.log("response: ", response)
             if (response.status === 'success' && response.data) {
                 toast.success('Update order successfully')
                 setShippingAddress(user?.user?.user_address.find((address: any) => address._id === payload.addressId))
@@ -168,7 +169,7 @@ export const Checkout = () => {
                 open={openUserAddressModal}
                 onOpen={handleOpenUserAddress}
                 onClose={handleCloseUserAddressModal}
-                onSubmit={handleShippingAddressChange}
+                onSubmit={(payload: any) => handleShippingAddressChange(sessionId, payload)}
                 currentShippingAddressId={order?.shipping_address ?? ''} />
 
             <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
@@ -272,7 +273,6 @@ export const Checkout = () => {
                             </div>
                         </div>
                     </div>
-
                     <button type="button" className={styles['checkout-container-button-payment']}>Proceed To Payment</button>
                 </form >
 

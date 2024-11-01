@@ -7,6 +7,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { UserProfile } from "~/pages/UserProfile";
 import { Checkout } from "~/pages/Checkout";
 import { DishPage } from "~/pages/Dishes";
+import { Cart } from "~/pages/Cart";
 
 
 function Routes() {
@@ -17,6 +18,7 @@ function Routes() {
       <PrivateRoute path={PATH.DISHES} component={DishPage} />
       <PrivateRoute path={PATH.ORDER_HISTORY} component={OrderHistory} />
       <PrivateRoute path={PATH.USER_PROFILE} component={UserProfile} />
+      <PrivateRoute path={PATH.CART} component={Cart} />
       <PrivateRoute
         path={`${PATH.CHECKOUT}/:sessionId?`}
         component={Checkout}

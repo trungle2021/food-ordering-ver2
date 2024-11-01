@@ -7,37 +7,18 @@ import { toast } from "react-toastify";
 import OrderService from "~/services/order/orderSerivce";
 import { CartItem } from "~/components/specific/CartItem";
 import { getCart } from "~/store/cart/cartAction";
+import { useCheckout } from "~/hooks/useCheckout";
 
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
     const userId = useSelector((state: any) => state.user?.user?._id);
-    const history = useHistory() 
+    const { handleCheckoutAction } = useCheckout()
+
     useEffect(() => {
         if(userId) dispatch<any>(getCart(userId))
     }, [userId,dispatch])
 
-    const handleCheckoutAction = async () => {
-        if(cart.items.length === 0){
-            toast.error("Cart is empty")
-            return;
-        }
-
-        const payload = cart.cartHasBeenUpdated ? { cartHasBeenUpdated: cart.cartHasBeenUpdated } : {};
-        
-        try {
-            const response = await OrderService.checkOut(payload);
-            const {sessionId, sessionData} = response.data
-            if (sessionId && sessionData) {
-                history.push(`/checkout/${sessionId}`, {sessionData});
-            } else {
-                toast.error("Checkout failed");
-            }
-        } catch (error) {
-            toast.error("An error occurred during checkout");
-            console.error("Checkout error:", error);
-        }
-    }
 
 
 

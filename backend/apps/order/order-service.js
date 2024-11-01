@@ -153,6 +153,10 @@ const checkOut = async (userId) => {
   return {sessionId, sessionData};
 };
 
+const updateCheckoutSession = async (sessionId, updates) => {
+  return await checkOutSessionService.updateSession(sessionId, updates);
+}
+
 const confirmOrder = async (orderConfirmInfo) => {
   let orderAfterPaid;
   const session = await connection.startSession();
@@ -421,4 +425,5 @@ module.exports = {
   deleteOrder,
   deleteAll,
   getCheckoutSession,
+  updateCheckoutSession,
 };

@@ -12,5 +12,6 @@ export enum PATH {
   ORDER_HISTORY = "/order-history",
   BILL = "/bill",
   USER_PROFILE = "/user-profile",
-  CHECKOUT = '/checkout'
+  CHECKOUT = '/checkout',
+  CART = '/cart'
 }

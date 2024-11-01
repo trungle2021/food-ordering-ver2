@@ -22,8 +22,8 @@ const checkOut = (payload: any) : Promise<any> => {
     return axios.post(`${baseOrderApi}/checkout`, payload);
 }
 
-const updateOrder = (orderId: string, payload: any) : Promise<any> => {
-    return axios.put(`${baseOrderApi}/${orderId}`, payload);
+const updateCheckoutSession = (sessionId: string, payload: any) : Promise<any> => {
+    return axios.put(`${baseOrderApi}/checkout/${sessionId}`, payload);
 }
 
 export const OrderService = {
@@ -31,7 +31,7 @@ export const OrderService = {
     getOrderHistory,
     getOrder,
     getCheckoutSession,
-    updateOrder,
+    updateCheckoutSession,
     checkOut
 };
 
