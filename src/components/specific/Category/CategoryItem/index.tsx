@@ -1,4 +1,3 @@
-import { Card, CardContent, CardMedia } from "@mui/material";
 import styles from "./styles.module.css";
 
 type CategoryProps = {

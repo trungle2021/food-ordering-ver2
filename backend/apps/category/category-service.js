@@ -2,10 +2,12 @@ const ApiFeatures = require('../../utils/api-features/api-features');
 const Category = require('./category-model');
 
 const getCategories = async (queryString) => {
+  console.log(queryString);
   const features = new ApiFeatures(Category.find(), queryString)
     .filter()
     .limitFields()
     .sort()
+    .paginate();
   return await features.query;
 };
 

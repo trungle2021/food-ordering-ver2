@@ -15,7 +15,7 @@ import FavoriteInfo from '../../interface/favorite/favorite';
 export const Dashboard = () => {
     const dishes = useSelector((state: any) => state.searchDish)
     const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
-    const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 8 : isLg ? 10 : isXl ? 12 : 4
+    const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 6 : isLg ? 6 : isXl ? 6 : 6
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 6 : isLg ? 8 : isXl ? 10 : 2
     useClearSearchData()
     return (
@@ -44,10 +44,10 @@ export const Dashboard = () => {
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}
-                                    description={dish.description}
                                     favoriteInfo={favoriteInfo}
                                     image={dish.image}
-                                    category={""} />
+                                    ratingPoint={4}
+                                     />
                             </Grid>)
                         })}
                     </Grid>

@@ -11,13 +11,15 @@ import { HeaderPage } from '~/components/specific/HeaderPage'
 // }
 
 export const UserProfile = () => {
-    const [avatar, setAvatar] = useState()
-    const { handleSubmit, control } = useForm({
+    const [avatarPreview, setAvatarPreview] = useState<string>('/src/assets/images/Avatar.png')
+    const avatarInputRef = useRef<HTMLInputElement | null>(null);
+
+    const { handleSubmit, control, register, setValue } = useForm({
         // defaultValues
     })
-    const avatarInputRef = useRef<HTMLInputElement | null>(null);;
-    const onSubmit = () => {
 
+    const onSubmit = (data: any) => {
+        console.log(data)
     }
 
     const onError = () => {
@@ -29,6 +31,16 @@ export const UserProfile = () => {
             avatarInputRef.current.click();
         }
     }
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (file) {
+            const imageUrl = URL.createObjectURL(file)
+            setAvatarPreview(imageUrl)
+             setValue('avatar', file)
+        }
+    }
+
     return (
         <>
             <HeaderPage pageName="User Profile" />
@@ -41,11 +53,25 @@ export const UserProfile = () => {
                             <div style={{ display: 'flex', gap: '20px' }}>
                                 <Box
                                     component="img"
-                                    src="/src/assets/images/Avatar.png"
+                                    src={avatarPreview}
+                                    alt="Avatar preview"
+                                    sx={{ width: 150, height: 150, objectFit: 'fill' }}
                                 />
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                    <InputField sx={{ display: 'none' }} inputRef={avatarInputRef} hidden type="file" name='avatar' control={control} accept="image/*" />
-                                    <button type="button" onClick={handleClickChangePhoto} style={{ padding: '10px' }}>Change photo</button>
+                                    <InputField 
+                                        sx={{ display: 'none' }} 
+                                        inputRef={avatarInputRef} 
+                                        hidden 
+                                        type="file" 
+                                        name='avatar' 
+                                        control={control} 
+                                        register={register}
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                    <button type="button" onClick={handleClickChangePhoto} style={{ padding: '10px' }}>
+                                        Change photo
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +93,7 @@ export const UserProfile = () => {
                    
                     <Grid item xs={12}>
                         <Grid container justifyContent="flex-end">
-                            <button type='button' style={{ padding: '20px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Save</button>
+                            <button type='submit' style={{ padding: '20px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}>Save</button>
                         </Grid>
                     </Grid>
                 </Grid>

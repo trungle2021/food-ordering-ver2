@@ -25,7 +25,7 @@ export const CategoryList = ({limit}: {limit: number}) => {
       const { _id, image, name } = item;
       return (
         <Grid item xs={12} sm={6} md={4} lg={2} xl={2} key={_id}>
-          <CategoryItem iconLink={image} name={name} />
+          <CategoryItem iconLink={image ?? '/default-category-image.jpg'} name={name} />
         </Grid>
       );
     }
