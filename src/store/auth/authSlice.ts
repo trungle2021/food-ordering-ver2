@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   getNewAccessToken,
+  loginOAuth,
   loginUser,
   logoutUser,
   registerUser,
@@ -51,6 +52,23 @@ export const authSlice = createSlice({
           state.isLoggedIn = true;
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.error = 'Login failed';
+      })
+
+      builder
+      .addCase(loginOAuth.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginOAuth.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.accessToken = action?.payload?.data.accessToken;
+          state.refreshToken = action?.payload?.data.refreshToken;
+          state.userId = action?.payload?.data.userId;
+          state.message = "Login success";
+          state.isLoggedIn = true;
+      })
+      .addCase(loginOAuth.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.error = 'Login failed';
       })

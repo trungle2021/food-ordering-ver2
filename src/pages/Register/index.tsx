@@ -2,11 +2,10 @@ import { useDispatch } from "react-redux";
 import { SetStateAction, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Alert } from "@mui/material";
-import { getUserByUserId } from "~/store/User/userAction";
 import { RegisterForm } from "~/components/specific/RegisterForm";
 import { OR } from "~/components/common/UI/OR";
-import { Socials } from "~/components/common/UI/Socials";
 import { registerUser } from "~/store/auth/authAction";
+import { getUserByUserId } from "~/store/user/userAction";
 
 export const Register = () => {
   const dispatch = useDispatch();
@@ -35,7 +34,6 @@ export const Register = () => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <RegisterForm onSubmitRegisterForm={handleSubmitRegisterForm} />
         <OR text="OR" />
-        <Socials />
       </div>
     </div>
   );

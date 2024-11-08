@@ -63,6 +63,29 @@ const login = async (emailInput, passwordInput) => {
   };
 };
 
+const loginOAuth = async (provider, accessToken) => {
+  const user = await UserService.getUserByOAuth(provider, accessToken);
+  if (!user) {
+    throw new AppError('User not found', 404);
+  }
+
+  const { password, _id,...rest } = user._doc;
+  const payload = { _id };
+  const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
+    payload,
+    secretKey,
+    tokenOptions
+  );
+
+  await RefreshTokenService.saveRefreshToken({ user: _id, token: refreshToken });
+
+  return {
+    accessToken,
+    refreshToken,
+    userId: _id,
+  };
+}
+
 const logout = async (userId) => {
   await RefreshTokenService.invalidateRefreshTokenByUserId(userId);
 };
@@ -123,6 +146,7 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
 module.exports = {
   register,
   login,
+  loginOAuth,
   logout,
   renewAccessToken,
 };

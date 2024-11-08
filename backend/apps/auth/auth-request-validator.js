@@ -5,6 +5,11 @@ const loginRequestSchema = Joi.object({
   password: Joi.string().min(5).max(15).required(),
 });
 
+const loginOAuthRequestSchema = Joi.object({
+  provider: Joi.string().valid('google', 'facebook').required(),
+  token: Joi.string().required(),
+});
+
 const registerRequestSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(5).max(15).required(),
@@ -20,6 +25,7 @@ const refreshTokenRequestSchema = Joi.object({
 
 module.exports = {
   loginRequestSchema,
+  loginOAuthRequestSchema,
   registerRequestSchema,
   refreshTokenRequestSchema,
 };

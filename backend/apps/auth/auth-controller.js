@@ -32,6 +32,21 @@ const login = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
+const loginOAuth = catchAsyncHandler(async (req, res, next) => {
+  const { provider, token } = req.body;
+  const loginResult = await AuthService.loginOAuth(provider, token);
+  if (!loginResult) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Invalid OAuth token or provider',
+    });
+  }
+  return res.status(200).json({
+    status: 'success',
+    data: loginResult,
+  });
+});
+
 const logout = catchAsyncHandler(async (req, res, next) => {
   const userId = req.userId;
   await RefreshTokenService.invalidateRefreshTokenByUserId(userId);
@@ -63,6 +78,7 @@ const renewAccessToken = catchAsyncHandler(async (req, res, next) => {
 module.exports = {
   register,
   login,
+  loginOAuth,
   logout,
   renewAccessToken,
 };

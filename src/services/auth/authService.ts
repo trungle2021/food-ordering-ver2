@@ -1,10 +1,21 @@
 
 import axios from "~/lib/axios";
-import { loginApi, registerApi, logoutApi, refreshTokenApi } from "~/utils/api";
+import { loginApi, registerApi, logoutApi, refreshTokenApi, loginGoogleApi, loginFacebookApi } from "~/utils/api";
 import { LoginPayload } from "~/interface/auth/loginPayload";
 import { RegisterPayload } from "~/interface/auth/registerPayload";
 import { GetNewAccessTokenPayload } from "~/interface/auth/getNewAccessTokenPayload";
 
+const loginOAuth = (token: string, resourceType: string) => {
+  switch (resourceType) {
+    case 'google':
+      return axios.post(`${loginGoogleApi}`, { token });
+    case 'facebook':
+      return axios.post(`${loginFacebookApi}`, { token });
+    default:
+      throw new Error('Invalid OAuth resource type');
+  }
+   
+}
 
 const login = (credential: LoginPayload): Promise<any> => {
   return axios.post(loginApi, credential);
@@ -30,6 +41,7 @@ const AuthService = {
   register,
   logout,
   getNewAccessToken,
+  loginOAuth,
 };
 
 export default AuthService;

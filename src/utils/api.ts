@@ -38,6 +38,8 @@ const loginApi: string = `${baseAuthApi}/login`;
 const registerApi: string = `${baseAuthApi}/register`;
 const logoutApi: string = `${baseAuthApi}/logout`;
 const refreshTokenApi: string = `${baseAuthApi}/refresh-token`;
+const loginGoogleApi: string = `${baseAuthApi}/login/google`;
+const loginFacebookApi: string = `${baseAuthApi}/login/facebook`;
 
 //* CART API
 const baseCartApi: string = 'api/v1/carts'
@@ -76,5 +78,7 @@ export {
   loginApi,
   registerApi,
   logoutApi,
-  refreshTokenApi
+  refreshTokenApi,
+  loginGoogleApi,
+  loginFacebookApi
 };

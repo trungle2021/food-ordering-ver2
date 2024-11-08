@@ -5,22 +5,31 @@ import { Alert } from "@mui/material";
 import { LoginPayload } from "~/interface/auth/loginPayload";
 import { LoginForm } from "~/components/specific/LoginForm";
 import { OR } from "~/components/common/UI/OR";
-import { loginUser } from "~/store/auth/authAction";
+import { loginOAuth, loginUser } from "~/store/auth/authAction";
 import { getUserByUserId } from "~/store/user/userAction";
 import { GoogleLogin } from "@react-oauth/google";
-import AuthService from "~/services/auth/authService";
 
 export const Login = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleOnLoginOAuthSuccess = async (credentialResponse: any, resourceType: string) => {
+  const handleOnLoginOAuthSuccess = async (credentialResponse: any, provider: string) => {
     const token = credentialResponse.credential
-    // send token to backend. 
     try {
-      const response = await AuthService.loginOAuth(resourceType, token);
-      const 
+      dispatch<any>(loginOAuth({token, provider}))
+      .then((result: any) => {
+        if (result.payload.status === "success") {
+          dispatch<any>(getUserByUserId(result.payload.data.userId)).then((result: any) => {
+            history.push('/dashboard');
+          });
+        } else {
+          setErrorMessage(result.payload.message)
+        }
+      })    
+    }catch(error:any){
+      // handle error
+      console.log('Failed to login with Google OAuth');
     }
   }
 
@@ -58,7 +67,7 @@ export const Login = () => {
         <OR text="OR" />
         <div>
           <GoogleLogin
-            onSuccess={handleOnLoginOAuthSuccess}
+            onSuccess={credentialResponse => handleOnLoginOAuthSuccess(credentialResponse, 'google')}
             onError={handleOnLoginOAuthFailed}
             useOneTap
         />;
