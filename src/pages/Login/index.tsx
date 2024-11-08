@@ -5,15 +5,28 @@ import { Alert } from "@mui/material";
 import { LoginPayload } from "~/interface/auth/loginPayload";
 import { LoginForm } from "~/components/specific/LoginForm";
 import { OR } from "~/components/common/UI/OR";
-import { Socials } from "~/components/common/UI/Socials";
-import { getUserByUserId } from "~/store/User/userAction";
 import { loginUser } from "~/store/auth/authAction";
+import { getUserByUserId } from "~/store/user/userAction";
+import { GoogleLogin } from "@react-oauth/google";
+import AuthService from "~/services/auth/authService";
 
 export const Login = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");
 
+  const handleOnLoginOAuthSuccess = async (credentialResponse: any, resourceType: string) => {
+    const token = credentialResponse.credential
+    // send token to backend. 
+    try {
+      const response = await AuthService.loginOAuth(resourceType, token);
+      const 
+    }
+  }
+
+  const handleOnLoginOAuthFailed = () => {
+
+  }
 
   const handleSubmitLoginForm = (values: LoginPayload) => {
     try {
@@ -43,7 +56,13 @@ export const Login = () => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <LoginForm onSubmitLoginForm={handleSubmitLoginForm} />
         <OR text="OR" />
-        <Socials />
+        <div>
+          <GoogleLogin
+            onSuccess={handleOnLoginOAuthSuccess}
+            onError={handleOnLoginOAuthFailed}
+            useOneTap
+        />;
+          </div>
       </div>
     </div>
   );

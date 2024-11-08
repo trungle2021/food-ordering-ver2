@@ -9,20 +9,23 @@ import { GlobalStyles } from "./components/common/GlobalStyles";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 
 function App() {
   return (
-    <GlobalStyles>
-        <ToastContainer/>
-      <Switch>
-        <PublicRoute path={PATH.LOGIN} component={Login} />
-        <PublicRoute path={PATH.REGISTER} component={Register}/>
-        <PublicRoute path={PATH.FORGOT_PASSWORD} component={ForgotPassword} />
-        <PrivateRoute path={PATH.INDEX} component={Home}/>
-        <Route component={Notfound} />
-      </Switch>
-    </GlobalStyles>
+    <GoogleOAuthProvider clientId="810591686997-8pn6na96q83ui05rh5qprnk93lp28vla.apps.googleusercontent.com">
+      <GlobalStyles>
+        <ToastContainer />
+        <Switch>
+          <PublicRoute path={PATH.LOGIN} component={Login} />
+          <PublicRoute path={PATH.REGISTER} component={Register} />
+          <PublicRoute path={PATH.FORGOT_PASSWORD} component={ForgotPassword} />
+          <PrivateRoute path={PATH.INDEX} component={Home} />
+          <Route component={Notfound} />
+        </Switch>
+      </GlobalStyles>
+    </GoogleOAuthProvider>
   );
 }
 
