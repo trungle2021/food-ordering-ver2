@@ -4,7 +4,6 @@ import { PATH } from "~/routes/routes.constant";
 import {
     Avatar,
     NotificationIcon,
-    CartIcon,
     SettingBlackIcon,
 } from "~/components/common/UI/Icon";
 import { CartDetailsIcon } from "~/components/specific/CartDetailsIcon";

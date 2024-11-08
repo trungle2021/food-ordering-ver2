@@ -1,12 +1,12 @@
 import styles from "./styles.module.css";
 import { Card } from "@mui/material";
-import { useAddItemToCart } from "~/hooks/useAddItemToCart";
 import Heart from "~/components/common/UI/Heart";
 import Discount from "~/components/common/UI/Discount";
 import Rating from "~/components/common/UI/Rating";
 import { useSelector } from "react-redux";
 import FavoriteInfo from "~/interface/favorite/favorite";
 import { useFavoriteDish } from "~/hooks/useFavoriteDish";
+import { useCart } from "~/hooks/useCart";
 
 interface DishCardProps {
     _id: string;
@@ -23,7 +23,7 @@ interface DishCardProps {
 export const DishCard = (props: DishCardProps) => {
     const { _id: dishId, name, image, price, discount, ratingPoint, itemSold, favoriteInfo, onRemove } = props;
     const userId = useSelector((state: any) => state.user?.user?._id)
-    const handleAddButton = useAddItemToCart();
+    const { addItemToCart } = useCart();
     const { isFavorite, toggleFavorite } = useFavoriteDish({ dishId, userId, initialFavoriteInfo: favoriteInfo, onRemove }); 
 
     return (
@@ -57,7 +57,7 @@ export const DishCard = (props: DishCardProps) => {
                             {userId && <Heart isFavorite={isFavorite} onFavoriteClick={toggleFavorite} />}
                         </div>
                     </div>
-                    <button type="button" className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => handleAddButton(dishId)}>
+                    <button type="button" className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => addItemToCart(dishId)}>
                         +
                     </button>
                 </div>

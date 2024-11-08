@@ -2,10 +2,17 @@ import { CartIcon } from '~/components/common/UI/Icon'
 import styles from './styles.module.css'
 import { useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { useCart } from '~/hooks/useCart'
+import { useEffect } from 'react'
 
 export const CartDetailsIcon = () => {
-    const cart = useSelector((state:any) => state.cart)
+    const { fetchCart } = useCart();
     const history = useHistory();
+    const cart = useSelector((state: any) => state.cart);
+    useEffect(() => {
+      fetchCart();
+    }, [])
+
   return (
     <div className={styles['cart-icon-container']}>
         <CartIcon />

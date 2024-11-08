@@ -1,5 +1,7 @@
+import { BaseUser } from "~/interface/user/baseUser";
+import UserProfileFormValues from "~/interface/user/userProfileFormValues";
 import axios from "~/lib/axios";
-import { createUserAddressApi, getUserAddressListApi, getUserByUserIdApi, updateUserAddressApi } from "~/utils/api";
+import { createUserAddressApi, getUserAddressListApi, getUserByUserIdApi, updateUserAddressApi, updateUserProfileApi } from "~/utils/api";
 
 
 const getUserByUserId = (userId: string) => {
@@ -21,12 +23,17 @@ const updateAddress = async (userId: string, addressDetail: UpdateAddressFormVal
     return await axios.put(url, addressDetail)
 }
 
+const updateUserProfile = async (userId: string, payload: UserProfileFormValues) => {
+    const url = `${updateUserProfileApi}`.replace(':userId', userId)
+    return await axios.put(url, payload)
+}
 
 export const UserService = {
     getUserByUserId,
     getUserAddressList,
     createAddress,
-    updateAddress
+    updateAddress,
+    updateUserProfile
 };
 
 export default UserService;

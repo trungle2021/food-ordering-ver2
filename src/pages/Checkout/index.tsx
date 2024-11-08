@@ -1,11 +1,10 @@
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import styles from './styles.module.css'
 import { Dropdown } from "rsuite"
 import { Controller, useForm } from "react-hook-form"
 import { PAYMENT_METHOD } from "~/utils/static"
-import { useParams } from "react-router-dom"
 import OrderService from "~/services/order/orderSerivce"
 import { PaymentTopUpModal } from "~/components/specific/Modal/PaymentTopUpModal"
 import { UserAddressModal } from "~/components/specific/Modal/UserAddressModal"
@@ -16,8 +15,8 @@ import { getBalance } from "~/store/balance/balanceAction"
 import OrderProps from "~/interface/order/orderResponse"
 import OrderDetailProps from "~/interface/order/orderDetailResponse"
 import { toast } from "react-toastify"
-import { AddressResponse } from "~/interface/user/addressResponse"
-import { useLocation } from "react-router-dom"
+import { useAddress } from '~/hooks/useAddress'
+import { AddressResponse } from '~/interface/user/addressResponse'
 
 interface CheckoutFormValues {
     paymentMethod: PAYMENT_METHOD,
@@ -40,18 +39,32 @@ export const Checkout = () => {
 
     const [order, setOrder] = useState<OrderProps | null>(null);
     const [shippingAddress, setShippingAddress] = useState<AddressResponse | null>(null)
+    const [openUserAddressModal, setOpenUserAddressModal] = useState(false)
+    const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
+    const [openTopUpModal, setOpenTopUpModal] = useState(false)
 
     const user = useSelector((state: any) => state.user)
-    const userId = user?.user?._id
-
     const balance = useSelector((state: any) => state.balance)
+    const userId = user?.user?._id
     const amount = balance.amount
 
-    const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.INTERNAL.toString())
+    const {
+        getAddress,
+        getDefaultAddress,
+        handleOpenUserAddress,
+        handleCloseUserAddressModal,
+        handleOpenCreateAddress,
+        handleCloseCreateAddressModal,
+        handleShippingAddressChange
+    } = useAddress({
+        checkoutSessionId: sessionId,
+        user,
+        onAddressChange: setShippingAddress,
+        onUserAddressModalChange: setOpenUserAddressModal,
+        onCreateAddressModalChange: setOpenCreateAddressModal
+    })
 
-    const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
-    const [openTopUpModal, setOpenTopUpModal] = useState(false)
-    const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
     const { handleSubmit, register, reset, control, watch } = useForm<CheckoutFormValues>({
         defaultValues: initialFormValues,
     });
@@ -61,10 +74,6 @@ export const Checkout = () => {
         const address = getAddress(sessionData) || getDefaultAddress()
         setShippingAddress(address)
     }
-
-    const getAddress = (sessionData: any) => JSON.parse(sessionData.shipping_address);
-
-    const getDefaultAddress = () => user?.user_address?.find((address: AddressResponse) => address.is_default_address) || null;
 
     const getCheckoutSession = async (sessionId: string) => {
         try {
@@ -96,43 +105,6 @@ export const Checkout = () => {
         }
     }, [sessionId, userId, dispatch, location.state])
 
-
-    // HANDLE USER_ADDRESS_MODAL
-    const handleOpenUserAddress = async () => {
-        setOpenUserAddressModal(true)
-    }
-
-    const handleCloseUserAddressModal = () => {
-        setOpenUserAddressModal(false)
-    }
-
-    const handleShippingAddressChange = async (sessionId: any, payload: any) => {
-        if (!sessionId) return;
-        try {
-            const response = await OrderService.updateCheckoutSession(sessionId, payload);
-            console.log("response: ", response)
-            if (response.status === 'success' && response.data) {
-                toast.success('Update order successfully')
-                setShippingAddress(user?.user?.user_address.find((address: any) => address._id === payload.addressId))
-                setOpenUserAddressModal(false)
-            } else {
-                toast.error('Update order failed')
-            }
-        } catch (error) {
-            console.error("Failed to update order:", error);
-            toast.error('Failed to update order')
-        }
-    }
-
-
-    // HANDLE CREATE_ADDRESS_MODAL
-    const handleOpenCreateAddress = () => {
-        setOpenCreateAddressModal(true)
-    }
-
-    const handleCloseCreateAddressModal = () => {
-        setOpenCreateAddressModal(false)
-    }
 
     // HANDLE TOP_UP_MODAL
     const handleOpenTopUpModal = () => {
@@ -169,9 +141,8 @@ export const Checkout = () => {
                 open={openUserAddressModal}
                 onOpen={handleOpenUserAddress}
                 onClose={handleCloseUserAddressModal}
-                onSubmit={(payload: any) => handleShippingAddressChange(sessionId, payload)}
-                currentShippingAddressId={order?.shipping_address ?? ''} />
-
+                onSubmit={handleShippingAddressChange}
+            />
             <CreateAddressModal maxWidth='sm' open={openCreateAddressModal} onClose={handleCloseCreateAddressModal} />
             <HeaderPage pageName="Order" />
             <div className={styles['checkout-container']}>
@@ -185,16 +156,15 @@ export const Checkout = () => {
                                     <div className={styles['address-heading']}>
                                         <LocationIcon />
                                         <div>{shippingAddress?.address}</div>
-                                        {shippingAddress?.address ? <button
+                                        {shippingAddress?.address ?
+                                        <button
                                             type="button"
                                             style={{ padding: '5px 15px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}
-                                            className={`${styles["address-button"]} ${styles["button-change"]}`}
                                             onClick={handleOpenUserAddress}
                                         >
                                             Change
                                         </button> : <button
                                             type="button"
-                                            className={`${styles["address-button"]} ${styles["button-change"]}`}
                                             onClick={handleOpenCreateAddress}
                                         >
                                             Add Address

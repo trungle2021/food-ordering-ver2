@@ -6,50 +6,44 @@ import { AddressResponse } from '~/interface/user/addressResponse';
 import { CreateAddressModal } from '../CreateAddressModal';
 
 
-type UserAddressModalProps = {
-    currentShippingAddressId: string,
-    open: boolean,
-    onOpen: () => void,
-    onClose: () => void,
+interface UserAddressModalProps {
+    open: boolean
+    onOpen: () => void
+    onClose: () => void
     onSubmit: (orderInfo: any) => void
-    maxWidth?: false | Breakpoint | undefined;
-
+    maxWidth?: false | Breakpoint | undefined
+    enableSwitchAddress?: boolean
 }
 
-const sortAddressListByCurrentShippingAddressId = (addressList: AddressResponse[], currentShippingAddressId: string): AddressResponse[] => {
-    if (addressList.length === 0) return addressList
-    return addressList.sort((a, b) => (a._id === currentShippingAddressId ? -1 : 1));
-};
-
-export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, currentShippingAddressId }: UserAddressModalProps) => {
-
+export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, maxWidth, enableSwitchAddress }: UserAddressModalProps) => {
     const user = useSelector((state: any) => state.user.user)
-
-
-    const [addressListSorted, setAddressListSorted] = useState<AddressResponse[]>([]);
+    const [addressListSorted, setAddressListSorted] = useState<AddressResponse[]>([])
+    const [radioAddressId, setRadioAddressId] = useState<string | null>(null)
+    const [radioChanged, setRadioChanged] = useState(false)
+    
     const [openUpdateAddressModal, setOpenUpdateAddressModal] = useState(false)
     const [addressDetailUpdate, setAddressDetailUpdate] = useState<AddressResponse | null>(null);
     const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false)
-    const [radioChanged, setRadioChanged] = useState(false)
-    // const [address, setAddress] = useState<AddressResponse | null>(null);
-    const [radioAddressId, setRadioAddressId] = useState<string | null>(null)
-
 
     useEffect(() => {
-        if (user && user.user_address.length > 0 && currentShippingAddressId !== '') {
-            let addressList = user.user_address
-            const cloneAddressList = [...addressList]
-            const sortedList = sortAddressListByCurrentShippingAddressId(cloneAddressList, currentShippingAddressId);
-            setAddressListSorted(sortedList);
-            if (sortedList.length > 0) {
-                const address = sortedList[0]
-                setRadioAddressId(address._id)
-            }
-        }
-        // This will set radioChanged to false every time the component mounts
-        setRadioChanged(false);
-    }, [user, currentShippingAddressId]);
+        if (user?.user_address?.length > 0) {
+            const defaultAddress = user.user_address.find(
+                (address: AddressResponse) => address.is_default_address
+            )
+            const defaultAddressId = defaultAddress?._id || user.user_address[0]._id
 
+            const sortedAddresses = [...user.user_address].sort((a, b) => 
+                a._id === defaultAddressId ? -1 : b._id === defaultAddressId ? 1 : 0
+            )
+            
+            setAddressListSorted(sortedAddresses)
+            setRadioAddressId(defaultAddressId)
+        }
+        setRadioChanged(false)
+    }, [user])
+
+
+  
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const addressId = (event.target as HTMLInputElement).value;
         setRadioChanged(true)
@@ -74,7 +68,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, currentShipp
     }
 
     const handleCloseUserAddress = () => {
-        setRadioAddressId(currentShippingAddressId)
+        // setRadioAddressId(currentShippingAddressId)
         onClose()
     }
 
@@ -101,7 +95,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, currentShipp
                 onClose={handleCloseUpdateAddressModal}
                 onGoBack={handleGoBackUpateAddressModal}
             />
-            <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress}>
+            <Dialog maxWidth='xs' fullWidth open={open} onClose={handleCloseUserAddress} aria-modal="true">
                 <DialogTitle sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>My Address</DialogTitle>
                 <DialogContent sx={{ padding: '10px' }}>
                     <FormControl sx={{ width: '100%' }}>
@@ -110,6 +104,7 @@ export const UserAddressModal = ({ open, onClose, onOpen, onSubmit, currentShipp
                             name="controlled-radio-buttons-group"
                             value={radioAddressId}
                             onChange={handleRadioChange}
+                            sx={enableSwitchAddress ? undefined : { '& .MuiRadio-root': { display: 'none' } }}
                         >
                             <List>
                                 {addressListSorted?.length > 0 && addressListSorted.map((address: any) => (

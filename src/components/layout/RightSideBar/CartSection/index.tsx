@@ -2,25 +2,20 @@ import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import CartItemProps from "~/interface/cart/CartItem";
-import { useHistory } from 'react-router-dom';
-import { toast } from "react-toastify";
-import OrderService from "~/services/order/orderSerivce";
 import { CartItem } from "~/components/specific/CartItem";
-import { getCart } from "~/store/cart/cartAction";
 import { useCheckout } from "~/hooks/useCheckout";
+import { useCart } from "~/hooks/useCart";
 
 export const CartSection = () => {
     const dispatch = useDispatch();
     const cart = useSelector((state: any) => state.cart)
+    const { fetchCart } = useCart();
     const userId = useSelector((state: any) => state.user?.user?._id);
     const { handleCheckoutAction } = useCheckout()
 
     useEffect(() => {
-        if(userId) dispatch<any>(getCart(userId))
+        if(userId) fetchCart();
     }, [userId,dispatch])
-
-
-
 
     return (
         <div className={`${styles["cart-container"]}`}>

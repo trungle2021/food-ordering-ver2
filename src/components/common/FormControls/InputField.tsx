@@ -1,15 +1,14 @@
 import { TextField, TextFieldProps } from "@mui/material";
 import { Control, Controller, RegisterOptions } from "react-hook-form";
 
-interface FormInputProps {
+interface FormInputProps extends Omit<TextFieldProps, 'name'> {
   name: string;
   control: Control<any>;
-  label?: string;
   rules?: RegisterOptions;
-  sx?: TextFieldProps['sx'];
+  accept?: string;
 }
 
-export const InputField = ({ name, control, label, sx, ...rest }: FormInputProps) => {
+export const InputField = ({ name, control, accept, ...rest }: FormInputProps) => {
   return (
     <Controller
       name={name}
@@ -20,15 +19,14 @@ export const InputField = ({ name, control, label, sx, ...rest }: FormInputProps
          formState
          }) => (
           <TextField
+          {...rest}
           helperText={error ? error.message : null}
           size="small"
           error={!!error}
           onChange={onChange}
           value={value}
           fullWidth
-          label={label}
           variant="outlined"
-          sx={sx}
         />
       )}
     />

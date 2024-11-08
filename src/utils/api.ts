@@ -2,7 +2,7 @@ const origin: string = "http://localhost:1337/";
 
 //* USER API
 const baseUserApi: string = 'api/v1/users'
-
+const updateUserProfileApi: string = `${baseUserApi}/:userId`
 const getUserAddressListApi: string = `${baseUserApi}/:userId/addresses`
 const createUserAddressApi: string = `${baseUserApi}/:userId/addresses`
 const updateUserAddressApi: string = `${baseUserApi}/:userId/addresses`
@@ -61,7 +61,7 @@ export {
   getUserByUserIdApi,
   createUserAddressApi,
   updateUserAddressApi,
-
+  updateUserProfileApi,
   getCategoriesApi,
   getPopularDishApi,
   getDishesByNameApi,

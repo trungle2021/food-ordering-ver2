@@ -1,8 +1,12 @@
 import axios from "~/lib/axios";
 import { baseCartApi, getCartByUserIdApi } from "~/utils/api";
 
-const getCart = async(userId:string) => {
-    const response = await axios.get(`${getCartByUserIdApi}/${userId}`);
+const getCart = async(userId: string) => {
+    const response = await axios.get(`${getCartByUserIdApi}/${userId}`, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    });
     return response.data;
 };     
 

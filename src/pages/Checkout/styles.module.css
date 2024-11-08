@@ -38,21 +38,6 @@
 
 /* Address */
 
-.checkout-container__info {
-    flex: 1 1 auto;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    font-size: 1.5rem;
-}
-
-.title {
-    color: #9e8fa6;
-    font-size: 24px;
-    margin-bottom: 8px;
-}
-
 .address-content {
     display: flex;
     align-items: center;
@@ -85,6 +70,25 @@
     width: 100%;
     height: 100px;
 }
+
+.title {
+    color: #9e8fa6;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.checkout-container__info {
+    flex: 1 1 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    font-size: 1.5rem;
+}
+
+
+
+
 
 /* Order Item */
 

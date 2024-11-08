@@ -50,6 +50,7 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdat
     }, [addressDetailUpdate, reset]);
 
     const onSubmit = (data: any) => {
+        console.log("data on submit: ", data)
         if(address){
             const addressDetail = {
                 addressId: address._id,
@@ -87,7 +88,7 @@ export const UpdateAddressModal = ({ open, onClose, maxWidth, addressDetailUpdat
     }
 
     return (
-        <Dialog fullWidth maxWidth={maxWidth} open={open} onClose={handleOnClose}>
+        <Dialog fullWidth maxWidth={maxWidth} open={open} onClose={handleOnClose} aria-modal="true">
             <form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
                 <DialogTitle  sx={{ fontSize: '2rem', borderBottom: '1px solid rgba(0, 0, 0, .09)' }}>Update my address</DialogTitle>
                 <DialogContent  sx={{ padding: '10px 24px', paddingTop: '10px !important' }}>
