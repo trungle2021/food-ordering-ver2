@@ -86,29 +86,34 @@ const loginOAuth = async (provider, idToken) => {
   // 2. check if user with email oauth not exist, create new user
   let user = await User.findOne({ email });
   if (!user) {
-    // 3.create new user
-    user = await UserService.createUser({
-      name,
-      email,
-      email_verified,
-      is_email_verified: true,
-      avatar: picture,
-      user_address: [],
-      oauthProviders: [
-        {
+      // Create user data without phone field
+      const userData = {
+        name,
+        email,
+        is_email_verified: true,
+        avatar: picture,
+        isOAuth: true, // Set the OAuth flag
+        oauthProviders: [{
           provider,
           providerId: sub,
           profile: {
             name,
             profilePicture: picture,
           },
-        },
-      ],
-    });
+        }]
+      };
+
+    // 3.create new user
+
+    user = await UserService.createUser(userData);
   } else {
     // 4. check if user with oauth provider not exist, add new oauth provider
-    const existingProvider = user.oauthProviders.find(provider => provider.provider === provider);
+    const existingProvider = user.oauthProviders?.find(p => p.provider === provider);
     if (!existingProvider) {
+      if (!user.oauthProviders) {
+        user.oauthProviders = [];
+      }
+
       // 5. add new oauth provider
       user.oauthProviders.push({
         provider,
@@ -118,7 +123,7 @@ const loginOAuth = async (provider, idToken) => {
           profilePicture: picture,
         },
       });
-      await user.save();
+        user = await user.save();
     }
   }
 

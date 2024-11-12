@@ -7,8 +7,12 @@ import {
     SettingBlackIcon,
 } from "~/components/common/UI/Icon";
 import { CartDetailsIcon } from "~/components/specific/CartDetailsIcon";
+import { useSelector } from "react-redux";
+import { RootState } from "~/store/store";
 
 export const UserSection = () => {
+    const user = useSelector((state: RootState) => state.user.user);
+    
     return (
         <div className={styles["user-container"]}>
             <div className={styles["user-container__function"]}>
@@ -18,7 +22,7 @@ export const UserSection = () => {
                     <SettingBlackIcon />
                 </Link>
             </div>
-            <Avatar className={styles["user-container__avatar"]} />
+            <Avatar className={styles["user-container__avatar"]} src={user?.avatar} />
         </div>
     );
 };

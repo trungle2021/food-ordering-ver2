@@ -9,6 +9,7 @@ import {
 
 interface AuthState {
   userId: string;
+  provider: string;
   status: string;
   accessToken: string;
   refreshToken: string;

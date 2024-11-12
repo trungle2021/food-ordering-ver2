@@ -105,11 +105,11 @@ export function CartIcon({ className, fill = 'none' }: IconProps) {
     );
 }
 
-export function Avatar({ className, size }: any) {
+export function Avatar({ className, size, src }: any) {
     return (
         <img
             className={className}
-            srcSet="/src/assets/images/Avatar.png"
+            src={src}
             width={40}
             height={40}
         />
