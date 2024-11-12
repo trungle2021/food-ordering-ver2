@@ -9,15 +9,8 @@ const favoriteSchema = new mongoose.Schema({
   dish: {
     type: ObjectId,
     ref: 'Dish',
-  },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  updated_at: {
-    type: Date,
-  },
-});
+  }
+}, { timestamps: true });
 
 const Favorite = mongoose.model('Favorite', favoriteSchema);
 

@@ -16,10 +16,12 @@ export const Login = () => {
 
   const handleOnLoginOAuthSuccess = async (credentialResponse: any, provider: string) => {
     const token = credentialResponse.credential
+
     try {
       dispatch<any>(loginOAuth({token, provider}))
       .then((result: any) => {
-        if (result.payload.status === "success") {
+        console.log("result: ", result)
+        if (result.payload?.status === "success") {
           dispatch<any>(getUserByUserId(result.payload.data.userId)).then((result: any) => {
             history.push('/dashboard');
           });

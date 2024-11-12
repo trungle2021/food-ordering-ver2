@@ -28,22 +28,22 @@ export const balanceSlice = createSlice({
         })
             .addCase(getBalance.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.amount = action.payload.data.amount;
+                state.amount = action.payload?.data?.amount || 0;
             })
             .addCase(getBalance.rejected, (state, action: any) => {
                 state.isLoading = false;
-                state.error = action.payload;
+                state.error = action.payload || "Something went wrong";
             })
             .addCase(topUp.pending, (state, action) => {
                 state.isLoading = true;
             })
             .addCase(topUp.fulfilled, (state, action) => {
                 state.isLoading = true;
-                state.amount = action.payload.data.current_balance;
+                state.amount = action.payload?.data?.current_balance || 0;
             })
             .addCase(topUp.rejected, (state, action: any) => {
                 state.isLoading = false;
-                state.error = action.payload;
+                state.error = action.payload || "Something went wrong";
             })
     },
     name: "balance"

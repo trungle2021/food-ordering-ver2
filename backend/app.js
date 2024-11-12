@@ -13,6 +13,11 @@ const AppError = require('./utils/error/app-error');
 // config middleware
 app.use(cors());
 app.use(morganMiddleware);
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
+});
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 

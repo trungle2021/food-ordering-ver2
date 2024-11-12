@@ -1,5 +1,6 @@
 const AppError = require('../../utils/error/app-error');
 const User = require('./user-model');
+const BalanceService = require('../balance/balance-service');
 
 const getUsers = async () => {
   return await User.find({}).select('-password');
@@ -17,9 +18,24 @@ const checkIfUserExists = async (userId) => {
 const createUser = async (user) => {
   const isEmailAlreadyExists = await User.findOne({ email: user.email });
   if (isEmailAlreadyExists) throw new AppError('Email already exists', 409);
-  const isPhoneAlreadyExists = await User.findOne({ phone: user.phone });
-  if (isPhoneAlreadyExists) throw new AppError('Phone already exists', 409);
-  return await User.create(user);
+  if (user.auth_provider === 'local') {
+    if (!user.phone) {
+      throw new AppError('Phone number is required for local registration', 400);
+    }
+
+    const existingUserByPhone = await User.findOne({ phone: user.phone });
+    if (existingUserByPhone) {
+      throw new AppError('Phone number already registered', 409);
+    }
+  } else {
+    // For OAuth users (Google, Facebook)
+    user.is_email_verified = true; // OAuth emails are pre-verified
+  }
+
+  // Create user
+  const newUser = await User.create(user);
+  await BalanceService.createBalance({ user: newUser._id, amount: 0 });
+  return newUser;
 };
 
 const updateUser = async (userId, payload) => {

@@ -19,7 +19,7 @@ const couponSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-});
+}, { timestamps: true });
 
 // Create the Coupon model
 const Coupon = mongoose.model('Coupon', couponSchema);

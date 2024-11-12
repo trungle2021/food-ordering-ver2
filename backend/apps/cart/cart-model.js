@@ -29,14 +29,7 @@ const cartSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  updated_at: {
-    type: Date,
-  },
-});
+}, { timestamps: true });
 
 const Cart = mongoose.model('Cart', cartSchema);
 

@@ -20,8 +20,8 @@ const orderdetailSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Dish quantity is required'],
     min: 0,
-  },
-});
+  }
+}, { timestamps: true });
 
 const OrderDetail = mongoose.model('OrderDetail', orderdetailSchema);
 

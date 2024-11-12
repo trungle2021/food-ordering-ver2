@@ -19,11 +19,10 @@ const cartSlice = createSlice({
             state.isLoading = true;
         })
             .addCase(getCart.fulfilled, (state, action) => {
-                // state.cartIsUpdated = false;
                 state.isLoading = false;
-                state.items = action.payload.items;
-                state.totalItems = action.payload.items.length;
-                state.totalPrice = action.payload.total;
+                state.items = action.payload?.items || [];
+                state.totalItems = action.payload?.items.length || 0;
+                state.totalPrice = action.payload?.total || 0;
             })
             .addCase(getCart.rejected, (state, action: any) => {
                 state.isLoading = false;
@@ -34,9 +33,9 @@ const cartSlice = createSlice({
             })
             .addCase(addItem.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.items = action.payload.items;
-                state.totalItems = action.payload.items.length;
-                state.totalPrice = action.payload.total;
+                state.items = action.payload?.items || [];
+                state.totalItems = action.payload?.items.length || 0;
+                state.totalPrice = action.payload?.total || 0;
                 state.cartHasBeenUpdated = true;
             })
             .addCase(addItem.rejected, (state, action: any) => {
@@ -48,9 +47,9 @@ const cartSlice = createSlice({
             .addCase(updateItem.fulfilled, (state, action) => {
                 state.cartHasBeenUpdated = true;
                 state.isLoading = false;
-                state.items = action.payload.items;
-                state.totalItems = action.payload.items.length;
-                state.totalPrice = action.payload.total;
+                state.items = action.payload?.items || [];
+                state.totalItems = action.payload?.items.length || 0;
+                state.totalPrice = action.payload?.total || 0;
             })
             .addCase(updateItem.rejected, (state, action: any) => {
                 state.isLoading = false;

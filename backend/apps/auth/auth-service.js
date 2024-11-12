@@ -8,6 +8,8 @@ const RefreshTokenService = require('../refresh_token/refresh-token-service');
 const AppError = require('../../utils/error/app-error');
 const User = require('../user/user-model');
 const { TokenExpiredError, NotBeforeError, JsonWebTokenError } = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const tokenOptions = {
   accessToken: { expiresIn: accessTokenExpired },
@@ -16,7 +18,7 @@ const tokenOptions = {
 
 const register = async (userData) => {
   const newUser = await UserService.createUser(userData);
-  await BalanceService.createBalance({ user: newUser._id });
+  await BalanceService.createBalance({ user: newUser._id, amount: 0 });
   const { password, ...rest } = newUser._doc;
   const { _id } = rest;
   const payload = { _id };
@@ -48,7 +50,6 @@ const login = async (emailInput, passwordInput) => {
   const { password, ...rest } = user._doc;
   const { _id } = rest;
   const payload = { _id };
-  console.log(tokenOptions);
   const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
     payload,
     secretKey,
@@ -63,13 +64,66 @@ const login = async (emailInput, passwordInput) => {
   };
 };
 
-const loginOAuth = async (provider, accessToken) => {
-  const user = await UserService.getUserByOAuth(provider, accessToken);
+const getUserByOAuth = async (provider, idToken) => {
+  try {
+    switch (provider) {
+      case 'google':
+        const ticket = await googleClient.verifyIdToken({
+          idToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        return payload;
+    }
+  } catch (error) {
+    console.log('Error in getUserByOAuth', error);
+  }
+};
+
+const loginOAuth = async (provider, idToken) => {
+  // 1. get user info from oauth provider
+  const { email, email_verified, name, picture, sub } =  await getUserByOAuth(provider, idToken);
+  // 2. check if user with email oauth not exist, create new user
+  let user = await User.findOne({ email });
   if (!user) {
-    throw new AppError('User not found', 404);
+    // 3.create new user
+    user = await UserService.createUser({
+      name,
+      email,
+      email_verified,
+      is_email_verified: true,
+      avatar: picture,
+      user_address: [],
+      oauthProviders: [
+        {
+          provider,
+          providerId: sub,
+          profile: {
+            name,
+            profilePicture: picture,
+          },
+        },
+      ],
+    });
+  } else {
+    // 4. check if user with oauth provider not exist, add new oauth provider
+    const existingProvider = user.oauthProviders.find(provider => provider.provider === provider);
+    if (!existingProvider) {
+      // 5. add new oauth provider
+      user.oauthProviders.push({
+        provider,
+        providerId: sub,
+        profile: {
+          name,
+          profilePicture: picture,
+        },
+      });
+      await user.save();
+    }
   }
 
-  const { password, _id,...rest } = user._doc;
+  // 6. generate access token and refresh token
+  const { password, _id, ...rest } = user._doc;
   const payload = { _id };
   const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
     payload,
@@ -84,7 +138,7 @@ const loginOAuth = async (provider, accessToken) => {
     refreshToken,
     userId: _id,
   };
-}
+};
 
 const logout = async (userId) => {
   await RefreshTokenService.invalidateRefreshTokenByUserId(userId);

@@ -5,12 +5,12 @@ import { LoginPayload } from "~/interface/auth/loginPayload";
 import { RegisterPayload } from "~/interface/auth/registerPayload";
 import { GetNewAccessTokenPayload } from "~/interface/auth/getNewAccessTokenPayload";
 
-const loginOAuth = (token: string, resourceType: string) => {
-  switch (resourceType) {
+const loginOAuth = (token: string, provider: string) => {
+  switch (provider) {
     case 'google':
-      return axios.post(`${loginGoogleApi}`, { token });
+      return axios.post(`${loginGoogleApi}`, { token, provider });
     case 'facebook':
-      return axios.post(`${loginFacebookApi}`, { token });
+      return axios.post(`${loginFacebookApi}`, { token, provider });
     default:
       throw new Error('Invalid OAuth resource type');
   }

@@ -5,7 +5,7 @@ const cancelReasonSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+}, { timestamps: true });
 
 const CancelReason = mongoose.model('CancelReason', cancelReasonSchema);
 

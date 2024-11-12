@@ -26,14 +26,7 @@ const dishSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'Category',
   },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  updated_at: {
-    type: Date,
-  },
-});
+}, { timestamps: true });
 
 dishSchema.index({ name: 'text', description: 'text', price: 'number' });
 const Dish = mongoose.model('Dish', dishSchema);

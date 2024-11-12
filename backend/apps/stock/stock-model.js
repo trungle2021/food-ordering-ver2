@@ -11,16 +11,8 @@ const stockSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  }
+}, { timestamps: true });
 
 const Stock = mongoose.model('Stock', stockSchema);
 

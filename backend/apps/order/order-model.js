@@ -61,16 +61,8 @@ const orderSchema = new mongoose.Schema({
   time_completed: {
     type: Date,
     default: null,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  updated_at: {
-    type: Date,
-    default: null,
-  },
-});
+  }
+}, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
 

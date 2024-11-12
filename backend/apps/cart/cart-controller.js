@@ -4,12 +4,6 @@ const CartService = require('./cart-service');
 const getCartByUserId = catchAsyncHandler(async (req, res, next) => {
   const { userId } = req.params;
   const cart = await CartService.getCart({ user: userId });
-  if (!cart) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Cart not found',
-    });
-  }
   return res.status(200).json({
     status: 'success',
     data: cart,

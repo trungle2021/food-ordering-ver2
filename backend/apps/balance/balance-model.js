@@ -11,14 +11,7 @@ const balanceSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-  updated_at: {
-    type: Date,
-  },
-});
+}, { timestamps: true });
 
 const Balance = mongoose.model('Balance', balanceSchema);
 module.exports = Balance;

@@ -1,30 +1,44 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-const { ObjectId } = require('mongodb');
+const { LOCAL } = require('../../constant/oauth-provider');
 
-// name, password, balance, phone, email, created_at, updated_at
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, 'Name is required'],
+    required: [true, 'Name is required'],
+    trim: true,
   },
   password: {
     type: String,
-    require: [true, 'Password is required'],
+    required: [function() {
+      // Password is required only when there are no oauthProviders
+      return this.oauth_providers.length > 0
+    }, 'Password is required for local authentication'],
+    select: false,
   },
   phone: {
     type: String,
-    minlength: '10',
-    length: '15',
-    require: [true, 'Phone number is required'],
     unique: true,
-    validate: [validator.isMobilePhone, 'Please provide a valid phone number'],
+    sparse: true,
+    required: [function() {
+      // Phone is required only when there are no oauthProviders
+      return this.oauth_providers.length > 0
+    }, 'Phone number is required for local authentication'],
+    validate: {
+      validator: function(v) {
+        // Skip validation if it's OAuth user
+        if (this.oauth_providers && this.oauth_providers.length > 0) return true;
+        return validator.isMobilePhone(v);
+      },
+      message: 'Please provide a valid phone number',
+    }
   },
   email: {
     type: String,
-    require: [true, 'Email is required'],
+    required: [true, 'Email is required'],
     unique: true,
+    trim: true,
     validate: [validator.isEmail, 'Please provide a valid email address'],
   },
   avatar: {
@@ -32,10 +46,6 @@ const userSchema = new mongoose.Schema({
   },
   user_address: [
     {
-      _id: {
-        type: ObjectId,
-        auto: true,
-      },
       address: {
         type: String,
         required: [true, 'Address is required'],
@@ -47,6 +57,10 @@ const userSchema = new mongoose.Schema({
       phone: {
         type: String,
         required: [true, 'Phone is required'],
+        validate: {
+          validator: validator.isMobilePhone,
+          message: 'Please provide a valid phone number',
+        },
       },
       is_default_address: {
         type: Boolean,
@@ -54,26 +68,38 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
-  created_at: {
-    type: Date,
-    default: Date.now(),
+  oauth_providers: [{
+    provider: {
+      type: String,
+      required: true,
+    },
+    providerId: {
+      type: String,
+      required: true,
+    },
+    profile: {
+      name: { type: String },
+      profilePicture: { type: String },
+    },
+  }],
+  is_email_verified: {
+    type: Boolean,
+    default: false,
   },
-  updated_at: {
-    type: Date,
-    default: null,
-  },
-});
+}, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  return next();
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+  next();
 });
 
-userSchema.methods.comparePassword = async (passwordInRequest, passwordInDB) => {
-  return await bcrypt.compare(passwordInRequest, passwordInDB);
+userSchema.methods.comparePassword = async function(passwordInRequest) {
+  if (this.auth_provider !== LOCAL) {
+    return false;
+  }
+  return bcrypt.compare(passwordInRequest, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
