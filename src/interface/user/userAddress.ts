@@ -1,4 +1,4 @@
-export type AddressResponse = {
+export default interface UserAddress {
     _id: string;
     recipient: string;
     phone: string;

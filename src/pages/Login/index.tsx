@@ -8,6 +8,7 @@ import { OR } from "~/components/common/UI/OR";
 import { loginOAuth, loginUser } from "~/store/auth/authAction";
 import { getUserByUserId } from "~/store/user/userAction";
 import { GoogleLogin } from "@react-oauth/google";
+import { setOAuthProvider } from "~/store/auth/authSlice";
 
 export const Login = () => {
   const history = useHistory();
@@ -20,9 +21,10 @@ export const Login = () => {
     try {
       dispatch<any>(loginOAuth({token, provider}))
       .then((result: any) => {
-        console.log("result: ", result)
         if (result.payload?.status === "success") {
-          dispatch<any>(getUserByUserId(result.payload.data.userId)).then((result: any) => {
+          dispatch<any>(setOAuthProvider(provider))
+          const userId = result.payload.data.userId
+          dispatch<any>(getUserByUserId(userId)).then((result: any) => {
             history.push('/dashboard');
           });
         } else {

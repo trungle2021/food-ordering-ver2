@@ -9,7 +9,7 @@ import {
 
 interface AuthState {
   userId: string;
-  provider: string;
+  oauthProvider: string | null;
   status: string;
   accessToken: string;
   refreshToken: string;
@@ -20,6 +20,8 @@ interface AuthState {
   isRefreshingToken: null | object;
 }
 const initialState: AuthState = {
+  userId: "",
+  oauthProvider: null,
   status: "",
   accessToken: "",
   refreshToken: "",
@@ -28,12 +30,14 @@ const initialState: AuthState = {
   error: "",
   isLoggedIn: false,
   isRefreshingToken: null,
-  userId: ""
 };
 
 export const authSlice = createSlice({
   initialState,
   reducers: {
+    setOAuthProvider: (state, action: PayloadAction<string>) => {
+      state.oauthProvider = action.payload;
+    },
     updateToken: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken
@@ -121,5 +125,5 @@ export const authSlice = createSlice({
   name: "auth",
 });
 const { reducer, actions } = authSlice;
-export const { updateToken } = actions;
+export const { updateToken, setOAuthProvider } = actions;
 export default reducer;

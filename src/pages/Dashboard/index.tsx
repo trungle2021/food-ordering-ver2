@@ -10,7 +10,6 @@ import { DishCard } from "~/components/specific/Dish/DishCard";
 import { SearchDish } from "~/components/specific/SearchDish";
 import useClearSearchData from "~/hooks/useClearSearchData";
 import { useResponsiveLimitItem } from "~/hooks/useResponsiveLimitItem";
-import FavoriteInfo from '../../interface/favorite/favorite';
 
 export const Dashboard = () => {
     const dishes = useSelector((state: any) => state.searchDish)
@@ -40,7 +39,6 @@ export const Dashboard = () => {
                                 <DishCard
                                     _id={dish._id}
                                     itemSold={0}
-                                    // isActive={false}
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}

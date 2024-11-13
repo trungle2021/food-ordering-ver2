@@ -1,13 +1,12 @@
-import { useState } from 'react'
 import { toast } from 'react-toastify'
+import UserAddress from '~/interface/user/userAddress'
 import OrderService from '~/services/order/orderSerivce'
 import UserService from '~/services/user/userService'
-import { AddressResponse } from '~/interface/user/addressResponse'
 
 interface UseAddressProps {
     checkoutSessionId?: string
     user: any
-    onAddressChange: (address: AddressResponse | null) => void
+    onAddressChange: (address: UserAddress | null) => void
     onUserAddressModalChange: (open: boolean) => void
     onCreateAddressModalChange: (open: boolean) => void
 }
@@ -25,7 +24,7 @@ export function useAddress({
     }
 
     const getDefaultAddress = () => {
-        return user?.user.user_address?.find((address: AddressResponse) => address.is_default_address) || null
+        return user?.user.user_address?.find((address: UserAddress) => address.is_default_address) || null
         
     }
 

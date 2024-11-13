@@ -86,12 +86,12 @@ const loginOAuth = async (provider, idToken) => {
   // 2. check if user with email oauth not exist, create new user
   let user = await User.findOne({ email });
   if (!user) {
-      // Create user data without phone field
       const userData = {
         name,
         email,
-        is_email_verified: true,
+        is_email_verified: email_verified,
         avatar: picture,
+        phone: null,
         isOAuth: true, // Set the OAuth flag
         oauthProviders: [{
           provider,

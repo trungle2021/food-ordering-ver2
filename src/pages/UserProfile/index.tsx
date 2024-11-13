@@ -10,18 +10,22 @@ import { HeaderPage } from '~/components/specific/HeaderPage';
 import { CreateAddressModal } from '~/components/specific/Modal/CreateAddressModal';
 import { UserAddressModal } from '~/components/specific/Modal/UserAddressModal';
 import { useAddress } from '~/hooks/useAddress';
-import { AddressResponse } from '~/interface/user/addressResponse';
 import UserProfileFormValues from '~/interface/user/userProfileFormValues';
 import UserService from '~/services/user/userService';
 import { RootState } from '~/store/store';
+import UserAddress from '~/interface/user/userAddress';
+import { useAvatar } from '~/hooks/useAvatar';
 
 export const UserProfile = () => {
-  const [avatarPreview, setAvatarPreview] = useState('/src/assets/images/Avatar.png');
   const user = useSelector((state: RootState) => state.user);
+  console.log("user: ", user)
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
+  const avatarSrc = useAvatar();
+  const [avatarPreview, setAvatarPreview] = useState(avatarSrc || '/src/assets/images/Avatar.png');
   const [openUserAddressModal, setOpenUserAddressModal] = useState(false);
-  const [shippingAddress, setShippingAddress] = useState<AddressResponse | null>(null);
+  const [shippingAddress, setShippingAddress] = useState<UserAddress | null>(null);
   const [openCreateAddressModal, setOpenCreateAddressModal] = useState(false);
+  const isOAuthUser = useSelector((state: RootState) => state.auth.oauthProvider);
 
   const {
     getAddress,
@@ -41,7 +45,6 @@ export const UserProfile = () => {
   const {
     handleSubmit,
     control,
-    register,
     setValue,
     formState: { errors },
   } = useForm<UserProfileFormValues>({
@@ -63,7 +66,7 @@ export const UserProfile = () => {
         URL.revokeObjectURL(avatarPreview);
       }
     };
-  }, [avatarPreview]);
+  }, [avatarPreview, getDefaultAddress]);
 
   const onSubmit = async (payload: UserProfileFormValues) => {
     try {
@@ -122,6 +125,7 @@ export const UserProfile = () => {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid
           container
+          columnSpacing={4}
           rowSpacing={5}
           sx={{
             padding: {
@@ -132,8 +136,8 @@ export const UserProfile = () => {
             },
           }}
         >
-          {/* Avatar Section */}
-          <Grid item xs={12}>
+          {/* Avatar Section - Now in left column */}
+          <Grid item xs={12} md={4}>
             <Box
               sx={{
                 display: 'flex',
@@ -141,10 +145,8 @@ export const UserProfile = () => {
                 gap: '20px',
               }}
             >
-              <Box component="label" sx={{ alignSelf: 'start', pl: '30px' }}>
-                Photo Profile
-              </Box>
-              <Box sx={{ display: 'flex', gap: '20px' }}>
+              <h2>Photo Profile</h2>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <Box
                   component="img"
                   src={avatarPreview}
@@ -156,13 +158,7 @@ export const UserProfile = () => {
                     borderRadius: '8px',
                   }}
                 />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
+                <Box>
                   <input
                     hidden
                     type="file"
@@ -170,92 +166,107 @@ export const UserProfile = () => {
                     ref={avatarInputRef}
                     onChange={handleImageChange}
                   />
-                  <button
-                    type="button"
+                  {!isOAuthUser ? (
+                    <button
+                      type="button"
                     onClick={handleClickChangePhoto}
                     style={{
                       padding: '10px 20px',
                       borderRadius: '4px',
                       border: '1px solid #ccc',
+                      width: '150px'
                     }}
                   >
                     Change photo
-                  </button>
+                    </button>
+                  ) : null}
                 </Box>
               </Box>
             </Box>
           </Grid>
 
-          {/* Full Name Section */}
-          <Grid item xs={12}>
-            <InputField
-              label="Full Name"
-              name="name"
-              type="text"
-              control={control}
-              rules={{ required: 'Name is required' }}
-            />
-          </Grid>
+          {/* Form Fields Section - Now in right column */}
+          <Grid item xs={12} md={8}>
+            <Grid container rowSpacing={5}>
+              {/* Full Name Section */}
+              <Grid item xs={12}>
+                <InputField
+                  label="Full Name"
+                  name="name"
+                  type="text"
+                  disabled={!!isOAuthUser}
+                  control={control}
+                  rules={{ required: 'Name is required' }}
+                />
+              </Grid>
 
-          {/* Email Section */}
-          <Grid item xs={12}>
-            <InputField
-              label="Email"
-              name="email"
-              type="email"
-              control={control}
-              rules={{
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
-                },
-              }}
-            />
-          </Grid>
+              {/* Email Section */}
+              <Grid item xs={12}>
+                <InputField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  disabled={!!isOAuthUser}
+                  control={control}
+                  rules={{
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Invalid email address',
+                    },
+                  }}
+                />
+              </Grid>
 
-          {/* Phone Section */}
-          <Grid item xs={12}>
-            <InputField
-              label="Phone"
-              name="phone"
-              type="tel"
-              control={control}
-              rules={{
-                pattern: {
-                  value: /^[0-9+\-\s()]*$/,
-                  message: 'Invalid phone number',
-                },
-              }}
-            />
-          </Grid>
+              {/* Phone Section */}
+              <Grid item xs={12}>
+                <InputField
+                  label="Phone"
+                  name="phone"
+                  type="text"
+                  control={control}
+                  rules={{
+                    pattern: {
+                      value: /^[0-9+\-\s()]*$/,
+                      message: 'Invalid phone number',
+                    },
+                  }}
+                />
+              </Grid>
 
-          {/* Address Section */}
-          <Grid item xs={12}>
-          <div className="address-container">
-              <div className={styles['title']}>Delivery Address: </div>
-              <div className={styles['address-content']}>
-                  <div className={styles['address-heading']}>
+              {/* Address Section */}
+              <Grid item xs={12}>
+                <div className="address-container">
+                  <div className={styles['title']}>Delivery Address: </div>
+                  <div className={styles['address-content']}>
+                    <div className={styles['address-heading']}>
                       <LocationIcon />
                       <div>{shippingAddress?.address}</div>
-                      {shippingAddress?.address ?
-                      <button
+                      {shippingAddress?.address ? (
+                        <button
                           type="button"
                           style={{ padding: '5px 15px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}
                           onClick={handleOpenUserAddress}
-                      >
+                        >
                           Change
-                      </button> : <button
+                        </button>
+                      ) : (
+                        <button
+                          style={{ padding: '5px 15px', backgroundColor: 'var(--primary)', color: 'var(--white)' }}
                           type="button"
                           onClick={handleOpenCreateAddress}
-                      >
+                        >
                           Add Address
-                      </button>}
+                        </button>
+                      )}
+                    </div>
                   </div>
-              </div>
-            </div>
+                </div>
+              </Grid>
+            </Grid>
           </Grid>
-          {/* Save Button Section */}
+
+          {/* Save Button Section - Full width */}
           <Grid item xs={12}>
             <Grid container justifyContent="flex-end">
               <button

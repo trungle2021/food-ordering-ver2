@@ -19,6 +19,8 @@ const initialState: UserState = {
         email: "",
         avatar: "",
         user_address: [],
+        oauthProviders: [],
+        is_email_verified: false,
     },
     isLoading: false,
     error: ''
@@ -41,6 +43,7 @@ export const userSlice = createSlice({
             state.isLoading = true;
         })
         .addCase(getUserByUserId.fulfilled, (state, action) => {
+            console.log("action: ", action)
             state.user = action.payload.data;
             state.isLoading = false;
         })

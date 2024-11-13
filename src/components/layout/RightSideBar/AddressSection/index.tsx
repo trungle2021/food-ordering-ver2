@@ -1,12 +1,12 @@
 import { LocationIcon } from "~/components/common/UI/Icon";
-import { AddressResponse } from "~/interface/user/addressResponse";
 import styles from "./styles.module.css";
 import { useSelector } from "react-redux";
+import { UserAddress } from "~/interface/user/userAddress";
 
 
 export const AddressSection = () => {
   const {user} = useSelector((state: any) => state.user);
-  const userAddress = user?.user_address?.find((address: AddressResponse) => address.is_default_address);
+  const userAddress = user?.user_address?.find((address: UserAddress) => address.is_default_address);
 
   return (
     <div className={`${styles["address-container"]}`}>
