@@ -6,7 +6,7 @@ import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { DishCard } from '../../Dish/DishCard';
 
-export const RecentOrderList = ({ limit }: { limit: number }) => {
+export const RecentOrderList = ({ limit, onHasOrders }: { limit: number, onHasOrders?: (hasOrders: boolean) => void }) => {
   const userId = useSelector((state: any) => state.user?.user?._id);
   const [recentOrderDishes, setRecentOrderDishes] = useState([]);
 
@@ -27,6 +27,7 @@ export const RecentOrderList = ({ limit }: { limit: number }) => {
   const recentOrdersItem = recentOrderDishes.map((order: Order) => {
     let orderDetailsList = order.order_details;
     if (orderDetailsList.length > 0) {
+      onHasOrders && onHasOrders(true);
       const sortedOrderDetailsList = [...orderDetailsList].sort((a: OrderDetail, b: OrderDetail) => b.dish.price - a.dish.price);
       const dish = sortedOrderDetailsList[0].dish;
       const favoriteInfo = sortedOrderDetailsList[0].favoriteInfo;

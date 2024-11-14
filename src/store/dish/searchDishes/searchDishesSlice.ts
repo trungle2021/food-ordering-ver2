@@ -30,7 +30,7 @@ export const searchDishesSlice = createSlice({
             })
             .addCase(searchDishes.fulfilled, (state, action) => {
                 state.isLoading = false
-                state.data = action.payload.results
+                state.data = action.payload.data.results
             }).addCase(searchDishes.rejected, (state, action: any) => {
                 state.message = action.payload.message
             })

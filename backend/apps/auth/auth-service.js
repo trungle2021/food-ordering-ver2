@@ -10,6 +10,7 @@ const User = require('../user/user-model');
 const { TokenExpiredError, NotBeforeError, JsonWebTokenError } = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const axios = require('axios');
 
 const tokenOptions = {
   accessToken: { expiresIn: accessTokenExpired },
@@ -64,86 +65,32 @@ const login = async (emailInput, passwordInput) => {
   };
 };
 
-const getUserByOAuth = async (provider, idToken) => {
-  try {
-    switch (provider) {
-      case 'google':
-        const ticket = await googleClient.verifyIdToken({
-          idToken,
-          audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        return payload;
-    }
-  } catch (error) {
-    console.log('Error in getUserByOAuth', error);
-  }
-};
 
-const loginOAuth = async (provider, idToken) => {
-  // 1. get user info from oauth provider
-  const { email, email_verified, name, picture, sub } =  await getUserByOAuth(provider, idToken);
-  // 2. check if user with email oauth not exist, create new user
-  let user = await User.findOne({ email });
-  if (!user) {
-      const userData = {
-        name,
-        email,
-        is_email_verified: email_verified,
-        avatar: picture,
-        phone: null,
-        isOAuth: true, // Set the OAuth flag
-        oauthProviders: [{
-          provider,
-          providerId: sub,
-          profile: {
-            name,
-            profilePicture: picture,
-          },
-        }]
+
+function normalizeOAuthUserData(provider, userInfo) {
+  switch (provider) {
+    case 'google':
+      return {
+        email: userInfo.email,
+        emailVerified: userInfo.email_verified,
+        name: userInfo.name,
+        picture: userInfo.picture,
+        providerId: userInfo.sub,
       };
-
-    // 3.create new user
-
-    user = await UserService.createUser(userData);
-  } else {
-    // 4. check if user with oauth provider not exist, add new oauth provider
-    const existingProvider = user.oauthProviders?.find(p => p.provider === provider);
-    if (!existingProvider) {
-      if (!user.oauthProviders) {
-        user.oauthProviders = [];
-      }
-
-      // 5. add new oauth provider
-      user.oauthProviders.push({
-        provider,
-        providerId: sub,
-        profile: {
-          name,
-          profilePicture: picture,
-        },
-      });
-        user = await user.save();
-    }
+      
+    case 'facebook':
+      return {
+        email: userInfo.email,
+        emailVerified: true, // Facebook emails are always verified
+        name: userInfo.name,
+        picture: userInfo.picture?.data?.url || userInfo.picture, // Facebook returns picture in different format
+        providerId: userInfo.id,
+      };
+      
+    default:
+      throw new AppError(`Unsupported OAuth provider: ${provider}`, 400);
   }
-
-  // 6. generate access token and refresh token
-  const { password, _id, ...rest } = user._doc;
-  const payload = { _id };
-  const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
-    payload,
-    secretKey,
-    tokenOptions
-  );
-
-  await RefreshTokenService.saveRefreshToken({ user: _id, token: refreshToken });
-
-  return {
-    accessToken,
-    refreshToken,
-    userId: _id,
-  };
-};
+}
 
 const logout = async (userId) => {
   await RefreshTokenService.invalidateRefreshTokenByUserId(userId);
@@ -201,6 +148,117 @@ const generateAccessTokenAndRefreshToken = async (payload, secretKey, tokenOptio
     refreshToken,
   };
 };
+
+const getUserByOAuth = async (provider, idToken) => {
+  try {
+    switch (provider) {
+      case 'google':
+        const ticket = await googleClient.verifyIdToken({
+          idToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        return ticket.getPayload();
+        
+      case 'facebook':
+        const fbUserInfo = await verifyFacebookToken(idToken);
+        if (!fbUserInfo) {
+          throw new AppError('Invalid Facebook token', 401);
+        }
+        return fbUserInfo;
+      default:
+        throw new AppError(`Unsupported OAuth provider: ${provider}`, 400);
+    }
+  } catch (error) {
+    console.error(`Error in getUserByOAuth for provider ${provider}:`, error);
+    throw new AppError(`Authentication failed with ${provider}`, 401);
+  }
+};
+
+const loginOAuth = async (provider, idToken) => {
+  // 1. get user info from oauth provider
+  const userInfo = await getUserByOAuth(provider, idToken);
+  
+  if (!userInfo) {
+    throw new AppError('Failed to get user info from OAuth provider', 401);
+  }
+
+  // 2. normalize user data based on provider
+  const normalizedUserData = normalizeOAuthUserData(provider, userInfo);
+  const { email, emailVerified, name, picture, providerId } = normalizedUserData;
+
+  // 3. check if user exists
+  let user = await User.findOne({ email });
+  
+  if (!user) {
+    const userData = {
+      name,
+      email,
+      is_email_verified: emailVerified,
+      avatar: picture,
+      isOAuth: true,
+      oauthProviders: [{
+        provider,
+        providerId,
+        profile: {
+          name,
+          profilePicture: picture,
+        },
+      }]
+    };
+
+    user = await UserService.createUser(userData);
+  } else {
+    const existingProvider = user.oauthProviders?.find(p => p.provider === provider);
+    if (!existingProvider) {
+      if (!user.oauthProviders) {
+        user.oauthProviders = [];
+      }
+
+      user.oauthProviders.push({
+        provider,
+        providerId,
+        profile: {
+          name,
+          profilePicture: picture,
+        },
+      });
+      user = await user.save();
+    }
+  }
+
+  const { password, _id, ...rest } = user._doc;
+  const payload = { _id };
+  const { accessToken, refreshToken } = await generateAccessTokenAndRefreshToken(
+    payload,
+    secretKey,
+    tokenOptions
+  );
+
+  await RefreshTokenService.saveRefreshToken({ user: _id, token: refreshToken });
+
+  return {
+    accessToken,
+    refreshToken,
+    userId: _id,
+  };
+};
+
+const verifyFacebookToken = async (accessToken) => {
+  try {
+    const response = await axios.get(
+      `https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email,picture`
+    );
+    
+    if (!response.data || !response.data.id) {
+      throw new Error('Invalid Facebook response');
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Facebook token verification failed:', error);
+    return null;
+  }
+}
 
 module.exports = {
   register,

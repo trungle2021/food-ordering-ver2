@@ -2,6 +2,7 @@
 import styles from "./styles.module.css";
 
 import { Grid } from "@mui/material";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { CategorySection } from "~/components/common/Section/CategorySection";
 import { PopularDishSection } from "~/components/common/Section/PopularDishSection";
@@ -13,6 +14,7 @@ import { useResponsiveLimitItem } from "~/hooks/useResponsiveLimitItem";
 
 export const Dashboard = () => {
     const dishes = useSelector((state: any) => state.searchDish)
+    console.log("dishes", dishes)
     const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
     const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 6 : isLg ? 6 : isXl ? 6 : 6
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 6 : isLg ? 8 : isXl ? 10 : 2
@@ -24,7 +26,7 @@ export const Dashboard = () => {
                 <SearchDish />
             </div>
 
-            {dishes.data === null ?
+            {dishes && dishes?.data === null ?
                 <>
                     <img style={{ width: "100%" }} src="/BannerMain.png" />
                     <CategorySection limit={categoryLimit} />
@@ -32,7 +34,7 @@ export const Dashboard = () => {
                     <RecentOrderSection limit={dishLimit} />
                 </>
                 :
-                dishes.data.length > 0 ?
+                dishes && dishes?.data?.length > 0 ?
                     <Grid container spacing={2} rowSpacing={2}>
                         {dishes.data.map(({dish, favoriteInfo}:any) => {
                             return (<Grid item xs={12} sm={6} md={3} lg={4} xl={3} key={dish._id}>
