@@ -48,6 +48,7 @@ export const Favorites = () => {
             ) : (
               <Grid container spacing={5}>
                 {favoriteDishes.map((dish: BaseDishProps) => (
+                  console.log("dish", dish),
                   <Grid item key={dish._id} xs={12} sm={6} md={3} lg={3}>
                     <DishCard
                       _id={dish._id}
@@ -57,7 +58,7 @@ export const Favorites = () => {
                       discount={0}
                       name={dish.name}
                       price={dish.price}
-                      favoriteInfo={dish.favoriteInfo}
+                      isFavorite={dish.isFavorite}
                       onRemove={() => handleRemoveFavorite(dish._id)}
                     />
                   </Grid>

@@ -72,15 +72,6 @@ const getDish = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
-const getPopularDishes = catchAsyncHandler(async (req, res, next) => {
-  const queryString = { ...req.query };
-  const userId = req.userId;
-  const result = await DishService.getPopularDishes(userId, queryString);
-  return res.status(200).json({
-    status: 'success',
-    data: result,
-  });
-});
 const createDishes = catchAsyncHandler(async (req, res, next) => {
   const listDishes = req.body;
   const dishes = await DishService.createDishes(listDishes);
@@ -97,7 +88,6 @@ module.exports = {
   getDishes,
   searchDishesByFullTextSearch,
   getDish,
-  getPopularDishes,
   createDishes,
   createDish,
   updateDish,

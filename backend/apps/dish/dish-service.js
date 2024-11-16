@@ -21,51 +21,63 @@ const getDishes = async (userId, queryString) => {
         from: 'categories',
         localField: 'category',
         foreignField: '_id',
-        as: 'category',
-      },
+          as: 'category'
+        }
     },
     { $unwind: '$category' },
-    {
-      $match: {
-        ...preparedQuery,
-        ...(categoryNames ? { 'category.name': { $in: categoryNames } } : {}),
-      },
-    },
-    {
-      $lookup: {
-        from: 'orderdetails',
-        localField: '_id',
-        foreignField: 'dish',
-        as: 'orderDetails',
-      },
-    },
-    {
-      $addFields: {
-        totalQuantity: { $sum: '$orderDetails.quantity' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        name: 1,
-        description: 1,
-        price: 1,
-        image: 1,
-        is_active: 1,
-        discount: 1,
-        created_at: 1,
-        updated_at: 1,
-        category: {
-          name: 1,
-          description: 1,
-        },
-        totalQuantity: 1,
-      },
-    },
-  ];
+   // Initial match stage for category if provided
+   ...(categoryNames ? [{
+    $match: {
+      'category.name': { $in: categoryNames }
+      }
+    }] : []),
+  // Get category information
 
-  if (userId) {
-    aggregatePipeline.push({
+  // Get sales information
+  {
+    $lookup: {
+      from: "orderdetails",
+      let: { dishId: "$_id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: { $eq: ["$dish", "$$dishId"] }
+          }
+        },
+        {
+          $lookup: {
+            from: "orders",
+            localField: "order",
+            foreignField: "_id",
+            as: "order"
+          }
+        },
+        {
+          $match: {
+            "order.order_status": COMPLETED
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            itemSold: { $sum: "$quantity" }
+          }
+        }
+      ],
+      as: "salesInfo"
+      }
+  },
+
+  // Add computed fields
+  {
+  $addFields: {
+    itemSold: { 
+      $ifNull: [{ $first: "$salesInfo.itemSold" }, 0] 
+      }
+    }
+  },
+     // Get favorite information if userId provided
+     ...(userId ? [{
       $lookup: {
         from: 'favorites',
         let: { dishId: '$_id' },
@@ -82,25 +94,46 @@ const getDishes = async (userId, queryString) => {
           },
         ],
         as: 'favoriteInfo',
-      },
-    });
-    aggregatePipeline.push({
-      $addFields: {
-        favoriteInfo: {
+      }
+    }] : []),
+
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        description: 1,
+        price: 1,
+        image: 1,
+        is_active: 1,
+        discount: 1,
+        created_at: 1,
+        updated_at: 1,
+        itemSold: { 
+          $ifNull: [{ $first: "$salesInfo.itemSold" }, 0] 
+        },
+        isFavorite: {
           $cond: {
-            if: { $eq: [{ $size: '$favoriteInfo' }, 0] },
-            then: null,
-            else: { $arrayElemAt: ['$favoriteInfo', 0] },
-          },
+            if: { $gt: [{ $size: "$favoriteInfo" }, 0] },
+            then: true,
+            else: false
+          }
+        },
+        category: {
+          name: 1,
+          description: 1,
         },
       },
-    });
-  }
+    },
+  ];
+
 
   // Apply sorting
   if (modifiedQueryString.sort) {
-    const sortOrder = apiFeatures.sort().query.options.sort;
-    aggregatePipeline.push({ $sort: sortOrder });
+    aggregatePipeline.push({ 
+      $sort: modifiedQueryString.sort === 'popular' 
+        ? { itemSold: -1 } 
+        : apiFeatures.sort().query.options.sort 
+    });
   }
 
   // Apply field limiting
@@ -123,147 +156,6 @@ const getDish = async (queryString) => {
   return await Dish.findOne(queryString);
 };
 
-const getPopularDishes = async (userId, queryString) => {
-  const page = parseInt(queryString.page) || 1;
-  const limit = parseInt(queryString.limit) || 10;
-
-  const pipeline = [
-    {
-      $match: {
-        order_status: COMPLETED,
-      },
-    },
-    {
-      $lookup: {
-        from: 'orderdetails',
-        localField: '_id',
-        foreignField: 'order',
-        as: 'orderDetails',
-      },
-    },
-    {
-      $addFields: {
-        totalQuantity: { $sum: '$orderDetails.quantity' },
-      },
-    },
-    { $sort: { totalQuantity: -1 } },
-    {
-      $lookup: {
-        from: 'dishes',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'dish',
-      },
-    },
-    { $unwind: '$dish' },
-    {
-      $project: {
-        _id: 1,
-        name: 1,
-        description: 1,
-        price: 1,
-        image: 1,
-        is_active: 1,
-        discount: 1,
-        created_at: 1,
-        updated_at: 1,
-        category: {
-          name: 1,
-          description: 1,
-        },
-        totalQuantity: 1,
-      },
-    },
-  ];
-
-  if (userId) {
-    pipeline.push(
-      {
-        $lookup: {
-          from: 'favorites',
-          let: { dishId: '$dish._id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$dish', '$$dishId'] },
-                    { $eq: ['$user', await convertToObjectId(userId)] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'favoriteInfo',
-        },
-      },
-      {
-        $unwind: {
-          path: '$favoriteInfo',
-          preserveNullAndEmptyArrays: true,
-        },
-      }
-    );
-  }
-
-  const paginatedResult = await paginateAggregate(Order, pipeline, page, limit);
-
-  if (paginatedResult.results.length === 0) {
-    console.log('Popular dishes is empty, fetching 5 random dishes');
-    const fallbackPipeline = [
-      { $sample: { size: 4 }},
-      { $addFields: { totalQuantity: 0 } }
-    ];
-
-    if (userId) {
-      fallbackPipeline.push(
-        {
-          $lookup: {
-            from: 'favorites',
-            let: { dishId: '$_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$dish', '$$dishId'] },
-                      { $eq: ['$user', await convertToObjectId(userId)] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'favoriteInfo',
-          },
-        },
-        {
-          $addFields: {
-            favoriteInfo: {
-              $cond: {
-                if: { $eq: [{ $size: '$favoriteInfo' }, 0] },
-                then: null,
-                else: { $arrayElemAt: ['$favoriteInfo', 0] },
-              },
-            },
-          },
-        }
-      );
-    }
-
-    const fallbackResult = await Dish.aggregate(fallbackPipeline);
-    return {
-      results: fallbackResult,
-      pagination: {
-        totalCount: fallbackResult.length,
-        limit: 5,
-        page: 1,
-        totalPages: 1,
-      },
-    };
-  }
-
-  return paginatedResult;
-};
 
 const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId) => {
   const pipeline = [
@@ -292,24 +184,38 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
         },
       },
     },
+    // Join with orderDetails to get total quantity sold
     {
       $lookup: {
-        from: 'orderdetails',
-        let: { dishId: '$_id' },
+        from: "orderdetails",
+        let: { dishId: "$_id" },
         pipeline: [
-          {
-            $match: {
-              $expr: { $eq: ['$dish', '$$dishId'] }
+            {
+              $match: {
+                $expr: { $eq: ["$dish", "$$dishId"] }
+              }
+            },
+            {
+              $lookup: {
+                from: "orders",
+                localField: "order",
+                foreignField: "_id",
+                as: "order"
+              }
+            },
+            {
+              $match: {
+                "order.order_status": "COMPLETED" // Only count completed orders
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                totalSold: { $sum: "$quantity" }
+              }
             }
-          },
-          {
-            $group: {
-              _id: null,
-              totalQuantity: { $sum: '$quantity' }
-            }
-          }
-        ],
-        as: 'orderDetails'
+          ],
+          as: "salesInfo"
       }
     },
     {
@@ -332,27 +238,28 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
       },
     },
     {
-      $unwind: {
-        path: '$favoriteInfo',
-        preserveNullAndEmptyArrays: true, // Include dishes even if they are not in the favorite collection
-      },
-    },
-    {
       $project: {
         _id: 1,
-        is_active: 1,
-        discount: 1,
-        created_at: 1,
         name: 1,
-        price: 1,
         description: 1,
+        price: 1,
         image: 1,
         category: 1,
-        favoriteInfo: 1,
-        totalQuantity: {
-          $ifNull: [{ $arrayElemAt: ['$orderDetails.totalQuantity', 0] }, 0]
+        itemSold: { 
+          $ifNull: [{ $first: "$salesInfo.totalSold" }, 0] 
+        },
+        // rating: {
+        //   average: { $ifNull: [{ $first: "$ratingInfo.averageRating" }, 0] },
+        //   count: { $ifNull: [{ $first: "$ratingInfo.totalReviews" }, 0] }
+        // },
+        isFavorite: {
+          $cond: {
+            if: { $gt: [{ $size: "$favoriteInfo" }, 0] },
+            then: true,
+            else: false
+          }
         }
-      },
+      }
     }
   ];
 
@@ -393,10 +300,10 @@ const validateDishesById = async (orderItems) => {
   return { isValid: true };
 };
 
+
 module.exports = {
   getDishes,
   getDish,
-  getPopularDishes,
   searchDishesByFullTextSearch,
   createDishes,
   createDish,

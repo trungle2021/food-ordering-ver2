@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import FavoriteInfo from "~/interface/favorite/favorite";
 import { useFavoriteDish } from "~/hooks/useFavoriteDish";
 import { useCart } from "~/hooks/useCart";
+import { useState } from "react";
 
 interface DishCardProps {
     _id: string;
@@ -16,15 +17,20 @@ interface DishCardProps {
     discount?: number;
     ratingPoint: number;
     itemSold?: number;
-    favoriteInfo?: FavoriteInfo;
+    isFavorite?: boolean;
     onRemove?: (dishId: string) => void;
 }
 
 export const DishCard = (props: DishCardProps) => {
-    const { _id: dishId, name, image, price, discount, ratingPoint, itemSold, favoriteInfo, onRemove } = props;
+    const { _id: dishId, name, image, price, discount, ratingPoint, itemSold, isFavorite, onRemove } = props;
     const userId = useSelector((state: any) => state.user?.user?._id)
     const { addItemToCart } = useCart();
-    const { isFavorite, toggleFavorite } = useFavoriteDish({ dishId, userId, initialFavoriteInfo: favoriteInfo, onRemove }); 
+    const { toggleFavorite } = useFavoriteDish({dishId, userId, onRemove }); 
+
+    const handleToggleFavorite = async (newState: boolean) => {
+        await toggleFavorite(newState);
+    };
+
 
     return (
         <Card>
@@ -54,7 +60,7 @@ export const DishCard = (props: DishCardProps) => {
                             <span >
                                 <span className="dollar">$</span>{price}
                             </span>
-                            {userId && <Heart isFavorite={isFavorite} onFavoriteClick={toggleFavorite} />}
+                            {userId && <Heart isFavorite={!!isFavorite || false} onClick={handleToggleFavorite} />}
                         </div>
                     </div>
                     <button type="button" className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => addItemToCart(dishId)}>

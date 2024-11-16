@@ -14,7 +14,7 @@ export const RecentOrderSection = ({ limit }: RecentOrderSectionProps) => {
         sectionName="Recent Orders"
         viewAllLink="/recent-orders"
         content={<RecentOrderList limit={limit} onHasOrders={setHasOrders} />}
-      />}
+      />} 
     </>
   );
 };

@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    select: false,
+   // need to require password for non-oauth user
   },
   phone: {
     type: String,

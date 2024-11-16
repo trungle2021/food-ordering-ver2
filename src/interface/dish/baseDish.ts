@@ -1,4 +1,3 @@
-import FavoriteInfo from "../favorite/favorite";
 
 export default interface BaseDishProps {
     _id: string;
@@ -10,5 +9,5 @@ export default interface BaseDishProps {
     description: string;
     image: string;
     category: string;
-    favoriteInfo?: FavoriteInfo;
+    isFavorite?: boolean;
 }

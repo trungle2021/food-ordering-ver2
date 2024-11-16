@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const {
-  getPopularDishes,
   searchDishesByFullTextSearch,
   createDishes,
   getDish,
@@ -20,7 +19,6 @@ const {
 } = require('./dish-request-validator');
 const { PARAMS, BODY, QUERY } = require('../../constant/request-types');
 
-router.route('/popular-dishes').get(getPopularDishes);
 
 router.route('/bulk').post(createDishes);
 
