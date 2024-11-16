@@ -16,6 +16,7 @@ const {
   deleteDishRequestSchema,
   updateDishRequestSchema,
   createDishRequestSchema,
+  ratingDishesRequestSchema
 } = require('./dish-request-validator');
 const { PARAMS, BODY, QUERY } = require('../../constant/request-types');
 
@@ -28,6 +29,9 @@ router
     validateRequest(searchDishesByFullTextSearchRequestSchema, [QUERY]),
     searchDishesByFullTextSearch
   );
+
+
+
 
 router
   .route('/:dishId')

@@ -84,6 +84,8 @@ const createDish = catchAsyncHandler(async (req, res, next) => {});
 const updateDish = catchAsyncHandler(async (req, res, next) => {});
 const deleteDish = catchAsyncHandler(async (req, res, next) => {});
 
+
+
 module.exports = {
   getDishes,
   searchDishesByFullTextSearch,

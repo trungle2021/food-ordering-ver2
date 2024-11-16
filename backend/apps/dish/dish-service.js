@@ -152,6 +152,11 @@ const getDishes = async (userId, queryString) => {
   return paginatedDishes; // Return the paginated result with metadata
 };
 
+const checkIfDishExists = async (dishId) => {
+  const count = await Dish.countDocuments({ _id: dishId });
+  return count > 0;
+};
+
 const getDish = async (queryString) => {
   return await Dish.findOne(queryString);
 };
@@ -269,6 +274,10 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
   return paginatedResult;
 };
 
+const ratingDishes = async ({dishId, userId, ratingPoint}) => {
+  
+}
+
 const createDishes = async (dishes) => {
   return await Dish.insertMany(dishes);
 };
@@ -304,6 +313,7 @@ const validateDishesById = async (orderItems) => {
 module.exports = {
   getDishes,
   getDish,
+  checkIfDishExists,
   searchDishesByFullTextSearch,
   createDishes,
   createDish,

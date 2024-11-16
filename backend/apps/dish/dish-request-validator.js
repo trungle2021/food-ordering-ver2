@@ -27,6 +27,7 @@ const createDishRequestSchema = Joi.object({
   category: Joi.string().required(),
 });
 
+
 module.exports = {
   searchDishesByFullTextSearchRequestSchema,
   getDishRequestSchema,

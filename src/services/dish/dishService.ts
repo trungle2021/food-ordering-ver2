@@ -20,7 +20,6 @@ const SORT_FIELD_MAP: Record<string, string> = {
   'price-desc': '-price',
   'created_at-desc': '-created',
   'itemSold-desc': '-itemSold',
-  // Add more mappings as needed
 };
 
 const mapSortParam = (field: SortField, order: SortOrder): string => {
