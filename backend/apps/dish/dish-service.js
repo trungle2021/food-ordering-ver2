@@ -205,13 +205,13 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
             },
             {
               $match: {
-                "order.order_status": "COMPLETED" // Only count completed orders
+                "order.order_status": COMPLETED
               }
             },
             {
               $group: {
                 _id: null,
-                totalSold: { $sum: "$quantity" }
+                itemSold: { $sum: "$quantity" }
               }
             }
           ],
@@ -246,7 +246,7 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
         image: 1,
         category: 1,
         itemSold: { 
-          $ifNull: [{ $first: "$salesInfo.totalSold" }, 0] 
+          $ifNull: [{ $first: "$salesInfo.itemSold" }, 0] 
         },
         // rating: {
         //   average: { $ifNull: [{ $first: "$ratingInfo.averageRating" }, 0] },

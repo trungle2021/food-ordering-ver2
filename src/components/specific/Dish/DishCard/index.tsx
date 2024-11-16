@@ -4,10 +4,8 @@ import Heart from "~/components/common/UI/Heart";
 import Discount from "~/components/common/UI/Discount";
 import Rating from "~/components/common/UI/Rating";
 import { useSelector } from "react-redux";
-import FavoriteInfo from "~/interface/favorite/favorite";
 import { useFavoriteDish } from "~/hooks/useFavoriteDish";
 import { useCart } from "~/hooks/useCart";
-import { useState } from "react";
 
 interface DishCardProps {
     _id: string;
