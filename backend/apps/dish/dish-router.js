@@ -8,6 +8,7 @@ const {
   updateDish,
   getDishes,
   createDish,
+  updateBulkDishRating,
 } = require('../dish/dish-controller');
 const validateRequest = require('../../utils/joi/validate-request-schema');
 const {
@@ -29,9 +30,6 @@ router
     validateRequest(searchDishesByFullTextSearchRequestSchema, [QUERY]),
     searchDishesByFullTextSearch
   );
-
-
-
 
 router
   .route('/:dishId')

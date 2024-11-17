@@ -43,6 +43,14 @@ const deleteUser = catchAsyncHandler(async (req, res, next) => {
   });
 });
 
+const deleteAllUsers = catchAsyncHandler(async (req, res) => {
+  await UserService.deleteAllUsers();
+  return res.status(200).json({
+    status: 'success',
+    message: 'Delete All Users Successfully',
+  });
+});   
+
 const getAddressList = catchAsyncHandler(async (req, res) => {
   const { userId } = req.params;
   const userAddresses = await UserService.getAddressList(userId);
@@ -110,4 +118,5 @@ module.exports = {
   createAddress,
   updateAddress,
   deleteAddress,
+  deleteAllUsers,
 };

@@ -18,6 +18,18 @@ const dishSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Image is required'],
   },
+  rating: {
+    averageRating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 0,
+    },
+    totalRating: {
+      type: Number,
+      default: 0,
+    },
+  },
   is_active: {
     type: Boolean,
     default: false,

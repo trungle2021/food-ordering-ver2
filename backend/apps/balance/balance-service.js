@@ -1,5 +1,9 @@
 const Balance = require('../balance/balance-model');
 
+const getBalances = async () => {
+  return await Balance.find();
+};
+
 const getBalance = async (filter) => {
   const balance = await Balance.find(filter);
   return balance[0];
@@ -18,8 +22,14 @@ const updateBalance = async (filter, data) => {
   return result;
 };
 
+const deleteAllBalances = async () => {
+  await Balance.deleteMany({});
+};
+
 module.exports = {
+  getBalances,
   getBalance,
   createBalance,
   updateBalance,
+  deleteAllBalances,
 };

@@ -51,6 +51,10 @@ const deleteUser = async (filter) => {
   await User.deleteOne(filter);
 };
 
+const deleteAllUsers = async () => {
+  await User.deleteMany({});
+};  
+
 const getAddressList = async (userId) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -168,4 +172,5 @@ module.exports = {
   createAddress,
   updateAddress,
   deleteAddress,
+  deleteAllUsers,
 };

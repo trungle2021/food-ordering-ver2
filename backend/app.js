@@ -9,6 +9,12 @@ const cors = require('cors');
 const jwtFilterHandler = require('./middleware/jwt-filter');
 const ErrorController = require('./apps/error/error-controller');
 const AppError = require('./utils/error/app-error');
+// const { seedUsers } = require('./apps/user/mock-users');
+// const { seedRatings } = require('./apps/rating/mock-rating');
+
+
+// seedUsers()
+// seedRatings();
 
 // config middleware
 app.use(cors());

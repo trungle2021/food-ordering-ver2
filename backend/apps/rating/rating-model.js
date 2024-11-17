@@ -20,8 +20,7 @@ const ratingSchema = new mongoose.Schema({
         type: String,
         maxlength: 500,
       },
-      timestamps: true
-})
+}, { timestamps: true });
 
 const Rating = mongoose.model('Rating', ratingSchema);
 module.exports = Rating;

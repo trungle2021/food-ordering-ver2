@@ -80,6 +80,9 @@ const createDishes = catchAsyncHandler(async (req, res, next) => {
     data: dishes,
   });
 });
+
+
+
 const createDish = catchAsyncHandler(async (req, res, next) => {});
 const updateDish = catchAsyncHandler(async (req, res, next) => {});
 const deleteDish = catchAsyncHandler(async (req, res, next) => {});

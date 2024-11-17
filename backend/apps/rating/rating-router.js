@@ -1,10 +1,22 @@
 const express = require('express');
-const { addRating} = require('../controllers/ratingController');
+const { addRating, deleteAllRatings, getBatchRatings, updateBulkDishRating } = require('./rating-controller');
 const router = express.Router();
 
-// Add a new rating
+
 router
-.route('/rating')
-.post(validateRequest(ratingDishesRequestSchema, [BODY]), addRating)
+  .route('/delete-all-ratings')
+  .delete(deleteAllRatings);
+
+// Add a new rating
+// router
+// .route('/')
+// .post(validateRequest(ratingDishesRequestSchema, [BODY]), addRating)
+router
+  .route('/update-bulk-ratings')
+  .put(updateBulkDishRating);
+
+router
+.route('/batch-ratings')
+.get(getBatchRatings)
 
 module.exports = router;

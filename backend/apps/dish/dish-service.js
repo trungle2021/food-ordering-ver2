@@ -5,7 +5,7 @@ const ApiFeatures = require('../../utils/api-features/api-features');
 const { COMPLETED } = require('../../constant/order-status');
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils');
 const paginateAggregate = require('../../utils/api-features/paginateAggregate');
-
+const RatingService = require('../rating/rating-service');
 const getDishes = async (userId, queryString) => {
   const modifiedQueryString = { ...queryString };
   const apiFeatures = new ApiFeatures(Dish.find(), modifiedQueryString);
@@ -118,6 +118,10 @@ const getDishes = async (userId, queryString) => {
             else: false
           }
         },
+        rating: {
+          averageRating: 1,
+          totalRating: 1,
+        },
         category: {
           name: 1,
           description: 1,
@@ -151,6 +155,8 @@ const getDishes = async (userId, queryString) => {
 
   return paginatedDishes; // Return the paginated result with metadata
 };
+
+
 
 const checkIfDishExists = async (dishId) => {
   const count = await Dish.countDocuments({ _id: dishId });
@@ -273,10 +279,6 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
 
   return paginatedResult;
 };
-
-const ratingDishes = async ({dishId, userId, ratingPoint}) => {
-  
-}
 
 const createDishes = async (dishes) => {
   return await Dish.insertMany(dishes);

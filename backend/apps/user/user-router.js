@@ -8,6 +8,7 @@ const {
   createAddress,
   updateAddress,
   getUsers,
+  deleteAllUsers
 } = require('./../user/user-controller');
 const validateRequest = require('../../utils/joi/validate-request-schema');
 const { PARAMS, BODY } = require('../../constant/request-types');
@@ -35,6 +36,11 @@ router
   .route('/:userId/addresses/:addressId')
   .get(validateRequest(getAddressByIdRequestSchema, [PARAMS]), getAddressById);
 
-router.route('/').get(getUsers);
+router.route('/delete-all-users')
+  .delete(deleteAllUsers);
+
+router.route('/')
+  .get(getUsers);
+
 
 module.exports = router;

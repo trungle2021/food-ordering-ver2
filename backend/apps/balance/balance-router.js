@@ -7,10 +7,16 @@ const {
   updateBalanceRequestSchema,
   getBalanceByUserIdRequestSchema,
 } = require('./balance-request-validator');
-const { createBalance, updateBalance, getBalanceByUserId } = require('./balance-controller');
+const { createBalance, updateBalance, getBalanceByUserId, getBalances, deleteAllBalances } = require('./balance-controller');
+
+router
+  .route('/delete-all-balances')
+  .delete(deleteAllBalances);
+
 
 router
   .route('/')
+  .get(getBalances)
   .post(validateRequest(createBalanceRequestSchema, [BODY]), createBalance)
   .put(validateRequest(updateBalanceRequestSchema, [BODY]), updateBalance);
 

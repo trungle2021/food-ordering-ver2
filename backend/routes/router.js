@@ -13,6 +13,7 @@ const AuthRouter = require('./../apps/auth/auth-router');
 const PaymentRouter = require('./../apps/payment/payment-router');
 const StockRouter = require('../apps/stock/stock-router');
 const BalanceRouter = require('../apps/balance/balance-router');
+const RatingRouter = require('../apps/rating/rating-router');
 
 apiRoute.use('/dishes', DishRouter);
 apiRoute.use('/carts', CartRouter);
@@ -27,5 +28,6 @@ apiRoute.use('/payments', PaymentRouter);
 apiRoute.use('/users', UserRouter);
 apiRoute.use('/auth', AuthRouter);
 apiRoute.use('/balances', BalanceRouter);
+apiRoute.use('/ratings', RatingRouter);
 
 module.exports = apiRoute;
