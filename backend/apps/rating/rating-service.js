@@ -47,7 +47,6 @@ const getBatchRatings = async (dishIds) => {
 
 }
 
-
 const updateBulkDishRating = async () => {
     const dishIds = await Dish.find({}).select('_id');
     const dishIdsArray = dishIds.map(dish => dish._id);

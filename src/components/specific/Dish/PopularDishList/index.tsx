@@ -9,8 +9,8 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
 
     const getPopularDishes = async () => {
         try {
-            const response = await DishService.getPopularDishes({limit: 5});
-            setPopularDishes(response?.data?.results);
+            const response = await DishService.getPopularDishes({limit});
+            setPopularDishes(response.results);
         } catch (err) {
             console.log(err);
         }
@@ -22,7 +22,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
 
     const popularDishList = popularDishes.map((item: any) => {
 
-        const { _id, image, discount, name, price, isFavorite } = item
+        const { _id, image, discount, name, price, isFavorite, rating } = item
 
         const itemSold = item.totalQuantity;
 
@@ -36,7 +36,7 @@ export const PopularDishList = ({ limit }: { limit: number }) => {
                     name={name}
                     price={price}
                     isFavorite={isFavorite}
-                    ratingPoint={4}
+                    averageRating={rating.averageRating}
                 />
             </Grid>
         );

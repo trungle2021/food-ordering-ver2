@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { searchDishes } from "~/store/dish/searchDishes/searchDishesAction";
 import { clearSearchData } from "~/store/dish/searchDishes/searchDishesSlice";
 import { SearchBar } from "~/components/common/SearchBar";
+import { DishQueryParams } from "~/interface/dish";
 
 export const SearchDish = () => {
 
@@ -28,9 +29,11 @@ export const SearchDish = () => {
   }
 
   const loadSuggestion = async (limit: number) => {
-
-    const response: any = await DishService.getPopularDishes(limit);
-    setProductNameSuggestion(response.data.results.map(((dish:any) => dish.name)));
+    const queryParams: DishQueryParams = {
+      limit: limit,
+    }
+    const response: any = await DishService.getPopularDishes(queryParams);
+    setProductNameSuggestion(response.results.map(((dish:any) => dish.name)));
   };
 
 

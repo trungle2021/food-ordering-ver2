@@ -1,5 +1,5 @@
 import styles from './styles.module.css'
-import CartItemProps from '~/interface/cart/CartItem';
+import CartItemProps from '~/interface/cart';
 import { useModifyQuantityCartItem } from '~/hooks/useModifyQuantityCartItem';
 
 

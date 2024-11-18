@@ -1,70 +1,61 @@
+import { DishQueryParams, SortField } from '~/interface/dish';
+import { SortOrder } from '~/interface/dish';
 import axios from '~/lib/axios';
 import { baseDishApi, getDishesByNameApi, getPopularDishApi } from '~/utils/api';
 
-type SortField = 'itemSold' | 'created_at' | 'price';
-type SortOrder = 'asc' | 'desc';
 
-interface DishQueryParams {
-  sort?: {
-    field: SortField;
-    order: SortOrder;
-  };
-  category?: string | string[];
-  page?: number;
-  limit?: number;
+
+const DEFAULT_SORT: { field: SortField; order: SortOrder } = {
+  field: 'created_at',
+  order: 'desc'
+};
+
+const DEFAULT_PARAMS = {
+  page: 1,
+  limit: 10,
+  sort: DEFAULT_SORT
 }
 
-// Map frontend sort values to backend values
-const SORT_FIELD_MAP: Record<string, string> = {
-  'price-asc': 'price',
-  'price-desc': '-price',
-  'created_at-desc': '-created',
-  'itemSold-desc': '-itemSold',
-};
-
-const mapSortParam = (field: SortField, order: SortOrder): string => {
-  const sortKey = `${field}-${order}`;
-  
-  // Use the mapping or construct the sort parameter
-  return SORT_FIELD_MAP[sortKey] || (order === 'desc' ? `-${field}` : field);
-};
 
 
-
-const getDishes = async (params: DishQueryParams): Promise<any> => {
+const getDishes = async (params: DishQueryParams = DEFAULT_PARAMS): Promise<any> => {
    const queryParams = new URLSearchParams();
+   console.table(params);
 
-  // Handle sorting with mapping
-  if (params.sort) {
-    const sortValue = mapSortParam(params.sort.field, params.sort.order);
-    queryParams.append('sort', sortValue);
-  }
 
-  // Handle categories
-  if (params.category) {
-    const categories = Array.isArray(params.category) ? params.category : [params.category];
-    categories.forEach(category => {
-      queryParams.append('category.name', category);
-    });
-  }
+  //   // Handle categories
+  // if (params.category) {
+  //   const categories = Array.isArray(params.category) ? params.category : [params.category];
+  //   categories.forEach((category: string) => {
+  //     queryParams.append('category.name', category);
+  //   });
+  // }
 
-  // Handle pagination
-  if (params.page) {
-    queryParams.append('page', params.page.toString());
-  }
+
+  // // Handle sorting with mapping
+  // if (params.sort) {
+  //   console.log("Params has sort")
+  //   queryParams.append('sort', params.sort.toString());
+  // }
+
+
+
+ 
+
+  // // Handle pagination
+
 
   if (params.limit) {
     queryParams.append('limit', params.limit.toString());
   }
+  // console.table(queryParams);
+
 
   try {
     const response = await axios.get(`${baseDishApi}?${queryParams.toString()}`);
     return response.data;
-  } catch (error) {
-    // if (axios.isAxiosError(error)) {
-    //   throw new Error(`Failed to fetch dishes: ${error.response?.data?.message || error.message}`);
-    // }
-    // throw error;
+  } catch (error: any) {
+      throw new Error(`Failed to fetch dishes: ${error.response?.data?.message || error.message}`);
   }
 };
 
@@ -89,4 +80,63 @@ export const DishService = {
   searchDishes,
 };
 
-export default DishService;
+// export default DishService;
+
+
+// interface DishFilters {
+//   category?: string[];
+//   sort?: SortOption[];
+//   page?: number;
+//   limit?: number;
+//   minPrice?: number;
+//   maxPrice?: number;
+//   keyword?: string;
+// }
+
+// const getDishes = async (filters: DishFilters): Promise<any> => {
+//   const queryParams = new URLSearchParams();
+
+//   // Add categories
+//   filters.category?.forEach(cat => 
+//     queryParams.append('category', cat)
+//   );
+
+//   // Add sort
+//   if (filters.sort?.length) {
+//     const sortString = filters.sort
+//       .map(s => `${s.field}-${s.order}`)
+//       .join(',');
+//     queryParams.append('sort', sortString);
+//   }
+
+//   // Add pagination
+//   if (filters.page) queryParams.append('page', filters.page.toString());
+//   if (filters.limit) queryParams.append('limit', filters.limit.toString());
+
+//   // Add price range
+//   if (filters.minPrice) queryParams.append('minPrice', filters.minPrice.toString());
+//   if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice.toString());
+
+//   // Add search
+//   if (filters.keyword) queryParams.append('keyword', filters.keyword);
+
+//   return axios.get(`${baseDishApi}?${queryParams.toString()}`);
+// };
+
+// // Usage examples:
+// getDishes({
+//   category: ['Pizza', 'Salad'],
+//   sort: [
+//     { field: 'price', order: 'asc' },
+//     { field: 'created_at', order: 'desc' }
+//   ],
+//   page: 1,
+//   limit: 10
+// });
+
+// getDishes({
+//   category: ['Pizza'],
+//   minPrice: 10,
+//   maxPrice: 50,
+//   sort: [{ field: 'rating', order: 'desc' }]
+// });

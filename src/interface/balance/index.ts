@@ -1,4 +1,4 @@
-export default interface TopUpProps {
+export interface TopUpProps {
     userId: string,
     amount: number,
     source: string,

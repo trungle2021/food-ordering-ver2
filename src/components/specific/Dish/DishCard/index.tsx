@@ -13,14 +13,14 @@ interface DishCardProps {
     image: string;
     price: number;
     discount?: number;
-    ratingPoint: number;
+    averageRating: number;
     itemSold?: number;
     isFavorite?: boolean;
     onRemove?: (dishId: string) => void;
 }
 
 export const DishCard = (props: DishCardProps) => {
-    const { _id: dishId, name, image, price, discount, ratingPoint, itemSold, isFavorite, onRemove } = props;
+    const { _id: dishId, name, image, price, discount, averageRating, itemSold, isFavorite, onRemove } = props;
     const userId = useSelector((state: any) => state.user?.user?._id)
     const { addItemToCart } = useCart();
     const { toggleFavorite } = useFavoriteDish({dishId, userId, onRemove }); 
@@ -46,7 +46,7 @@ export const DishCard = (props: DishCardProps) => {
                     alt=""
                 />
                 <div className={`${styles["dish-container__rating"]}`}>
-                    <Rating ratingPoint={ratingPoint} size={20} />
+                    <Rating point={averageRating} size={20} />
                     {itemSold != undefined && itemSold > 0 && <span>{itemSold} Sold</span>}
                 </div>
                 <div className={`${styles["dish-container__body"]}`}>

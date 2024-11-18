@@ -6,7 +6,9 @@ const { COMPLETED } = require('../../constant/order-status');
 const { convertToObjectId } = require('../../utils/mongoose/mongoose-utils');
 const paginateAggregate = require('../../utils/api-features/paginateAggregate');
 const RatingService = require('../rating/rating-service');
+
 const getDishes = async (userId, queryString) => {
+
   const modifiedQueryString = { ...queryString };
   const apiFeatures = new ApiFeatures(Dish.find(), modifiedQueryString);
   const preparedQuery = apiFeatures.prepareQueryObject();
@@ -31,8 +33,6 @@ const getDishes = async (userId, queryString) => {
       'category.name': { $in: categoryNames }
       }
     }] : []),
-  // Get category information
-
   // Get sales information
   {
     $lookup: {
@@ -67,7 +67,6 @@ const getDishes = async (userId, queryString) => {
       as: "salesInfo"
       }
   },
-
   // Add computed fields
   {
   $addFields: {
@@ -133,11 +132,21 @@ const getDishes = async (userId, queryString) => {
 
   // Apply sorting
   if (modifiedQueryString.sort) {
-    aggregatePipeline.push({ 
-      $sort: modifiedQueryString.sort === 'popular' 
-        ? { itemSold: -1 } 
-        : apiFeatures.sort().query.options.sort 
-    });
+    let sortOption;
+    switch (modifiedQueryString.sort) {
+      case 'popular':
+        sortOption = { itemSold: -1 };
+        break;
+      case 'popular-asc':
+        sortOption = { itemSold: 1 };
+        break;
+      case 'popular-desc':
+        sortOption = { itemSold: -1 };
+        break;
+      default:
+        sortOption = apiFeatures.sort().query.options.sort;
+    }
+    aggregatePipeline.push({ $sort: sortOption });
   }
 
   // Apply field limiting
@@ -155,8 +164,6 @@ const getDishes = async (userId, queryString) => {
 
   return paginatedDishes; // Return the paginated result with metadata
 };
-
-
 
 const checkIfDishExists = async (dishId) => {
   const count = await Dish.countDocuments({ _id: dishId });
@@ -259,10 +266,7 @@ const searchDishesByFullTextSearch = async (value, page = 1, limit = 10, userId)
         itemSold: { 
           $ifNull: [{ $first: "$salesInfo.itemSold" }, 0] 
         },
-        // rating: {
-        //   average: { $ifNull: [{ $first: "$ratingInfo.averageRating" }, 0] },
-        //   count: { $ifNull: [{ $first: "$ratingInfo.totalReviews" }, 0] }
-        // },
+        rating: 1,
         isFavorite: {
           $cond: {
             if: { $gt: [{ $size: "$favoriteInfo" }, 0] },

@@ -1,4 +1,4 @@
-export default interface FavoriteInfo {
+export interface FavoriteInfo {
     _id: string;
     user: string;
     dish: string;

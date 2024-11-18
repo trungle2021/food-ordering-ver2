@@ -1,7 +1,7 @@
 import styles from "./styles.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import CartItemProps from "~/interface/cart/CartItem";
+import CartItemProps from "~/interface/cart";
 import { CartItem } from "~/components/specific/CartItem";
 import { useCheckout } from "~/hooks/useCheckout";
 import { useCart } from "~/hooks/useCart";

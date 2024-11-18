@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CartItemProps from '../interface/cart/CartItem';
+import CartItemProps from '../interface/cart';
 import { updateItem } from "~/store/cart/cartAction";
 import { toast } from "react-toastify";
 import { unwrapResult } from "@reduxjs/toolkit";

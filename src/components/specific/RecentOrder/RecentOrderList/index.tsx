@@ -30,7 +30,6 @@ export const RecentOrderList = ({ limit, onHasOrders }: { limit: number, onHasOr
       onHasOrders && onHasOrders(true);
       const sortedOrderDetailsList = [...orderDetailsList].sort((a: OrderDetail, b: OrderDetail) => b.dish.price - a.dish.price);
       const dish = sortedOrderDetailsList[0].dish;
-      const favoriteInfo = sortedOrderDetailsList[0].favoriteInfo;
       return (
         <Grid key={order._id} item xs={12} sm={6} md={4} lg={4} xl={3}>
             <DishCard
@@ -39,8 +38,8 @@ export const RecentOrderList = ({ limit, onHasOrders }: { limit: number, onHasOr
               discount={dish.discount}
               name={dish.name}
               price={dish.price}
-              favoriteInfo={favoriteInfo}
-              ratingPoint={4}
+              isFavorite={dish.isFavorite}
+              averageRating={dish.rating.averageRating}
             />
           </Grid>
         );

@@ -54,7 +54,7 @@ export const Favorites = () => {
                       _id={dish._id}
                       image={dish.image}
                       itemSold={0}
-                      ratingPoint={3}
+                      averageRating={dish.rating.averageRating}
                       discount={0}
                       name={dish.name}
                       price={dish.price}

@@ -15,8 +15,8 @@ import { useQuery } from '~/hooks/useQuery';
 import { useResponsiveLimitItem } from '~/hooks/useResponsiveLimitItem';
 import DishService from '~/services/dish/dishService';
 import CategoryService from '~/services/category/categoryService';
-import BaseDishProps from '~/interface/dish/baseDish';
-import CategoryProps from '~/interface/category/category';
+import CategoryProps from '~/interface/category';
+import { BaseDishProps } from '~/interface/dish';
 
 
 interface CheckedCategoriesProps {
@@ -31,49 +31,46 @@ interface ApplyingFilter {
 
 
 export const DishPage = () => {
-    useClearSearchData()
 
     const history = useHistory()
+    const searchDishes = useSelector((state: any) => state.searchDish)
+    const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
+    const queryParams = useQuery()
+
     const [open, setOpen] = useState(false);
     const [dishes, setDishes] = useState([]);
     const [applyingFilter, setApplyingFilter] = useState<ApplyingFilter>({})
     const [categories, setCategories] = useState<CategoryProps[]>([])
     const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 50]);
     const [checkedCategories, setCheckedCategories] = useState<CheckedCategoriesProps>({})
-
-    const searchDishes = useSelector((state: any) => state.searchDish)
+    
     const searchDishesData = searchDishes.data
-    const queryParams = useQuery()
-    const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
     const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 8 : isLg ? 10 : isXl ? 12 : 4
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 10 : isLg ? 8 : isXl ? 10 : 2
 
-    useEffect(() => {
-        setDefaultFilter()
-    })
+    useClearSearchData()
 
+    // Effect 1: Handles data fetching
     useEffect(() => {
         getCategoryList();
-        getDishes();
+    }, [categoryLimit]);
 
-    }, [queryParams, dishLimit]);
-
-    const getCategoryList = async () => {
-        const response = await CategoryService.getCategoryList(categoryLimit)
-        if (response.data && response.data.length > 0) {
-            setCategories(response.data)
+    // Effect 2: Handles state synchronization
+    useEffect(() => {
+        if (categories.length > 0) {
+            setDefaultCheckedCategories();
         }
-    }
+    }, [categories, queryParams]);
 
-    const getDishes = async () => {
-        const response = await DishService.getDishes(queryParams.toString(), dishLimit);
-        setDishes(response.data.results);
-    };
+    useEffect(() => {
+        getDishes();
+        setDefaultFilter()
+    }, [queryParams, dishLimit]);
 
     const setDefaultFilter = () => {
        
         if (queryParams.has('category_name')) {
-            setDefautlCheckedCategories()
+            setDefaultCheckedCategories()
         }
 
         if (queryParams.has('sort')) {
@@ -85,7 +82,7 @@ export const DishPage = () => {
         }
     }
 
-    const setDefautlCheckedCategories = () => {
+    const setDefaultCheckedCategories = () => {
         const categoryNames = queryParams.getAll('category_name')
         if (categories.length > 0 && categoryNames?.length > 0) {
             categories.forEach((category: CategoryProps) => {
@@ -117,31 +114,21 @@ export const DishPage = () => {
         }
     }
 
-    const updateApplyingFilter = () => {
-        const updatedCategoryNames = queryParams.getAll('category_name');
-        const updatedSortByParams = queryParams.getAll('sort');
-        const priceFrom = queryParams.get('price[gte]');
-        const priceTo = queryParams.get('price[lte]');
-        const updatedFilter: ApplyingFilter = {};
-
-        if (updatedCategoryNames.length > 0) {
-            updatedFilter.category_name = updatedCategoryNames
+    const getCategoryList = async () => {
+        const response = await CategoryService.getCategoryList(categoryLimit)
+        if (response.data && response.data.length > 0) {
+            setCategories(response.data)
         }
-
-        if (updatedSortByParams.length > 0) {
-            updatedFilter.sort = updatedSortByParams
-        }
-
-        if (priceFrom && priceTo) {
-            updatedFilter.price = [`Price: ${priceFrom}$ - ${priceTo}$`]
-        }
-        setApplyingFilter(updatedFilter);
     }
 
-    const toggleFilterAction = (newOpen: boolean) => async () => {
-        setOpen(newOpen)
-    }
-
+    const getDishes = async () => {
+        const payload = {
+            queryParams: queryParams.toString(),
+            limit: dishLimit
+        }
+        const response = await DishService.getDishes(payload);
+        setDishes(response.results);
+    };
 
     const handlePriceRangeChange = (event: Event, newValue: number | number[]) => {
         setValuePriceRange(newValue as number[]);
@@ -189,10 +176,10 @@ export const DishPage = () => {
         const sortByParams = queryParams.getAll('sort')
         let newSortByParams = new Set(sortByParams);
 
-        if (sortByParams.includes('Price-Ascending') && sort === 'Price-Descending') {
-            newSortByParams.delete('Price-Ascending')
-        } else if (sortByParams.includes('Price-Descending') && sort === 'Price-Ascending') {
-            newSortByParams.delete('Price-Descending')
+        if (sortByParams.includes('price-asc') && sort === 'price-desc') {
+            newSortByParams.delete('price-asc')
+        } else if (sortByParams.includes('price-desc') && sort === 'price-asc') {
+            newSortByParams.delete('price-desc')
         }
         newSortByParams.add(sort);
         queryParams.delete('sort');
@@ -248,6 +235,31 @@ export const DishPage = () => {
         setApplyingFilter({});
         setValuePriceRange([0, 100]);
         history.push({ search: queryParams.toString() });
+    }
+    
+    const updateApplyingFilter = () => {
+        const updatedCategoryNames = queryParams.getAll('category_name');
+        const updatedSortByParams = queryParams.getAll('sort');
+        const priceFrom = queryParams.get('price[gte]');
+        const priceTo = queryParams.get('price[lte]');
+        const updatedFilter: ApplyingFilter = {};
+
+        if (updatedCategoryNames.length > 0) {
+            updatedFilter.category_name = updatedCategoryNames
+        }
+
+        if (updatedSortByParams.length > 0) {
+            updatedFilter.sort = updatedSortByParams
+        }
+
+        if (priceFrom && priceTo) {
+            updatedFilter.price = [`Price: ${priceFrom}$ - ${priceTo}$`]
+        }
+        setApplyingFilter(updatedFilter);
+    }
+
+    const toggleFilterAction = (newOpen: boolean) => async () => {
+        setOpen(newOpen)
     }
 
 
@@ -315,9 +327,9 @@ export const DishPage = () => {
                                         variant="contained"
                                         sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
                                     >
-                                        <Button onClick={handleClickSortBy({ sort: 'Price-Ascending' })}>Price (lowest - highest)</Button>
-                                        <Button onClick={handleClickSortBy({ sort: 'Newest' })}>Newest</Button>
-                                        <Button onClick={handleClickSortBy({ sort: 'Price-Descending' })}>Price (highest - lowest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'price-asc' })}>Price (lowest - highest)</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'created_at-desc' })}>Newest</Button>
+                                        <Button onClick={handleClickSortBy({ sort: 'price-desc' })}>Price (highest - lowest)</Button>
                                     </ButtonGroup>
                                 </FormGroup>
                             </AccordionDetails>
@@ -381,11 +393,11 @@ export const DishPage = () => {
                                 _id={dish._id}
                                 image={dish.image}
                                 itemSold={0}
-                                ratingPoint={3}
+                                averageRating={dish.rating.averageRating}
                                 discount={0}
                                 name={dish.name}
                                 price={dish.price}
-                                favoriteInfo={dish.favoriteInfo}
+                                isFavorite={dish.isFavorite}
                             />
                         </Grid>
                     )) :
@@ -398,8 +410,8 @@ export const DishPage = () => {
                                     discount={0}
                                     name={dish.name}
                                     price={dish.price}
-                                    ratingPoint={3}
-                                    favoriteInfo={dish.favoriteInfo}
+                                    averageRating={dish.rating.averageRating}
+                                    isFavorite={dish.isFavorite}
                                 />
                             </Grid>
                         ))}

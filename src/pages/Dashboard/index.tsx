@@ -14,7 +14,6 @@ import { useResponsiveLimitItem } from "~/hooks/useResponsiveLimitItem";
 
 export const Dashboard = () => {
     const dishes = useSelector((state: any) => state.searchDish)
-    console.log("dishes", dishes)
     const { isXs, isSm, isMd, isLg, isXl } = useResponsiveLimitItem()
     const categoryLimit = isXs ? 4 : isSm ? 6 : isMd ? 6 : isLg ? 6 : isXl ? 6 : 6
     const dishLimit = isXs ? 2 : isSm ? 4 : isMd ? 6 : isLg ? 8 : isXl ? 10 : 2
@@ -46,7 +45,7 @@ export const Dashboard = () => {
                                     price={dish.price}
                                     isFavorite={dish.isFavorite}
                                     image={dish.image}
-                                    ratingPoint={4}
+                                    averageRating={dish.rating.averageRating}
                                      />
                             </Grid>)
                         })}
