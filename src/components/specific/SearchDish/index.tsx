@@ -1,5 +1,5 @@
 import { SetStateAction, useEffect, useState } from "react";
-import DishService from "~/services/dish/dishService";
+import {DishService} from "~/services/dish/dishService";
 import { useDispatch } from "react-redux";
 import { searchDishes } from "~/store/dish/searchDishes/searchDishesAction";
 import { clearSearchData } from "~/store/dish/searchDishes/searchDishesSlice";
@@ -31,6 +31,7 @@ export const SearchDish = () => {
   const loadSuggestion = async (limit: number) => {
     const queryParams: DishQueryParams = {
       limit: limit,
+      priceRange: { min: 0, max: 100 },
     }
     const response: any = await DishService.getPopularDishes(queryParams);
     setProductNameSuggestion(response.results.map(((dish:any) => dish.name)));

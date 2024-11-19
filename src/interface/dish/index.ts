@@ -1,14 +1,12 @@
-export type SortField = 'itemSold' | 'created_at' | 'price' | 'rating';
-export type SortOrder = 'asc' | 'desc';
-
 export interface DishQueryParams {
-    category?: string | string[];
+    categories?: string[];
+    sort?: string[];
+    priceRange: {
+        min: number;
+        max: number;
+    } | undefined ;
     page?: number;
     limit?: number;
-    sort?: {
-      field: SortField;
-      order: SortOrder;
-    };
 }
 
 
@@ -32,4 +30,3 @@ export interface BaseDishProps {
 export interface RecentOrderProps extends BaseDishProps {
     orderDate: string;
 }
-  

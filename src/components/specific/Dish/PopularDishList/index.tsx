@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DishService from "../../../../services/dish/dishService";
+import { DishService } from "../../../../services/dish/dishService";
 import { Grid } from "@mui/material";
 import { DishCard } from "~/components/specific/Dish/DishCard";
 
