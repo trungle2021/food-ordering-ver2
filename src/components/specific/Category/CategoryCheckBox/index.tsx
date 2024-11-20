@@ -1,5 +1,4 @@
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material"
-import { useState } from "react"
 
 interface CheckedCategories {
     [key: string]: boolean;
@@ -11,14 +10,14 @@ interface CategoryCheckBoxProps {
         name: string;
     }[];
     checkedCategories: CheckedCategories;
-    onChange: (checkedCategories: CheckedCategories, categoryId: string) => void
+    onChange: (checkedCategories: CheckedCategories, catId: string) => void
 }
 export const CategoryCheckBox = ({ categories, checkedCategories, onChange }: CategoryCheckBoxProps,) => {
-    const handleCheckCategory = (event: any, categoryId: string) => {
+    const handleCheckCategory = (event: any, catId: string) => {
         onChange({
             ...checkedCategories,
-            [categoryId]: event.target.checked
-        }, categoryId)
+            [catId]: event.target.checked
+        }, catId)
     }
 
 

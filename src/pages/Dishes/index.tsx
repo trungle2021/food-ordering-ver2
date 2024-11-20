@@ -29,6 +29,7 @@ import { useCategories } from './hooks/useCategories';
 import { useDishData } from './hooks/useDishData';
 import { useFilters } from './hooks/useFilters';
 import { FilterTag } from '~/components/common/FilterTag';
+import { CategoryProps } from '~/interface/category';
 
 interface CheckedCategoriesProps {
   [key: string]: boolean;
@@ -60,51 +61,55 @@ export const DishPage = () => {
   const [valuePriceRange, setValuePriceRange] = useState<number[]>([0, 50]);
   useClearSearchData();
 
-//   const setDefaultFilter = () => {
-//     if (queryParams.has('category_name')) {
-//       setDefaultCheckedCategories();
-//     }
+  useEffect(() => {
+    setDefaultFilter();
+  }, [queryParams]);
 
-//     if (queryParams.has('sort')) {
-//       setDefaultSortBy();
-//     }
+  const setDefaultFilter = () => {
+    if (queryParams.has('category_name')) {
+      setDefaultCheckedCategories();
+    }
 
-//     if (queryParams.has('price[gte]') && queryParams.has('price[lte]')) {
-//       setDefaultPriceRange();
-//     }
-//   };
+    if (queryParams.has('sort')) {
+      setDefaultSortBy();
+    }
 
-//   const setDefaultCheckedCategories = () => {
-//     const categoryNames = queryParams.getAll('category_name');
-//     if (categories.length > 0 && categoryNames?.length > 0) {
-//       categories.forEach((category: CategoryProps) => {
-//         let categoryId = category._id;
-//         let categoryName = category.name;
-//         if (categoryNames.includes(categoryName)) {
-//           checkedCategories[categoryId] = true;
-//         } else {
-//           checkedCategories[categoryId] = false;
-//         }
-//       });
-//       setCheckedCategories(checkedCategories);
-//       updateApplyingFilter();
-//     }
-//   };
+    if (queryParams.has('price[gte]') && queryParams.has('price[lte]')) {
+      setDefaultPriceRange();
+    }
+    console.log("Filters: ", filters)
+  };
 
-//   const setDefaultSortBy = () => {
-//     const sortByParams = queryParams.getAll('sort');
-//     if (sortByParams.length > 0) {
-//       updateApplyingFilter();
-//     }
-//   };
+  const setDefaultCheckedCategories = ()  => {
+    const categoryNames = queryParams.getAll('category_name');
+    if (categories.length > 0 && categoryNames?.length > 0) {
+      categories.forEach((category: CategoryProps) => {
+        console.log("Category: ", category)
+        let catId = category._id;
+        let catName = category.name;
+        categoryNames.includes(catName) 
+        ? checkedCategories[catId] = true 
+        : checkedCategories[catId] = false;
+      });
+      setCheckedCategories((prev) => ({...prev, ...checkedCategories}));
+      updateFilters({ categories: categoryNames });
+    }
+  };
 
-//   const setDefaultPriceRange = () => {
-//     const priceFrom = queryParams.get('price[gte]');
-//     const priceTo = queryParams.get('price[lte]');
-//     if (priceFrom && priceTo) {
-//       updateApplyingFilter();
-//     }
-//   };
+  const setDefaultSortBy = () => {
+    const sortByParams = queryParams.getAll('sort');
+    if (sortByParams.length > 0) {
+      updateFilters({ sort: sortByParams });
+    }
+  };
+
+  const setDefaultPriceRange = () => {
+    const priceFrom = Number(queryParams.get('price[gte]')) || 0;
+    const priceTo = Number(queryParams.get('price[lte]')) || 100;
+    if (priceFrom && priceTo) {
+      updateFilters({ priceRange: { min: priceFrom, max: priceTo } });
+    }
+  };
 
   const handlePriceRangeChange = (event: Event, newValue: number | number[]) => {
     setValuePriceRange(newValue as number[]);

@@ -11,7 +11,7 @@ const DEFAULT_SORT: string[] = [
 
 const getDishes = async (queryString: string): Promise<any> => {
   try {
-    const response = await axios.get(`${baseDishApi}${queryString}`);
+    const response = await axios.get(`${baseDishApi}?${queryString}`);
     return response.data;
   } catch (error: any) {
     throw new Error(`Failed to fetch dishes: ${error.response?.data?.message || error.message}`);
