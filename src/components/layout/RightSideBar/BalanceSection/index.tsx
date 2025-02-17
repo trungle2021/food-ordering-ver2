@@ -52,7 +52,7 @@ export const BalanceSection = () => {
             fill="#fff"
             className={`${styles["balance-container__function-button"]}`}
           />
-          <span>Transfer</span>
+          <span>Withdraw</span>
         </div>
       </div>
     </div>

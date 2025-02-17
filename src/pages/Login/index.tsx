@@ -2,14 +2,13 @@ import { SetStateAction, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Alert } from "@mui/material";
-import { LoginPayload } from "~/interface/auth/loginPayload";
 import { LoginForm } from "~/components/specific/LoginForm";
 import { OR } from "~/components/common/UI/OR";
 import { loginOAuth, loginUser } from "~/store/auth/authAction";
 import { getUserByUserId } from "~/store/user/userAction";
 import { GoogleLogin } from "@react-oauth/google";
 import { setOAuthProvider } from "~/store/auth/authSlice";
-import FacebookLogin from "@greatsumini/react-facebook-login";
+import { LoginPayload } from "~/interface/auth";
 
 export const Login = () => {
   const history = useHistory();
@@ -86,21 +85,6 @@ export const Login = () => {
             onError={handleOnLoginOAuthFailed}
             useOneTap
         />
-        </div>
-        <div>
-        <FacebookLogin
-            appId="1245109180131463"
-            style={{
-              backgroundColor: '#4267b2',
-              color: '#fff',
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '4px',
-              width: '100%',
-            }}
-          onSuccess={credentialResponse => handleOnLoginOAuthSuccess(credentialResponse, 'facebook')}
-            onFail={handleOnLoginOAuthFailed}
-          />
         </div>
       </div>
     </div>

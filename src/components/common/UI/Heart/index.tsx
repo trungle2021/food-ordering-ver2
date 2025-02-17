@@ -1,3 +1,4 @@
+import { is } from "date-fns/locale";
 import React, { useState } from "react";
 
 interface HeartProps {
@@ -8,10 +9,9 @@ interface HeartProps {
 const Heart: React.FC<HeartProps> = ({ isFavorite, onClick }) => {
   const [isFavoriteState, setIsFavoriteState] = useState(isFavorite);
   const handleOnClickFavorite = () => {
-    setIsFavoriteState(!isFavoriteState);
-    onClick(isFavoriteState);
-    console.log("isFavoriteState", isFavoriteState);
-
+    const newFavoriteState = !isFavoriteState;
+    setIsFavoriteState(newFavoriteState);
+    onClick(newFavoriteState);
   }
 
   return (

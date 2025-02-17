@@ -18,7 +18,7 @@ const getDishes = async (queryString: string): Promise<any> => {
   }
 };
 
-const getPopularDishes = (queryString: string): Promise<any> => {
+const getPopularDishes = (queryString: any): Promise<any> => {
   const params = new URLSearchParams(queryString);
   params.append('sort', 'itemSold-desc');
   return getDishes(`?${params.toString()}`);

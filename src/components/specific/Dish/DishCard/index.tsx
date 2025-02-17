@@ -21,6 +21,8 @@ interface DishCardProps {
 
 export const DishCard = (props: DishCardProps) => {
     const { _id: dishId, name, image, price, discount, averageRating, itemSold, isFavorite, onRemove } = props;
+    
+    console.log("IsFavorite Props", isFavorite);
     const userId = useSelector((state: any) => state.user?.user?._id)
     const { addItemToCart } = useCart();
     const { toggleFavorite } = useFavoriteDish({dishId, userId, onRemove }); 
@@ -58,7 +60,7 @@ export const DishCard = (props: DishCardProps) => {
                             <span >
                                 <span className="dollar">$</span>{price}
                             </span>
-                            {userId && <Heart isFavorite={!!isFavorite || false} onClick={handleToggleFavorite} />}
+                            {userId && <Heart isFavorite={!!isFavorite} onClick={handleToggleFavorite} />}
                         </div>
                     </div>
                     <button type="button" className={`${styles["dish-container__addToCartBtn"]}`} onClick={() => addItemToCart(dishId)}>

@@ -12,12 +12,12 @@ export function useFavoriteDish({ dishId, userId, onRemove }: UseFavoriteDishPro
 
     try {
       if (isFavorite) {
+        console.log("add favorite");
+        await FavoriteService.createFavoriteDish({ dishId, userId });
+      } else {
         console.log("remove favorite");
         await FavoriteService.deleteFavoriteDish({dishId, userId});
         onRemove?.(dishId);
-      } else {
-        console.log("add favorite");
-        await FavoriteService.createFavoriteDish({ dishId, userId });
       }
 
     } catch (error) {
